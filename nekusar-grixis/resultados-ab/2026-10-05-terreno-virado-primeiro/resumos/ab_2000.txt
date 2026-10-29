@@ -1,0 +1,53 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 153 (7.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0830       0.0815      -0.0015 ±0.0026  
+   commander_cast_turn__ate_T3                  0.1080       0.1045      -0.0035 ±0.0038  
+   commander_cast_turn__ate_T4                  0.3090       0.3100      +0.0010 ±0.0044  
+  *commander_cast_turn__ate_T5                  0.7000       0.7065      +0.0065 ±0.0061  
+  *spells_cast_this_turn                        5.4675       4.6915      -0.7760 ±0.1223  
+  *storm_count_max                              7.3345       6.6645      -0.6700 ±0.1682  
+  *cards_drawn_extra                           29.6265      30.0010      +0.3745 ±0.2359  
+  *len_library                                 62.1675      61.7985      -0.3690 ±0.2356  
+  *len_graveyard                               15.3865      15.6135      +0.2270 ±0.1621  
+  *full_wheels_total                            2.0450       2.0815      +0.0365 ±0.0271  
+  *interaction_spells_cast_total                3.2760       3.3305      +0.0545 ±0.0409  
+  *sensei_top_draws_total                       2.0805       2.1135      +0.0330 ±0.0278  
+  *library_emptied                              0.0460       0.0500      +0.0040 ±0.0034  
+  *the_one_ring_burden                          0.3185       0.3445      +0.0260 ±0.0233  
+  *breach_recasts_total                         1.4025       1.4495      +0.0470 ±0.0424  
+  *faerie_mastermind_draws_total                1.0320       1.0620      +0.0300 ±0.0279  
+  *rituals_cast_total                           0.8540       0.8670      +0.0130 ±0.0125  
+   proxy_damage_total                         431.3875     453.1905     +21.8030 ±22.1818 
+
+[so_tapped_land_first - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1646 (82.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0830       0.0815      -0.0015 ±0.0026  
+   commander_cast_turn__ate_T3                  0.1080       0.1045      -0.0035 ±0.0038  
+   commander_cast_turn__ate_T4                  0.3090       0.3100      +0.0010 ±0.0044  
+  *commander_cast_turn__ate_T5                  0.7000       0.7065      +0.0065 ±0.0061  
+  *cards_drawn_extra                           29.6265      30.0010      +0.3745 ±0.2359  
+  *len_library                                 62.1675      61.7985      -0.3690 ±0.2356  
+  *len_graveyard                               15.3865      15.6135      +0.2270 ±0.1621  
+  *full_wheels_total                            2.0450       2.0815      +0.0365 ±0.0271  
+  *interaction_spells_cast_total                3.2760       3.3305      +0.0545 ±0.0409  
+  *sensei_top_draws_total                       2.0805       2.1135      +0.0330 ±0.0278  
+  *library_emptied                              0.0460       0.0500      +0.0040 ±0.0034  
+  *the_one_ring_burden                          0.3185       0.3445      +0.0260 ±0.0233  
+  *breach_recasts_total                         1.4025       1.4495      +0.0470 ±0.0424  
+  *faerie_mastermind_draws_total                1.0320       1.0620      +0.0300 ±0.0279  
+  *rituals_cast_total                           0.8540       0.8670      +0.0130 ±0.0125  
+   proxy_damage_total                         431.3875     453.1905     +21.8030 ±22.1818 
+   flashback_card_recasts_total                 0.2275       0.2380      +0.0105 ±0.0109  
+   storm_count_max                              7.3345       7.4920      +0.1575 ±0.1679  
+
+[so_land_play_not_a_spell - antes] N=2000 | partidas com resultado IDENTICO ao da base: 206 (10.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *storm_count_max                              7.3345       6.5075      -0.8270 ±0.0166  
+  *spells_cast_this_turn                        5.4675       4.6920      -0.7755 ±0.0183  
+  *mill_proxy_total                           160.6295     158.9375      -1.6920 ±0.1718  
+
+[so_storm_self_count_fix - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1606 (80.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *mill_proxy_total                           160.6295     158.6675      -1.9620 ±0.1819  

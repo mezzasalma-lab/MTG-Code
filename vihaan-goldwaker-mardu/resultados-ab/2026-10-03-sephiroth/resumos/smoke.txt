@@ -1,0 +1,7 @@
+cartas na biblioteca: 99 | distintas: 93
+desconhecidas (fora do CARD_DB): []
+duplicadas nao-basicas: []
+terrenos: 35 | basicos: {'Mountain': 3, 'Plains': 2, 'Swamp': 4}
+flags: True True True 2 True
+flags Sephiroth (emblema, simultaneas, fronteira): True True True
+200 partidas sem excecao | partidas com animados sacrificados como criatura: 93

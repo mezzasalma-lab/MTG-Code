@@ -1,0 +1,20 @@
+OK     Manual #6 T3: Tam ({1}{G}{U}) paga com Plaza of Heroes ({G}: so' pra magia LENDARIA, e a Tam e' lendaria) + Steam Vents ({U}) + Hallowed Fountain (generico); sem a Plaza nao ha {G}
+OK     Manual #6 T4: Way of the Paradox ({2}{G}, lendaria: a Plaza paga o {G}) com 3 terrenos; ETB empower Jace 5 cria a ficha de Jace com 5 de lealdade; depois dela, o Oko (2 com a Tam) NAO cabe no mana
+OK     Manual #6 T4 (aritmetica da mao, apoio a duvida 1): 8 cartas no fim do turno -> descarta 1 (a Promise of Loyalty do usuario); com o Oko CONJURADO seriam 7 e nao haveria descarte
+OK     Manual #6 T4 (resposta 2: SIM): Jace `-3` compra 1 carta (L5 -> L2); o Way of the Paradox da' 1 de vida e um 2o terreno por ativacao de lealdade
+OK     Manual #6 T5: Oko ({1}{G}{U} - 1 pela Tam) com Plaza + Mossfire Valley (filtro {1},{T}: {R}{G}) + Steam Vents; `+2` cria uma Food (L4 -> L6)
+OK     Manual #6 T6: Wrenn ({1}{G}{G} - 1 pela Tam) com Overflowing Basin (filtro {G}{U}) + Plaza + Mossfire; `+1` anima o Steam Vents (3/3 Elemental, vigilancia, hexproof, haste); o Oko `+1` faz da Food um Elk 3/3
+OK     Manual #6 T7: Wooded Foothills (1 de vida, sacrificada) busca Indatha Triome (Plains Swamp Forest: e' Forest), que entra virada
+OK     Manual #6 T8: Sanctum Lurker ({2}{B}, sem desconto da Tam: nao e' planeswalker) entra e empower Jace 1 cria a ficha de Jace com 1 de lealdade; da' a TODO planeswalker o `+2` (1 dano em cada oponente e 1 de vida). O L2 do log (resposta 3: 'Lurker') nao sai das regras: 1 -> L2 seria +1
+OK     Manual #6 T8: o Prismari Command do oponente (`2 damage to any target`) mata o Sanctum Lurker: o Lurker e' 3/2 no oraculo (resposta 9: 'Prismari matou pelo 2 de dano'), o dano 2 basta, e a ficha de Jace (L2) FICA em campo com o Lurker fora (o log mostra a ficha viva nos T9-T11)
+OK     Manual #6 T9 (DIVERGENCIA DO RELATO): Tam `{W}{U}{B}{R}{G},{T}: Proliferate X times`, X = tipos de planeswalker (Oko, Domri, Wrenn, Jace = 4): proliferaria 4 VEZES (+4 em cada um); o log do usuario tem UMA onda de +1
+OK     Manual #6 T9: Wrenn `-7` (L8 -> L1) cria o emblema ('play lands and cast permanent spells from your graveyard'); Jace `-1` faz Surveil 1
+OK     Manual #6 T10: com o emblema da Wrenn, o Stomping Ground do cemiterio e' jogado como terreno e o Way of the Mind Sculptor ({4}{U} = 5, SEM desconto: nao e' planeswalker) e' conjurado do cemiterio; empower Jace 5: L2 -> L7
+OK     Manual #6 T10: Jace `-3` com o Way of the Mind Sculptor em campo compra 2 (a habilidade + 'if you removed two or more loyalty counters, draw a card'): Vronos e City of Brass; o Paradox da' o 2o terreno
+OK     Manual #6 T10: Tezzeret the Seeker ({3}{U}{U} - 1 = 4) entra com 4; `-X` com X=3 busca um artefato de MV <= 3 (Ichormoon Gauntlet) direto pro campo (L4 -> L1)
+OK     Manual #6 T10 (DIFERENCA DE POLITICA, nao de regra): com Sol Ring E Gauntlet na biblioteca, o `-X` do simulador busca o Sol Ring (TEZZ_PRIORITY 55 > 50); o usuario buscou o Gauntlet (com 4 planeswalkers + Tam, o Gauntlet vale mais). O log nao diz se o Sol Ring estava na biblioteca
+OK     Manual #6 T11 (resposta 5): a Kiora ({1}{G}{U}) e' ANULADA pelo contra-feitico do simulador de interacao e vai ao cemiterio; com o emblema da Wrenn e' conjurada de novo do cemiterio e entra (custo de novo: 3)
+OK     Manual #6 T11: Ichormoon Gauntlet `[0]: Proliferate` em 3 planeswalkers (Wrenn, Tezzeret, Domri) = 3 proliferates: +3 em TODOS os planeswalkers; Oko `-12` (Gauntlet) 15 -> 3 enfileira o turno extra (resposta 7: CONFERE; ele nao apertou o botao de passar turno)
+OK     Manual #6 T11: Dihada ({1}{R}{W}{B} - 1 = 3) entra com 5 e recebe a onda de proliferate pelo `[0]` dela mesma (L5 -> L6), depois que o Gauntlet ja' estava em campo
+OK     Manual #6 T11 (duvida 6, INFERENCIA DO LOG, nao resposta do usuario): o bloco T11 tem DOIS inicios de turno (desvirar tudo + `library -> hand`): o 1o abre o bloco (Kiora) e o 2o (7 permanentes desvirados) termina no Dack Fayden. Nenhum outro bloco tem uma 2a corrida >= 5. O Dack e' a compra do 2o inicio, nao de um efeito de carta
+19 passaram, 0 falharam, 19 testes 'Manual #6'

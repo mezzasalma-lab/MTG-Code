@@ -1,0 +1,43 @@
+nomes distintos lidos de lista.md (comandante + 99 cartas, básicas contadas uma vez): 95 | sem entrada no cache: []
+
+## CRIME (commit a crime)
+  - Magda, the Hoardmaster [Legendary Creature]: Whenever you commit a crime, create a tapped Treasure token. This ability triggers only once each turn. (Targeting opponents, anything they control, and/or cards in their graveyards is a crime.) Sacrifice three
+
+## ALVO OPONENTE/PERMANENTE DELE (conta como crime ao ser alvo)
+  - Bojuka Bog [Land]: This land enters tapped. When this land enters, exile target player's graveyard. {T}: Add {B}.
+  - Boros Charm [Instant]: Choose one — • Boros Charm deals 4 damage to target player or planeswalker. • Permanents you control gain indestructible until end of turn. • Target creature gains double strike until end of turn.
+  - Gleaming Splendor [Enchantment]: Whenever an opponent draws their second card each turn, you create a Treasure token. {2}{W}: Two target players each draw a card.
+  - Laughing Jasper Flint [Legendary Creature]: Creatures you control but don't own are Mercenaries in addition to their other types. At the beginning of your upkeep, exile the top X cards of target opponent's library, where X is the number of outlaws you co
+  - Marionette Master [Creature]: Fabricate 3 (When this creature enters, put three +1/+1 counters on it or create three 1/1 colorless Servo artifact creature tokens.) Whenever an artifact you control is put into a graveyard from the battlefiel
+  - Requisition Raid [Sorcery]: Spree (Choose one or more additional costs.) + {1} — Destroy target artifact. + {1} — Destroy target enchantment. + {1} — Put a +1/+1 counter on each creature target player controls.
+  - Sentinel Sarah Lyons [Legendary Creature]: Haste As long as an artifact entered the battlefield under your control this turn, creatures you control get +2/+2. Battalion — Whenever Sentinel Sarah Lyons and at least two other creatures attack, Sentinel Sa
+  - Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel [Legendary Creature]: Sephiroth, Fabled SOLDIER ({2}{B}): Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card. Whenever another creature dies, target opponent loses 1 life and you gain 1 
+
+## GANHA VIDA (você)
+  - High Market [Land]: {T}: Add {C}. {T}, Sacrifice a creature: You gain 1 life.
+  - Kambal, Profiteering Mayor [Legendary Creature]: Whenever one or more tokens your opponents control enter, for each of them, create a tapped token that's a copy of it. This ability triggers only once each turn. Whenever one or more tokens you control enter, e
+  - Life Insurance [Enchantment]: Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.) Whenever a nontoken creature dies, you lose 1 life and create a Treasure token.
+  - Nadier's Nightblade [Creature]: Whenever a token you control leaves the battlefield, each opponent loses 1 life and you gain 1 life.
+  - Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel [Legendary Creature]: Sephiroth, Fabled SOLDIER ({2}{B}): Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card. Whenever another creature dies, target opponent loses 1 life and you gain 1 
+  - Teferi's Protection [Instant]: Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phas
+  - Witch of the Moors [Creature]: Deathtouch At the beginning of your end step, if you gained life this turn, each opponent sacrifices a creature of their choice and you return up to one target creature card from your graveyard to your hand.
+  - Zulaport Cutthroat [Creature]: Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.
+
+## PERDA DE VIDA DE OPONENTE (gatilho)
+  - Agent of the Iron Throne [Legendary Enchantment]: Commander creatures you own have "Whenever an artifact or creature you control is put into a graveyard from the battlefield, each opponent loses 1 life."
+  - Black Market Connections [Enchantment]: At the beginning of your first main phase, choose one or more — • Sell Contraband — Create a Treasure token. You lose 1 life. • Buy Information — Draw a card. You lose 2 life. • Hire a Mercenary — Create a 3/2 
+  - Kambal, Profiteering Mayor [Legendary Creature]: Whenever one or more tokens your opponents control enter, for each of them, create a tapped token that's a copy of it. This ability triggers only once each turn. Whenever one or more tokens you control enter, e
+  - Life Insurance [Enchantment]: Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.) Whenever a nontoken creature dies, you lose 1 life and create a Treasure token.
+  - Lotho, Corrupt Shirriff [Legendary Creature]: Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Marionette Master [Creature]: Fabricate 3 (When this creature enters, put three +1/+1 counters on it or create three 1/1 colorless Servo artifact creature tokens.) Whenever an artifact you control is put into a graveyard from the battlefiel
+  - Mirkwood Bats [Creature]: Flying Whenever you create or sacrifice a token, each opponent loses 1 life.
+  - Nadier's Nightblade [Creature]: Whenever a token you control leaves the battlefield, each opponent loses 1 life and you gain 1 life.
+  - Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel [Legendary Creature]: Sephiroth, Fabled SOLDIER ({2}{B}): Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card. Whenever another creature dies, target opponent loses 1 life and you gain 1 
+  - Zulaport Cutthroat [Creature]: Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.
+
+## EXILE (spell/habilidade exila permanente)
+  - Bojuka Bog [Land]: This land enters tapped. When this land enters, exile target player's graveyard. {T}: Add {B}.
+  - Path to Exile [Instant]: Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.
+
+## GATILHO 'whenever you cast ... instant/noncreature/spell'
+  - Life Insurance [Enchantment]: Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.) Whenever a nontoken creature dies, you lose 1 life and create a Treasure token.

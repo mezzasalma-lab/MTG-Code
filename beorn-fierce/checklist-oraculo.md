@@ -1,5 +1,164 @@
 # Checklist cláusula-a-cláusula — Beorn the Fierce
 
+## Varredura de 2026-10-05: nenhuma correção de código neste deck — 2026-10-05
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno virado primeiro em T1/T2 | 📊 sem domínio: o único terreno que entra virado é um MDFC (Bala Ged Sanctuary), cuja face de terreno custa a magia (oráculo: "Bala Ged Sanctuary (): This land enters tapped") |
+| London Mulligan, CR 103.5 | ✅ já escolhe o fundo |
+| Imposto de comandante, CR 903.8 | ✅ já estava |
+| Entrada de terrenos, determinismo, terreno ≠ magia | ✅ sem divergência nas varreduras mecânicas (`varredura-2026-10-05/`) |
+
+---
+
+## London mulligan: as cartas do fundo eram embaralhadas de volta — 2026-09-24
+
+**Achado:** o mesmo bug encontrado no Prismatic Bridge (rodada de gaps de
+2026-09-24) estava copiado aqui, nos 2 pontos (`simulate_one` e
+`simulate_one_with_interaction`): depois de pôr as cartas do 2º mulligan
+no fundo do grimório, o código fazia `rng.shuffle(state.library)` — a carta
+que ia pro fundo voltava pra uma posição aleatória (dava pra comprá-la de
+novo). CR 103.5: "puts a number of those cards ... on the bottom of their
+library in any order" — sem embaralhar depois. Corrigido: removido o
+`shuffle` nos 2 pontos (o `shuffle` de devolver a mão antes de comprar a
+nova continua, esse é real).
+
+**Validação:** 2.000 partidas antes/depois (mesmas seeds): só mudam as
+partidas com 2+ mulligans (244 de 2.000 no modo padrão; 217 no modo
+resiliência) — nenhuma outra. Teste dirigido `test_london_mulligan.py` (raiz
+do repo): passa no código corrigido e falha no antigo, nos 2 modos.
+Regressão de 20.000 partidas (padrão) + 20.000 (resiliência): 0 exceções.
+
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"E depois dele faça o Beorn"* — seguindo diretamente o
+porte concluído no Vihaan, Nekusar e Azula (mesma sessão, mesmo
+protocolo). Este deck nunca tinha o modo de resiliência atual — porte
+completo do zero, **4º deck desta sessão a nascer com a correção de CR
+903.9a nativa desde a 1ª linha**, em vez de implementada errado e
+corrigida depois via retrofit (os outros 9 decks foram todos retrofit).
+
+**Cuidado extra verificado antes de começar:** este deck já teve um
+sistema de "oponente remove minhas permanentes" (`apply_opponent_
+interaction()`) implementado e **revertido** em 2026-08-30, por
+mal-entendido de um pedido do usuário ("Vc me entendeu errado, era para
+o goldfish usar a carta de interação na NOSSA mão... não o oponente
+removendo NOSSAS permanentes"). Confirmado que isso é uma coisa
+diferente: aquele sistema rodava incondicionalmente DENTRO do modo
+padrão; o modo de resiliência desta rodada é **opcional e
+completamente separado** (`simulate_one_with_interaction`, nunca
+chamado por `simulate_one`/`run_batch` padrão), mesmo framework já
+pedido e validado explicitamente nos outros 12 decks desta sessão.
+`try_use_own_interaction()` (o sistema real que ficou, "nós usamos
+nossa remoção 1x/3 turnos") continua intocado, roda sempre no modo
+padrão, sem nenhum conflito com a categoria NOVA "remoção de oponente"
+do modo de resiliência (que só ativa com `interaction_rng`).
+
+**Design incorporado direto do padrão final já validado nos outros 12
+decks:** 7 categorias padronizadas. `remove_permanent` manda o
+comandante pro cemitério de verdade primeiro (CR 700.4/704, ver
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+`references/user-standing-rules.md`), só DEPOIS é removida de lá pra
+representar a zona de comando. **Sem NENHUM efeito numérico do CR
+903.9a em si** — este é um deck ramp/stompy mono-verde com **0 cartas
+"creature dies"** (grep confirmado) — mais próximo estruturalmente do
+Ur-Dragon/Hei Bai/Ulalek/Nekusar/Azula. 'Bear Token' (único token
+nomeado do deck) é capturado normalmente pelo candidate list de
+criatura — vive como entrada de string comum em `state.battlefield`,
+sem contador agregado (diferente do Treasure do Vihaan/Azula).
+
+## Achado real ADICIONAL, não relacionado a CR 903.9a: taxa de comandante (CR 903.8) nunca foi modelada — 2026-09-21
+
+**Gatilho:** ao inserir o contra-ataque (`try_smart_opponent_counter`)
+nos 2 pontos de cast do comandante, percebi que `effective_cost()`
+nunca somava a taxa real de +{2} por cast anterior da zona de comando
+(CR 903.8). **Achado real: isso nunca importou na PRÁTICA antes de
+hoje** — nada neste simulador jamais fazia o comandante sair de campo
+(0 mecanismo de remoção/sacrifício alcançava ela antes desta rodada),
+então ela era conjurada no máximo 1x por partida, sempre pelo custo
+base. Só se torna um problema real agora que `remove_permanent`/o modo
+de resiliência (e o fix do Natural Order abaixo) podem genuinamente
+destruí-la e forçar um recast — sem a taxa, um recast estaria cobrando
+a regra ERRADA exatamente no cenário que esta rodada introduz. Mesma
+categoria de "achado real pré-existente que só aparece com validação
+rigorosa" já vista no loop infinito do Maralen e no mulligan
+não-determinístico do Azula nesta sessão.
+
+**Corrigido:** adicionado `commander_cast_count: int = 0` ao
+`GameState` (mesma convenção dos outros 12 decks) e `effective_cost()`
+agora soma `2 * state.commander_cast_count` ao MV base quando
+`card == COMMANDER`, antes de aplicar qualquer redução. Incrementado
+nos 2 pontos reais de cast do comandante em `main_phase` (contagem
+acontece ANTES do contra-ataque, já que CR 903.10a/608.2b contam
+"cast", não "resolved").
+
+**Validação:** teste dirigido confirmando que `effective_cost` sobe
+exatamente +2 no 2º cast (`commander_cast_count=1`) vs o 1º
+(`commander_cast_count=0`). Bit-identidade em modo padrão não afetada
+por este fix isoladamente (só passa a importar quando combinado com o
+fix do Natural Order abaixo, que é a única forma dela sair de campo em
+modo padrão).
+
+## Achado real ADICIONAL: `Natural Order` podia sacrificar o próprio comandante sem preferência — 2026-09-21
+
+**Gatilho:** mesmo padrão de bug já achado no Vihaan (fallback do
+Deadly Dispute) nesta sessão — auditando os pontos de sacrifício
+voluntário já existentes no arquivo antes de construir o modo de
+resiliência (Regra #6 do CLAUDE.md: bugs de orquestração podem morar
+no próprio motor do deck, não só em remoção de oponente), achei que o
+pool de sacrifício do Natural Order (`green_creatures = [c for c in
+state.battlefield if is_creature(c) and c != card and C(c).g_pips >=
+1]`) **não deprioritizava o próprio comandante**. Confirmado ao vivo
+rodando a seed 91052 na versão anterior: Beorn é conjurada no turno 4,
+e **sacrificada pelo próprio Natural Order do jogador no turno 5** —
+um jogador racional nunca sacrifica voluntariamente seu comandante
+(motor de anthem + gatilho de combate + escala de Roaming Throne) por
+um corpo genérico quando qualquer outra criatura verde real serve.
+**Agravante real, ligado ao achado de CR 903.9a acima:** como não
+existia `remove_permanent`/tratamento nenhum do comandante nesse ponto
+antes desta rodada, ela ficava **presa fora do jogo pra sempre**
+depois de sacrificada (nunca resetava `commander_in_play`, nunca podia
+ser recastada) — bug duplo, não só a escolha irracional de sacrifício,
+mas a ausência total de recuperação depois.
+
+**Corrigido:** o pool agora prefere qualquer criatura verde
+não-comandante (`non_commander_green`); só cai pro comandante quando
+ela é genuinamente a ÚNICA criatura verde em campo (o custo do Natural
+Order é mandatório, sem alternativa de não pagar). A remoção física
+agora passa por `remove_permanent` (não mais `battlefield.remove` +
+`graveyard.append` direto), então mesmo no caso raro em que ela É
+sacrificada, volta corretamente pra zona de comando e pode ser
+recastada depois (confirmado: mesma seed 91052, ela recasta no turno
+6 na versão corrigida).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão (20.000
+seeds, seed_base 91000) contra o commit anterior: **227/20000
+mismatches (1,14%)** — divergência real e esperada (mesma categoria
+"RNG ripple" do Deadly Dispute/Vihaan e Blightsteel/Megatron), causada
+por este fix (confirmado via trace direto da seed 91052 acima, não um
+bug novo). Comparação A/B agregada (10.000 seeds) confirmando que o
+fix não introduz nenhuma mudança sistemática grande:
+`bear_count_final`/`spells_cast`/`battlefield_count` todos dentro de
+margem pequena (ex. 8,4861→8,4758), e "comandante nunca conjurada"
+**idêntico** nos dois lados (0,0157/0,0157 — confirma que o fix só
+afeta o que acontece DEPOIS dela já estar em campo). Regressão de
+20.000 partidas em modo de resiliência: 0 exceções, 0 comandantes
+presos no cemitério. 7 testes dirigidos: (1) `remove_permanent` no
+comandante — não presa no cemitério; (2) permanente comum vai pro
+cemitério normalmente; (3) taxa de comandante aplicada corretamente
+(+2 no recast); (4) contra-ataque intercepta o cast, mana/taxa já
+gastos, ela nunca entra em campo; (5) `try_smart_opponent_wipe` inclui
+o comandante nos alvos; (6) Natural Order prefere outra criatura verde
+ao comandante quando disponível; (7) Natural Order sacrifica o
+comandante quando é a única opção, sem ficar presa (recastável depois).
+
+**Resultado:** porte de CR 903.9a sem impacto numérico direto
+(estrutural), mas a auditoria de pontos de sacrifício pré-existentes
+(disciplina obrigatória antes de construir o modo de resiliência, não
+opcional) achou 2 bugs REAIS e relacionados — um deles (Natural Order)
+com trace ao vivo confirmando que já acontecia em partidas simuladas
+reais desta lista.
+
 ## Achado real 2026-09-14 (usuário perguntou se Roaming Throne dobra os gatilhos de OUTROS Ursos, não só o combate da Beorn)
 
 Oráculo real confirmado via Scryfall: *"Roaming Throne — Ward {2}. As
@@ -430,7 +589,7 @@ Validado com 7 testes unitários isolados (1 por gap) + regressão de
 ## Beorn the Fierce (comandante) {3}{G}{G}
 1. Trample — 📊 combate.
 2. Other Bears +2/+2 — ✅ `effective_power()` (🐛 corrigido: antes só local em on_creature_enters, não propagado pro resto do arquivo).
-3. Início de combate: trample counter + vira Bear + 3+ Bears→draw 2 — ✅ `combat_step()`.
+3. Início de combate: trample counter + vira Bear + 3+ Bears→draw 2 — 🐛 **corrigido em 2026-10-23** (`BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT`): o código exigia `can_attack(Beorn)` (lia "whenever Beorn attacks"); o oráculo é "At the beginning of combat on your turn", dispara com a Beorn doente de invocação e sem atacar. Ruling 2026-06-29: o tipo Urso dura para sempre ✅ (`converted_to_bear`). O contador de trample é 📊 (sem bloqueio modelado).
 
 ## Beorn's Hospitality {1}{G}
 1. Landfall: +1/+1 counter em criatura alvo — ✅ `on_land_enters()`.
@@ -523,6 +682,15 @@ Validado com 7 testes unitários isolados (1 por gap) + regressão de
 1. Morre: ganha 2 vida — 📊 vida não rastreada neste modelo (mono-verde, documentado no header do arquivo).
 2. `{G}`, Sac: exile artefato/encantamento não-criatura — 📝 sem restrição de "do oponente" no oráculo, mas sem alvo próprio valioso (Regra 1) nem alvo de oponente modelado — excluída explicitamente de `try_use_own_interaction` (comentário na linha ~1506).
 
+## Herd Heirloom {1}{G} — **entrou em 2026-10-23** (oráculo e ruling lidos ao vivo, `resultados-ab/2026-10-23-herd-heirloom/dados/scryfall_oraculo_rulings_2026-10-23.json`)
+Artefato. Duas habilidades ativadas que **dividem o mesmo `{T}`** (uma por turno, a menos que desvire).
+1. `{T}`: Add one mana of any color. **Spend this mana only to cast a creature spell.** — ✅ `creature_mana_bonus()` / `can_cast()` / `spend_for_spell()`: o mana restrito soma só para magia de criatura (comandante incluído, e a criatura do exílio da Beorn, Reluctant Host), nunca entra em `total_mana()`/`remaining_mana()`, não paga magia que não seja de criatura nem habilidade ativada (testes `…nao_paga_magia_que_nao_e_de_criatura_nem_ativacao`). Qualquer cor ⇒ também paga um `{G}`.
+2. `{T}`: Until end of turn, target creature you control with power 4 or greater gains trample and "Whenever this creature deals combat damage to a player, draw a card." — ✅ `try_heirloom_draw()` (início do combate, **depois** do gatilho da Beorn, que pode levar uma criatura a poder ≥ 4): alvo = criatura apta a atacar com poder ≥ 4 (`heirloom_target_power`: poder impresso + anthems de Bear + contadores agregados só se for a de maior poder); compra 1; **Roaming Throne dobra o gatilho concedido** quando o alvo é OUTRO Urso (`bear_trigger_times`; o próprio Throne não dobra: "another creature"). Trample: 📊 sem bloqueio modelado (contagem em `heirloom_draw_activations`).
+3. Ruling 2025-04-04 (única): *"Once Herd Heirloom's last ability has resolved, lowering the affected creature's power below 4 won't cause it to lose those abilities."* — ✅ a compra é concedida uma vez na ativação; este simulador não reduz poder durante o combate.
+4. Sem doença de invocação (artefato não-criatura, CR 302.6 só vale para criatura): o `{T}` serve no turno em que entra (`arm_heirloom` é chamado em `cast_spell`).
+5. Interações lidas por script em `lista.md` (`resumos/enumera_condicoes_lista_depois.txt`): Emerald Medallion (custa 1), Defiler of Vigor (magia permanente verde: desconto e contador em cada criatura), Necklace of Girion, Forgotten Ancient e Managorger Hydra (qualquer magia) ✅ por `g_pips`/`cast_spell`; Beast Whisperer, Dancing from Dark to Dawn e Chronicle of Victory **não** disparam (não é criatura nem Urso) ✅; devoção do Nykthos conta o `{G}` do custo ✅.
+6. Política (não é regra): o `{T}` é guardado para a compra se já há alvo elegível; vira mana só sem alvo, ou se a Beorn (comandante) só cabe com ele (`arm_heirloom`). O Heirloom **não** é peça de mulligan (`KEEPERS`) e não entra em `INTERACTION_ENGINE_PRIORITY`.
+
 ## Heroic Intervention {1}{G}
 1. Permanentes ganham hexproof/indestructible até o fim do turno — 📊 proteção reativa, sem remoção de oponente modelada pra proteger contra.
 
@@ -586,7 +754,7 @@ Validado com 7 testes unitários isolados (1 por gap) + regressão de
 1. 1º creature spell do turno custa {2} menos — ✅ `effective_cost()`.
 2. ...e pode ser conjurado com flash — 📝 sem instant-speed/janela de turno adversário modelada (documentado).
 
-## Ram Through {1}{G}
+## Ram Through {1}{G}  *(saiu da lista em 2026-10-23: o usuário a trocou pelo Herd Heirloom; a entrada fica no `CARD_DB` só para o baralho de antes, `HERD_HEIRLOOM_IN_DECK=False`)*
 1. Criatura sua causa dano = seu poder numa criatura do oponente (excesso c/ trample vai na cara) — ✅ tag "removal", `try_use_own_interaction()` (efeito numérico exato do combate é 📊, mas a conjuração conta como interação real).
 
 ## Reliquary Tower
@@ -673,6 +841,33 @@ Validado com 7 testes unitários isolados (1 por gap) + regressão de
 1. Todo terreno é Forest adicionalmente — ✅ `is_forest_for_landfall()`, `green_sources()`.
 
 ---
+
+## 🐛 Troca Ram Through → Herd Heirloom e gatilho da Beorn no início do combate (2026-10-23)
+
+Pasta: `resultados-ab/2026-10-23-herd-heirloom/`. **Achados:**
+
+| # | achado | classe da taxonomia | correção | teste |
+|---|---|---|---|---|
+| 1 | **Herd Heirloom** entrou na lista (o usuário trocou o Ram Through): 2 habilidades ativadas que dividem o mesmo `{T}` (mana de qualquer cor só para criatura; trample + compra por dano de combate a criatura de poder ≥ 4) | carta nova, **as duas** habilidades (Regra #1); "`{T}` compartilhado" é item da taxonomia | `creature_mana_bonus` / `spend_for_spell` / `try_heirloom_draw` / `arm_heirloom`; chaves `HERD_HEIRLOOM_IN_DECK`, `_MANA`, `_DRAW` | `test_heirloom_*` (11) |
+| 2 | **O gatilho da Beorn estava preso a `can_attack(Beorn)`**: o oráculo é *"At the beginning of combat on your turn…"*; o código lia "whenever Beorn attacks" e perdia o 1º gatilho (conversão em Urso + compra de 2 com 3+ Ursos) de toda partida, porque a Beorn entra doente de invocação | leitura de cláusula + timing de fase nomeado (Regras #6/#7) | `BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT`: `combat_step` não exige `can_attack` | `test_beorn_gatilho_no_inicio_do_combate_dispara_mesmo_doente_de_invocacao` |
+| 3 | `bear_trigger_times("Roaming Throne")` devolveria 2 (ela é Artifact Creature e Urso): o oráculo diz "**another** creature you control of the chosen type" | conceito compartilhado (Regra #3) | a Throne nunca dobra o gatilho dela mesma; nenhum chamador antigo passava a Throne (sem mudança de resultado) | `…roaming_throne_dobra_o_gatilho_concedido_a_outro_urso_nao_a_propria_throne` |
+
+**Rulings lidas ANTES do código** (`dados/scryfall_oraculo_rulings_2026-10-23.json`): Herd Heirloom (2025-04-04: baixar o poder abaixo de 4 depois de resolver não tira as habilidades ✅), Beorn (2026-06-29: o tipo Urso dura para sempre ✅ `converted_to_bear`), Roaming Throne (2023-11-10: não copia a habilidade, dispara uma vez a mais; alvos e escolhas por instância ✅), Ram Through (4), Ohran (2), Toski (2), Goreclaw (3). Spellbook: 0 combos antes e depois, controles ok.
+**Validação:** 22/22 testes; bit-identidade 20.000 × 2; regressão 20.000 × 2 com 0 exceções; determinismo 0; A/B pareado 2.000 e 10.000 × 2 modos.
+**Escopo (Regra #7):** trample 📊 (sem bloqueio modelado); Genji Glove (combate extra, dano duplo) não repete nenhuma compra por dano de combate (piso); política do `{T}` minha e não otimizada; `--tudo` da reprodução não rodado. Entrada da carta: ver "## Herd Heirloom" acima; "## Ram Through" fica só para o baralho de antes.
+
+## 🐛 Payoff de landfall antes do terreno (2026-10-07)
+
+Classe do motor (Regra #6/#10), não da carta: `beorn_goldfish_v1.py` jogava o terreno antes de conjurar. Arquivo: `resultados-ab/2026-10-07-landfall-payoff-primeiro/`. Escopo declarado (Regra #7): **varrido** = a ordem terreno × payoff de landfall nos 6 payoff(s) abaixo, com teste dirigido, A/B pareado 2.000 e 10.000, bit-identidade, regressão e determinismo; **NÃO varrido** = magia que põe terreno em campo antes do payoff, terreno que volta ao campo, 2ª fase principal.
+
+| carta | cláusula de oráculo (landfall) | achado / status | onde |
+|---|---|---|---|
+| Lotus Cobra | Landfall — add one mana of any color | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Tireless Provisioner | Landfall — Food ou Treasure (modelado como mana avulsa) | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Tireless Tracker | Landfall — investigate | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Beorn's Hospitality | Landfall — +1/+1 counter em criatura | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Dancing from Dark to Dawn | Landfall — Urso 2/2 | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Necklace of Girion | Whenever a Forest you control enters — +1/+1 counter | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
 
 ## Resumo numérico
 

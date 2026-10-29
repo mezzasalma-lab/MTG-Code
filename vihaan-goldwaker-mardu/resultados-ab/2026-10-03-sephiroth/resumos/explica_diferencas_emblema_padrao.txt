@@ -1,0 +1,2 @@
+variante=emblema modo=padrao N=2000: jogos com estado final diferente=6
+  campo sephiroth_deaths_this_turn: diverge em 6 jogos

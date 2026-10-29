@@ -1,0 +1,26 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1630 (81.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.9365       6.9755      +0.0390 ±0.0116  
+  *landfall_elf_tokens                          0.2945       0.4230      +0.1285 ±0.0212  
+  *thranduils_company_counters                  0.6800       1.0060      +0.3260 ±0.0497  
+  *spells_cast                                 11.7305      11.7675      +0.0370 ±0.0239  
+   extra_draws                                 12.0475      12.1235      +0.0760 ±0.0920  
+   finisher_turn__nunca                         0.3925       0.3940      +0.0015 ±0.0045  
+   finisher_turn__ate_T5                        0.0655       0.0660      +0.0005 ±0.0010  
+   finisher_turn__ate_T6                        0.2090       0.2110      +0.0020 ±0.0028  
+  *battlefield_count                           19.9335      20.1145      +0.1810 ±0.0443  
+  *hand_size                                    3.8120       3.7780      -0.0340 ±0.0218  
+  *devoted_druid_bursts                         0.0610       0.0650      +0.0040 ±0.0028  
+  *removal_cast                                 0.4715       0.4765      +0.0050 ±0.0039  
+  *own_interaction_used                         0.3725       0.3755      +0.0030 ±0.0024  
+  *tyvar_jubilant_reanimations                  0.1045       0.1085      +0.0040 ±0.0037  
+  *creature_engine_draws                        1.6860       1.7180      +0.0320 ±0.0298  
+  *trystan_drain_events                         0.2425       0.2380      -0.0045 ±0.0043  
+   thranduil_legendary_elf_triggers             3.0420       3.0625      +0.0205 ±0.0211  
+   trystan_transforms_total                     0.4750       0.4685      -0.0065 ±0.0067  
+   elves_milled_to_gy                           1.2550       1.2705      +0.0155 ±0.0163  
+   glissa_draws                                 0.5660       0.5725      +0.0065 ±0.0069  
+   roaming_throne_doublings                     0.7920       0.8275      +0.0355 ±0.0401  
+   trystans_command_copy_tokens                 0.0520       0.0535      +0.0015 ±0.0017  

@@ -1,0 +1,33 @@
+## Riverchurn Monument ({1}{U}, Artifact): motores = ['MILL_OPONENTE']  [oraculo: '{1}, {T}: Any number of target players each mill two cards. (Each of them puts the top two cards of their library into their graveyard.)\nExhaust — {2}{U}{U}, {T}: Any number of target players each mill cards equal to the number of cards in their graveyard. (Activate each exhaust ability only once.)']
+   por clausula: {1},{T} 'any number of target players each mill two' -> MILL_OPONENTE (e MILL_PROPRIO se eu me escolho); Exhaust -> idem, com X = cemiterio; e e' ARTEFATO -> Urza's Saga (+1/+1 por artefato), Altar of the Brood (permanente entra), Mesmeric Orb (desvira me mila 1), recastavel por Muldrotha/Six
+
+## cartas da lista (por script) que satisfazem cada condicao que o Monument toca
+- artefatos que a Urza's Saga (cap. III) pode buscar: artefato com MV <= 1 [4]: Altar of the Brood, Sol Ring, Soul-Guide Lantern, Walking Ballista
+- ARTEFATOS na lista (contam pro Construct da Saga; recastaveis por Muldrotha/Six) [13]: Agatha's Soul Cauldron, Altar of Dementia, Altar of the Brood, Hedge Shredder, Mesmeric Orb, Mindcrank, Palantír of Orthanc, Sol Ring, Soul-Guide Lantern, Swiftfoot Boots, The Great Henge, Walking Ballista, Riverchurn Monument
+- lê 'Altar of the Brood': 'another permanent you control enters' [1]: Altar of the Brood
+- lê 'Mesmeric Orb': 'a permanent becomes untapped' [1]: Mesmeric Orb
+- criaturas (corpos pro 'up to X target creatures' do Mothman) [32]: The Wise Mothman, Angel of Suffering, Basking Broodscale, Bramble Familiar // Fetch Quest, Cankerbloom, Cold-Eyed Selkie, Danny Pink, Deepmuck Desperado, Evolution Witness, Fathom Mage, Freestrider Lookout, Generous Patron, Glen Elendra Archmage, Gyre Sage, Herd Baloth, Icetill Explorer, Kami of Whispered Hopes, Kodama of the West Tree, Kozilek, Butcher of Truth, Mirelurk Queen, Muldrotha, the Gravetide, Ouroboroid, Pollywog Prodigy, Rampant Frogantua, Ruin Crab, Six, Syr Konrad, the Grim, The Gitrog Monster, Undead Alchemist, Walking Ballista, Winding Constrictor, Zellix, Sanity Flayer
+- cartas de hate de cemiterio (ANTI-sinergia com o Exhaust, que le o tamanho do cemiterio dos oponentes) [4]: Agatha's Soul Cauldron, Ashiok, Dream Render, Bojuka Bog, Soul-Guide Lantern
+- cartas que pagam por 'milled' ou por carta posta no cemiterio do oponente (sinergia direta com o mill do Monument) [7]: The Wise Mothman, Bloodchief Ascension, Kozilek, Butcher of Truth, Mirelurk Queen, Syr Konrad, the Grim, Undead Alchemist, Zellix, Sanity Flayer
+
+## motores de cada finalista a corte (Regra #4 item 4)
+1 | An Offer You Can't Refuse | Instant | CONTRAMAGICA
+1 | Negate | Instant | CONTRAMAGICA
+1 | Generous Patron | Creature — Elf Advisor | COLOCA_P1P1,COMPRA
+1 | Tear Asunder | Instant | REMOVE
+1 | Toxic Deluge | Sorcery | REMOVE
+2 | Wave Goodbye | Sorcery | COLOCA_P1P1,REMOVE
+0 | Muldrotha, the Gravetide | Legendary Creature — Elemental Avatar | -
+2 | Evolution Witness | Creature — Elf Shaman Mutant | COLOCA_P1P1,PAGA_CONTADOR
+1 | Didn't Say Please | Instant | CONTRAMAGICA
+1 | Zellix, Sanity Flayer | Legendary Creature — Horror | PAGA_CARTA_MILLED
+2 | Agatha's Soul Cauldron | Legendary Artifact | COLOCA_P1P1,REMOVE
+1 | Arcane Denial | Instant | COMPRA,CONTRAMAGICA
+2 | Nuclear Fallout | Sorcery | RAD,REMOVE
+0 | Cold-Eyed Selkie | Creature — Merfolk Rogue | COMPRA
+0 | V.A.T.S. | Instant | -
+1 | Soul-Guide Lantern | Artifact | COMPRA,REMOVE
+1 | Hedge Shredder | Artifact — Vehicle | TERRENO_NO_CEMITERIO
+1 | Heroic Intervention | Instant | PROTEGE
+1 | Bojuka Bog | Land | REMOVE
+1 | Yavimaya Hollow | Legendary Land | PROTEGE

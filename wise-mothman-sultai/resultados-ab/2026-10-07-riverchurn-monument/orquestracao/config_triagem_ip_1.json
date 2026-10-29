@@ -1,0 +1,186 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_Agadeem's Awakening // Agadeem, the Undercrypt": {
+   "SWAPS": [
+    [
+     "Agadeem's Awakening // Agadeem, the Undercrypt",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Agatha's Soul Cauldron": {
+   "SWAPS": [
+    [
+     "Agatha's Soul Cauldron",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Altar of the Brood": {
+   "SWAPS": [
+    [
+     "Altar of the Brood",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_An Offer You Can't Refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Angel of Suffering": {
+   "SWAPS": [
+    [
+     "Angel of Suffering",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Arcane Denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Ashiok, Dream Render": {
+   "SWAPS": [
+    [
+     "Ashiok, Dream Render",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Basking Broodscale": {
+   "SWAPS": [
+    [
+     "Basking Broodscale",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Bojuka Bog": {
+   "SWAPS": [
+    [
+     "Bojuka Bog",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Boseiju, Who Endures": {
+   "SWAPS": [
+    [
+     "Boseiju, Who Endures",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Bramble Familiar // Fetch Quest": {
+   "SWAPS": [
+    [
+     "Bramble Familiar // Fetch Quest",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Breeding Pool": {
+   "SWAPS": [
+    [
+     "Breeding Pool",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Cankerbloom": {
+   "SWAPS": [
+    [
+     "Cankerbloom",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Cold-Eyed Selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_Agadeem's Awakening // Agadeem, the Undercrypt",
+  "cut_Agatha's Soul Cauldron",
+  "cut_Altar of the Brood",
+  "cut_An Offer You Can't Refuse",
+  "cut_Angel of Suffering",
+  "cut_Arcane Denial",
+  "cut_Ashiok, Dream Render",
+  "cut_Basking Broodscale",
+  "cut_Bojuka Bog",
+  "cut_Boseiju, Who Endures",
+  "cut_Bramble Familiar // Fetch Quest",
+  "cut_Breeding Pool",
+  "cut_Cankerbloom",
+  "cut_Cold-Eyed Selkie"
+ ],
+ "regressao": []
+}

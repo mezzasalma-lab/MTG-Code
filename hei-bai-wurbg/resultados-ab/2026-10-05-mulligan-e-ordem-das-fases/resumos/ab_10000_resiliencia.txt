@@ -1,0 +1,66 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 4561 (45.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0110       0.0142      +0.0032 ±0.0021  
+  *commander_cast_turn__ate_T3                  0.4458       0.4549      +0.0091 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.8736       0.8671      -0.0065 ±0.0036  
+  *commander_cast_turn__ate_T5                  0.9486       0.9295      -0.0191 ±0.0037  
+  *commander_in_play                            0.7763       0.7121      -0.0642 ±0.0069  
+  *len_library                                 73.4051      73.9128      +0.5077 ±0.1111  
+  *cards_drawn_extra                            6.6634       6.3413      -0.3221 ±0.0978  
+  *len_smart_wipe_log                           0.7855       0.7626      -0.0229 ±0.0077  
+  *smart_wipes_total                            0.7855       0.7626      -0.0229 ±0.0077  
+  *commander_cast_turn__ate_T6                  0.9716       0.9632      -0.0084 ±0.0029  
+  *len_creature_cast_turn                       4.6573       4.6015      -0.0558 ±0.0199  
+  *len_hand                                     2.9082       2.8506      -0.0576 ±0.0239  
+  *len_smart_removal_log                        0.7690       0.7495      -0.0195 ±0.0087  
+  *smart_removals_total                         0.7690       0.7495      -0.0195 ±0.0087  
+  *len_smart_counter_log                        0.1169       0.1074      -0.0095 ±0.0044  
+  *smart_counters_total                         0.1169       0.1074      -0.0095 ±0.0044  
+  *len_smart_discard_log                        1.3947       1.3694      -0.0253 ±0.0117  
+  *smart_discards_total                         1.3947       1.3694      -0.0253 ±0.0117  
+
+[so_mulligan - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8452 (84.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0110       0.0073      -0.0037 ±0.0013  
+  *commander_cast_turn__ate_T3                  0.4458       0.4549      +0.0091 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.8736       0.8851      +0.0115 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.9486       0.9562      +0.0076 ±0.0020  
+  *commander_cast_turn__ate_T6                  0.9716       0.9780      +0.0064 ±0.0017  
+  *len_hand                                     2.9082       2.8546      -0.0536 ±0.0144  
+  *len_creature_cast_turn                       4.6573       4.6878      +0.0305 ±0.0129  
+  *ramp_pieces_cast                             1.1903       1.2026      +0.0123 ±0.0053  
+  *len_smart_artifact_wipe_log                  0.1304       0.1343      +0.0039 ±0.0021  
+  *smart_artifact_wipes_total                   0.1304       0.1343      +0.0039 ±0.0021  
+  *heliods_generosity_returns_total             0.1229       0.1278      +0.0049 ±0.0028  
+  *len_smart_wipe_log                           0.7855       0.7928      +0.0073 ±0.0046  
+  *smart_wipes_total                            0.7855       0.7928      +0.0073 ±0.0046  
+  *tutors_used_total                            0.6248       0.6311      +0.0063 ±0.0050  
+  *enduring_vitality_enchantment_only           0.1038       0.1058      +0.0020 ±0.0016  
+  *mind_stone_harnessed                         0.1180       0.1197      +0.0017 ±0.0016  
+  *len_smart_removal_log                        0.7690       0.7746      +0.0056 ±0.0052  
+  *smart_removals_total                         0.7690       0.7746      +0.0056 ±0.0052  
+
+[so_imposto - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5539 (55.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0110       0.0184      +0.0074 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.8736       0.8551      -0.0185 ±0.0026  
+  *commander_cast_turn__ate_T5                  0.9486       0.9216      -0.0270 ±0.0032  
+  *commander_in_play                            0.7763       0.7084      -0.0679 ±0.0064  
+  *commander_cast_turn__ate_T6                  0.9716       0.9558      -0.0158 ±0.0025  
+  *len_library                                 73.4051      73.9543      +0.5492 ±0.0868  
+  *len_creature_cast_turn                       4.6573       4.5702      -0.0871 ±0.0158  
+  *cards_drawn_extra                            6.6634       6.3171      -0.3463 ±0.0764  
+  *len_smart_wipe_log                           0.7855       0.7559      -0.0296 ±0.0065  
+  *smart_wipes_total                            0.7855       0.7559      -0.0296 ±0.0065  
+  *len_smart_removal_log                        0.7690       0.7447      -0.0243 ±0.0073  
+  *smart_removals_total                         0.7690       0.7447      -0.0243 ±0.0073  
+  *len_smart_discard_log                        1.3947       1.3666      -0.0281 ±0.0098  
+  *smart_discards_total                         1.3947       1.3666      -0.0281 ±0.0098  
+  *ramp_pieces_cast                             1.1903       1.1718      -0.0185 ±0.0068  
+  *graveyard_wipe_used                          0.4202       0.4082      -0.0120 ±0.0046  
+  *len_smart_graveyard_wipe_log                 0.4202       0.4082      -0.0120 ±0.0046  
+
+[so_ordem_set - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9924 (99.2%)
+   campo                                          base     variante dif. pareada (IC95%)

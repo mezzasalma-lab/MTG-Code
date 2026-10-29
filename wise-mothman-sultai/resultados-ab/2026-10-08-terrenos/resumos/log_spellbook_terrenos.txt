@@ -1,0 +1,20 @@
+nomes verificados: 106 | NAO reconhecidos: []
+base: 2 combos, 136 quase
+base+Woodland Cemetery | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Drowned Catacomb | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Hinterland Harbor | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Llanowar Wastes | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Underground River | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Yavimaya Coast | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Opulent Palace | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Underground Mortuary | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Undercity Sewers | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Blooming Marsh | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Darkslick Shores | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Botanical Sanctum | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Darkbore Pathway // Slitherbore Pathway | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Jungle Hollow | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Dismal Backwater | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Yavimaya, Cradle of Growth | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+t3_swarmyard_swamp_hollow_forest | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+controle positivo: True | controle de corte: True

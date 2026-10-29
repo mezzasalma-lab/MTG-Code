@@ -1,0 +1,31 @@
+LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.6220       0.7030      +0.0810 ±0.0217  
+  *cleared_T10                                  0.8915       0.9205      +0.0290 ±0.0139  
+  *first_elim_T6                                0.4830       0.5525      +0.0695 ±0.0208  
+   opps_eliminated_total                        2.9110       2.9300      +0.0190 ±0.0194  
+   cards_milled_opp_total                      79.5575      82.3095      +2.7520 ±2.9326  
+   nonland_milled_opp_total                    47.5610      49.0380      +1.4770 ±1.7313  
+  *mothman_counters_placed_total               76.6955      83.3830      +6.6875 ±3.7942  
+  *ruin_crab_mills                              1.5030       1.7005      +0.1975 ±0.1288  
+  *lands_entered_total                         11.3225      11.6615      +0.3390 ±0.2098  
+   cards_milled_self_total                     15.9825      16.2235      +0.2410 ±0.5386  
+  *library_min                                 52.8665      51.1060      -1.7605 ±0.9526  
+  *life_min                                    33.1050      32.9300      -0.1750 ±0.1548  
+   self_lost                                    0.0270       0.0255      -0.0015 ±0.0094  
+  *turn_id                                     28.6570      27.6310      -1.0260 ±0.1658  
+  *opp_turns_total                             20.2575      19.4995      -0.7580 ±0.1247  
+  *opp_spells_total                            18.0280      17.2450      -0.7830 ±0.1311  
+  *turn                                         8.3995       8.1315      -0.2680 ±0.0455  
+  *len_mana_by_turn                             8.3875       8.1215      -0.2660 ±0.0455  
+  *len_cards_in_hand_by_turn                    7.4970       7.2345      -0.2625 ±0.0468  
+  *len_counters_on_board_by_turn                7.4970       7.2345      -0.2625 ±0.0468  
+  *len_creature_count_by_turn                   7.4970       7.2345      -0.2625 ±0.0468  
+  *len_lands_in_play_by_turn                    7.4970       7.2345      -0.2625 ±0.0468  
+  *len_library_by_turn                          7.4970       7.2345      -0.2625 ±0.0468  
+  *len_mothman_power_turn                       7.4970       7.2345      -0.2625 ±0.0468  
+  *opp_noncreature_spells_total                 9.9435       9.5295      -0.4140 ±0.0805  
+  *cleared_T7                                   0.2080       0.2925      +0.0845 ±0.0202  
+  *commander_cast_turn__ate_T4                  0.6805       0.7510      +0.0705 ±0.0171  

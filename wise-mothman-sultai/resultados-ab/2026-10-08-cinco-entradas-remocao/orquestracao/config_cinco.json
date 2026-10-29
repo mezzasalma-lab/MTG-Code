@@ -1,0 +1,275 @@
+{
+ "sim": "resultados-ab/2026-10-08-cinco-entradas-remocao/codigo/mothman_goldfish_v1_DEPOIS.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "opps_eliminated_total",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "counters_placed_total",
+  "cards_milled_opp_total",
+  "cards_milled_self_total",
+  "library_min",
+  "draws_total",
+  "atomize_casts",
+  "casualties_casts",
+  "trophy_casts",
+  "trophy_lands_given",
+  "interaction_plays",
+  "crimes_total",
+  "deepmuck_triggers",
+  "counterspells_cast",
+  "opp_spells_countered_total",
+  "protection_used_total",
+  "commander_countered_total",
+  "smart_removals_total",
+  "smart_wipes_total",
+  "wipes_cast"
+ ],
+ "compacto": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "atomize_casts",
+  "casualties_casts",
+  "trophy_casts",
+  "interaction_plays",
+  "counterspells_cast",
+  "protection_used_total",
+  "smart_removals_total",
+  "proliferates_total",
+  "mothman_counters_placed_total"
+ ],
+ "variantes": {
+  "base": {},
+  "p1_so_o_par": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "rem3_vats_wave_deluge": {
+   "SWAPS": [
+    [
+     "V.A.T.S.",
+     "Atomize"
+    ],
+    [
+     "Wave Goodbye",
+     "Casualties of War"
+    ],
+    [
+     "Toxic Deluge",
+     "Assassin's Trophy"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s1_vats_wave_deluge": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ],
+    [
+     "V.A.T.S.",
+     "Atomize"
+    ],
+    [
+     "Wave Goodbye",
+     "Casualties of War"
+    ],
+    [
+     "Toxic Deluge",
+     "Assassin's Trophy"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s2_vats_arcane_dsp": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ],
+    [
+     "V.A.T.S.",
+     "Atomize"
+    ],
+    [
+     "Arcane Denial",
+     "Casualties of War"
+    ],
+    [
+     "Didn't Say Please",
+     "Assassin's Trophy"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s3_vats_wave_arcane": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ],
+    [
+     "V.A.T.S.",
+     "Atomize"
+    ],
+    [
+     "Wave Goodbye",
+     "Casualties of War"
+    ],
+    [
+     "Arcane Denial",
+     "Assassin's Trophy"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s4_vats_wave_dsp": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ],
+    [
+     "V.A.T.S.",
+     "Atomize"
+    ],
+    [
+     "Wave Goodbye",
+     "Casualties of War"
+    ],
+    [
+     "Didn't Say Please",
+     "Assassin's Trophy"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s5_vats_deluge_arcane": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ],
+    [
+     "V.A.T.S.",
+     "Atomize"
+    ],
+    [
+     "Toxic Deluge",
+     "Casualties of War"
+    ],
+    [
+     "Arcane Denial",
+     "Assassin's Trophy"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s6_vats_deluge_dsp": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ],
+    [
+     "V.A.T.S.",
+     "Atomize"
+    ],
+    [
+     "Toxic Deluge",
+     "Casualties of War"
+    ],
+    [
+     "Didn't Say Please",
+     "Assassin's Trophy"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s7_tear_wave_deluge": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ],
+    [
+     "Tear Asunder",
+     "Atomize"
+    ],
+    [
+     "Wave Goodbye",
+     "Casualties of War"
+    ],
+    [
+     "Toxic Deluge",
+     "Assassin's Trophy"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "p1_so_o_par",
+  "rem3_vats_wave_deluge",
+  "s1_vats_wave_deluge",
+  "s2_vats_arcane_dsp",
+  "s3_vats_wave_arcane",
+  "s4_vats_wave_dsp",
+  "s5_vats_deluge_arcane",
+  "s6_vats_deluge_dsp",
+  "s7_tear_wave_deluge"
+ ],
+ "regressao": [
+  "s1_vats_wave_deluge",
+  "s2_vats_arcane_dsp"
+ ]
+}

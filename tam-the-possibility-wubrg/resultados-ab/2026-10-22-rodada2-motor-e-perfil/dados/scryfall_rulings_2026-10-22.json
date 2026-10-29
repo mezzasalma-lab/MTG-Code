@@ -1,0 +1,57 @@
+{
+ "Ichormoon Gauntlet": {
+  "name": "Ichormoon Gauntlet",
+  "oracle_text": "Planeswalkers you control have \"[0]: Proliferate\" and \"[−12]: Take an extra turn after this one.\"\nWhenever you cast a noncreature spell, choose a counter on target permanent. Put an additional counter of that kind on that permanent.",
+  "rulings": [
+   [
+    "2023-02-04",
+    "Only one loyalty ability of each planeswalker may be activated per turn, no matter how many it has gained."
+   ]
+  ]
+ },
+ "Bloom Tender": {
+  "name": "Bloom Tender",
+  "oracle_text": "Vivid — {T}: For each color among permanents you control, add one mana of that color.",
+  "rulings": [
+   [
+    "2025-11-17",
+    "Lands are normally colorless permanents, even if they tap for mana of a certain color."
+   ],
+   [
+    "2025-11-17",
+    "Bloom Tender can't produce colorless mana, even if you control a colorless permanent."
+   ],
+   [
+    "2025-11-17",
+    "For each color (white, blue, black, red, and green), check to see if you control a permanent of that color. You can count the same permanent for multiple colors. For example, if you control a green enchantment and a white-black creature, Bloom Tender's ability produces {W}{B}{G}."
+   ],
+   [
+    "2025-11-17",
+    "Bloom Tender won't produce more than one mana of any particular color. At most, it will produce {W}{U}{B}{R}{G}."
+   ],
+   [
+    "2025-11-17",
+    "The colors are white, blue, black, red, and green. Colorless is not a color."
+   ]
+  ]
+ },
+ "Faeburrow Elder": {
+  "name": "Faeburrow Elder",
+  "oracle_text": "Vigilance\nThis creature gets +1/+1 for each color among permanents you control.\n{T}: For each color among permanents you control, add one mana of that color.",
+  "rulings": [
+   [
+    "2019-10-04",
+    "Faeburrow Elder's middle ability can give it at most +5/+5, that is, +1/+1 each for white, blue, black, red, and green. \"Gold,\" \"multicolor,\" and \"colorless\" aren't colors. Similarly, Faeburrow Elder's last ability can produce at most five mana."
+   ],
+   [
+    "2019-10-04",
+    "Since Faeburrow Elder is a green and white permanent, its middle ability usually gives it at least +2/+2 and its last ability usually produces at least {G}{W}."
+   ]
+  ]
+ },
+ "Vex": {
+  "name": "Vex",
+  "oracle_text": "Counter target spell. That spell's controller may draw a card.",
+  "rulings": []
+ }
+}

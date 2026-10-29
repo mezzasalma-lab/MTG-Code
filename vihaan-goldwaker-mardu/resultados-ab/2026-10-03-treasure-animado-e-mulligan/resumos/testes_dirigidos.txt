@@ -1,0 +1,45 @@
+PASS - R1 3 Treasures, 2 animados: 2 mortes de criatura, 3 de artefato, 3 fichas saindo 
+PASS - R1 animados vivos zeram; contador 'qualquer caminho' = 2 
+PASS - R2 nenhum animado (antes do combate): 0 mortes de criatura (Treasure nao e' criatura antes da animacao) 
+PASS - R3 Pitiless Plunderer: 3 Treasures novos pelos 3 animados (flag ligada) e 0 com a flag desligada 
+PASS - R3 Zulaport drena mais com a flag ligada (3 mortes de criatura a mais) 
+PASS - R4 so' Ashnod's Altar: sacrifica SO' o animado (os 2 criados depois nao sao criatura e ficam) 
+PASS - R4 (codigo antigo, flag desligada) sacrificava os 3 ao Altar: documenta o erro corrigido 
+PASS - R5 Krark-Clan Ironworks: 3 sacrificados, 2 deles como criatura, +6 de mana 
+PASS - R5 (codigo antigo) KCI tratava como nao-criatura: 0 mortes de criatura 
+PASS - R6 Altar + KCI: 4 sacrificados uma vez so', 3 como criatura 
+PASS - R7 spend_mana 2a main: 2 Treasures animados gastos = 2 mortes de criatura 
+PASS - R7 spend_mana 1a main (nao animados): 0 mortes de criatura 
+PASS - R8 Deadly Dispute sacrificando Treasure animado: conta como criatura 
+PASS - R8 Magda ('Sacrifice three Treasures') com 3 animados: 3 mortes de criatura 
+PASS - R9 end_step zera os animados vivos ('until end of turn') 
+PASS - R9 play_turn: antes do combate 0 animados; o combate anima os 3; no fim do turno zera 
+PASS - R10 play_turn completo (Vihaan + KCI + Zulaport + Mahadi): com o roteamento, os animados morrem como criatura 
+PASS - R10 Mahadi no end step cria Treasure por criatura morta no turno (ordem de fases certa: mortes antes do end step) 
+PASS - R11 (2.000 jogos) criaturas sacrificadas = min(n, animados vivos) em toda chamada 
+PASS - R11 (2.000 jogos) animados vivos nunca excedem os animados do combate 
+PASS - R11 (2.000 jogos) houve sacrificios de animados como criatura 
+PASS - M1 bottom de 1: a carta nao-terreno de MAIOR custo (protege Sol Ring e os 3 terrenos) 
+PASS - M1 bottom de 2: as duas mais caras, nunca o Sol Ring 
+PASS - M2 mais de 4 terrenos: devolve um terreno (nao o Sol Ring nem o spell) 
+PASS - M2 mais de 4 terrenos: prefere o que entra tapped (Path of Ancestry) 
+PASS - M3 so' GOOD_KEEP e terrenos: nao quebra e devolve 3 cartas distintas 
+PASS - M4 mulligan real com 2 mulligans: mao de 6, e a carta devolvida e' a ULTIMA da biblioteca 
+PASS - M4 flag desligada: comportamento antigo (mao de 6; escolha aleatoria) 
+PASS - M5 (3.000 maos de 6 cartas) terrenos na mao: escolha >= aleatorio (a escolha so' devolve terreno quando sobram mais de 4) 
+   info M5: media de terrenos na mao de 6: escolha=2.419 aleatorio=2.110
+PASS - L1 T1 [Swamp, Path of Ancestry]: joga o TAPPED 
+PASS - L1 T1 com Sol Ring na mao: joga o UNTAPPED (tapped custaria o Sol Ring) 
+PASS - L1 ordem da mao [tapped, untapped]: joga o tapped 
+PASS - L2 T2 com Arcane Signet ({2}) e 1 terreno em campo: untapped 
+PASS - L2 T2 sem jogada de 2: tapped 
+PASS - L3 T3: comportamento ORIGINAL (primeiro terreno da mao) 
+PASS - L4 T1 com Path to Exile (instant, proxy no goldfish): tapped mesmo assim 
+PASS - L5 land_enters_tapped: Blackcleave Cliffs T1 = untapped (fastland, 0 outros terrenos) 
+PASS - L5 land_enters_tapped: Blackcleave Cliffs com 3 outros terrenos = tapped 
+PASS - L5 land_enters_tapped: Dragonskull Summit sem Swamp/Mountain = tapped; com Swamp = untapped 
+PASS - L6 flag desligada: primeiro terreno da mao (comportamento antigo) 
+PASS - L6 politica cega: tapped mesmo com Sol Ring 
+PASS - L7 dry_run_mana_spent nao muta o estado 
+
+42/42 testes passaram

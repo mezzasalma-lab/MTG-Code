@@ -1,0 +1,48 @@
+azula-grixis               terrenos checados=15 erros=0 divergencias oraculo x simulador=0
+beorn-fierce               terrenos checados=7 erros=0 divergencias oraculo x simulador=0
+captain-storm-izzet        terrenos checados=8 erros=0 divergencias oraculo x simulador=1
+     Izzet Boilerworks                          oraculo(campo vazio)=virado    simulador=desvirado
+edgar-markov-mardu         terrenos checados=28 erros=0 divergencias oraculo x simulador=2
+     Blackcleave Cliffs                         oraculo(campo vazio)=virado    simulador=desvirado
+     Cabal Coffers                              oraculo(campo vazio)=desvirado simulador=virado
+hei-bai-wurbg              terrenos checados=29 erros=0 divergencias oraculo x simulador=0
+kutzil-selesnya            terrenos checados=20 erros=0 divergencias oraculo x simulador=0
+maralen-sultai             terrenos checados=30 erros=0 divergencias oraculo x simulador=5
+     Drowned Catacomb                           oraculo(campo vazio)=virado    simulador=desvirado
+     Gilt-Leaf Palace                           oraculo(campo vazio)=virado    simulador=desvirado
+     Hinterland Harbor                          oraculo(campo vazio)=virado    simulador=desvirado
+     Sunken Hollow                              oraculo(campo vazio)=virado    simulador=desvirado
+     Woodland Cemetery                          oraculo(campo vazio)=virado    simulador=desvirado
+megatron-tyrant-mardu      terrenos checados=17 erros=0 divergencias oraculo x simulador=2
+     Evolving Wilds                             oraculo(campo vazio)=desvirado simulador=virado
+     Terramorphic Expanse                       oraculo(campo vazio)=desvirado simulador=virado
+ms-bumbleflower-bant       terrenos checados=24 erros=0 divergencias oraculo x simulador=4
+     Overflowing Basin                          oraculo(campo vazio)=desvirado simulador=virado
+     Seachrome Coast                            oraculo(campo vazio)=virado    simulador=desvirado
+     Skycloud Expanse                           oraculo(campo vazio)=desvirado simulador=virado
+     Sungrass Prairie                           oraculo(campo vazio)=desvirado simulador=virado
+nekusar-grixis             terrenos checados=31 erros=0 divergencias oraculo x simulador=0
+prismatic-bridge-wurbg     terrenos checados=36 erros=0 divergencias oraculo x simulador=10
+     Blood Crypt                                oraculo(campo vazio)=desvirado simulador=virado
+     Breeding Pool                              oraculo(campo vazio)=desvirado simulador=virado
+     Godless Shrine                             oraculo(campo vazio)=desvirado simulador=virado
+     Hallowed Fountain                          oraculo(campo vazio)=desvirado simulador=virado
+     Overgrown Tomb                             oraculo(campo vazio)=desvirado simulador=virado
+     Sacred Foundry                             oraculo(campo vazio)=desvirado simulador=virado
+     Steam Vents                                oraculo(campo vazio)=desvirado simulador=virado
+     Stomping Ground                            oraculo(campo vazio)=desvirado simulador=virado
+     Temple Garden                              oraculo(campo vazio)=desvirado simulador=virado
+     Watery Grave                               oraculo(campo vazio)=desvirado simulador=virado
+rat-king-verminister       terrenos checados=11 erros=0 divergencias oraculo x simulador=0
+thranduil-sultai           terrenos checados=24 erros=0 divergencias oraculo x simulador=1
+     Botanical Sanctum                          oraculo(campo vazio)=virado    simulador=desvirado
+tom-bombadil-wubrg         terrenos checados=25 erros=0 divergencias oraculo x simulador=1
+     Serra's Sanctum                            oraculo(campo vazio)=desvirado simulador=virado
+toph-naya                  terrenos checados=28 erros=0 divergencias oraculo x simulador=0
+ulalek-wurbg               terrenos checados=37 erros=0 divergencias oraculo x simulador=1
+     Ruins of Oran-Rief                         oraculo(campo vazio)=virado    simulador=desvirado
+ur-dragon-wurbg            terrenos checados=25 erros=0 divergencias oraculo x simulador=0
+vihaan-goldwaker-mardu     terrenos checados=28 erros=0 divergencias oraculo x simulador=3
+     Blackcleave Cliffs                         oraculo(campo vazio)=virado    simulador=desvirado
+     Desolate Mire                              oraculo(campo vazio)=desvirado simulador=virado
+     Shadowblood Ridge                          oraculo(campo vazio)=desvirado simulador=virado

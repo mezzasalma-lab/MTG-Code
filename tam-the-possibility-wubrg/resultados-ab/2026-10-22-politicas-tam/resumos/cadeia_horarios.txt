@@ -1,0 +1,8 @@
+2026-10-22T18:21:24Z inicio smoke
+2026-10-22T18:22:03Z fim smoke rc=0
+2026-10-22T18:22:03Z inicio bitid 20000
+2026-10-22T18:49:14Z fim bitid 20000 rc=0
+2026-10-22T18:49:14Z inicio ab
+2026-10-22T19:29:11Z fim ab rc=0
+2026-10-22T19:29:11Z inicio reg 20000
+2026-10-22T19:45:05Z fim reg 20000 rc=0

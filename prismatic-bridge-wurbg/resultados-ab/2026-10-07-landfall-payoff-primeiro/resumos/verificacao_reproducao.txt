@@ -1,0 +1,13 @@
+bash orquestracao/verificar_reproducao.sh --tudo (2026-10-07)
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  ab_10000_resiliencia.txt
+IGUAL  smoke.txt (re-execucao)
+IGUAL  ab_2000.txt (re-execucao)
+IGUAL  raw_ab_2000.json.xz (bruto re-simulado identico)
+IGUAL  ab_2000_resiliencia.txt (re-execucao)
+IGUAL  raw_ab_2000_resiliencia.json.xz (bruto re-simulado identico)
+IGUAL  bitident_2000.txt (chave desligada == snapshot, 2 modos)
+IGUAL  regressao_2000.txt (4 configuracoes x modos, 0 excecoes)
+11/11 saidas byte a byte iguais

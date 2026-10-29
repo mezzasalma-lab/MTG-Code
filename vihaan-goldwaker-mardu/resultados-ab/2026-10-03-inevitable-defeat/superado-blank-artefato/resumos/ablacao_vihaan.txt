@@ -1,0 +1,66 @@
+base: {'win<=8': 0.088, 'win<=6': 0.001, 'cmd<=3': 0.852, 'treasures': 9.703, 'table': 13.915, 'combat': 47.943, 'removal': 0.84}
+sai (maior perda primeiro)           win<=8   win<=6   cmd<=3 treasures    table   combat
+Sol Ring                              -2.9pp    -0.1pp    -2.0pp     -0.71     -2.0     -5.4
+Black Market Connections              -2.8pp    -0.1pp    +0.0pp     -1.09     -1.8     -4.5
+Mirkwood Bats                         -1.7pp    -0.0pp    +0.0pp     +0.03     -3.4     +0.8
+Orochi Soul-Reaver                    -1.4pp    +0.0pp    +0.0pp     -0.60     -1.0     -3.6
+Lotho, Corrupt Shirriff               -1.3pp    -0.1pp    +0.1pp     -0.43     -0.6     -2.8
+Agent of the Iron Throne              -0.8pp    -0.0pp    +0.0pp     +0.04     -2.1     +0.6
+Anointed Procession                   -1.0pp    -0.0pp    +0.0pp     -0.85     -0.9     -1.5
+Grim Hireling                         -1.0pp    -0.0pp    +0.0pp     -1.05     -1.1     -1.7
+Nadier's Nightblade                   -0.8pp    +0.0pp    +0.0pp     +0.04     -1.7     +0.2
+Sentinel Sarah Lyons                  -1.0pp    -0.0pp    +0.0pp     +0.00     -0.4     -1.2
+Smaug the Magnificent                 -0.8pp    +0.0pp    +0.0pp     -0.25     -0.7     -2.0
+Kellogg, Dangerous Mind               -0.7pp    +0.0pp    +0.0pp     -0.74     -0.8     -2.3
+Kambal, Profiteering Mayor            -0.5pp    -0.0pp    +0.0pp     +0.04     -1.7     +0.1
+Captain Lannery Storm                 -0.7pp    +0.0pp    +0.0pp     -0.78     -0.8     -1.7
+Xorn                                  -0.7pp    +0.0pp    +0.0pp     -0.76     -0.7     -1.8
+Arcane Signet                         -0.2pp    +0.0pp    -0.5pp     -0.08     -0.3     -0.4
+Aya of Alexandria                     -0.6pp    +0.0pp    +0.0pp     +0.03     -0.2     -1.4
+Deadly Dispute                        +0.1pp    +0.0pp    -0.7pp     -0.25     -0.4     -0.1
+Grenzo, Havoc Raiser                  -0.6pp    +0.0pp    +0.1pp     -0.26     -0.7     -1.1
+Goldspan Dragon                       -0.5pp    -0.0pp    +0.0pp     -0.42     -0.5     -1.2
+Rain of Riches                        -0.4pp    +0.0pp    +0.0pp     -0.43     -0.3     -0.7
+Urabrask's Forge                      -0.4pp    -0.0pp    +0.0pp     -0.01     -0.6     -0.4
+Olivia, Opulent Outlaw                -0.3pp    +0.0pp    +0.0pp     -0.54     -0.5     -1.4
+Inspired Tinkering                    -0.3pp    -0.0pp    +0.0pp     -0.46     -0.3     -0.5
+Jan Jansen, Chaos Crafter             -0.2pp    +0.0pp    +0.0pp     -0.10     -0.2     -1.1
+Zulaport Cutthroat                    -0.1pp    +0.0pp    +0.0pp     +0.03     -0.6     -0.3
+Ashnod's Altar                        +0.0pp    +0.0pp    +0.0pp     -0.16     -0.8     +1.3
+Marionette Master                     -0.0pp    +0.0pp    +0.0pp     +0.03     -0.4     -0.0
+Shared Animosity                      -0.2pp    -0.0pp    +0.0pp     +0.06     +0.3     -1.4
+Unexpected Windfall                   -0.1pp    +0.0pp    +0.0pp     -0.47     -0.2     -0.4
+Laughing Jasper Flint                 -0.0pp    +0.0pp    +0.0pp     -0.07     -0.2     -0.8
+Caretaker's Talent                    -0.1pp    +0.0pp    +0.0pp     -0.06     +0.1     -0.0
+Mayhem Devil                          +0.1pp    -0.0pp    +0.0pp     +0.06     -0.5     -0.1
+Sephiroth, Fabled SOLDIER // Sephi    +0.1pp    +0.0pp    +0.0pp     -0.02     -0.3     +0.2
+The Reaver Cleaver                    +0.1pp    -0.0pp    +0.0pp     -0.38     -0.2     +0.7
+Prosper, Tome-Bound                   +0.1pp    +0.0pp    +0.0pp     -0.18     -0.1     -0.2
+Deadly Derision                       +0.1pp    +0.0pp    +0.0pp     -0.17     +0.0     -0.1
+Big Score                             +0.1pp    +0.0pp    +0.1pp     -0.43     -0.1     -0.4
+Witch of the Moors                    +0.2pp    +0.0pp    +0.0pp     +0.01     +0.1     -0.1
+Phyrexian Reclamation                 +0.1pp    +0.0pp    +0.0pp     +0.03     +0.1     +0.2
+Mari, the Killing Quill               +0.1pp    +0.0pp    +0.0pp     +0.04     +0.4     -0.7
+Professional Face-Breaker             +0.4pp    +0.0pp    +0.0pp     -0.59     -0.6     +0.6
+Krark-Clan Ironworks                  +0.3pp    +0.0pp    +0.0pp     +0.01     -0.1     +0.9
+Dictate of Erebos                     +0.3pp    +0.0pp    +0.0pp     +0.04     +0.1     +0.4
+Blood Money                           +0.3pp    -0.0pp    +0.0pp     -0.09     +0.1     +0.5
+Magda, the Hoardmaster                +0.1pp    +0.0pp    +0.2pp     -0.02     +0.1     -0.4
+Revel in Riches                       +0.3pp    +0.0pp    +0.0pp     +0.06     +0.2     +0.6
+Requisition Raid                      +0.2pp    +0.0pp    +0.1pp     +0.02     +0.2     +0.2
+Path to Exile                         +0.3pp    +0.0pp    +0.0pp     +0.02     +0.2     +0.1
+Lich-Knights' Conquest                +0.3pp    +0.0pp    +0.0pp     +0.02     +0.2     +0.4
+Blasphemous Act                       +0.3pp    +0.0pp    +0.0pp     +0.11     +0.3     +1.0
+Gleaming Splendor                     +0.3pp    +0.0pp    +0.0pp     +0.04     +0.2     +0.4
+Life Insurance                        +0.5pp    +0.0pp    +0.0pp     +0.08     -0.2     +0.9
+Mahadi, Emporium Master               +0.4pp    +0.0pp    +0.0pp     -0.06     +0.3     -0.1
+Pitiless Plunderer                    +0.4pp    +0.0pp    +0.0pp     -0.06     +0.3     +0.4
+Boros Charm                           +0.3pp    +0.0pp    +0.0pp     +0.07     +0.4     +0.4
+Shoot the Sheriff                     +0.3pp    +0.0pp    +0.1pp     +0.01     +0.2     +0.4
+Sevinne's Reclamation                 +0.4pp    +0.0pp    +0.0pp     +0.05     +0.2     +0.7
+Council's Judgment                    +0.4pp    +0.0pp    +0.0pp     +0.04     +0.3     +0.5
+Smothering Tithe                      +0.4pp    +0.0pp    +0.1pp     +0.06     +0.4     +0.8
+Teferi's Protection                   +0.5pp    +0.0pp    +0.0pp     +0.03     +0.4     +0.6
+Back in Town                          +0.5pp    +0.0pp    +0.0pp     +0.09     +0.4     +0.6
+Academy Manufactor                    +0.6pp    +0.0pp    +0.0pp     +0.21     +0.4     +0.8
+Monologue Tax                         +0.7pp    +0.0pp    +0.0pp     +0.08     +0.4     +0.7

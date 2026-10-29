@@ -1,0 +1,7 @@
+T 1: PWs 0 [] | terrenos 1 | mana(ini) 0 | Tam nao | mao 7 | outros []
+T 2: PWs 0 [] | terrenos 2 | mana(ini) 1 | Tam nao | mao 6 | outros ['Birds of Paradise']
+T 3: PWs 0 [] | terrenos 2 | mana(ini) 3 | Tam sim | mao 7 | outros ['Birds of Paradise', 'Tam, the Possibility']
+T 4: PWs 0 [] | terrenos 2 | mana(ini) 3 | Tam sim | mao 7 | outros ['Birds of Paradise', 'Tam, the Possibility', 'Faeburrow Elder']
+T 5: PWs 1 [('Ajani', 6)] | terrenos 3 | mana(ini) 6 | Tam sim | mao 6 | outros ['Birds of Paradise', 'Tam, the Possibility', 'Faeburrow Elder', 'Cadet Token']
+T 6: PWs 3 [('Ajani', 8), ('Garruk', 3), ('Professor', 6)] | terrenos 4 | mana(ini) 8 | Tam sim | mao 5 | outros ['Birds of Paradise', 'Tam, the Possibility', 'Faeburrow Elder', 'Cadet Token', 'Cadet Token', 'Beast Token', 'Cadet Token', 'Cadet Token']
+T 7: PWs 4 [('Ajani', 11), ('Garruk', 2), ('Professor', 2), ('Aminatou', 4)] | terrenos 5 | mana(ini) 10 | Tam sim | mao 3 | outros ['Birds of Paradise', 'Tam, the Possibility', 'Faeburrow Elder', 'Cadet Token', 'Cadet Token', 'Beast Token', 'Cadet Token', 'Cadet Token', 'Flux Channeler']

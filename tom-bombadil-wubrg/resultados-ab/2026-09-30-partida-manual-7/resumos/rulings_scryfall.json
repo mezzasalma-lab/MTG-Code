@@ -1,0 +1,596 @@
+{
+ "Exotic Orchard": {
+  "scryfall_uri": "https://scryfall.com/card/mbc/79/exotic-orchard?utm_source=api",
+  "oracle_id": "27b047e3-0d41-45e2-98e9-9391d7923a1e",
+  "rulings": [
+   {
+    "date": "2009-02-01",
+    "source": "wotc",
+    "text": "Exotic Orchard checks the effects of all mana-producing abilities of lands your opponents control, but it doesn't check their costs. For example, Vivid Crag has the ability \"{T}, Remove a charge counter from Vivid Crag: Add one mana of any color.\" If an opponent controls Vivid Crag and you control Exotic Orchard, you can tap Exotic Orchard for any color of mana. It doesn't matter whether Vivid Crag has a charge counter on it, and it doesn't matter whether it's untapped."
+   },
+   {
+    "date": "2009-02-01",
+    "source": "wotc",
+    "text": "When determining what colors of mana your opponents' lands could produce, Exotic Orchard takes into account any applicable replacement effects that would apply to those lands' mana abilities (such as Contamination's effect, for example). If there are more than one, consider them in any possible order."
+   },
+   {
+    "date": "2009-02-01",
+    "source": "wotc",
+    "text": "The colors of mana are white, blue, black, red, and green. Exotic Orchard can't be tapped for colorless mana, even if a land an opponent controls could produce colorless mana."
+   },
+   {
+    "date": "2009-02-01",
+    "source": "wotc",
+    "text": "Exotic Orchard doesn't care about any restrictions or riders your opponents' lands (such as Ancient Ziggurat or Hall of the Bandit Lord) put on the mana they produce. It just cares about colors of mana."
+   },
+   {
+    "date": "2009-02-01",
+    "source": "wotc",
+    "text": "Lands that produce mana based only on what other lands \"could produce\" won't help each other unless some other land allows one of them to actually produce some type of mana. For example, if you control an Exotic Orchard and your opponent controls an Exotic Orchard and a Reflecting Pool, none of those lands would produce mana if their mana abilities were activated. On the other hand, if you control a Forest and an Exotic Orchard, and your opponent controls an Exotic Orchard and a Reflecting Pool, then each of those lands can be tapped to produce {G}. Your opponent's Exotic Orchard can produce {G} because you control a Forest. Your Exotic Orchard and your opponent's Reflecting Pool can each produce {G} because your opponent's Exotic Orchard can produce {G}."
+   }
+  ]
+ },
+ "Tom Bombadil": {
+  "scryfall_uri": "https://scryfall.com/card/ltr/234/tom-bombadil?utm_source=api",
+  "oracle_id": "89a2d5bc-df06-47e8-8b4a-6d1f0a63c78d",
+  "rulings": [
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "An ability that triggers when another ability resolves, such as Tom Bombadil's triggered ability, triggers when all of its instructions (as modified by applicable replacement effects) have been followed and it has been removed from the stack. For example, if Tom Bombadil is returned to the battlefield by the final chapter ability of Elspeth Conquers Death, it will be on the battlefield in time to see that final chapter ability finish resolving and get removed from the stack, and thus Tom Bombadil's last ability will trigger."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "Damage dealt to creatures remains on those creatures until the cleanup step or until an effect removes that damage. If you control Tom Bombadil with at least 4 damage on it as well as a single Saga which has four or more lore counters on it, and that Saga leaves the battlefield later in the turn, Tom Bombadil will be destroyed. This will be true even if that Saga leaves the battlefield as a result of its final chapter ability leaving the stack; state-based actions will be checked before Tom Bombadil's triggered ability could get you another Saga."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "The final chapter ability of a Saga is the ability with the greatest chapter number among chapter abilities that Saga has."
+   }
+  ]
+ },
+ "Setessan Champion": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/912/setessan-champion?utm_source=api",
+  "oracle_id": "38513660-260f-4663-b199-6473fa004a3b",
+  "rulings": [
+   {
+    "date": "2020-01-24",
+    "source": "wotc",
+    "text": "If Setessan Champion leaves the battlefield after its ability has triggered, you still draw a card even though you won't put a +1/+1 counter on Setessan Champion."
+   },
+   {
+    "date": "2020-01-24",
+    "source": "wotc",
+    "text": "A constellation ability triggers whenever an enchantment enters the battlefield under your control for any reason. Enchantments with other card types, such as enchantment creatures, will also cause constellation abilities to trigger."
+   },
+   {
+    "date": "2020-01-24",
+    "source": "wotc",
+    "text": "An Aura spell that has an illegal target when it tries to resolve doesn't resolve and is instead put into its owner's graveyard. It doesn't enter the battlefield, so constellation abilities don't trigger."
+   }
+  ]
+ },
+ "Sanctum Weaver": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/910/sanctum-weaver?utm_source=api",
+  "oracle_id": "acfe7ec0-0606-4d5e-b1fa-25f0c7aeec47",
+  "rulings": [
+   {
+    "date": "2021-06-18",
+    "source": "wotc",
+    "text": "Sanctum Weaver's ability is a mana ability and does not use the stack. This means that no player can respond to the ability by taking an action that would reduce the number of enchantments you have."
+   }
+  ]
+ },
+ "Barbara Wright": {
+  "scryfall_uri": "https://scryfall.com/card/who/14/barbara-wright?utm_source=api",
+  "oracle_id": "0e61a062-f13a-4958-91de-909650c662a8",
+  "rulings": [
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "As a Saga with read ahead enters the battlefield, its controller chooses a number from one to that Saga's greatest chapter number. The Saga enters the battlefield with the chosen number of lore counters. Neither choosing the number nor putting the counters on the Saga use the stack, and neither can be responded to."
+   },
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "Having multiple instances of read ahead doesn't cause anything unusual to happen. It functions the same way as having one instance of read ahead."
+   },
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "The Doctor's companion ability allows you to have two commanders if one has the ability and the other is a legendary creature that is a Time Lord Doctor and has no other creature types. Creatures with the changeling ability, for example, can't be a second commander this way."
+   },
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "Although Doctor's companion is a new variant of the partner ability, the rules for partner have not otherwise changed. Notably, Time Lord Doctors and cards with Doctor's companion do not interact with cards which have another partner ability."
+   },
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "If your Commander deck has two commanders, you can include only cards whose own color identities are also found in your commanders' combined color identities."
+   },
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "Both commanders start in the command zone, and the remaining 98 cards (or 58 cards in a Commander Draft game) of your deck are shuffled to become your library."
+   },
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "Once the game begins, your two commanders are tracked separately. If you cast one, you won't have to pay an additional {2} the first time you cast the other. A player loses the game after having been dealt 21 combat damage from any one of them, not from both of them combined."
+   },
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "If something refers to your commander while you have two commanders, it refers to one of them of your choice. If you are instructed to perform an action on your commander (e.g. put it from the command zone into your hand due to Command Beacon), you choose one of your commanders at the time the effect happens."
+   },
+   {
+    "date": "2023-10-13",
+    "source": "wotc",
+    "text": "An effect that checks whether you control your commander is satisfied if you control one or both of your two commanders."
+   }
+  ]
+ },
+ "The Bath Song": {
+  "scryfall_uri": "https://scryfall.com/card/ltr/40/the-bath-song?utm_source=api",
+  "oracle_id": "bc475376-54eb-4846-9cfc-5fa2e7908905",
+  "rulings": [
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "The Bath Song's final chapter ability is not a mana ability. It uses the stack and can be responded to."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "You can choose no targets for The Bath Song's final chapter ability just to add {U}{U}. However, if you do choose targets, and all of those targets are illegal at the time the ability tries to resolve, the ability won't resolve and none of its effects will happen. You won't add {U}{U}."
+   }
+  ]
+ },
+ "Urza's Saga": {
+  "scryfall_uri": "https://scryfall.com/card/mh2/259/urzas-saga?utm_source=api",
+  "oracle_id": "4c6a0c30-b547-4eff-8ff4-0ca25803c076",
+  "rulings": [
+   {
+    "date": "2021-06-18",
+    "source": "wotc",
+    "text": "Urza's Saga is a land, so it can only be played as a land. It cannot be cast as a spell."
+   },
+   {
+    "date": "2021-06-18",
+    "source": "wotc",
+    "text": "Urza's Saga gains an ability from its first and second chapters. It keeps those abilities for as long as it's on the battlefield."
+   },
+   {
+    "date": "2021-06-18",
+    "source": "wotc",
+    "text": "While resolving the chapter III ability, you can find only a card with actual mana cost {0} or {1}, not mana value 0 or 1. For example, you couldn't find a card with mana cost {U} or one with mana cost {X}."
+   },
+   {
+    "date": "2021-06-18",
+    "source": "wotc",
+    "text": "Even though Urza's Saga is a land, it is also still a Saga, and it will be sacrificed after its last chapter ability resolves."
+   },
+   {
+    "date": "2021-06-18",
+    "source": "wotc",
+    "text": "Although Urza's Saga has the Urza's land type, it doesn't interact with Urza's Tower, Urza's Mine, or Urza's Power Plant."
+   }
+  ]
+ },
+ "Golgari Charm": {
+  "scryfall_uri": "https://scryfall.com/card/uma/201/golgari-charm?utm_source=api",
+  "oracle_id": "f0ab7166-9fcf-46e5-af2c-b7f628db4789",
+  "rulings": []
+ },
+ "Torment of Hailfire": {
+  "scryfall_uri": "https://scryfall.com/card/hou/77/torment-of-hailfire?utm_source=api",
+  "oracle_id": "30a0a6c2-1fbb-4784-ab96-22611d57e62c",
+  "rulings": [
+   {
+    "date": "2017-07-14",
+    "source": "wotc",
+    "text": "If X is 0, Torment of Hailfire resolves with no effect."
+   },
+   {
+    "date": "2017-07-14",
+    "source": "wotc",
+    "text": "While resolving Torment of Hailfire, your opponent chooses a card to be discarded without revealing it, chooses a nonland permanent to be sacrificed, or chooses to do neither. Then that player discards that card, sacrifices that permanent, or loses 3 life, then repeats this process if it hasn’t been done X times yet. Your opponent can always choose to lose 3 life, even if they have cards to discard or nonland permanents to sacrifice."
+   },
+   {
+    "date": "2017-07-14",
+    "source": "wotc",
+    "text": "Each repetition through this process is done separately. If an opponent sacrifices a creature with an ability that triggers when another creature dies, for example, it will see creatures that are sacrificed before it, but not those are sacrificed after it."
+   },
+   {
+    "date": "2017-07-14",
+    "source": "wotc",
+    "text": "State-based actions aren’t checked in between repetitions of this process, so the game state may be a little unusual while making the choice. For example, a player may sacrifice a creature and then later sacrifice an Aura that was attached to that creature."
+   },
+   {
+    "date": "2017-07-14",
+    "source": "wotc",
+    "text": "In a multiplayer game, each opponent in turn order makes their choice once, then all of the actions occur simultaneously, then they repeat this process if it hasn’t been done X times yet. Opponents will know choices made by earlier opponents when making their choices, although a card chosen to be discarded this way isn’t revealed until it’s discarded."
+   },
+   {
+    "date": "2017-07-14",
+    "source": "wotc",
+    "text": "In a Two-Headed Giant game, Torment of Hailfire causes both opponents to sacrifice a nonland permanent, discard a card, or lose 3 life X times. Your opponents can choose the same torment or different ones each time."
+   }
+  ]
+ },
+ "Summon: Knights of Round": {
+  "scryfall_uri": "https://scryfall.com/card/fin/36/summon:-knights-of-round?utm_source=api",
+  "oracle_id": "73122880-d7f4-422f-a336-18773bcb7bfe",
+  "rulings": [
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "Saga creatures have two sections to their text boxes. The first section, above the type line, contains their chapter abilities, and the second section, below the type line, contains any other abilities (or italicized flavor text). Any abilities in the latter section aren't chapter abilities and apply no matter how many lore counters are on the creature."
+   },
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the chapter III ability to trigger, but chapters I and II won't trigger again."
+   },
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   },
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "As a Saga enters, its controller puts a lore counter on it. As your first main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   },
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   },
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives more lore counters."
+   },
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "Due to a rules change that takes effect with this release (see below for details), a Saga that somehow loses all of its chapter abilities will not be sacrificed as a state-based action. It will also not gain a lore counter at the beginning of each of its controller's first main phases."
+   },
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   },
+   {
+    "date": "2025-06-06",
+    "source": "wotc",
+    "text": "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   }
+  ]
+ },
+ "Fable of the Mirror-Breaker // Reflection of Kiki-Jiki": {
+  "scryfall_uri": "https://scryfall.com/card/neo/141/fable-of-the-mirror-breaker-reflection-of-kiki-jiki?utm_source=api",
+  "oracle_id": "c0957e5e-c71b-439c-931c-9f55d2f76ace",
+  "rulings": [
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "The token created by Reflection of Kiki-Jiki copies exactly what was printed on the original creature (except that the copy also has haste) and nothing else (unless it's copying a creature that's a token or that's copying something else; see below). It doesn't copy whether the creature is tapped or untapped, whether it has any counters on it or Auras and/or Equipment attached to it, or any non-copy effects that changed its power, toughness, types, color, and so on. Most notably, if the target creature isn't normally a creature, the copy won't be a creature."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "If the copied creature has {X} in its mana cost, X is 0."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "If a copied creature is copying something else, the token you create will use the copiable values of the target creature. In most cases, it will just be a copy of whatever that creature is copying."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "If a copied creature is a token that isn't a copy of something else, the copy copies the original characteristics of that token as stated by the effect that created it."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "Any enters-the-battlefield abilities of the copied creature will trigger when the token enters the battlefield. Any “as [this permanent] enters the battlefield” or “[this permanent] enters the battlefield with” abilities of the copied creature card will also work."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "If another creature becomes a copy of, or enters the battlefield as a copy of, the token, that creature will copy the creature card the token is copying, except it will also have haste. However, you won't sacrifice the new copy at the beginning of the next end step."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "If Reflection of Kiki-Jiki's ability creates multiple tokens due to a replacement effect (such as the one Doubling Season creates), you'll sacrifice each of them."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "Each face of a transforming double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a transforming double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "Each transforming double-faced card in this set is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "The mana value of a transforming double-faced card is the mana value of its front face, no matter which face is up."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "The back face of a transforming double-faced card usually has a color indicator that defines its color."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "A transforming double-faced card enters the battlefield with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or you cast it transformed, in which case it enters with its back face up."
+   },
+   {
+    "date": "2022-02-18",
+    "source": "wotc",
+    "text": "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter the battlefield at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Azusa's Many Journeys, the chapter III ability will cause it to be exiled and then remain in exile."
+   }
+  ]
+ },
+ "Sythis, Harvest's Hand": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/938/sythis-harvests-hand?utm_source=api",
+  "oracle_id": "0fc64fd6-f057-4056-9dca-47accb7ff036",
+  "rulings": [
+   {
+    "date": "2021-06-18",
+    "source": "wotc",
+    "text": "Sythis, Harvest Hand's ability doesn't trigger when it is cast."
+   }
+  ]
+ },
+ "Teferi's Protection": {
+  "scryfall_uri": "https://scryfall.com/card/2x2/32/teferis-protection?utm_source=api",
+  "oracle_id": "0d4ecdb1-ec90-497f-a7a4-1c68092b8757",
+  "rulings": [
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Gaining protection from everything causes a spell or ability on the stack to have an illegal target if it targets you. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Effects that replace an event with having you gain life (like Words of Worship's effect does) or having you lose life will apply and end up replacing the event with nothing."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Permanents that phase out with counters phase in with those counters."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "If you gain control of another player's permanent and it phases out, if the duration of the control-change effect expires before it phases in, that permanent phases in under that other player's control as your next untap step begins. If you leave the game before your next untap step, it phases in as the next untap step begins after your turn would have begun."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Protection from everything will usually prevent damage if it would be dealt to you, but some damage can't be prevented. In this case, because your life total also can't change, that damage has any other effects that it may have aside from causing you to lose that much life (such as effects from lifelink or infect) and triggers and effects can see that damage was dealt even though your life total didn't change."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "While a permanent is phased out, it's treated as though it doesn't exist. It can't be the target of spells or abilities, its static abilities have no effect on the game, its triggered abilities can't trigger, it can't attack or block, and so on."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "If your untap step is somehow skipped as your next turn begins, your phased-out permanents won't phase in until the next untap step you actually have, but you'll no longer have protection from everything and your life total can change again."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "If an effect would set your life total to a certain number that's different than your current life total, that part of the effect won't do anything."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Choices made for permanents as they entered the battlefield are remembered when they phase in."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Spells and abilities that would normally cause you to gain or lose life still resolve while your life total can't change, but the life-gain or life-loss part simply has no effect."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "---------- The following rulings focus on the phasing keyword ----------"
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "A permanent phasing out causes a spell or ability on the stack to have an illegal target if it targets that permanent. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Any continuous effects with a \"for as long as\" duration such as that of Mathas, Fiend Seeker ignore phased-out objects. Any such effects will expire if their conditions are no longer met after ignoring the phased-out objects."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Each Aura and Equipment that phases out attached to a permanent that's phasing out phases in with that permanent and still attached to it."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "If a player has protection from everything, it means three things: 1) All damage that would be dealt to that player is prevented. 2) Auras can't be attached to that player. 3) That player can't be the target of spells or abilities."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "If a cost includes causing you to gain life (like the alternative cost of an opponent's Invigorate does), that cost can't be paid."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Any one-shot effects that are waiting \"until [this] leaves the battlefield,\" such as that of Banishing Light, won't happen when a permanent phases out."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "---------- The following rulings focus on the \"protection from\" keyword ----------"
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Nothing other than the specified events are prevented or illegal. An effect that doesn't target you could still cause you to discard cards, for example. Creatures can still attack you while you have protection from everything, although combat damage that they would deal to you will be prevented."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "---------- The following rulings focus on what it means if your life total can't change ----------"
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "You can't pay a cost that includes the payment of any amount of life other than 0 life."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Effects that would replace having you gain life with some other event won't be able to be applied because it's impossible for you to gain life. The same is true for effects that would replace having you lose life with some other event."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "If an effect would cause you to exchange life totals with another player, the exchange won't happen. Neither player's life total changes."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Phasing out doesn't cause any \"leaves the battlefield\" abilities to trigger. Similarly, phasing in won't cause any \"enters\" abilities to trigger."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Each Aura and Equipment you control attached to a permanent that isn't phasing out phases in attached to that permanent if it can still be attached to that permanent. If not, it phases in unattached. An Aura that phases in unattached will be put into its owner's graveyard as a state-based action. The same is true with Auras attached to players."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "If a token is phased out, it will phase in as your next untap step begins. This is a change from previous rules."
+   },
+   {
+    "date": "2017-08-25",
+    "source": "wotc",
+    "text": "Any creatures that phase in under your control as your next untap step begins will be able to attack and pay a cost of {T} during that turn."
+   }
+  ]
+ },
+ "Flux Channeler": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/847/flux-channeler?utm_source=api",
+  "oracle_id": "83874e60-291b-47a7-ba9f-69437fa7e3c7",
+  "rulings": [
+   {
+    "date": "2023-02-04",
+    "source": "wotc",
+    "text": "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can't have it get just one kind of counter it already has and not the others."
+   },
+   {
+    "date": "2023-02-04",
+    "source": "wotc",
+    "text": "To proliferate, you can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can't choose cards in any zone other than the battlefield, even if they have counters on them."
+   },
+   {
+    "date": "2023-02-04",
+    "source": "wotc",
+    "text": "You don't have to choose every permanent or player that has a counter, only the ones you want to add another counter to. Since \"any number\" includes zero, you don't have to choose any permanents at all, and you don't have to choose any players at all."
+   },
+   {
+    "date": "2023-02-04",
+    "source": "wotc",
+    "text": "If a permanent ever has both +1/+1 counters and -1/-1 counters on it at the same time, they're removed in pairs as a state-based action so that the permanent has only one of those kinds of counters on it."
+   },
+   {
+    "date": "2023-02-04",
+    "source": "wotc",
+    "text": "An ability that triggers \"Whenever you proliferate\" triggers even if you chose no permanents or players while doing so."
+   },
+   {
+    "date": "2023-02-04",
+    "source": "wotc",
+    "text": "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it's too late for anyone to respond."
+   },
+   {
+    "date": "2019-05-03",
+    "source": "wotc",
+    "text": "Flux Channeler's ability resolves before the spell that caused it to trigger. It resolves even if that spell is countered."
+   }
+  ]
+ },
+ "In the Darkness Bind Them": {
+  "scryfall_uri": "https://scryfall.com/card/ltc/58/in-the-darkness-bind-them?utm_source=api",
+  "oracle_id": "c8689a83-cefa-4ef3-8ec1-58b4c64e332b",
+  "rulings": [
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "While resolving In the Darkness Bind Them's first three chapter abilities, you can choose the Wraith token you just created to be your Ring-bearer as the Ring tempts you."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "If a creature targeted by In the Darkness Bind Them's final chapter ability changes controllers before the ability resolves, that creature is no longer a legal target."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "When In the Darkness Bind Them's final chapter ability triggers, you can choose to target no creatures just so that the Ring tempts you. However, if you do choose at least one target, and all of those targets are illegal at the time the ability tries to resolve, the ability won't resolve and none of its effects will happen. The Ring won't tempt you."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "As the Ring tempts you, you get an emblem named The Ring if you don't have one. Then your emblem gains its next ability and you choose a creature you control to become (or remain) your Ring-bearer."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "The Ring can tempt you even if you don't control a creature. In this case, abilities that trigger \"whenever the Ring tempts you\" will still trigger."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "If the creature you choose as your Ring-bearer was already your Ring-bearer, that still counts as choosing that creature as your Ring-bearer for the purpose of abilities that trigger \"whenever you choose a creature as your Ring-bearer\" or abilities that care about which creature was chosen as your Ring-bearer."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "The Ring gains its abilities in order from top to bottom. Once it gains an ability, it has that ability for the rest of the game."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "Each time the Ring tempts you, you must choose a creature if you control one."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "Each player can have only one emblem named The Ring and only one Ring-bearer at a time."
+   },
+   {
+    "date": "2023-06-16",
+    "source": "wotc",
+    "text": "Some spells and abilities that cause the Ring to tempt you may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. The Ring won't tempt you."
+   }
+  ]
+ }
+}

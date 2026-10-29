@@ -1,0 +1,32 @@
+
+== variante depois, modo padrao, N=10000 ==
+partidas em que o teto de ativacoes de lealdade por turno apertou: 38 (0.38%); teto de magias: 0 (0.00%)
+combo Orrery+Tezzeret+Chain Veil montado: 287 (2.87%); fechou a partida: 98 (0.98%); pagamento conjurado da mao: 19
+turnos extras (Gauntlet -12): tomados 1.373 por partida; jogados 0.482; partidas com >= 2 -12 no mesmo turno nao identificaveis no bruto
+mesa limpa ate' T12: 9034 partidas; turno da mesa limpa (mediana / Q1-Q3): 10.0 / 9.0-10.0
+   pws_T4             mediana    1.0  Q1-Q3 0.0-1.0  max 5.0
+   pws_T6             mediana    3.0  Q1-Q3 2.0-4.0  max 19.0
+   pws_T8             mediana    5.0  Q1-Q3 4.0-7.0  max 22.0
+   pws_T10            mediana    6.0  Q1-Q3 4.0-8.0  max 22.0
+   mana_T4            mediana    4.0  Q1-Q3 3.0-5.0  max 13.0
+   mana_T6            mediana    7.0  Q1-Q3 5.0-8.0  max 22.0
+   mana_T8            mediana   10.0  Q1-Q3 8.0-14.0  max 52.0
+   loyalty_T8         mediana   32.0  Q1-Q3 22.0-48.0  max 1632.0
+   m_pw_entered       mediana    9.0  Q1-Q3 6.0-12.0  max 96.0
+   m_ultimates_used   mediana    4.0  Q1-Q3 2.0-7.0  max 53.0
+
+== variante depois, modo resiliencia, N=10000 ==
+partidas em que o teto de ativacoes de lealdade por turno apertou: 14 (0.14%); teto de magias: 0 (0.00%)
+combo Orrery+Tezzeret+Chain Veil montado: 103 (1.03%); fechou a partida: 23 (0.23%); pagamento conjurado da mao: 9
+turnos extras (Gauntlet -12): tomados 0.406 por partida; jogados 0.136; partidas com >= 2 -12 no mesmo turno nao identificaveis no bruto
+mesa limpa ate' T12: 1779 partidas; turno da mesa limpa (mediana / Q1-Q3): 11.0 / 10.0-12.0
+   pws_T4             mediana    1.0  Q1-Q3 0.0-1.0  max 4.0
+   pws_T6             mediana    1.0  Q1-Q3 1.0-2.0  max 8.0
+   pws_T8             mediana    2.0  Q1-Q3 1.0-3.0  max 16.0
+   pws_T10            mediana    2.0  Q1-Q3 1.0-4.0  max 18.0
+   mana_T4            mediana    4.0  Q1-Q3 3.0-4.0  max 11.0
+   mana_T6            mediana    6.0  Q1-Q3 5.0-7.0  max 20.0
+   mana_T8            mediana    8.0  Q1-Q3 6.0-10.0  max 32.0
+   loyalty_T8         mediana    8.0  Q1-Q3 3.0-16.0  max 1212.0
+   m_pw_entered       mediana    6.0  Q1-Q3 4.0-8.0  max 94.0
+   m_ultimates_used   mediana    1.0  Q1-Q3 0.0-2.0  max 41.0

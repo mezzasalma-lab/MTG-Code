@@ -1,0 +1,2 @@
+vivo (SWAPS=(), COMMANDER_REMOVAL_SHARE=0) == ANTES: 10000 identicas, 0 divergencias
+rc=0

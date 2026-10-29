@@ -1,0 +1,4 @@
+IGUAL  spellbook.txt
+IGUAL  estrato_fase_padrao.txt
+IGUAL  estrato_fase_resiliencia.txt
+3/3 saidas byte a byte iguais

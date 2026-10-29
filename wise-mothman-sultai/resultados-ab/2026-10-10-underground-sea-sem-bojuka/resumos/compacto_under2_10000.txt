@@ -1,0 +1,4 @@
+COMPACTO N=10000 modo padrao: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T8            cleared_T10          first_elim_T6              self_lost commander_cast_turn__ate_T4 commander_cast_turn__ate_T5               life_min  fetches_cracked_total  protection_used_total
+base (media)                                                         0.5957                 0.8887                 0.4531                 0.0266                 0.6544                 0.7833                32.4052                 1.2684                 0.0000
+u11_urzas_saga                                            +0.0038±0.0039         +0.0029±0.0029         +0.0111±0.0030  *      -0.0003±0.0022         +0.0190±0.0029  *      +0.0157±0.0028  *      +0.2314±0.0318  *      -0.0392±0.0120  *      +0.0000±0.0000   

@@ -1,5 +1,594 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Mythos of Snapdax entra no lugar do Blood Money (12ª rodada) — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: mensagem do usuário: *"Quero adicionar o Mythos pelo menos."* (corte escolhido por ele: **Blood Money**). Oráculo e rulings **ao vivo** (Scryfall, 2026-10-04, **lidos antes de codar e relidos contra o código**; `resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/dados/oraculo_rulings_ao_vivo.json`). A lista mudou; a Mythos não tem `flavor_name` (Regra #2), é legal em Commander e tem identidade `BRW`.
+
+| Cláusula do oráculo | Ruling (2020-04-17) | Modelagem |
+|---|---|---|
+| **Mythos of Snapdax** `{2}{W}{W}` Sorcery | — | ✅ `can_cast` confere `{W}{W}` (2 fontes de W distintas: terreno que não entrou virado, Arcane Signet, Treasure desvirado = qualquer cor); `spell_cost` 4; só na main (feitiço) |
+| *Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control…* | o mesmo objeto pode ser escolhido para vários tipos; terrenos com outro tipo não podem ser escolhidos nem são sacrificados | ✅ `_mythos_selection` (meu lado): criatura = Vihaan > Mahadi > Mayhem Devil > a de maior MV > Treasure animado > Construct > Dragão > ficha; artefato (de preferência **outro** objeto) = Sol Ring > Ashnod's Altar > Krark-Clan Ironworks > Arcane Signet > The Reaver Cleaver > outro nomeado > Treasure > Construct/Clue/Food; se só resta a própria criatura-artefato ela vale pelos dois; encantamento = Dictate > Anointed Procession > Revel in Riches > outro; **planeswalker: nenhum na lista**; terrenos fora; a magia em voo do cascade **não é permanente**; 📊 as escolhas dos oponentes |
+| *…then sacrifices the rest.* | cada jogador escolhe em ordem de turno, sabendo as escolhas anteriores; **tudo é sacrificado ao mesmo tempo** | ✅ `_mass_sacrifice`: **sacrifício** (não destruição): Mayhem Devil dispara por cada permanente (nomeada, ficha, Treasure, Clue, Food), ele próprio incluído; Mirkwood Bats por ficha; Captain Lannery Storm por Treasure; mortes de criatura com look-back (Zulaport, Plunderer, Sephiroth, Life Insurance…); comandante, se fosse sacrificado, vai ao cemitério e volta à zona de comando (CR 903.9a) — **o Vihaan nunca é sacrificado em campo** (1ª escolha) |
+| *If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.* | confere as cores **gastas**; não é custo alternativo; **cópia da magia não recebe o bônus**; **cast sem pagar custo (cascade) não recebe o bônus**; minhas escolhas pelos outros têm que ser legais | ✅ proxy `mythos_br_spent_total` (W,W,B,R em 4 fontes **distintas** antes de pagar) e `mythos_br_pending` (zerado após cada cast, anulado ou não, e não vale em cast de graça); cópia: n/a (não há efeito que copie magia na lista); 📊 o lado dos oponentes (a escolha **deles**) |
+| **Cascade** (Rain of Riches; Sevinne's flashback): *you **may** cast it without paying its mana cost* | — | 🐛 **corrigido**: o acerto de wipe próprio segurado vai ao fundo da biblioteca (`cascade_declines`); antes era conjurado à força |
+| **Blood Money** (sai da lista; segue no `CARD_DB`/`OWN_WIPES` e nos testes): *Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.* | 2022-06-10: criatura que não é destruída não gera Treasure | ✅ inalterado (a chave desligada devolve a lista com ele **na posição antiga**, bit-idêntico a `a17049f`) |
+
+**Regra #4 (documentação do deck + Spellbook):** `auditoria.md` lido (wipes = Act e Blood Money; nenhum combo registrado depende do Blood Money); Spellbook antes × depois + 2 controles: **0 combos mudam**. Reagem a sacrifício só Mayhem Devil, Mirkwood Bats e Captain Lannery Storm (enumeração por script da rodada dos wipes de sacrifício). **Regra #5:** o simulador só mede o **meu** lado e a retenção torna o A/B ≈ 0 por construção; o juízo de valor vem do oráculo + motores (ver `goldfish-log.md`). **Regra #3:** a "função compartilhada" que a Mythos usa ("nonland permanent", "artefato/criatura/encantamento") foi varrida por `escolha_legal` e nos 2.400 estados naturais; o caso da artefato-criatura (Academy Manufactor) só apareceu porque medi a seleção, não a carta.
+**Validação:** 30/30 testes (8 novos), 2.400 estados naturais (0 divergências, 0 violações), bit-identidade 20.000 × 2 com as chaves desligadas, regressão 120.000 partidas com 0 exceções (3.751 resoluções reais de Mythos), A/B 2.000 e 10.000 × 2 modos; reprodutibilidade das 15 pastas anteriores: `verificar_reproducao.sh --tudo` da pasta nova **17/17** (inclui os 4 lotes do A/B re-simulados com bruto idêntico) e das **15 pastas anteriores** contra o simulador vivo com as chaves novas desligadas: **todas iguais, 0 `DIFERE`** (exilio-primeiro-e-mahadi 10/10, fora-da-mao 8/8, inevitable-defeat 6/6, kingpin 11/11, partida-manual-1 7/7, sephiroth 11/11, treasure-animado-e-mulligan 7/7, blasphemous-edict 9/9, dictate-metade 10/10, dictate-metade-dos-animados 11/11, exilio-sempre-e-dictate 10/10, make-an-example-slaughter-mythos 3/3, wipes-de-sacrificio 12/12, wipes-proprios 11/11, wipes-segurados 11/11). Os scripts que liam a lista/simulador vivos passaram a ler `resultados-ab/_lista_legada/lista.md` e a desligar as 2 chaves; `SHA256SUMS` regenerados. A docstring do cabeçalho do simulador foi editada depois que a reverificação das 15 começou (só comentário)..
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado ("nonland permanent", tipo de carta × tipo de criatura, "animado = criatura até o fim do turno"), gatilho compartilhado (sacrifício de qualquer jogador, morte), **posição de chamada** (cascade, Regra #6), custo alternativo/cast sem pagar (cascade), cor de mana (nova no simulador). **Não varridas:** as demais classes e cartas do `.py`.
+
+## Make an Example, Slaughter the Strong e Mythos of Snapdax (as 3 escolhidas pelo usuário) — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: mensagem do usuário: *"Gostei de Make an Example, Slaughter the Strong, Mythos of Snapdax. Winnowing não é útil contra decks tribais … ou decks de artefatos…"*. Oráculo e rulings **ao vivo** (`resultados-ab/2026-10-04-make-an-example-slaughter-mythos/dados/oraculo_rulings_ao_vivo.json`). Nada foi trocado.
+
+| Cláusula do oráculo | Ruling | Modelagem |
+|---|---|---|
+| **Make an Example**, *Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile.* | a pilha é a que eu escolho (2022-04-29) | 📊 só os oponentes sacrificam: **não está no harness**; só castabilidade (48,9%, `efeitos_unilaterais.txt`); Mayhem Devil/Revel/Sephiroth/Life Insurance/Mari reagem às criaturas **deles** (raciocínio) |
+| **Slaughter the Strong**, *Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.* | escolha em ordem de turno; sacrifício simultâneo (2020-11-10) | ✅ harness (rodada `wipes-de-sacrificio`): guardo Vihaan (poder 3) +1; animado é 3/3; 📊 o que eles guardam; por fase em `estrato_fase_*.txt` |
+| **Mythos of Snapdax**, *If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.* | confere as cores GASTAS; o mesmo objeto vale para vários tipos (2020-04-17) | ✅ harness: guardo Vihaan, 1 artefato, 1 encantamento; pips `W W B R`; por fase em `estrato_fase_*.txt`; 📊 o lado deles; linhas com Teferi's Protection e "gastar Treasures antes" são raciocínio |
+| **Winnowing**, *share a creature type* (descartada pelo usuário) | — | tipo de **criatura** ≠ tipo de **carta** (artifact); o descarte contra tribal/fichas do mesmo tipo se sustenta |
+
+**Regra #4:** Spellbook antes/depois nos 2 cortes (Act, Blood Money) com controle positivo: 0 combos mudam; cortar o Blood Money tira 0 "quase", cortar o Act tira 4 (peças fora da lista). **Regra #5:** a Mythos tinha sido descartada só pelo meu lado (perm- 6,0); corrigido: por fase cai para 4,43 em 1ª main (10,79 na 2ª). **Validação:** `verificar_reproducao.sh` 3/3; simulador não alterado.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado (fase do turno, "animado = criatura até o fim do turno"), gatilho compartilhado (sacrifício de qualquer jogador; morte de criatura de oponente). **Não varridas:** as demais classes e cartas do `.py`.
+
+## Wipes de sacrifício válidos no deck (resposta a "algum wipe de sacrifício válido no deck muda esses números e avaliação?") — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: pergunta do usuário: *"Algum wipe de sacrifício valido no deck muda esses números e avaliação?"* (depois da avaliação Blasphemous Act × Blasphemous Edict, em que eu só tinha **listado** 6 outras cartas). **Nada foi trocado na lista.** Oráculo e **rulings de 63 cartas lidos ao vivo no Scryfall em 2026-10-04, antes de qualquer conclusão** (Regra #3; `resultados-ab/2026-10-04-wipes-de-sacrificio/dados/oraculo_candidatas_rulings.json`, 248 rulings). A busca da rodada anterior só procurava `t:sorcery`/`t:instant` com 3 frases fixas (não achou Mythos of Snapdax, Meathook Massacre II, Zodiark, Liliana Dreadhorde General nem as unilaterais) e a minha lista de 6 nomes deixou de fora Slaughter the Strong, Winnowing, Living Death, Scrap Mastery, All Is Dust e Rankle's Prank, que a saída daquela busca já listava; esta rodada fez uma busca ampla (10 formulações, R/W/B, legal em Commander, `dados/busca_ampla_cru.json.xz`): **348 cartas** distintas, classificadas por script (141 "em massa", 164 "edict de 1", 20 só de terreno, 23 outras); a lista curta abaixo é o corte manual, com a cláusula do oráculo de cada exclusão.
+
+| Carta (custo) | Cláusula do oráculo / ruling relevante | Modelagem |
+|---|---|---|
+| **By Invitation Only** `{3}{W}{W}` | *Choose a number between 0 and 13. Each player sacrifices that many creatures of their choice.* Rulings (2021-11-19): 0 e 13 valem; com menos criaturas o jogador sacrifica todas; cada um escolhe em ordem de turno e **tudo é sacrificado ao mesmo tempo** | ✅ harness, 3 políticas de N: `13` (= Edict sem o custo alternativo), `motores` (N = minhas criaturas menos Vihaan/Mahadi/Mayhem), `fodder` (N = só fichas/animados); 📊 o lado dos oponentes |
+| **Blasphemous Edict** `{3}{B}{B}` | N=13; alternativo `{B}` com 13+ criaturas no campo (rodada anterior) | ✅ no mesmo executor (S1: idêntico ao `edict_harness.py` em 3.594 estados naturais) |
+| **Barter in Blood** `{2}{B}{B}`, **Tergrid's Shadow** `{3}{B}{B}` (instantânea; foretell `{2}{B}{B}`), **Taste of Death** `{4}{B}{B}` (+3 Food), **Necrotic Hex** `{6}{B}` (+6 Zumbis 2/2 virados), **Rankle's Prank** `{2}{B}{B}` (modos: perder 4 de vida / sacrificar 2 / descartar 2), **Liliana, Dreadhorde General** `{4}{B}{B}` (−4: sacrificar 2; passiva: compro 1 por criatura minha que morre) | N fixo 2, 2, 3, 6, 2, 2; rulings: com menos criaturas sacrifica todas, simultâneo | ✅ harness (Prank com os modos *perder 4* + *sacrificar 2*, sem descartar; Liliana com a compra da passiva); 📊 o lado dos oponentes. **Abyssal Gorestalker** `{4}{B}{B}` (N=2 numa criatura 6/6): mesmo efeito da Barter por 2 mana a mais, **não modelada separadamente** |
+| **Zodiark, Umbral God** `{B}{B}{B}{B}{B}` | *each player sacrifices half the non-God creatures they control, rounded down*; Indestructible; contador por sacrifício | ✅ harness (N = metade das minhas criaturas); castabilidade pela cor (`{B}` ×5) |
+| **Meathook Massacre II** `{X}{X}{B}{B}{B}{B}` | *each player sacrifices X creatures*; depois *whenever a creature you control dies, you may pay 3 life: return it* e *whenever a creature an opponent controls dies, they may pay 3 life; if they don't, return it under your control* (2024-09-20: ficha não volta) | ✅ harness só o evento do cast (X máximo pelo mana e pelo fodder pós-pagamento); 📊 a parte do oponente (roubo) e a permanente depois do cast |
+| **Mythos of Snapdax** `{2}{W}{W}` | *Each player chooses an artifact, a creature, an enchantment, and a planeswalker … then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.* (2020-04-17: o mesmo objeto pode valer para vários tipos; confere as cores GASTAS) | ✅ harness: guardo Vihaan, 1 artefato (Sol Ring > Altar > KCI > Signet > Cleaver > Treasure) e 1 encantamento (Dictate > Procession > Revel); pips `W W B R` em 4 fontes distintas |
+| **Tragic Arrogance** `{3}{W}{W}` | igual ao Mythos, sempre eu escolho (2015-06-22) | ✅ mesma função, custo 5: **dominada pelo Mythos** neste deck (mesmo efeito, 1 a menos, e as cores B/R vêm de graça dos Treasures/duais) |
+| **Winnowing** `{4}{W}{W}` | *Convoke. For each player, you choose a creature that player controls. Then each player sacrifices all other creatures they control that don't share a creature type with the chosen creature.* (2025-11-17: convoke aceita criatura desvirada mesmo com doença de invocação; cada uma paga `{1}`) | ✅ harness com as 2 políticas de escolha minha (`Vihaan` primeiro, ou `guarda os animados`); tipos pelo `type_line` ao vivo; Treasure animado = Construct Assassin; ficha genérica = sem tipo; convoke: 1ª main = todas as criaturas, 2ª main = animados + outlaws com vigilance do Vihaan (aproximação); 📊 o que sobra no campo dos oponentes |
+| **Slaughter the Strong** `{1}{W}{W}` / **Destined Confrontation** `{2}{W}{W}` | *Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.* | ✅ Slaughter no harness (guardo Vihaan (poder 3) e +1 de poder); Destined = o mesmo texto 1 mana mais caro, **não modelada** (dominada) |
+| **Living Death** `{3}{B}{B}` / **Living End** (suspend) / **Bringer of the Last Gift** `{6}{B}{B}` | *exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield* (2018-03-16: só voltam as exiladas no 1º passo) | ✅ Living Death no harness; Living End só se conjura por suspend (3 turnos) e Bringer custa MV 8: **não modeladas** (mesmo efeito de reanimação em massa) |
+| **Scrap Mastery** `{3}{R}{R}` / **All Is Dust** `{7}` | *sacrifices all artifacts they control (exiled artifact cards come back)* / *sacrifices all permanents they control that are one or more colors* (Treasure, Clue, Food, Construct e artefatos incolores ficam) | ✅ harness |
+| **Rite of Ruin** `{5}{R}{R}`, **Pox / Pox Plague / Death Cloud / Fraying Omnipotence** | sacrificam terrenos e/ou cortam **a minha vida e a minha mão** antes (*loses half their life, discards half the cards in their hand, then sacrifices …*) | **não modeladas**: não são wipes só de criaturas; vida/mão do oponente 📊 e a minha vida não é recurso medido |
+| **Choice of Damnations, Skull Storm, Dead Drop, Curse of the Cabal, Portal to Phyrexia, Rush of Dread** | alvo ÚNICO (*target opponent / target player*) ou MV 6–10 | **não modeladas**: um oponente só (a mesa tem 3) ou cara demais |
+| **Vona's Hunger** `{2}{B}`, **Crackling Doom** `{R}{W}{B}`, **Make an Example** `{3}{B}`, **Syphon Flesh** `{4}{B}`, **Perilous Predicament** `{4}{B}` | efeitos **unilaterais** (só os oponentes sacrificam; nada meu): Vona's Hunger = *each opponent sacrifices half the creatures they control, rounded up* com 10+ permanentes (ascend); Crackling Doom = *2 damage to each opponent. Each opponent sacrifices a creature with the greatest power*; Make an Example = *you choose one of each opponent's two piles*; Syphon Flesh = *each other player sacrifices a creature; you create a 2/2 Zombie for each* | ✅ só castabilidade e condição do ascend (`efeitos_unilaterais.py`); o efeito nos oponentes é 📊. **Não são wipes** (metade, ou 1 criatura, por oponente) |
+| **Butcher of Malakir, Martyr's Bond, Urborg Justice, Dusk Mangler, Din of the Fireherd, Malfegor, Gix's Command, Legate Lanius, Extus // Awaken the Blood Avatar** | motores de morte/edict repetido ou um edict por oponente (*each opponent sacrifices a creature …*): Awaken = *each opponent sacrifices **a** creature* (a redução de custo é por criatura minha sacrificada) + Avatar 3/6 haste | **fora do escopo "wipe"** (como o Dictate já na lista); **não avaliadas** |
+| **Mayhem Devil** (referência) | *Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.* (rulings: de qualquer jogador; dispara pelo próprio; sacrifício na resolução → o gatilho entra depois) | ✅ no executor: 1 por permanente sacrificada **minha** (nomeada, ficha, Treasure, Clue, Food), simultâneo; 📊 as dos oponentes |
+| **Dictate of Erebos** (na lista) | *Whenever a creature you control dies, each opponent sacrifices a creature of their choice.* | ✅ conta `dictate_triggers_total` (já existia); **raciocínio:** com ele em campo (1,6% dos estados) qualquer wipe que mate N criaturas minhas já faz cada oponente sacrificar N: destruir e sacrificar passam a valer o mesmo no lado deles |
+| **Teferi's Protection / Boros Charm** (na lista) | Teferi: *All permanents you control phase out* (tratados como se não existissem: protege contra destruir **e** sacrificar); Boros Charm: *indestructible* (só contra destruir; All Is Dust ruling 2013-07-01: indestructible não salva de sacrifício) | 📊 não modelados (`protection_unused`) |
+
+**Regra #4 (documentação do deck e Commander Spellbook):** `auditoria.md` (wipes = Act e Blood Money; nenhum combo registrado depende deles) e a base do Spellbook = 4 combos. **39 consultas** com controle positivo (`resumos/spellbook.txt`): **0 combos que somem e 0 novos em TODAS as 17 candidatas** (sem cortar e trocando o Act); só somem os 4 "quase" do Act (Repercussion, Toralf, Fall of Cair Andros, Expedited Inheritance: peças fora da lista); surgem "quase" com Liliana (+3: Chivalric Alliance, Golgari Thug, Pegasus Refuge), Zodiark (+2: Animation Module), Living Death (+1: Dualcaster Mage), Scrap Mastery (+1: Codex Shredder), todos com peça fora da lista. Controles: cortar Smothering Tithe tira 3 combos, Ashnod's Altar tira 1.
+**Regra #4, item 4 (enumeração por script, `resumos/enumeracao.txt`):** reagem a **sacrifício** (gatilho *whenever you / a player sacrifices …*): só **Mayhem Devil, Mirkwood Bats e Captain Lannery Storm**; a **morte**: 9 cartas (Dictate, Zulaport, Plunderer, Sephiroth, Life Insurance, Revel in Riches, Mari, Agent, Marionette Master); tipos de criatura (Winnowing): Human 11 cartas, Rogue 6, Assassin/Warlock 3, Devil/Dragon/Dwarf/Pirate/Tiefling/Vampire/Warrior/Artificer 2; incolores (All Is Dust): só 5 (Manufactor, Signet, Altar, KCI, Sol Ring); W: 14 terrenos, B: 21, R: 17.
+**Regra #5:** o simulador só mede o **meu** lado; o ensaio a seco é piso. A convenção "o Act só conta as minhas criaturas" torna o Act mais caro que na mesa real e o Winnowing/Mythos/BIO não têm esse viés, então castabilidade entre eles e o Act **não é comparável** (📊).
+**Validação:** 38/38 testes dirigidos (incluindo equivalência com o executor da rodada anterior em 3.594 estados naturais e 0 violações de invariante em 1.500 estados × 20 variantes × 2 fases); ensaio a seco de 10.000 partidas por modo (padrão ~120 mil estados) e regressão de 20.000 por modo com 0 exceções; o simulador (`vihaan_goldfish_v1.py`) **não foi alterado**.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado ("destruir ≠ sacrificar", "tipo de criatura compartilhado", "animado = criatura até o fim do turno", "cor dos símbolos de mana"), gatilho compartilhado (sacrifício de qualquer jogador), política de jogada. **Não varridas:** as demais classes e cartas do `.py`; Blood Money, Dictate e Teferi/Boros Charm aparecem só como referência.
+
+## Blasphemous Edict × Blasphemous Act (avaliação de troca) e Mirkwood Bats só em sacrifício — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: pergunta do usuário: *"Pensando nisso agora, não seria melhor trocar o Blasphemous Act por um wipe que sacrifica as criaturas, como por exemplo: Blasphemous Edict?"* Oráculo e **rulings lidos ao vivo no Scryfall em 2026-10-04, antes de qualquer conclusão** (Regra #3; `resultados-ab/2026-10-04-blasphemous-edict/dados/oraculo_rulings_ao_vivo.json`, 19 cartas). Nenhuma carta foi trocada.
+
+| Cláusula do oráculo | Ruling | Modelagem no simulador |
+|---|---|---|
+| **Blasphemous Edict**, *You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield.* | — | harness (`edict_harness.py`, **fora** do `vihaan_goldfish_v1.py`): custo 5; {B} com 13+ criaturas **minhas** (piso; as do oponente são 📊) |
+| **Blasphemous Edict**, *Each player sacrifices thirteen creatures of their choice.* | com menos de 13 sacrifica todas; cada jogador escolhe em ordem de turno e **tudo é sacrificado ao mesmo tempo** (2024-11-08) | ✅ meu lado: sacrifica `min(total, 13)`, fichas primeiro e depois as nomeadas de menor valor, guardando Vihaan/Mahadi/Mayhem; eventos com look-back (como o wipe próprio); 📊 o lado dos oponentes |
+| **Mayhem Devil**, *Whenever a player sacrifices a permanent, deals 1 damage to any target.* | de **qualquer** jogador; dispara pelo próprio Mayhem Devil; sacrifício na resolução → o gatilho entra depois que a magia termina; sacrifício como custo → resolve antes (2019-05-03) | ✅ Edict: 1 de dano por permanente minha sacrificada (inclusive ele); 📊 as dos oponentes; Act (dano) não dispara |
+| **Mirkwood Bats**, *Whenever you create or sacrifice a token, each opponent loses 1 life.* | — | 🐛 **corrigido**: ficha DESTRUÍDA (wipe próprio/do oponente) não dispara (`MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED`); sacrificada dispara. O comentário de `on_permanent_destroyed` que dizia o contrário foi corrigido |
+| **Nadier's Nightblade**, *Whenever a token you control leaves the battlefield…* | — | ✅ dispara nas duas (saída, não sacrifício) |
+| **Zulaport / Plunderer / Dictate / Agent / Marionette Master / Life Insurance / Sephiroth / Revel in Riches / Mari** (morte ou saída) | Zulaport e Plunderer disparam pelas que morrem junto (2021-03-19, 2018-01-19) | ✅ iguais para Act e Edict |
+| **Boros Charm**, *Permanents you control gain indestructible until end of turn.* | — | 📊 não modelado (`protection_unused`); **raciocínio:** faz do Act/Blood Money um wipe unilateral que a Edict não permite |
+| **Teferi's Protection** (proteção + phase out de tudo que é meu) | — | 📊 idem; funciona com as duas, mas desliga meus gatilhos |
+
+**Regra #4:** motores listados e conferidos por script (`resumos/enumeracao.txt`); Spellbook antes/depois com controle positivo (`resumos/spellbook.txt`): troca = 0 combos que somem, 0 novos; Edict não é Game Changer.
+**Regra #5:** o simulador só mede o **meu** lado; o ensaio a seco é piso da Edict. A convenção "o Act só conta as minhas criaturas" favorece a Edict em castabilidade (📊).
+**Regra #3 / achado:** o simulador conflava "sacrifício" e "saída de ficha" no `on_token_leaves` (Bats). Auditado por grep: 4 chamadas de `on_token_leaves` (sacrifício, destruição, 4 do wipe próprio).
+**Validação:** 15/15 testes dirigidos; bit-identidade (chave do Bats desligada × `b30ef1f`, 20.000 × 2 modos); regressão 80.000 partidas, 0 exceções; A/B pareado da chave do Bats N=2.000/10.000 nos dois modos; ensaio a seco 10.000 partidas.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado (destruir ≠ sacrificar, morte simultânea), gatilho compartilhado ligado em alguns pontos (Bats), política de jogada. **Não varridas:** as demais classes e cartas do `.py`.
+
+## Wipes próprios segurados e custo pago com Treasures animados (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: princípio do usuário: *"Todo boardwipe deve ser "segurado" para causar mais "perdas" aos oponentes do que a mim. Claro que quando utilizados, eu perco tudo que for criatura em campo, mas dependendo das circunstancias isso pode ser mitigado: por exemplo: Com Mayhem Devil em campo, sacrificar tesouros animados para [pagar o custo do wipe ainda causa dano nos oponentes além do efeito do wipe em sim!"* Código: `vihaan_goldfish_v1.py` (antes = commit `47ec126`). Oráculo e rulings: os lidos ao vivo em 2026-10-04 (cópia em `resultados-ab/2026-10-04-wipes-segurados/dados/oraculo_rulings_ao_vivo.json`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-wipes-segurados/`.
+
+| Cláusula do oráculo | Ruling | Antes (`47ec126`) | Depois |
+|---|---|---|---|
+| **Mayhem Devil**, *Whenever a player sacrifices a permanent, deals 1 damage to any target.* | se o sacrifício paga um **custo**, o gatilho resolve **antes** da magia (2019-05-03); o gatilho é meu e eu escolho o alvo | ✅ dispara por sacrifício (Treasure de mana, Altar...); 🐛 mas o custo do wipe saía dos **terrenos**, então o Mayhem Devil não disparava no wipe e os animados morriam de graça | ✅ o custo do wipe é pago **primeiro com os animados** (1 dano por Treasure sacrificado, antes do wipe) |
+| **Treasure**, *{T}, Sacrifice this token: Add one mana of any color.* | habilidade de mana; só desvirado | ✅ | ✅ só os **desvirados** pagam (Blood Money cria virados) |
+| **Vihaan**, *Treasures you control become 3/3 Construct Assassin artifact creatures until end of turn* | o conjunto é fixado na resolução | ✅ animados = criatura até o fim do turno | ✅ sacrificá-los é morte de criatura (Zulaport, Plunderer, Dictate, Sephiroth) **e** sacrifício (Mayhem Devil) |
+| **Blood Money** (`{5}{B}{B}`) / **Blasphemous Act** (`{8}{R}`, {1} a menos por criatura, piso {R}) | MV 9 da Act; a redução vale antes de pagar (2020-11-10) | 🐛 conjuradas só com a retenção de Vihaan/Mahadi (palpite meu) | ✅ **todo wipe próprio segurado**; 📊 o benefício contra os campos dos oponentes não é modelável; exceção: circunstância mitigada |
+| **Pitiless Plunderer / Zulaport / Mahadi** (mitigadores reais de um wipe) | Plunderer dispara pelas outras que morrem junto (2018-01-19) | ✅ no wipe (9ª rodada) | ✅ inalterado; **não** entram na conta de liberar (só nos efeitos quando o wipe é conjurado) |
+
+**Regra #6 (ordem de eventos):** o custo do wipe é pago **antes** do wipe resolver (animados sacrificados e Mayhem Devil resolvendo antes, ruling 2019-05-03); os animados só existem **depois do combate**, então a exceção mitigada só pode agir na 2ª main; sem retenção o simulador conjuraria o wipe na 1ª main, antes de existirem animados (por isso `sem_hold_pagar` = `sem_hold`).
+**Regra #5:** o princípio veio do usuário; o simulador só mede: segurar vale +2,16 ±0,33pp (padrão) sobre deixar o wipe sair sempre, e sem criaturas de oponente isso é verdadeiro por construção. O benefício real do wipe é 📊.
+**Premissas minhas, não confirmadas:** unidade da comparação 1 dano = 1 criatura minha perdida; só a circunstância do Mayhem Devil libera; animados pagando o custo inteiro.
+**Validação:** smoke; 24/24 testes dirigidos; bit-identidade (3 chaves desligadas × `47ec126`, 20.000 × 2 modos); regressão 160.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos, 5 variantes.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** política de jogada contra a linha real do usuário, custo de ativação (ordem e fonte do pagamento), gatilho compartilhado (sacrifício vs morte), conceito compartilhado ("animado = criatura até o fim do turno"). **Não varridas:** as demais classes e cartas do `.py`.
+
+## Blood Money, Blasphemous Act, Sevinne's, Lotho, Monologue Tax e imposto do comandante (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: respostas do usuário sobre o T8 da partida manual #1: *"A cópia da Sevinne trouxe o Zulaport de volta. Blood money ficou exilada permanentemente, mesmo que ela gerasse muitos tesouros, sem Vihaan e Mahadi em campo acho que seria pior! Lotho e Tax eu considerei que 1 dos 3 oponentes jogou 2 mágicas no mesmo turno e por isso perdi 1 de vida e criei 2 tesouros!"* Código: `vihaan_goldfish_v1.py` (antes = commit `bf8a6f6`). Oráculo e **rulings lidos ao vivo no Scryfall em 2026-10-04, ANTES do código** (Regra #3): `resultados-ab/2026-10-04-wipes-proprios/dados/oraculo_rulings_ao_vivo_9a_rodada.json`. Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-wipes-proprios/`.
+
+| Cláusula do oráculo | Ruling | Antes (`bf8a6f6`) | Depois |
+|---|---|---|---|
+| **Blood Money**, *Destroy all creatures.* | só é destruída a criatura que de fato é destruída (2022-06-10) | 🐛 **excluía o comandante** (Vihaan, Legendary Creature, sobrevivia); 🐛 usava `sacrifice_*` (Mayhem Devil dispara só com **sacrifício**: o código drenava); 🐛 **ordem-dependente** (cada peça saía antes dos gatilhos da seguinte: Zulaport/Plunderer perdiam mortes conforme a posição no campo); 🐛 não destruía os **Treasures animados** vivos (são criaturas até o fim do turno) | ✅ destrói tudo (comandante vai à zona de comando, CR 903.9a), é destruição, mortes simultâneas com look-back (Plunderer dispara pelas outras e nunca por si, ruling 2018-01-19; Zulaport dispara pela própria morte) |
+| **Blood Money**, *For each nontoken creature destroyed this way, you create a tapped Treasure token.* | idem | 🐛 contava só as nomeadas sem o comandante; 🐛 Treasure **desvirado** (usável no mesmo turno e no farm) | ✅ conta o comandante; Treasure **virado** (não paga mana nem entra no farm; desvira no próximo turno; animado virado não ataca); 📊 as criaturas não-ficha **dos oponentes** (cada uma daria 1 Treasure) |
+| **Blasphemous Act**, *costs {1} less to cast for each creature on the battlefield.* | piso {R}; MV continua 9 (2020-11-10) | 🐛 custo fixo 9 | ✅ custo `max(1, 9 − criaturas minhas)`; 📊 as do oponente (a redução real é maior ou igual) |
+| **Blasphemous Act**, *deals 13 damage to each creature.* | — | 🐛 mesmos erros da Blood Money (comandante poupado, sacrifício, ordem) | ✅ mesma resolução da Blood Money, sem Treasure |
+| **Sevinne's Reclamation**, *Return target permanent card with MV 3 or less… If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.* | a cópia é criada na pilha, **não é conjurada** (não dispara Lotho/Prosper) e não copia de novo (2019-08-23); permanent card inclui terreno (2024-06-07) | ✅ flashback = original + cópia (2 devoluções), 1 cast contado | ✅ inalterado; **resposta do usuário: a cópia devolveu o Zulaport** |
+| **Lotho, Corrupt Shirriff**, *Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token.* | mágicas conjuradas antes do Lotho contam (2023-06-16) | ✅ minhas 2ª mágicas; 📊 a 2ª mágica de oponente | ✅ inalterado; **conta do usuário: 1 dos 3 oponentes com 2 mágicas = Lotho (−1 vida, 1 Treasure) + Tax (1 Treasure)** |
+| **Monologue Tax**, *Whenever an opponent casts their second spell each turn, you create a Treasure token.* | 1 vez por turno por oponente; a 3ª e as seguintes não contam (2021-04-16) | 📊 só de oponente | 📊 inalterado (nenhum oponente é modelado); minha 2ª mágica **não** dispara a Tax |
+| **Comandante** (CR 903.8): imposto de {2} por cast anterior da zona de comando | conta o **cast**, mesmo anulado | 🐛 `can_cast` olhava só o MV 3; o cast gastava 3 + 2·casts e o excesso era perdido; cast anulado não somava (a contagem era na entrada) | ✅ imposto no `can_cast` e contado no cast |
+| **Mayhem Devil**, *Whenever a player sacrifices a permanent, deals 1 damage to any target.* | só sacrifício | 🐛 disparava na Blood Money/Blasphemous Act | ✅ não dispara (destruição) |
+
+**Linha do usuário (Regra #5):** a Blood Money foi segurada de propósito porque destruiria Vihaan e Mahadi. Virou `OWN_WIPE_HOLD_ENGINE_ENABLED`: o wipe próprio não é conjurado com Vihaan ou Mahadi em campo (vale também para a carta exilada, que expira).
+**Regra #6 (ordem de eventos):** o wipe é uma resolução única (morte simultânea): os eventos de "dies" são disparados com o campo ainda cheio e só depois as peças saem; o Mahadi morto não cria Treasure no end step; o untap dos Treasures virados está no início de `play_turn`.
+**Regra #3 (conceitos compartilhados):** "o que um wipe destrói", "destruir ≠ sacrificar" e "morte simultânea" foram auditados por grep em todos os pontos que removem criatura em lote (`resolve_instant_sorcery` próprio, `_destroy_dragons`, wipe do oponente em `try_smart_opponent_wipe`/`remove_permanent`).
+**Premissas minhas, não confirmadas:** a retenção vale também para a Blasphemous Act; "segurar" com Vihaan **ou** Mahadi; os Treasures virados são um contador agregado.
+**Correção do usuário no mesmo dia:** o princípio é mais geral (todo wipe segurado, com exceção mitigada); as duas primeiras premissas foram substituídas pela seção acima.
+**Validação:** smoke; 34/34 testes dirigidos; bit-identidade (5 chaves desligadas × `bf8a6f6`, 20.000 × 2 modos); regressão 120.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos, 7 variantes.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado, custo de ativação (imposto, redução de custo), gatilho compartilhado ligado em alguns pontos, política de jogada contra a linha real do usuário. **Não varridas:** as demais classes e cartas do `.py`.
+
+## Dictate com Treasures animados: a metade conta só os ANIMADOS (correção do simulador) — 2026-10-04
+
+Origem: correção do usuário à rodada anterior: *"Metade dos tesouros animados, tesouros inanimados não trigam o Dictate!"* Código: `vihaan_goldfish_v1.py` (antes = commit `9e613ea`, em que a metade era do estoque). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-dictate-metade-dos-animados/`. Oráculo e rulings: os já lidos ao vivo (cópia em `.../2026-10-04-dictate-metade-dos-animados/dados/oraculo_rulings_ao_vivo.json`).
+
+| Cláusula do oráculo | Ruling | Antes (`9e613ea`) | Depois |
+|---|---|---|---|
+| **Dictate of Erebos**: *whenever a creature you control dies, each opponent sacrifices a creature of their choice* | um gatilho por criatura; o oponente escolhe (2014-04-26) | 🐛 o teto era `estoque // 2`: com 12 Treasures e 7 animados sacrificava 6 (mais da metade dos animados) | ✅ teto `animados // 2` (3); 📊 o oponente nunca sacrifica nada: `dictate_triggers_total` × 3 oponentes = proxy |
+| **Treasure inanimado** (criado depois do início do combate, CR 611.2c, ou fora do turno) | **não é criatura**, logo não morre como criatura e **não dispara o Dictate** (usuário) | ✅ já não era sacrificado como criatura | ✅ e deixou de contar na base do teto |
+| **Vihaan, Goldwaker**: *Treasures you control become 3/3 Construct Assassin artifact creatures until end of turn* | o conjunto afetado é fixado na resolução (CR 611.2c) | ✅ | ✅ inalterado |
+| **Mahadi / Pitiless Plunderer**: repõem o Treasure quando a criatura-Treasure morre | — | ✅ todos os animados, de graça | ✅ inalterado (o teto só vale quando só o Dictate justifica) |
+
+**Regra #3 (conceito compartilhado "só animado é criatura"):** grep dos dois únicos lugares que baixam `state.treasures` (`sacrifice_treasures`, wipe de oponente): nenhum transforma inanimado em morte de criatura; o erro era só a **base do teto**.
+**Regra #6 (ordem de eventos):** inalterada: o Dictate é pago antes com terrenos/rocks; o farm roda depois da 2ª `main_phase`; o teto é calculado sobre `treasures_animated_alive` **naquele ponto**.
+**Regra #5:** o critério veio do usuário (linha de jogo real); o simulador só mede o custo (+0,021 ±0,004 Treasures no estoque, −0,022 ±0,006 mortes de criatura, win −0,020 ±0,048pp n.s.) e **não dá valor** às criaturas de oponente (📊).
+**Premissas minhas, não confirmadas:** `animados // 2` arredonda pra baixo (1 animado → 0); com Mahadi/Plunderer o teto não se aplica.
+**Validação:** smoke; 19/19 testes dirigidos; bit-identidade nos 4 casos (20.000 partidas cada); regressão 160.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado ("só animado é criatura"), custo de ativação (Treasure como saída própria), política de jogada contra a linha real do usuário. **Não varridas:** as demais classes e cartas do `.py`.
+
+## Dictate com Treasures animados: reserva de "até metade dos treasures" (correção do simulador) — 2026-10-04
+
+Origem: resposta do usuário: *"O contador foi erro de clique, era para duplicar o token. Eu sacrificaria até metade dos treasures para eliminar criaturas dos adversários."* Código: `vihaan_goldfish_v1.py` (antes = commit `8e9ab6e`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-dictate-metade/`. Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`; cópia em `.../2026-10-04-dictate-metade/dados/`).
+
+| Cláusula do oráculo | Ruling | Antes (`8e9ab6e`) | Depois |
+|---|---|---|---|
+| **Dictate of Erebos**: *whenever a creature you control dies, each opponent sacrifices a creature of their choice* | um gatilho por criatura; o oponente escolhe (2014-04-26) | ✅ o farm sacrificava **todos** os animados quando só o Dictate justificava | ✅ no máximo **metade do estoque** (`estoque // 2`) quando só o Dictate justifica; 📊 o oponente nunca sacrifica nada: `dictate_triggers_total` × 3 oponentes = proxy |
+| **Treasure**: *{T}, Sacrifice this token: Add one mana of any color* | habilidade de mana, ativável sem nada pra gastar | ✅ | ✅ (sacrifício com a reserva respeitada) |
+| **Mahadi / Pitiless Plunderer**: repõem o Treasure quando a criatura-Treasure morre | — | ✅ sacrifício de graça, todos os animados | ✅ **inalterado**: o teto só vale quando só o Dictate justifica (a reposição devolve o Treasure) |
+| (registro do usuário) contador +1/+1 no Treasure em T7 | — | aberto | **clique errado** (a intenção era duplicar o token); sem efeito de regra; fechado |
+
+**Regra #6 (ordem de eventos):** inalterada: o Dictate é pago antes com terrenos/rocks; o farm roda depois da 2ª `main_phase`; o teto é calculado sobre o `state.treasures` **naquele ponto** (depois do pagamento do Dictate).
+**Regra #5:** o critério da reserva veio do usuário (linha de jogo real), não do simulador; o simulador só mede o custo (+0,023 ±0,005 Treasures no estoque, −0,022 ±0,006 mortes de criatura, win −0,020 ±0,039pp n.s.) e **não dá valor** às criaturas de oponente (📊).
+**Premissas minhas, não confirmadas:** "metade dos treasures" = metade do **estoque inteiro**, arredondada pra baixo; com Mahadi/Plunderer o teto não se aplica.
+**Correção do usuário no mesmo dia:** a 1ª premissa estava errada; a metade é **dos animados** (seção acima).
+**Validação:** smoke; 17/17 testes dirigidos; bit-identidade com a chave desligada (20.000+20.000 partidas); regressão 120.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** custo de ativação (Treasure como saída própria), gatilho compartilhado (morte de criatura → Dictate), política de jogada contra a linha real do usuário. **Não varridas:** as demais classes e cartas do `.py`.
+
+## Preferências do usuário: exílio sempre primeiro e Dictate com Treasures animados (correção do simulador) — 2026-10-04
+
+Origem: respostas do usuário (T7 erro dele; *"Prefiro sempre jogar o spell exilado para criar mais tesouros"*; *"O dictate é mais vantagem, eu sacrifico tesouros animados e todos os oponentes sacrificam criaturas"*). Código: `vihaan_goldfish_v1.py` (antes = commit `ba594c8`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-exilio-sempre-e-dictate/`. Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`).
+
+| Cláusula do oráculo | Ruling | Antes (`ba594c8`) | Depois |
+|---|---|---|---|
+| **Prosper**, Pact Boon: *whenever you play a card from exile, create a Treasure* | qualquer carta jogada do exílio (2021-07-23) | ✅ só as que expiram neste turno iam antes da mão | ✅ **toda** carta do exílio antes da mão (preferência do usuário); mais cartas ⇒ mais Pact Boon |
+| **Inspired Tinkering**: *exile the top three cards… until the end of your next turn, you may play those cards* | "play" (terreno vale); dois turnos | 🐛 ficavam esperando depois da mão no turno em que eram exiladas | ✅ jogadas assim que aparecem (inclusive no meio do main) |
+| **Dictate of Erebos**: *whenever a creature you control dies, each opponent sacrifices a creature of their choice* | um gatilho por criatura; o oponente escolhe (2014-04-26) | 📊 só contava o uso; o farm exigia Mahadi/Plunderer | ✅ o Dictate em campo aciona o farm (custo: 1 Treasure por morte sem reposição); 📊 o oponente nunca sacrifica nada: `dictate_triggers_total` × 3 oponentes = proxy |
+| **Treasure**: *{T}, Sacrifice this token: Add one mana of any color* | habilidade de mana, ativável sem nada pra gastar | ✅ (rodada anterior) | ✅ |
+
+**Regra #6 (ordem de eventos):** o Dictate é pago com terrenos/rocks antes (`spend_mana` só gasta Treasure no que falta) e os animados morrem depois, com ele em campo; o farm roda depois da 2ª `main_phase`.
+**Regra #5:** o simulador não dá valor aos sacrifícios dos oponentes (📊), então a métrica de vitória não mostra a vantagem do Dictate; a análise prioriza a linha real do usuário e reporta o custo em Treasures (−0,084 ±0,015 no estoque, só pelo Dictate).
+**Validação:** smoke; 16/16 testes dirigidos; bit-identidade com as 2 chaves desligadas (20.000+20.000 partidas); regressão 140.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** política de jogada contra a linha real do usuário (exílio primeiro), habilidade ativada que nunca era usada como saída (Treasure), gatilho compartilhado (morte de criatura → Dictate). **Não varridas:** as demais classes e cartas do `.py`.
+
+## Prosper (exílio) e Mahadi (mortes de Treasure animado) — correção do simulador — oráculo, rulings e cláusulas — 2026-10-03
+
+Origem: respostas do usuário à análise da partida manual #1 (§3b do `goldfish-log.md`). Código: `vihaan_goldfish_v1.py` (antes = commit `7cd3f55`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`).
+
+| Cláusula do oráculo | Ruling | Antes (`7cd3f55`) | Depois |
+|---|---|---|---|
+| **Prosper**, Mystic Arcanum: *exile the top card… until the end of your next turn, you may play that card* | a carta segue custos e timing normais (2021-07-23) | ✅ terreno jogado (97,8% dos que tiveram vez); 🐛 **mágica: 63% expiravam** (a mão ia primeiro; o usuário sempre jogou o exílio antes: T5, T6, T7) | ✅ a que expira neste turno é conjurada antes da mão (97,2% conjuradas) |
+| **Prosper**, Pact Boon: *whenever you play a card from exile, create a Treasure* | qualquer carta jogada do exílio, terreno inclusive | ✅ por carta jogada | ✅ mais cartas jogadas ⇒ mais Treasures (0,34 → 0,56 chamadas por jogo) |
+| **Treasure**: *{T}, Sacrifice this token: Add one mana of any color* | habilidade de mana: pode ser ativada sem nada pra gastar (ruling 2017-09-29 da Storm: *"You can activate the mana ability of a Treasure even if you have nothing to spend that mana on"*) | 🐛 só havia saída de sacrifício com Ashnod's Altar / Krark-Clan Ironworks | ✅ o próprio Treasure é a saída |
+| **Vihaan**: *Treasures you control become 3/3 Construct Assassin artifact creatures… until end of turn* | Treasures mantêm as habilidades enquanto são criaturas (2024-04-12); CR 611.2c | ✅ criatura até o fim do turno (rodada do Treasure animado) | ✅ sacrificá-los como criatura é morte de criatura |
+| **Mahadi**: *at the beginning of your end step, create a Treasure for each creature that died this turn* | só mortes do meu turno | ✅ conta `deaths_this_turn`; 🐛 só havia mortes dos animados com Altar/KCI | ✅ + o farm com Mahadi/Plunderer (a linha do T8) |
+| **Pitiless Plunderer**: *whenever another creature you control dies, create a Treasure* | dispara para cada outra criatura que morre junto (2018-01-19) | ✅ | ✅ também no farm |
+| **Zulaport / Sephiroth / Marionette Master / Mirkwood Bats / Agent of the Iron Throne** | gatilhos de morte/sacrifício | ✅ | ✅ também nas mortes do farm (testado: Sephiroth vira na 4ª) |
+| **Dictate of Erebos**: *whenever a creature you control dies, each opponent sacrifices a creature of their choice* | um gatilho por criatura que morre; o oponente escolhe (2014-04-26) | 📊 sem nem contagem | 📊 `dictate_triggers_total` conta o uso (proxy); o oponente nunca sacrifica nada (estado de oponente) |
+
+**Regra #3 (conceito compartilhado "saída de sacrifício de Treasure"):** `aggressive_treasure_destruction` só reconhecia Altar e KCI como saídas; o Treasure sacrificado por mana (`spend_mana`) já usava o roteamento do animado. Conferido por grep: `state.treasures -=` só em `sacrifice_treasures`.
+**Regra #6 (ordem de fases):** o farm roda **depois** da 2ª `main_phase` (a mana foi gasta, os animados que pagaram magias já saíram) e **antes** do `end_step` (o Mahadi conta `deaths_this_turn` ali); a expiração do exílio é checada no **início** de cada `main_phase`.
+**Regra #7 (ficha, 4 checagens):** o Treasure animado ataca? sim, e é criatura até o fim do turno; dispara "dies"? sim (`on_permanent_sacrificed`); morre no wipe? sim; conta em "you control X"? sim. O Treasure criado depois do início do combate **não** é criatura (CR 611.2c): o farm só leva `treasures_animated_alive`.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 35 terrenos); 17 testes dirigidos 17/17; bit-identidade com as 2 chaves desligadas, 20.000+20.000 partidas; regressão 140.000 partidas, 0 exceções, 0 violações; A/B pareado N=2.000 e N=10.000 nos dois modos (win ≤T8 padrão +2,40 ±0,42pp; resiliência +0,63 ±0,25pp; estoque de Treasures no fim +0,49 ±0,16 no padrão).
+**Classes da taxonomia da Regra #1 varridas (e só elas):** habilidade ativada que nunca era usada como saída (Treasure como sacrifício), gatilho compartilhado (mortes de criatura), ordem de fases/eventos, escolha de política contra a linha real do usuário (Regra #5: exílio primeiro).
+**Não varridas:** as demais classes e as outras cartas do `.py`. **Aberto:** farm sem Mahadi/Plunderer (decisão de valor), Dictate 📊, Lotho/Tax em 2ª mágica de oponente 📊.
+
+## Conjurar/jogar de fora da mão (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
+
+Origem: análise da partida manual #1 (seção abaixo) + invariante de validação. Código: `vihaan_goldfish_v1.py` (antes = commit `c04840d`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-03-fora-da-mao/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** antes de escrever o código (Regra #3; resposta bruta em `.../dados/oraculo_rulings_ao_vivo.json`, 70 rulings de 29 cartas).
+
+| Cláusula do oráculo | Ruling | Antes (`c04840d`) | Depois |
+|---|---|---|---|
+| **Prosper**: *you may play that card* (Mystic Arcanum) | terreno é "play" | 🐛 terreno exilado nunca jogado (`play_from_impulse` filtrava terreno) | ✅ `play_impulse_land`: é a jogada de terreno, antes do da mão; untapped primeiro |
+| **Prosper**, Pact Boon: *whenever you play a card from exile* | qualquer carta jogada do exílio, **terreno inclusive** (2021-07-23) | ✅ só magia não-terreno | ✅ terreno, magia e a conjurada pelo Cascade |
+| **Inspired Tinkering**: *you may play those cards* / **Professional Face-Breaker**: *you may play that card this turn* | "play" → terreno vale | 🐛 idem | ✅ `lands_ok=True` |
+| **Grenzo** / **Laughing Jasper Flint**: *you may cast* | "cast" → terreno **não** vale | ✅ (por acidente) | ✅ de propósito (`lands_ok=False`) |
+| **Mágica do exílio** (instantânea/feitiço jogada de lá) | segue custo e timing; resolve e vai ao cemitério | 🐛 virava **permanente parado**, efeito nunca resolvia | ✅ `cast_card(from_zone="exile")` |
+| **Lotho**: *whenever a player casts their second spell each turn, you lose 1 life and create a Treasure* | conjuradas **antes** do Lotho contam (2023-06-16); gatilho de **cast** | 🐛 `spells_cast_this_turn` só subia em `cast_card`; 🐛 testava "em campo" **depois** de a magia entrar (disparava contra si) | ✅ flashback e Cascade contam; foto do Lotho no cast; 📊 2ª mágica de **oponente** (estado de oponente) |
+| **Life Insurance**, extort: *whenever you cast a spell* | qualquer magia conjurada | 🐛 só da mão | ✅ também flashback, exílio e Cascade |
+| **Rain of Riches**: *first spell each turn that mana from a Treasure was spent to cast has cascade* | — | ✅ só da mão | ✅ também flashback |
+| **Captain Lannery Storm**: *whenever you sacrifice a Treasure, +1/+0 until end of turn* | qualquer sacrifício; os pagos para **conjurar** a Storm não contam (2017-09-29) | 🐛 não existia | ✅ `_storm_pump` no poder (proxy) e no "that many" do **Reaver Cleaver** quando ela é o portador |
+| **Sevinne's Reclamation**: *return target permanent card MV ≤3 … if cast from a graveyard, may copy* | permanent card = artefato, batalha, criatura, encantamento, **terreno**, planeswalker (2024-06-07); a cópia não é "cast" | 🐛 filtro `ctype != "land"`: devolvia instantânea/feitiço, **inclusive ela mesma**; terreno nunca | ✅ `_sevinne_return_one` (cast e flashback); terreno devolvido entra tapped se a regra manda, sem gastar jogada de terreno |
+
+**Regra #3 (conceitos compartilhados):** "carta que entra/é conjurada de fora da mão" (5 caminhos: `cast_card`, `play_from_impulse`, `try_sevinne_flashback`, `do_cascade`, `try_face_breaker_impulse`/`pull_impulse`) e "permanent card" (2 pontos da Sevinne's). Grep conferido: `state.treasures -=` só em `sacrifice_treasures` (um ponto para o contador da Storm); `spells_cast_this_turn` só em `cast_card` antes da correção.
+**Regra #6 (ordem de eventos):** o Lotho precisa estar em campo no CAST; o Pact Boon dispara no cast (antes de resolver: Blood Money destrói o Prosper depois de o Treasure ser criado); o terreno do exílio entra em `play_land` (antes de `main_phase`) para a mana valer no turno.
+**Regra #7:** os Treasures criados por Pact Boon/Lotho/Storm/Cleaver não atacam no turno em que nascem (só os que existiam no início do combate viram criatura, CR 611.2c): o roteamento do Treasure animado, já corrigido, não muda.
+**Erro de processo, registrado:** a 1ª versão do A/B tinha colunas lidas de contadores que o código antigo não tem (0 no ANTES, enganoso); foi apagada e refeita com medidas comparáveis antes de qualquer conclusão.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 35 terrenos); 37 testes dirigidos 37/37 (cenários T5–T8 da partida manual incluídos); bit-identidade com as 5 chaves desligadas, 20.000+20.000 partidas; regressão 180.000 partidas, 0 exceções, 0 violações (≤1 terreno por turno, 0 mágicas paradas no campo); A/B pareado N=2.000 e N=10.000 nos dois modos, todas as métricas diretas no sentido esperado (win ≤T8 padrão +1,29 ±0,30pp, resiliência +0,47 ±0,20pp).
+**Classes da taxonomia da Regra #1 varridas (e só elas):** gatilho compartilhado ligado em só alguns pontos (cast de fora da mão), conceito compartilhado ("spell cast", "permanent card"), custo alternativo real (flashback, cast do exílio), fórmula dinâmica (Storm + Cleaver), busca sem restrição de tipo real (Sevinne's), ordem de fases/eventos (Lotho no cast).
+**Não varridas:** as demais classes e as outras cartas do `.py`. **Aberto:** política "carta do exílio por último" (1,5 cartas/jogo expiram), 2ª mágica de oponente (Lotho/Tax) 📊, heurística "maior MV" da Sevinne's.
+
+## Partida manual #1 — cláusulas das cartas que a partida exercita: log × oráculo × simulador — 2026-10-03
+
+Pedido: *"Analise esse Goldfish do Vihaan: Assumi algumas mortes em combate para gerar tesouros com o Mahadi, e um oponente fez 2 spells com Lotho e Tax em campo, gerando 2 tesouros fora do meu turno."* Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-partida-manual-1/` (LEIAME com o mapa arquivo → comando). Oráculo e **rulings** (70, de 29 cartas) lidos **ao vivo** no Scryfall (2026-10-03) antes da análise (Regra #3); resposta bruta em `.../dados/oraculo_rulings_ao_vivo.json`. Todas as cartas do log estão em `scryfall-cache/oracle-cache.json`.
+
+| Carta / cláusula do oráculo | Ruling relevante | Log | Simulador (`c04840d`) |
+|---|---|---|---|
+| **Prosper**, Mystic Arcanum: *at the beginning of your end step, exile the top card… until the end of your next turn, you may play that card* | Precisa seguir custos e timing normais | ✅ T4 Mire, T5 Sevinne's, T6 Lotho, T7 Blood Money | ✅ `end_step` com `deadline_turns=1`; 🐛 **terreno nunca jogado** |
+| **Prosper**, Pact Boon: *whenever you play a card from exile, create a Treasure* | dispara com **qualquer** carta jogada do exílio (2021-07-23), terreno inclusive | ✅ T5 (Mire), T6 (Sevinne's), T7 (Lotho: sem linha "criada" ao lado) | ✅ só magia não-terreno; 🐛 terreno e mágica |
+| **Lotho**: *whenever a player casts their second spell each turn, you lose 1 life and create a Treasure* | mágicas conjuradas **antes** do Lotho contam (2023-06-16) | ⚠️ T7 (Tax = 2ª), T8 (Dictate = 2ª) sem linha "criada" dedicada | ✅ só a minha 2ª mágica **da mão**; 🐛 não conta exílio/flashback/Cascade; 🐛 dispara em si mesmo se for a 2ª mágica; 📊 2ª mágica de **oponente** (estado de oponente) |
+| **Monologue Tax**: *whenever an opponent casts their second spell each turn, you create a Treasure* | uma vez por turno **por oponente**; não importa se a Tax estava em campo na 1ª mágica (2021-04-16) | ⚠️ "2 Treasures fora do meu turno" (Lotho + Tax) informados pelo usuário | 📊 `opponent_dependent` (mágica de oponente); nunca fabricado |
+| **Mahadi**: *at the beginning of your end step, create a Treasure for each creature that died this turn* | só mortes **do meu turno** | ✅ T6 volta do cemitério; Zulaport morreu no turno do oponente | ✅ `deaths_this_turn` no end step (inclui Treasure animado sacrificado); 📊 mortes assumidas em combate não existem (sem bloqueio) |
+| **Captain Lannery Storm**: *haste* / *whenever attacks, create a Treasure* | — | ✅ T5, T6 | ✅ |
+| **Storm**: *whenever you sacrifice a Treasure, +1/+0 until end of turn* | qualquer sacrifício (2017-09-29); os pagos para **conjurar** a Storm não contam | ⚠️ T6: Treasure F--PiJszG some com a Storm em campo | 🐛 **não existe** |
+| **The Reaver Cleaver**: *+1/+1, trample, whenever deals combat damage to a player, create that many Treasures* / Equip {3} | — | ⚠️ equip não registrado; sobras de mana de 3 em T6 e T7 batem com ele | ✅ equip pago, "that many" = poder + 1 (dinâmico); 🐛 sem o +1/+0 da Storm |
+| **Sevinne's Reclamation**: *return target permanent card MV ≤3 from your graveyard; if cast from a graveyard, may copy and choose a new target* / Flashback {4}{W} | permanent card inclui **terreno** (2024-06-07); a cópia não é "cast" e não copia de novo (2019-08-23); flashback exila sempre | ✅ T6 do exílio (Mahadi), T8 flashback (Zulaport); ⚠️ cópia não usada | ✅ flashback com original + cópia (`try_sevinne_flashback`); 🐛 do exílio vira permanente sem efeito; alvo exclui terreno (heurística) |
+| **Eldest Reborn** (oponente): I sacrifice / II discard / III reanimate | cada capítulo no turno do dono, depois do draw (2018-04-27) | ✅ I: o usuário confirmou que sacrificou o **Zulaport**; ⚠️ II: **esqueceu** o descarte (resposta do usuário); III sem registro | 📊 carta de oponente |
+| **Desolate Mire**: *{1},{T}: add {W}{B}* / **Rakdos Signet**: *{1},{T}: add {B}{R}* | +1 líquido cada | ✅ usados nas contas de mana | ✅ |
+| **Dragonskull Summit**: *enters tapped unless you control a Swamp or a Mountain* | checa os que já estão em campo | ✅ T1 tapped (sem Mountain em campo) | ✅ (`land_enters_tapped`) |
+
+**Regra #3 (conceito compartilhado "jogar/conjurar de FORA da mão"):** o simulador tem 5 caminhos que movem carta de fora da mão para o jogo, e cada um tratava um subconjunto das consequências de "cast"/"play": `cast_card` (completo), `play_from_impulse` (só mana + entrar + Pact Boon, mágica vira permanente), `try_sevinne_flashback` (mana + efeito, sem contar a mágica), `do_cascade` (entra + resolve, sem contar), `try_face_breaker_impulse`/`pull_impulse` (terreno descartado). Consequências compartilhadas que faltavam: contador de "second spell" (Lotho), extort (Life Insurance), Pact Boon, resolução de instantânea/feitiço, jogada de terreno.
+**Regra #6 (ordem de fases/eventos):** o Lotho precisa estar em campo **no momento da conjuração**, não depois de a mágica entrar; o teste ficava depois de `enter_battlefield`.
+**Regra #7 (ficha/token, 4 checagens):** só os Treasures que existem quando a habilidade resolve viram criatura (CR 611.2c) — conferido **por id** (`atacantes_vs_criacao.txt`): nenhum Treasure virado foi criado depois do primeiro toque de Treasure do turno; as mortes assumidas em combate são do usuário, não do simulador.
+
+**Validação:** 7/7 saídas refeitas e iguais byte a byte (`resumos/verificacao_reproducao.txt`); mana fecha exato em T2, T3, T4, T8 (script `ledger_mana.py`); 4 testes diretos das lacunas do simulador.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** gatilho compartilhado ligado em só alguns pontos (cast de fora da mão), conceito compartilhado ("spell cast"), custo alternativo (flashback, cast do exílio), fórmula dinâmica achatada (Storm + Cleaver), ordem de fases (Lotho no cast).
+**Não varridas:** as demais classes e as outras cartas do `.py`; as respostas do usuário sobre a atribuição dos Treasures de T6/T7/T8 (perguntas no `goldfish-log.md`).
+
+## Sephiroth, Fabled SOLDIER // One-Winged Angel (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
+
+Pedido: *"Quero sim, corrija os itens 2 e 3."* (lacunas do Sephiroth levantadas ao responder se o simulador flipava com 4 mortes no turno). Código: `vihaan_goldfish_v1.py` (antes = commit `ba74496`). Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-sephiroth/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** no Scryfall (2026-10-03) antes de escrever o código e relidos antes de fechar a rodada (Regra #3); resposta bruta em `.../dados/oraculo_e_rulings.json`.
+
+**Rulings (10, 2025-06-06) relevantes:** (i) *If Sephiroth, Fabled SOLDIER and one or more other creatures die at the same time, its last ability will trigger for each of those other creatures. (It won't transform, though.)* (ii) *If this card somehow enters the battlefield with its back face up, it didn't transform, so you won't get an emblem.* As demais 8 tratam de faces de carta dupla, cor, valor de mana e fichas-cópia e não mudam a leitura.
+
+| Cláusula do oráculo | Status | Onde / como |
+|---|---|---|
+| Frente: "Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card." | ✅ já existia · **não relida nesta rodada** | `try_sephiroth_sac_draw` (fora do escopo da correção) |
+| Frente: "Whenever another creature dies, target opponent loses 1 life and you gain 1 life" | ✅ + 🐛 corrigido (simultaneidade) | `_sephiroth_death_triggers`: em lote (`begin_mass_death`) dispara para **cada outra** criatura que morre junto, em qualquer ordem de remoção, fichas incluídas; a morte do próprio Sephiroth **não** dispara a frente ("another") |
+| Frente: "If this is the fourth time this ability has resolved this turn, transform Sephiroth" | ✅ + 🐛 corrigido (contador) | conta resoluções da frente, vira na 4ª; **não vira** se ele morre no mesmo lote (ruling i); o contador zera em cada turno de oponente (`try_smart_opponent_turn`) e na reentrada (objeto novo em `enter_battlefield`). As resoluções 5ª, 6ª… que já estavam na pilha continuam resolvendo, sem virar de novo |
+| Verso: "Super Nova — … you get an emblem with 'Whenever a creature dies, …'" | 🐛 corrigido (acumula) | `super_nova_emblems` conta emblemas; cada virada dá 1 novo; emblema é objeto independente (continua mesmo sem Sephiroth em campo) |
+| Emblema: "Whenever a **creature** dies" (sem "another") | ✅ | a morte do próprio Sephiroth dispara o emblema (W5/W8 nos testes) |
+| Emblema + Sephiroth de frente em campo | 🐛 corrigido | 2 gatilhos por morte (o do emblema e o da frente); a 4ª resolução da frente vira de novo e dá um 2º emblema. Um emblema que nasce no meio do lote **não** dispara para as mortes do lote (já aconteceram) |
+| Verso: "Flying" | 📊 | sem bloqueio nem remoção por voo no goldfish (evasão não muda nada aqui) |
+| Verso: "Whenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards." | ✅ já existia · **não relida nesta rodada** | `try_sephiroth_sac_draw` |
+| "another creature dies" de criatura de **oponente** | 📊 estrutural | a cláusula não restringe o controlador, mas o simulador não modela criaturas de oponente (estado real de oponente, Regra #1) |
+
+**Regra #3 (conceito compartilhado "criatura morre"):** todas as vias que tiram criatura do campo, conferidas por grep em `vihaan_goldfish_v1.py` (`battlefield.remove`, `constructs -=`, `other_tokens -=`, zeramentos de contador nos wipes): `sacrifice_named_creature` e `remove_permanent` (nomeadas), `sacrifice_constructs`, `sacrifice_other_tokens`, `sacrifice_treasures` (animados), `_destroy_dragons`, os blocos de wipe de `try_smart_opponent_wipe` e Blood Money/Blasphemous Act — todas chamam `on_creature_dies` via `on_permanent_sacrificed`/`on_permanent_destroyed`. A única outra remoção direta do campo é o Cascade tirando a **mágica** resolvida (não é criatura). Os wipes (3 pontos) agora abrem e fecham o lote.
+**Regra #6 (ordem de fases):** o contador zerava só no meu turno; `try_smart_opponent_turn` agora o zera no início de cada turno de oponente. A virada é medida no momento em que a 4ª resolução ocorre, não no end step, então não depende da ordem de `play_turn`.
+
+**Erro meu na própria correção (pego por teste dirigido antes da medição):** a 1ª versão do lote disparava a frente também na morte do próprio Sephiroth (5 gatilhos num wipe com 4 outras criaturas). Corrigido com `dying=` nas duas vias de permanente nomeado. Conferido nos testes W1, W2, W3, W7, W8 e W9.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 35 terrenos); 28 testes dirigidos 28/28; bit-identidade com as 3 chaves desligadas, 20.000+20.000 partidas; regressão 140.000 partidas, 0 exceções, 0 violações dos invariantes novos; A/B pareado N=2.000 e N=10.000 (padrão e resiliência): virada do Sephiroth no modo resiliência **2,31% → ~0,61%** (−1,70 ±0,25pp), das quais 72% das viradas antigas (167/231) eram wipes em que ele morria junto (instrumentado no código antigo); drain e vitória até o T8 sem mudança mensurável. Reprodutibilidade: 11 de 11 saídas refeitas e iguais byte a byte (`resumos/verificacao_reproducao.txt`).
+**Achados laterais (não corrigidos):** wipes próprios (Blood Money, Blasphemous Act) usam o caminho de **sacrifício** ("destroy" não é sacrifício: Mayhem Devil dispara a mais, comandante excluído); Sephiroth poderia sacrificar Treasures animados (política); Xorn e Pitiless Plunderer em lote por evento (pré-existente); 7 outros decks sorteiam o fundo no mulligan.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** gatilho compartilhado ligado em só alguns pontos (morte de criatura nos wipes e sacrifícios), conceito compartilhado "criatura que morre" (grep de todas as vias), ordem de fases / fronteira de turno (Regra #6), fórmula dinâmica (número de emblemas × número de gatilhos).
+**Não varridas:** as demais classes e as outras cartas do `.py` (não foi auditoria carta a carta); as habilidades de entrada/ataque do Sephiroth não foram relidas.
+
+## Treasure animado, mulligan e terreno tapped (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
+
+Pedido: *"Quero sim, corrija todos os erros do simulador!"* (resposta à oferta de corrigir o roteamento do Treasure animado). Código: `vihaan_goldfish_v1.py` (antes = commit `6e623d3`). Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-treasure-animado-e-mulligan/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** no Scryfall (2026-10-03) **antes** de escrever o código (Regra #3); resposta bruta em `.../dados/oraculo_e_rulings.json`.
+
+**Oráculo (Vihaan, Goldwaker, Outlaws of Thunder Junction Commander):** *Other outlaws you control have vigilance and haste. At the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.*
+**Rulings (5, 2024-04-12):** os Treasures animados mantêm as habilidades; Assassin é outlaw; um Treasure que já é criatura tem o P/T sobrescrito pelo efeito. **CR 611.2c** (`rules-cache/comprehensive-rules.txt`, linha 2915): o conjunto de objetos afetado é fixado quando o efeito contínuo começa.
+**Cartas de contexto lidas:** Zulaport Cutthroat (1 ruling), Pitiless Plunderer (1), Mahadi, Emporium Master (0), Ashnod's Altar (0), Krark-Clan Ironworks (0), Sephiroth (10).
+
+| Cláusula do oráculo | Status | Onde / como |
+|---|---|---|
+| Vihaan: "Other outlaws you control have vigilance and haste" | ✅ | haste propagado a `ready_creatures`; vigilância 📊 (sem bloqueio modelado), e é por ela que o Treasure animado que ataca continua desvirado para mana na 2ª main |
+| Vihaan: "At the beginning of combat… Treasures you control become 3/3 Construct Assassin artifact creatures… until end of turn" (animação) | ✅ | `combat_step`: `treasures_animated_this_combat` e `treasures_animated_alive` = Treasures no início do combate |
+| "… until end of turn" | 🐛 corrigido | os animados continuam criaturas na 2ª main phase; `end_step` zera `treasures_animated_alive` (antes só o Altar os via como criatura, e só no combate) |
+| CR 611.2c: só os Treasures que existiam na resolução | 🐛 corrigido | `sacrifice_treasures` só roteia como criatura até `treasures_animated_alive`; o Treasure criado depois (Olivia, Face-Breaker, Pitiless Plunderer, Reaver Cleaver…) não é criatura. O código antigo sacrificava **todos** os Treasures ao Altar |
+| Ruling: "Treasures keep any abilities they previously had while they're creatures" | ✅ | o animado continua podendo ser sacrificado por mana (`spend_mana`) e por qualquer outlet |
+| Ashnod's Altar: "Sacrifice a creature: Add {C}{C}" | 🐛 corrigido | só aceita animados vivos |
+| Krark-Clan Ironworks: "Sacrifice an artifact: Add {C}{C}" | 🐛 corrigido | aceita todos; o animado sacrificado a ele também é criatura (antes: "não é criatura fora do combate") |
+| Zulaport / Pitiless Plunderer / Sephiroth / Agent of the Iron Throne / Mahadi: "creature dies / is sacrificed" | 🐛 corrigido por conceito compartilhado | disparam em **todo** sacrifício de Treasure animado (`on_permanent_sacrificed(is_creature=True)`), não só no do Altar |
+
+**Regra #3 (conceito compartilhado "Treasure animado é criatura"):** os 9 pontos de `sacrifice_treasures` no `.py` (conferido por grep): `spend_mana` (mana de Treasure), `try_face_breaker_impulse`, `Deadly Dispute` (`resolve_instant_sorcery`), `Lich-Knights' Conquest`, Magda ("Sacrifice three Treasures"), Jan Jansen, `aggressive_treasure_destruction` (Altar e KCI). Todos passam agora pelo mesmo roteamento padrão (`as_creature=None`); só os dois explícitos antigos ficam sob a chave desligada.
+**Regra #6 (ordem de fases):** `play_turn` = `… draw → play_land → main_phase → check_visitor_combo → combat_step (animação no início; destruição pós-combate) → main_phase (2ª: mana de Treasure animado) → … → end_step (Mahadi; zera os animados)`. A animação precede os dois pontos em que o sacrifício importa; Mahadi conta as mortes **antes** de o end step zerar. Teste em `play_turn` completo.
+
+**Mulligan e terreno (Vihaan):** (1) o London Mulligan sorteava as cartas do fundo; agora `choose_bottom` (terreno só com mais de 4, depois a não-terreno de maior custo, protegendo `GOOD_KEEP`). (2) `play_land` jogava `lands_in_hand[0]`; agora `choose_land_to_play` (tapped em T1/T2 salvo se custar uma jogada de desenvolvimento) com a regra de "entra tapped" numa função só (`land_enters_tapped`: tag `etb_tapped`, checkland, fastland; shockland paga a vida).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 35 terrenos); bit-identidade com as 3 chaves desligadas, 20.000+20.000 partidas; regressão 160.000 partidas, 0 exceções; 42 testes dirigidos 42/42; A/B pareado N=2.000 (padrão e resiliência) e N=10.000 com as métricas novas se movendo no sentido esperado (animados sacrificados como criatura 0,56 → 1,53 por partida; mortes de criatura +1,05; mana T2/T3 do tapped +0,05/+0,08). Números no `goldfish-log.md`.
+
+**Achados laterais (não corrigidos):** Sephiroth poderia sacrificar Treasures animados (política); Xorn e Pitiless Plunderer em lote por evento (pré-existente); 7 outros decks sorteiam as cartas do fundo no mulligan.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** gatilho compartilhado ligado em só alguns pontos (morte de criatura por sacrifício de Treasure), estático lido em uma função mas não propagado (Treasure animado = criatura), conceito compartilhado "criatura que morre", ordem de fases (Regra #6), custo/escolha do piloto (mulligan, terreno).
+**Não varridas:** as demais classes e as outras cartas do `.py` (esta rodada não foi uma auditoria carta a carta).
+
+## Kingpin, Wilson Fisk (candidata, implementada só no harness) — oráculo, rulings e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-kingpin/orquestracao/kp_harness.py`
+(monkeypatch; `vihaan_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03; Marvel Super Heroes Commander #661; a foto enviada confere com o oráculo) e
+salvo em `scryfall-cache/oracle-cache.json`; resposta bruta e rulings em `resultados-ab/2026-10-03-kingpin/dados/rulings_Kingpin_Wilson_Fisk.json` (rulings de contexto em `rulings_contexto_vihaan_xorn_manufactor_procession.json`).
+
+**Oráculo:** {3}{B}, Legendary Creature — Human Villain, 3/6. *Menace. Whenever you sacrifice Kingpin or another creature, create two Treasure tokens. This ability triggers only once each turn.*
+**Rulings do Kingpin: nenhum (0).** **Rulings de contexto lidas antes de escrever o código:** Vihaan, Goldwaker (5; 2024-04-12): os Treasures animados "keep any abilities they previously had while they're creatures" e "outlaw" é Assassin/Mercenary/Pirate/Rogue/Warlock;
+Xorn (1): várias Xorn somam; Academy Manufactor (4): cada criação vira 1 de cada (Clue, Food, Treasure); Anointed Procession (6): dobra a quantidade de cada tipo, e várias Processions multiplicam; Dictate of Erebos (5); Goldspan Dragon (3); Mirkwood Bats e Ashnod's Altar (0); Sephiroth (10).
+
+| Cláusula do oráculo | Status | Como entra no harness |
+|---|---|---|
+| Legendary Creature 3/6, {3}{B} | ✅ | `add(KINGPIN, 4, "creature", {"kingpin"})`; poder 3 em `CREATURE_POWER` (métrica de combate) |
+| tipos Human Villain (não é outlaw) | ✅ | sem tag `outlaw`: o Vihaan não lhe dá haste nem vigilância; entra e só ataca no turno seguinte |
+| Menace | 📊 estrutural | sem bloqueio no goldfish (convenção do arquivo) |
+| "Whenever you sacrifice Kingpin or another creature" | ✅ | gatilho em `on_permanent_sacrificed(..., is_creature=True)`, o ponto central de todo sacrifício do simulador (Constructs, fichas, criatura nomeada, Treasure animado via Altar); para "Kingpin" sacrificado, `_kp_self` deixa o gatilho enxergar a própria saída. Destruição/wipe (`on_permanent_destroyed`) **não** dispara, como no oráculo |
+| "create two Treasure tokens" | ✅ | `create_treasures(state, 2)`: Xorn (+1), Anointed Procession (×2) e Academy Manufactor (Clue+Food+Treasure) valem como para qualquer criação, na ordem que maximiza (Xorn → Procession → Manufactor) |
+| "This ability triggers only once each turn." | ✅ | flag `kp_triggered_this_turn`, zerada no início de `play_turn` |
+| ruling do Vihaan: Treasure animado conserva habilidades = é criatura | ✅ nas políticas `anim`/`delib` | sacrificar um Treasure ANIMADO (após o início do combate, até o fim do turno) por qualquer via conta como criatura sacrificada para o Kingpin (mana no 2º main, Krark-Clan Ironworks, Magda); o simulador original passa `as_creature=False` e só o Altar passa `True`: lacuna do `.py` (abaixo), que aqui só o Kingpin enxerga |
+| linha deliberada (não é cláusula) | ✅ política `delib` | no começo do `end_step`, sem disparo no turno e com Treasure animado sobrando, sacrifica UM por nada para disparar o Kingpin (−1 Treasure, +2/+3/+4/+6) |
+
+**Regra #3 (conceitos compartilhados que a carta lê):** (a) **"sacrificar"** = `on_permanent_sacrificed` (o Mayhem Devil já lê o mesmo ponto: "Whenever you sacrifice a permanent"); a destruição passa por `on_permanent_destroyed`, que o Mayhem Devil e o Kingpin ignoram de propósito (conferido por leitura das duas funções); (b) **"criar Treasure"** = `create_treasures`, que já aplica Xorn/Procession/Academy e dispara `on_tokens_created` (Mirkwood Bats, Kambal, Caretaker's Talent), então cada disparo do Kingpin aciona esses pagadores de graça; (c) **"Treasure animado é criatura"** só existe em `treasures_animated_this_combat` (setado no início de `combat_step`, zerado em `play_turn`); a leitura de quantos animados restam (`_animated_left`) é do harness.
+**Regra #6 (ordem de fases, `play_turn`):** `upkeep (Smaug, Revel, Laughing Jasper Flint) → compra → play_land → main_phase → combat_step (animação no início) → main_phase (2º main: aqui o Treasure animado já é criatura) → Magda (crime) → end_step`. O disparo `delib` roda no começo do end step (depois dos dois mains), então os 2 Treasures criados **não** são gastáveis naquele turno (valem a partir do seguinte) e a conta de Revel in Riches é feita no upkeep seguinte (o simulador a marca no end step e encerra a partida).
+
+**Achado lateral do simulador (não corrigido nesta rodada, Regra #1; classe "gatilho compartilhado ligado só em ALGUNS pontos"):** o Treasure animado sacrificado é tratado como não-criatura em dois caminhos, para TODOS os gatilhos de criatura: `spend_mana` (mana do 2º main) e o ramo do Krark-Clan Ironworks de `aggressive_treasure_destruction` (só o Ashnod's Altar passa `as_creature=True`), apesar de o oráculo do Vihaan manter o Treasure criatura até o fim do turno. Zulaport Cutthroat, Nadier's Nightblade, Pitiless Plunderer, Sephiroth, Dictate of Erebos e Mahadi (end step, `deaths_this_turn`) subestimam esses eventos.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** gatilho compartilhado (sacrifício, criação de Treasure), conceito compartilhado (criatura × Treasure animado), fórmula com multiplicadores (Xorn/Procession/Academy), ordem de fases, tipo (outlaw ou não), limite 1×/turno.
+**Não varridas:** auditoria carta-a-carta do `.py` (a carta não está na lista), Menace/bloqueio (📊), oponente real.
+
+## Inevitable Defeat (candidata, implementada só no harness) — oráculo, ruling e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-inevitable-defeat/orquestracao/vih_harness.py`
+(monkeypatch; `vihaan_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03) e salvo em `scryfall-cache/oracle-cache.json`;
+resposta bruta e rulings em `resultados-ab/2026-10-03-inevitable-defeat/dados/rulings_Inevitable_Defeat.json`.
+
+**Oráculo:** {1}{R}{W}{B}, Instant. *This spell can't be countered. Exile target nonland permanent. Its controller loses 3 life and you gain 3 life.*
+**Rulings (1):** 2025-04-04 — se o alvo for ilegal quando a magia tenta resolver, ela não resolve e nenhum efeito acontece: ninguém ganha nem perde vida.
+
+| Cláusula do oráculo | Status | Como entra no harness |
+|---|---|---|
+| "This spell can't be countered." | 📊 estrutural | o goldfish não tem contramágica de oponente |
+| "Exile target nonland permanent." | 📊 estrutural | exílio de permanente de OPONENTE (não modelado). Conta como remoção (tag `removal` ⇒ `removal_cast_total`) |
+| (efeito colateral do alvo) | ✅ | o alvo é permanente de oponente, então **comete crime** ("Targeting opponents, anything they control... is a crime", reminder text da Magda): `commits_crime_this_turn = True`, que o simulador lê no fim do turno para a Magda |
+| "Its controller loses 3 life" | ✅ | `drain(state, 3, each_opp=False)` (alvo único: 3 de vida de mesa) |
+| "and you gain 3 life." | ✅ | `gain_life(state, 3)`, que soma em `life_gained_this_turn` (lido pela Witch of the Moors no end step) |
+| ruling 2025-04-04 (alvo ilegal ⇒ nada acontece) | 📊 estrutural | o goldfish assume alvo sempre legal |
+| custo {1}{R}{W}{B} | ✅ com ressalva | o simulador só conta mana total; a restrição R+W+B é uma porta de cor do harness (`VIH_COLOR=sim|best`: 3 fontes distintas, Treasure e Arcane Signet como fonte de qualquer cor) |
+
+**Regra #3 (conceitos compartilhados que a carta lê):** (a) "cometeu crime neste turno" — escrito por todas as remoções com alvo (linha ~1185 do `.py`) e lido só no fim do turno
+pela Magda (linha ~2020); a Defeat escreve o mesmo flag; (b) "ganhou vida neste turno" — `gain_life` soma em `life_gained_this_turn`, zerado em `play_turn` e lido pela Witch no end step;
+(c) "dano de mesa" (`drain`) — alimenta `table_damage_total`, que compõe `win_turn`. Nenhum conceito de tipo (artefato, token, criatura) é tocado: a carta não entra em campo.
+**Regra #6 (ordem de fases):** o flag de crime é lido depois dos main phases (comentário do `.py`, bug corrigido em 2026-08-22), então a Defeat conjurada em qualquer main do meu turno conta. A Defeat no **turno do oponente** não é modelada (o simulador só conjura no meu turno): para a Magda isso seria um 2º Treasure possível, então o proxy é piso.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** gatilho compartilhado (crime, ganho de vida), custo (cor), tipo (não é artefato/token/criatura), custo alternativo (nenhum no oráculo), fórmula dinâmica (nenhuma: 3 fixo no oráculo).
+**Não varridas:** auditoria carta-a-carta do `.py` (não era o pedido), oponente real (📊).
+
+## Draconic Visitor (candidata FRA) + 2 gaps reais achados no caminho — 2026-09-25
+
+**Gatilho:** *"A carta Draconic Visitor, avalie ela como possível inclusao
+tanto no Ur-Dragon, quanto no Vihan, e me diga aonde ela seria melhor e
+pq, ou se não vale incluir em nenhum dos 2!"* A carta entra no simulador
+só como candidata (via `swap`, troca posicional). `lista.md` não muda.
+
+### Draconic Visitor — oráculo ao vivo (cache FRA #80), cláusula a cláusula
+
+`{3}{R}{R}` Creature — Dragon 5/5. Legalidade: `not_legal` até o
+lançamento de FRA (2026-10-02).
+
+| Cláusula | Status | Onde |
+|---|---|---|
+| Flying | ✅ | poder 5 em `CREATURE_POWER`, conta no combate |
+| "If one or more artifact tokens would be created under your control, that many 5/5 red Dragon creature tokens with flying are created instead." | ✅ | `create_treasures` e `create_constructs` → `_create_visitor_dragons` |
+
+Detalhes da substituição (regras reais, não heurística):
+- É efeito de substituição obrigatório (CR 614.1a, "instead"). Com a
+  Visitor em campo nenhum Treasure, Clue, Food, Construct ou Servo chega a
+  existir.
+- O controlador escolhe a ordem das substituições (CR 616.1). A ordem que
+  maximiza Dragões é: Xorn (+1) → Anointed Procession (×2) → Academy
+  Manufactor (Clue + Food + Treasure = 3 fichas de artefato por Treasure) →
+  Visitor. Exemplo: o Treasure do upkeep do Smaug com as 4 em campo vira
+  (1+1)×2×3 = 12 Dragões 5/5.
+- As fichas são criatura, não artefato. Disparam Kambal (2ª habilidade),
+  Mirkwood Bats e Caretaker's Talent na criação. Morrem em "destroy all
+  creatures": `_destroy_dragons` cobre Blood Money, Blasphemous Act e o
+  wipe de oponente do modo de resiliência. Não têm haste: não são outlaws,
+  então o Vihaan não dá haste a elas. Atacam do turno seguinte em diante.
+- O combo Visitor + Pitiless Plunderer + Ashnod's Altar fica fora do
+  Commander Spellbook. Foi derivado das regras: sacrifica um Dragão no
+  Altar ({C}{C}), o Plunderer cria um Treasure, a Visitor troca por um
+  Dragão, e repete. Isso dá mana incolor, mortes, fichas criadas e
+  sacrifícios infinitos. Fecha o jogo com qualquer um dos pagadores da
+  lista: Zulaport Cutthroat, Mirkwood Bats, Nadier's Nightblade, Kambal,
+  Sephiroth (transforma na 4ª resolução, depois o emblema drena sem
+  limite), Mayhem Devil, ou Agent of the Iron Throne com o Vihaan em campo.
+  O Agent é Encantamento (Background), então não serve de primeira
+  criatura do loop. Implementado em `check_visitor_combo`, chamada depois
+  de cada fase principal e no end step.
+
+📝 O que a Visitor desliga no deck (checado no oráculo de cada carta):
+- a 2ª habilidade do próprio Vihaan (animar Treasures);
+- a vitória alternativa da Revel in Riches;
+- o dano do Smaug ("number of Treasures you control");
+- o Treasure de 2 manas do Goldspan;
+- o Scorpion Dragon da Magda, the Hoardmaster;
+- o roubo do Kellogg;
+- os contadores da Olivia;
+- o −X/−X do Grim Hireling;
+- o impulso do Professional Face-Breaker;
+- o pump do Captain Lannery Storm;
+- a cascata da Rain of Riches;
+- o combustível de KCI e Jan Jansen;
+- o dreno da Marionette Master;
+- o anthem da Sentinel Sarah Lyons ("an artifact entered").
+
+A Visitor pode ser sacrificada (Altar, Phyrexian Tower, Deadly Dispute,
+Sephiroth) pra religar o modo Treasure. 📝 O simulador nunca faz isso.
+
+### 🐛 Kambal, Profiteering Mayor — limite de 1x/turno aplicado à habilidade errada
+
+Oráculo: 1ª habilidade "Whenever one or more tokens your opponents
+control enter ... This ability triggers only once each turn."; 2ª
+habilidade "Whenever one or more tokens you control enter, each opponent
+loses 1 life and you gain 1 life." O código limitava a 2ª a 1x/turno. O
+"only once each turn" pertence à 1ª. Corrigido em `on_tokens_created`:
+agora drena a cada evento de criação.
+
+### 🐛 The Reaver Cleaver — "that many" achatado pra 1 fixo
+
+Oráculo: "Equipped creature gets +1/+1 and has trample and 'Whenever this
+creature deals combat damage to a player or planeswalker, create that
+many Treasure tokens.' Equip {3}". O código criava 1 Treasure sempre que
+*qualquer* criatura atacava. Isso é a categoria "fórmula dinâmica
+achatada" da Regra #1: o arquivo agora rastreia poder impresso
+(`CREATURE_POWER`, novo nesta rodada), então dá pra calcular o valor
+exato. Corrigido:
+- equipa a criatura não-comandante de maior poder. O Vihaan nunca ataca
+  neste simulador (`ready_creatures` o exclui);
+- dispara só quando o portador ataca;
+- cria poder + 1 Treasures (o próprio +1/+1), +2 com Sentinel Sarah Lyons
+  ativa;
+- se o portador sai de campo, o Equipamento fica solto (CR 301.5c) e
+  reequipar custa {3} de novo.
+
+### Métrica nova (só leitura, não muda nenhuma decisão)
+
+- `combat_damage_proxy_total` soma o dano de combate sem bloqueio (mesma
+  premissa "ataca livre" do resto do arquivo). Usa poder impresso,
+  Treasure animado 3/3, Construct 1/1, ficha genérica 2 (📝 média), e
+  Dragão 5/5. Bônus reais aplicados:
+  - Caretaker's Talent nível 3 (+2/+2 em ficha de criatura);
+  - Sentinel Sarah Lyons (+2/+2 se um artefato entrou no turno);
+  - Shared Animosity nos grupos homogêneos Construct e Dragão.
+- `drain(..., each_opp=True)` marca "each opponent loses N" (Zulaport,
+  Mirkwood Bats, Nadier's, Kambal, Agent, extort). `table_damage_total`
+  soma N × 3 nesses casos e N em "target"/"any target" (Mayhem Devil,
+  Sephiroth, Marionette, Smaug, Sarah Lyons). `drain_damage_total` segue
+  a convenção antiga.
+- `win_turn` é o primeiro turno que cumpre uma destas condições:
+  - (dano de mesa + combate) ≥ 120;
+  - Revel in Riches no upkeep com 10+ Treasures;
+  - combo da Visitor com pagador.
+
+### Validação
+
+- Smoke: 99 cartas, 0 desconhecidas/duplicadas.
+- Testes dirigidos: `test_vihaan_goldfish.py`, 22/22. Cobrem Kambal,
+  substituição e ordem Xorn/Anointed/Manufactor, Constructs, Dragões
+  atacando/doentes, wipe matando Dragões, combo com e sem pagador, Agent
+  exigindo o comandante, Revel no upkeep, peso "each opponent", Reaver
+  Cleaver "that many", exigência de portador atacando e reequip pago, e
+  swap posicional/bit-idêntico.
+- 20.000 + 20.000 partidas (padrão + resiliência, seed 6.100.000+), 0
+  exceções (rodado depois do fix da Cleaver).
+- Antes/depois em 2.000 seeds: ver `goldfish-log.md`.
+
+---
+
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"Ainda bem que vimos isso antes de implementar o Vihaan,
+que tb tem muito sacrifício de artefatos!"* — comentário do usuário
+logo após concluir a auditoria de CR 903.9a nos outros 9 decks desta
+sessão (Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+Bridge/Maralen/Rat King Verminister), seguido de *"Vamos fazer o Vihaan
+agora."* Este deck nunca tinha nenhuma extensão de resiliência antes
+(criado em 2026-08-22, auditado clausula-a-clausula pela última vez em
+2026-09-14, mas sem `interaction_rng`/`remove_permanent` nenhum) — porte
+completo do zero, **primeiro deck desta sessão a nascer com a correção
+de CR 903.9a nativa desde a 1ª linha**, em vez de implementada errado e
+corrigida depois via retrofit (os outros 9 decks foram todos retrofit).
+
+**Design incorporado direto do padrão final já validado nos outros 9
+decks:** 7 categorias padronizadas (removal/attack/discard/wipe/
+graveyard-wipe/graveyard-snipe/counterspell), wipe unificado (1 rolagem
+"algum wipe acontece" + escolha ponderada de 1 TIPO só —
+creature/artifact/enchantment — em vez de 3 rolagens independentes),
+gate de atenção por oponente (`OPPONENT_ATTENTION_CHANCE`), supressão
+de ataque pós-wipe simétrico (`state.wiped_this_round`).
+
+**CR 903.9a aplicada desde o início em `remove_permanent`:** comandante
+vai pro cemitério DE VERDADE primeiro (CR 700.4, "dies" — ação baseada
+em estado, CR 704, não substituição — ver
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+`references/user-standing-rules.md`), disparando `on_creature_dies`
+normalmente (Zulaport Cutthroat/Pitiless Plunderer/Agent of the Iron
+Throne/Sephiroth/Life Insurance — nenhum deles é ele mesmo; Vihaan
+NUNCA é artefato, só creature+outlaw, `on_artifact_dies` nunca dispara
+pra ele), só DEPOIS é removido de lá pra representar a escolha do dono
+de movê-lo pra zona de comando. **Mayhem Devil fica de fora** (via
+`on_permanent_destroyed`, uma cópia de `on_permanent_sacrificed` SEM a
+linha do Mayhem Devil) — oráculo real é "whenever YOU SACRIFICE", e
+destruição/wipe de oponente nunca é sacrifício feito por mim.
+
+**Achado real ADICIONAL durante a validação (2 bugs pré-existentes do
+próprio motor do deck, não de oponente — achados só porque a regressão
+de 20.000 partidas rodou de verdade pela 1ª vez neste espaço de
+seeds):** `sacrifice_named_creature` (chokepoint central de sacrifício
+VOLUNTÁRIO já existente no arquivo desde 2026-08-22) **nunca tratava o
+caso do comandante** — se ela fosse escolhida como sacrifício, ficava
+presa no cemitério pra sempre, `commander_in_play` travado em `True`.
+O fallback do **Deadly Dispute** (`resolve_instant_sorcery`, custo
+adicional mandatório "sacrifice an artifact or creature") escolhia
+`candidates[0]` sem NENHUMA preferência contra o comandante — se
+Treasures/Constructs/tokens genéricos estivessem todos zerados,
+`candidates[0]` podia literalmente ser Vihaan mesmo com outro
+artefato/criatura real disponível, dependendo só da ordem de
+`state.battlefield`. **319/20.000 seeds (1,6%) tinham o comandante
+preso no cemitério** antes desta correção. Corrigidos os 2: (1)
+`sacrifice_named_creature` agora trata o comandante igual `remove_
+permanent` (cemitério de verdade → zona de comando), MAS mantém Mayhem
+Devil disparando aqui — diferente de `remove_permanent`, isto É um
+sacrifício de verdade feito por mim; (2) Deadly Dispute agora prefere
+qualquer outro artefato/criatura real antes de considerar o comandante,
+só a sacrifica quando ela é genuinamente a ÚNICA opção legal (o custo é
+mandatório, sem alternativa de não pagar).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão (20.000
+seeds, seed_base 6000000) contra o commit anterior, comparando só as
+chaves PRÉ-EXISTENTES (campos novos do modo de resiliência excluídos
+da comparação, já que trivialmente começam no default em modo padrão):
+**0/20000 mismatches** — antes do fix do Deadly Dispute. Depois do fix
+do Deadly Dispute (mudança de comportamento real e intencional, não
+regressão): **657/20000 mismatches (3,3%)**, divergência esperada e
+legítima (mesma categoria "RNG ripple" do Blightsteel Colossus/
+Megatron/Toph — agora que o comandante é corretamente deprioritizado
+como fodder, jogos que antes a sacrificavam por acidente seguem um
+caminho diferente). Validado por comparação A/B agregada (10.000
+seeds) em vez de bit-identidade:
+`treasures_created_total`/`creature_deaths_total`/
+`drain_damage_total`/`cards_drawn_extra`/`combat_attacks_total` todos
+dentro de margem pequena e coerente (ex. 9,2643→9,1674), e "comandante
+nunca conjurado" **idêntico** nos dois lados (0,79%/0,79% — confirma
+que o fix só afeta QUEM é sacrificado depois dela já estar em campo,
+nunca se/quando ela é conjurada). Regressão de 20.000 partidas em modo
+padrão + 20.000 em modo de resiliência (rodada de novo após o fix dos
+2 bugs pré-existentes): 0 exceções nos 2, **0 comandantes presos no
+cemitério nos 2** (era 319/20000 em resiliência antes do fix). 7 testes
+dirigidos: (1) `remove_permanent` — Zulaport dispara, comandante não
+presa; (2) Mayhem Devil NÃO dispara por destruição de oponente; (3)
+`sacrifice_named_creature` — Mayhem Devil DISPARA (sacrifício real),
+comandante não presa; (4) contra-ataque intercepta o cast, mana já
+gasta, ela nunca entra em campo; (5) Deadly Dispute prefere Sol Ring ao
+comandante quando ambos disponíveis; (6) Deadly Dispute sacrifica o
+comandante só quando é a única opção, sem ficar presa; (7)
+`try_smart_opponent_wipe` inclui o comandante nos alvos, ela não fica
+presa no cemitério.
+
+**Resultado:** primeiro deck desta sessão a nascer com CR 903.9a nativa
+desde o início — mas a validação rigorosa (20k regressão, não só bit-
+identidade rasa) ainda achou 2 bugs REAIS pré-existentes no motor
+próprio do deck (não relacionados a oponente), confirmando o valor de
+sempre rodar a regressão completa mesmo quando a lógica nova "parece"
+certa por construção.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 Última das 16 decks desta campanha (mesmo tratamento já aplicado a

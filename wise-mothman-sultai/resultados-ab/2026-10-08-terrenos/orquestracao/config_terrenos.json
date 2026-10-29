@@ -1,0 +1,137 @@
+{
+ "sim": "resultados-ab/2026-10-08-terrenos/codigo/mothman_goldfish_v1_lista_atual.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "commander_cast_turn__nunca",
+  "casualties_casts",
+  "atomize_casts",
+  "trophy_casts",
+  "regenerations_used",
+  "protection_used_total",
+  "smart_removals_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "mana_spent_total",
+  "prox_mana_wasted_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total",
+  "rad_counters_given_opp_total"
+ ],
+ "compacto": [
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "casualties_casts",
+  "atomize_casts",
+  "regenerations_used",
+  "mana_spent_total"
+ ],
+ "variantes": {
+  "base": {},
+  "t1_swarmyard_swamp": {
+   "SWAPS": [
+    [
+     "Swarmyard",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "t2_hollow_forest": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Forest"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "t3_ambos_swamp_forest": {
+   "SWAPS": [
+    [
+     "Swarmyard",
+     "Swamp"
+    ],
+    [
+     "Yavimaya Hollow",
+     "Forest"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "t4_ambos_swamp_swamp": {
+   "SWAPS": [
+    [
+     "Swarmyard",
+     "Swamp"
+    ],
+    [
+     "Yavimaya Hollow",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "t5_island_swamp": {
+   "SWAPS": [
+    [
+     "Island",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "t6_t3_mais_island_swamp": {
+   "SWAPS": [
+    [
+     "Swarmyard",
+     "Swamp"
+    ],
+    [
+     "Yavimaya Hollow",
+     "Forest"
+    ],
+    [
+     "Island",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "t7_plaza_swamp": {
+   "SWAPS": [
+    [
+     "Plaza of Heroes",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "t1_swarmyard_swamp",
+  "t2_hollow_forest",
+  "t3_ambos_swamp_forest",
+  "t4_ambos_swamp_swamp",
+  "t5_island_swamp",
+  "t6_t3_mais_island_swamp",
+  "t7_plaza_swamp"
+ ],
+ "regressao": [
+  "t3_ambos_swamp_forest"
+ ]
+}

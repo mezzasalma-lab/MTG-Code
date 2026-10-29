@@ -1,0 +1,23 @@
+PASS - A1 so' o Dictate, 10 Treasures todos animados: sacrifica METADE (5): 5 mortes, 5 gatilhos do Dictate (= 15 criaturas de oponente no proxy x3), 5 de reserva 
+PASS - A2 (o caso da correcao) 12 Treasures, 7 animados + 5 inanimados: a metade e' dos ANIMADOS = 3 (nao 6 = metade do estoque); os 5 inanimados ficam intactos e nao disparam nada 
+PASS - A3 12 Treasures, 4 animados: 2 sacrificados (metade de 4), 2 animados e 8 inanimados sobram como reserva 
+PASS - A4 animados impar (7): 'ate' metade' = 3 (arredonda pra baixo, nunca mais que a metade) 
+PASS - A5 1 animado entre 9 Treasures: metade = 0, nao sacrifica o unico animado 
+PASS - A6 escala do T8 da partida (12 Treasures animados): sacrifica 6 (o usuario fez 7 pagando o Dictate, outra coisa) 
+PASS - A7 chave desta rodada desligada = comportamento da 7a rodada: base = estoque (min(7 animados, 12 // 2 = 6) = 6) 
+PASS - A8 chaves da 7a e 8a desligadas = comportamento da 6a rodada: so' o Dictate sacrifica TODOS os animados 
+PASS - A9 Dictate + Mahadi: o sacrificio e' de graca (o Mahadi repoe) e continua sendo de TODOS os animados (7); contador 'so' Dictate' = 0 
+PASS - A10 Dictate + Pitiless Plunderer: idem, todos os animados 
+PASS - A11 so' Mahadi (sem Dictate): todos os animados, como na 5a rodada 
+PASS - A12 farm com Dictate desligado: nada (regra anterior a 6a rodada) 
+PASS - A13 sem Dictate, Mahadi nem Plunderer: nao sacrifica 
+PASS - A14 ordem: Dictate pago pelos 5 terrenos (os 8 Treasures intactos) e depois 4 animados (metade de 8) morrem com ele em campo = 4 gatilhos 
+PASS - A15 8 Treasures animados no combate + 6 criados depois (inanimados): estoque 14, animados 8; sacrifica 4 (metade dos animados), nao 7 (metade do estoque) 
+PASS - A16 sequencia real combat_step -> main_phase -> farm -> end_step: 8 animados, Dictate conjurado, 4 sacrificados (metade) e 0 animados vivos no fim 
+PASS - A17 integracao: Dictate + Zulaport + Sephiroth, 14 Treasures com 12 animados: 6 sacrificados = 6 gatilhos do Dictate, 6 drains do Zulaport, o Sephiroth vira na 4a morte 
+PASS - I1 (padrao, 1.500 jogos) nenhuma carta duplicada, 0 'animados vivos' no fim do turno, o farm nunca acima dos animados nem (so' Dictate) acima da metade dos animados 
+   info I1 padrao: Treasures-criatura sacrificados pelo farm em 1.500 jogos: 1000 (so' por causa do Dictate: 60)
+PASS - I1 (resiliencia, 1.500 jogos) nenhuma carta duplicada, 0 'animados vivos' no fim do turno, o farm nunca acima dos animados nem (so' Dictate) acima da metade dos animados 
+   info I1 resiliencia: Treasures-criatura sacrificados pelo farm em 1.500 jogos: 372 (so' por causa do Dictate: 25)
+
+19/19 testes passaram

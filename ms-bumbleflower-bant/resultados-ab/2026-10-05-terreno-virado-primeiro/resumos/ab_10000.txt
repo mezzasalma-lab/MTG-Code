@@ -1,0 +1,46 @@
+LOTE N=10000 sementes 3000000..3009999, 10 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6217 (62.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0176       0.0173      -0.0003 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.2527       0.2711      +0.0184 ±0.0038  
+  *commander_cast_turn__ate_T4                  0.6222       0.6516      +0.0294 ±0.0036  
+  *commander_cast_turn__ate_T5                  0.8052       0.8189      +0.0137 ±0.0024  
+  *next_uid                                    27.6954      27.8745      +0.1791 ±0.0375  
+  *len_battlefield                             26.3806      26.5556      +0.1750 ±0.0368  
+  *opponent_forced_draws_total                 18.8363      19.0375      +0.2012 ±0.0441  
+  *interaction_plays                            3.5706       3.6073      +0.0367 ±0.0094  
+  *len_library                                 62.2983      62.0584      -0.2399 ±0.0646  
+  *len_graveyard                                5.6115       5.6702      +0.0587 ±0.0162  
+  *cards_drawn_extra                           26.4223      26.6327      +0.2104 ±0.0614  
+  *commander_cast_turn__ate_T6                  0.8897       0.8938      +0.0041 ±0.0014  
+  *mana_spent_this_turn                        13.4606      13.5814      +0.1208 ±0.0421  
+  *proxy_damage_total                         218.8067     223.2510      +4.4443 ±1.5527  
+  *len_first_counter_this_turn                  3.4820       3.5161      +0.0341 ±0.0150  
+  *counters_placed_total                       90.4371      92.4162      +1.9791 ±0.8743  
+  *turn                                         9.7198       9.7123      -0.0075 ±0.0034  
+  *won_via_ascendancy                           0.2292       0.2340      +0.0048 ±0.0022  
+
+[so_terreno - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6217 (62.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0176       0.0173      -0.0003 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.2527       0.2711      +0.0184 ±0.0038  
+  *commander_cast_turn__ate_T4                  0.6222       0.6516      +0.0294 ±0.0036  
+  *commander_cast_turn__ate_T5                  0.8052       0.8189      +0.0137 ±0.0024  
+  *next_uid                                    27.6954      27.8745      +0.1791 ±0.0375  
+  *len_battlefield                             26.3806      26.5556      +0.1750 ±0.0368  
+  *opponent_forced_draws_total                 18.8363      19.0375      +0.2012 ±0.0441  
+  *interaction_plays                            3.5706       3.6073      +0.0367 ±0.0094  
+  *len_library                                 62.2983      62.0584      -0.2399 ±0.0646  
+  *len_graveyard                                5.6115       5.6702      +0.0587 ±0.0162  
+  *cards_drawn_extra                           26.4223      26.6327      +0.2104 ±0.0614  
+  *commander_cast_turn__ate_T6                  0.8897       0.8938      +0.0041 ±0.0014  
+  *mana_spent_this_turn                        13.4606      13.5814      +0.1208 ±0.0421  
+  *proxy_damage_total                         218.8067     223.2510      +4.4443 ±1.5527  
+  *len_first_counter_this_turn                  3.4820       3.5161      +0.0341 ±0.0150  
+  *counters_placed_total                       90.4371      92.4162      +1.9791 ±0.8743  
+  *turn                                         9.7198       9.7123      -0.0075 ±0.0034  
+  *won_via_ascendancy                           0.2292       0.2340      +0.0048 ±0.0022  
+
+[so_ordem_set - antes] N=10000 | partidas com resultado IDENTICO ao da base: 10000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)

@@ -1,5 +1,1775 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Landfall no terreno devolvido ao campo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md`](resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md)
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O efeito é **pequeníssimo por construção**: a Evolution Sage é 1 carta de 99 e só importa com planeswalker em campo; o payoff entra antes do terreno em **7,0%** das partidas. **+0,09 proliferates da Sage (+8%)**, +0,11 ativações de planeswalker; a Bridge **não muda** (T4/T5 +0,0).
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `evolution_sage_proliferates` | 1.155 -> 1.245 (+0.090 ± 0.018) * | 0.738 -> 0.833 (+0.095 ± 0.019) * |
+| `lands_played_total` | 6.240 -> 6.240 (+0.001 ± 0.002) | 6.145 -> 6.147 (+0.002 ± 0.002) |
+| `pw_activations_total` | 10.770 -> 10.877 (+0.108 ± 0.056) * | 9.240 -> 9.409 (+0.169 ± 0.060) * |
+| `pw_ultimates_used_total` | 2.382 -> 2.403 (+0.021 ± 0.024) | 1.549 -> 1.609 (+0.060 ± 0.026) * |
+| `pw_draws_total` | 7.320 -> 7.373 (+0.052 ± 0.064) | 5.880 -> 6.033 (+0.153 ± 0.070) * |
+| `first_ult_turn__nunca` | 0.631 -> 0.629 (-0.002 ± 0.001) * | 0.764 -> 0.761 (-0.003 ± 0.002) * |
+| `first_ult_turn__ate_T6` | 0.056 -> 0.060 (+0.004 ± 0.001) * | 0.036 -> 0.037 (+0.002 ± 0.001) * |
+| `bridge_first_cast_turn__ate_T4` | 0.351 -> 0.351 (+0.000 ± 0.000) | 0.337 -> 0.337 (+0.000 ± 0.000) |
+| `bridge_first_cast_turn__ate_T5` | 0.691 -> 0.690 (-0.001 ± 0.001) * | 0.650 -> 0.650 (+0.000 ± 0.001) |
+| `bridge_first_cast_turn__nunca` | 0.109 -> 0.110 (+0.000 ± 0.000) | 0.147 -> 0.146 (-0.000 ± 0.001) |
+| partidas com resultado idêntico ao da base | 93.0% | 93.2% |
+
+**Validação:** testes dirigidos 142/142 (137 anteriores + 5 novos); bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
+
+---
+
+## Landfall no terreno devolvido ao campo (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-landfall-terreno-devolvido/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. O efeito é raro e pequeno: 99,1% das partidas pareadas (N=10.000, padrão) terminam com resultado idêntico ao de antes; o terreno que volta ao campo por blink (Aminatou, the Fateshifter / Oath of Teferi) acontece em 0,07 terreno(s) por partida; a Evolution Sage prolifera 1,16 vez(es) por partida no total (modo padrão: o contador é novo no resultado e só existe na variante depois; no modo resiliência já existia), e o terreno devolvido só soma uma dessas se a Sage estiver em campo. Campos que passam do IC95% na tabela pareada (N=10.000) — padrão: `pw_deaths_total` -0,0021 ± 0,0016 (base 0,6378); `planeswalkers_in_play_end` +0,0016 ± 0,0013 (base 2,9870). resiliência: `evolution_sage_proliferates` +0,0215 ± 0,0061 (base 0,7161); `all_will_be_one_triggers_total` +3,0665 ± 1,7638 (base 251,8471); `len_graveyard` -0,0012 ± 0,0010 (base 4,4731); `pw_turns_alive_total` +0,0010 ± 0,0010 (base 6,3661).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que volta ao campo não disparava landfall.** `_return_to_battlefield` (blink da Aminatou, the Fateshifter −1 e do Oath of Teferi no end step) despachava ETB de planeswalker/criatura/não-criatura, mas não a chamada de landfall: o terreno devolvido entra em campo (regra: "a land enters under your control") e a **Evolution Sage** ("Landfall — Whenever a land you control enters, proliferate") deveria proliferar. Achado pela varredura mecânica de landfall (`varredura-2026-10-05/scripts/audit_landfall.py`; `resumos/audit_landfall_ANTES.txt`): 2.375 entradas de terreno × 2.368 chamadas de landfall em 300 partidas; a diferença (7) é exatamente `_return_to_battlefield`. Nos outros decks com despacho de landfall (Beorn, Maralen, Toph) entradas = chamadas (ou chamadas ≥ entradas, no Toph, que despacha por permanente).
+
+**O que mudou:**
+- `LAND_ENTER_TRIGGERS_ALL_ENABLED` (padrão `True`): em `_return_to_battlefield`, terreno devolvido chama `on_land_enters` (Evolution Sage → `proliferate_loyalty`). Contadores novos na saída: `returned_land_landfall_total` e `evolution_sage_proliferates` (este já existia no estado, agora também no resultado). Com a chave em `False` o comportamento antigo volta bit a bit.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9914 (99.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2397       6.2397      +0.0000 ±0.0003  
+  *pw_deaths_total                              0.6378       0.6357      -0.0021 ±0.0016  
+  *planeswalkers_in_play_end                    2.9870       2.9886      +0.0016 ±0.0013  
+   pw_tokens_created_total                      2.0901       2.0867      -0.0034 ±0.0045  
+   opp_eliminated_total                         0.2193       0.2195      +0.0002 ±0.0003  
+   pw_recursion_total                           0.2424       0.2422      -0.0002 ±0.0003  
+   urza_extra_lore_total                        0.0391       0.0389      -0.0002 ±0.0003  
+   urza_chapter_end                             0.2546       0.2540      -0.0006 ±0.0008  
+   board_cap_hits_total                        28.8477      28.7583      -0.0894 ±0.1680  
+   bridge_cast_turn__ate_T4                     0.1055       0.1056      +0.0001 ±0.0002  
+   bridge_cast_turn__ate_T5                     0.2941       0.2942      +0.0001 ±0.0002  
+   bridge_in_play_end                           0.7135       0.7134      -0.0001 ±0.0002  
+   carth_tutors_total                           0.3899       0.3897      -0.0002 ±0.0004  
+   protectors_removed_count                     0.0534       0.0535      +0.0001 ±0.0002  
+   removal_attempts_total                       0.8845       0.8846      +0.0001 ±0.0002
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9930 (99.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *evolution_sage_proliferates                  0.7161       0.7376      +0.0215 ±0.0061  
+   lands_played_total                           6.1453       6.1452      -0.0001 ±0.0002  
+  *all_will_be_one_triggers_total             251.8471     254.9136      +3.0665 ±1.7638  
+  *len_graveyard                                4.4731       4.4719      -0.0012 ±0.0010  
+  *pw_turns_alive_total                         6.3661       6.3671      +0.0010 ±0.0010  
+   len_token_counters                           0.7839       0.7842      +0.0003 ±0.0003  
+   oko_minus5_total                             0.2050       0.2053      +0.0003 ±0.0003  
+   discards_total                               0.2638       0.2633      -0.0005 ±0.0006  
+   len_pw_activated_this_turn                   2.7711       2.7715      +0.0004 ±0.0005  
+   pw_deaths_total                              1.3050       1.3044      -0.0006 ±0.0008  
+   elspeth_emblem                               0.2086       0.2088      +0.0002 ±0.0003  
+   pw_recursion_total                           0.2619       0.2617      -0.0002 ±0.0003  
+   pw_activations_total                         9.2390       9.2399      +0.0009 ±0.0013  
+   len_new_tokens_this_turn                     0.5635       0.5641      +0.0006 ±0.0009  
+   len_loyalty                                  2.4919       2.4925      +0.0006 ±0.0009  
+   len_activations_this_turn                    4.6930       4.6939      +0.0009 ±0.0014
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o efeito esperado é minúsculo (precisa de blink de terreno + Evolution Sage em campo + planeswalkers pra proliferar); a correção existe porque o gatilho tem que disparar em todo ponto de entrada de terreno, não pela magnitude.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `prismatic_bridge_goldfish_v1_ANTES_2c2da70.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 5/5 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Landfall:** varredura mecânica de entradas de terreno × chamadas da função de landfall em Beorn, PB, Maralen e Toph (300 partidas cada); testes dirigidos PF1–PF5 (proliferate com Evolution Sage, chave desligada, sem Evolution Sage, criatura devolvida não conta, 300 partidas por modo).
+- **Bit-identidade** com a chave desligada × snapshot: 20.000 partidas × 2 modos (contadores novos ignorados).
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Outros gatilhos de "a land enters"** além do landfall da Evolution Sage neste deck (a varredura de oráculo da lista só achou landfall em Evolution Sage e The World Tree, que não é gatilho de entrada).
+- **Resto da taxonomia da Regra #1 neste arquivo:** `grep` e leitura pontual, sem leitura integral nem instrumentação em runtime nesta rodada.
+- **Oponente real:** o goldfish não modela.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos deram 0 violações.
+
+---
+
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: sem diferença pareada nos campos do turno do comandante (ou o simulador não os registra). Modo resiliência: sem diferença pareada nos campos do turno do comandante (ou o simulador não os registra). A correção joga o terreno virado primeiro em média 0,10 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,03 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,001 ± 0,003 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- O único terreno que entra virado incondicionalmente é The World Tree (os choques seguem a política própria `_shock_pays_life`, que já escolhe virado quando a mana não muda o que dá pra conjurar).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9692 (96.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2391       6.2397      +0.0006 ±0.0029  
+  *bridge_first_cast_turn__ate_T5               0.6855       0.6907      +0.0052 ±0.0017  
+  *bridge_first_cast_turn__ate_T4               0.3459       0.3510      +0.0051 ±0.0017  
+  *interaction_spells_cast_total                2.6069       2.6256      +0.0187 ±0.0080  
+  *turns_with_ult                               0.5370       0.5421      +0.0051 ±0.0023  
+  *late_pw_activations_total                    2.2397       2.2580      +0.0183 ±0.0090  
+  *pw_activations_total                        10.6675      10.7688      +0.1013 ±0.0509  
+  *first_pw_hit_turn__ate_T6                    0.3668       0.3695      +0.0027 ±0.0015  
+  *pw_removal_proxy_total                       0.9767       0.9845      +0.0078 ±0.0044  
+  *pw_deaths_total                              0.6320       0.6378      +0.0058 ±0.0034  
+  *first_ult_turn__nunca                        0.6336       0.6310      -0.0026 ±0.0015  
+  *pw_recursion_total                           0.2372       0.2424      +0.0052 ±0.0031  
+  *first_pw_hit_turn__ate_T5                    0.1647       0.1668      +0.0021 ±0.0013  
+  *bridge_cast_turn__ate_T5                     0.2911       0.2941      +0.0030 ±0.0018  
+  *planeswalkers_in_play_end                    2.9696       2.9870      +0.0174 ±0.0108
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9264 (92.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1439       6.1453      +0.0014 ±0.0035  
+  *bridge_first_cast_turn__ate_T4               0.3318       0.3368      +0.0050 ±0.0017  
+  *pw_turns_alive_total                         6.3039       6.3661      +0.0622 ±0.0227  
+  *turns_with_ult                               0.3323       0.3400      +0.0077 ±0.0030  
+  *bridge_cast_turn__ate_T4                     0.2865       0.2912      +0.0047 ±0.0018  
+  *len_pw_enter_turn                            3.6842       3.7142      +0.0300 ±0.0118  
+  *first_pw_hit_turn__ate_T5                    0.2158       0.2196      +0.0038 ±0.0015  
+  *len_creature_cast_turn                       2.5024       2.5210      +0.0186 ±0.0074  
+  *shock_life_paid_total                        1.1494       1.1672      +0.0178 ±0.0074  
+  *bridge_first_cast_turn__ate_T5               0.6457       0.6498      +0.0041 ±0.0018  
+  *late_pw_activations_total                    1.9222       1.9428      +0.0206 ±0.0090  
+  *pw_activations_total                         9.1190       9.2390      +0.1200 ±0.0532  
+  *first_ult_turn__nunca                        0.7678       0.7637      -0.0041 ±0.0019  
+  *len_artifact_enter_turn                      0.8886       0.8955      +0.0069 ±0.0033  
+  *len_library                                 74.5996      74.4904      -0.1092 ±0.0543
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `prismatic_bridge_goldfish_v1_ANTES_ff19dd6.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+> **Dados brutos e como reproduzir as tabelas desta página (2026-09-29/30):** [`resultados-ab/2026-09-29-candidatas-e-sisay/LEIAME.md`](resultados-ab/2026-09-29-candidatas-e-sisay/LEIAME.md) — dados `.json.xz`, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+## Sisay como redundância do motor de PW de graça — 2026-09-30
+
+**Pergunta do usuário:** "E como redundância para o motor do deck de colocar PW em campo de graça?"
+Regras #4/#5: primeiro os motores reais do deck (por script sobre o oráculo ao vivo), depois a medição, depois o que o simulador não vê.
+
+**Fontes de PW sem conjurar, na lista atual (varredura por "onto the battlefield" no oráculo ao vivo das 99 cartas + o verso da Bridge):**
+- **Da biblioteca:** The Prismatic Bridge (upkeep; revela até criatura ou PW: 17 dos 28 alvos são PW; aleatório) e Arena Rector (só se morrer; qualquer PW).
+- **Da mão (não servem de redundância da Bridge):** Urza Assembles the Titans cap. II (PW MV ≤ 6) e Ugin −10 (até 7 permanentes).
+- **Candidatas:** Sisay (repetível, com escolha), Entrust the Spark (sacrifica um PW) e Loyal Tutor (só rende com a Bridge: o PW vai pro topo).
+Ou seja, a lista tem **um motor repetível** de PW da biblioteca (a Bridge). A Sisay seria o segundo.
+
+**Instrumentação (`motor_pw_gratis.py`, N = 3.000 por modo, mesmas seeds):** registra cada `planeswalker_enters` com a FONTE (Bridge, Arena
+Rector, Sisay, Entrust, Urza II, Ugin, conjurado; fichas-cópia do Oko e reentrada por blink ficam de fora). Variantes: lista atual e a
+candidata no slot da Arena Rector (Sisay, Sisay + janela de fim de rodada, Entrust, Loyal Tutor). Estratos definidos pela lista atual
+na mesma seed (a Bridge falhou ou não).
+
+#### padrão (goldfish): N = 3000
+
+**1. Quantos PWs entram de graça, e de onde (média por partida até o T10; mediana entre parênteses quando > 0)**
+
+| variante | bridge | arena_rector | sisay | entrust | urza2 | ugin_ult | total de graça | PWs conjurados |
+|---|---|---|---|---|---|---|---|---|
+| base | 2.10 | 0.00 | 0.00 | 0.00 | 0.14 | 1.30 | **3.54** | 3.72 |
+| Sisay | 1.94 | 0.00 | 1.01 | 0.00 | 0.12 | 1.17 | **4.24** | 3.39 |
+| Sisay + janela de fim de rodada | 1.92 | 0.00 | 1.18 | 0.00 | 0.13 | 1.12 | **4.34** | 3.41 |
+| Entrust the Spark | 2.16 | 0.00 | 0.00 | 0.15 | 0.16 | 1.67 | **4.13** | 3.71 |
+| Loyal Tutor | 2.22 | 0.00 | 0.00 | 0.00 | 0.16 | 1.94 | **4.32** | 3.76 |
+
+**2. PW de graça vindo da BIBLIOTECA (Bridge, Arena Rector, Sisay, Entrust): chance de ter ≥ 1 / ≥ 2 em campo até cada turno, e média de PWs em campo (qualquer origem, sem fichas-cópia). Δ pareado sobre a lista atual**
+
+| variante | ≥ 1 até T6 | ≥ 1 até T8 | ≥ 2 até T8 | nenhum até T8 | PWs em campo até T6 (média) | PWs em campo até T8 (média) |
+|---|---|---|---|---|---|---|
+| base | 36.3% | 60.1% | 34.6% | 39.9% | 1.17 | 3.56 |
+| Sisay | 38.4% (**+2.1 pp ±0.5**) | 62.6% (**+2.5 pp ±0.6**) | 39.6% (**+4.9 pp ±0.8**) | 37.4% (**-2.5 pp ±0.6**) | 1.20 (**+0.04 ±0.02**) | 3.78 (**+0.22 ±0.07**) |
+| Sisay + janela de fim de rodada | 38.5% (**+2.2 pp ±0.5**) | 62.7% (**+2.6 pp ±0.6**) | 39.8% (**+5.1 pp ±0.8**) | 37.3% (**-2.6 pp ±0.6**) | 1.21 (**+0.04 ±0.02**) | 3.80 (**+0.24 ±0.07**) |
+| Entrust the Spark | 37.5% (**+1.2 pp ±0.4**) | 61.7% (**+1.6 pp ±0.5**) | 37.8% (**+3.1 pp ±0.7**) | 38.3% (**-1.6 pp ±0.5**) | 1.21 (**+0.04 ±0.01**) | 3.83 (**+0.27 ±0.06**) |
+| Loyal Tutor | 38.1% (**+1.8 pp ±0.6**) | 62.0% (**+1.8 pp ±0.7**) | 37.2% (**+2.6 pp ±0.8**) | 38.0% (**-1.8 pp ±0.7**) | 1.24 (**+0.07 ±0.02**) | 4.00 (**+0.44 ±0.09**) |
+
+**3. Quando o motor falha: chance de ter ≥ 1 PW da biblioteca (de graça) em campo até o T8, por estrato (estrato definido pela lista atual, mesma seed)**
+
+| estrato (partidas) | base | Sisay | Sisay + janela de fim de rodada | Entrust the Spark | Loyal Tutor |
+|---|---|---|---|---|---|
+| Bridge NÃO lançada até o T6 (ou nunca) (634, 21.1%) | 12.9% | 14.7% | 14.7% | 14.4% | 14.5% |
+| Bridge lançada até o T6 (2366, 78.9%) | 72.8% | 75.4% | 75.6% | 74.4% | 74.7% |
+| Bridge REMOVIDA pelo oponente pelo menos 1 vez (2171, 72.4%) | 63.2% | 66.1% | 66.2% | 65.0% | 65.4% |
+
+**4. PW de graça da biblioteca vindo de fonte que NÃO é a Bridge (Arena Rector, Sisay, Entrust; média por partida até o T10), por estrato**
+
+| estrato | base | Sisay | Sisay + janela de fim de rodada | Entrust the Spark | Loyal Tutor |
+|---|---|---|---|---|---|
+| Bridge NÃO lançada até o T6 (ou nunca) | 0.00 | 0.28 | 0.33 | 0.06 | 0.00 |
+| Bridge lançada até o T6 | 0.00 | 1.21 | 1.40 | 0.17 | 0.00 |
+| Bridge REMOVIDA pelo oponente pelo menos 1 vez | 0.00 | 1.05 | 1.21 | 0.15 | 0.00 |
+
+#### resiliência (mista): N = 3000
+
+**1. Quantos PWs entram de graça, e de onde (média por partida até o T10; mediana entre parênteses quando > 0)**
+
+| variante | bridge | arena_rector | sisay | entrust | urza2 | ugin_ult | total de graça | PWs conjurados |
+|---|---|---|---|---|---|---|---|---|
+| base | 2.97 | 0.15 | 0.00 | 0.00 | 0.13 | 1.14 | **4.40** | 3.32 |
+| Sisay | 2.87 | 0.00 | 0.67 | 0.00 | 0.11 | 0.87 | **4.52** | 3.16 |
+| Sisay + janela de fim de rodada | 2.85 | 0.00 | 0.82 | 0.00 | 0.11 | 0.85 | **4.63** | 3.16 |
+| Entrust the Spark | 3.06 | 0.00 | 0.00 | 0.13 | 0.13 | 1.14 | **4.47** | 3.34 |
+| Loyal Tutor | 3.13 | 0.00 | 0.00 | 0.00 | 0.13 | 1.26 | **4.52** | 3.40 |
+
+**2. PW de graça vindo da BIBLIOTECA (Bridge, Arena Rector, Sisay, Entrust): chance de ter ≥ 1 / ≥ 2 em campo até cada turno, e média de PWs em campo (qualquer origem, sem fichas-cópia). Δ pareado sobre a lista atual**
+
+| variante | ≥ 1 até T6 | ≥ 1 até T8 | ≥ 2 até T8 | nenhum até T8 | PWs em campo até T6 (média) | PWs em campo até T8 (média) |
+|---|---|---|---|---|---|---|
+| base | 46.4% | 73.9% | 54.5% | 26.1% | 1.40 | 3.89 |
+| Sisay | 46.5% (+0.1 pp ±0.5) | 74.3% (+0.4 pp ±0.5) | 55.9% (**+1.5 pp ±0.7**) | 25.7% (-0.4 pp ±0.5) | 1.39 (-0.01 ±0.02) | 3.91 (+0.03 ±0.06) |
+| Sisay + janela de fim de rodada | 46.6% (+0.2 pp ±0.5) | 74.4% (+0.4 pp ±0.5) | 56.1% (**+1.6 pp ±0.7**) | 25.6% (-0.4 pp ±0.5) | 1.39 (-0.00 ±0.02) | 3.96 (**+0.07 ±0.06**) |
+| Entrust the Spark | 46.3% (-0.1 pp ±0.5) | 74.0% (+0.1 pp ±0.4) | 54.8% (+0.3 pp ±0.6) | 26.0% (-0.1 pp ±0.4) | 1.41 (**+0.02 ±0.02**) | 3.95 (**+0.07 ±0.06**) |
+| Loyal Tutor | 47.8% (**+1.4 pp ±0.6**) | 74.8% (**+0.8 pp ±0.5**) | 54.7% (+0.3 pp ±0.7) | 25.2% (**-0.8 pp ±0.5**) | 1.43 (**+0.03 ±0.02**) | 4.03 (**+0.15 ±0.08**) |
+
+**3. Quando o motor falha: chance de ter ≥ 1 PW da biblioteca (de graça) em campo até o T8, por estrato (estrato definido pela lista atual, mesma seed)**
+
+| estrato (partidas) | base | Sisay | Sisay + janela de fim de rodada | Entrust the Spark | Loyal Tutor |
+|---|---|---|---|---|---|
+| Bridge NÃO lançada até o T6 (ou nunca) (750, 25.0%) | 18.9% | 18.3% | 18.3% | 17.7% | 19.3% |
+| Bridge lançada até o T6 (2250, 75.0%) | 92.3% | 93.0% | 93.1% | 92.8% | 93.2% |
+| Bridge REMOVIDA pelo oponente pelo menos 1 vez (0, 0%) | — | — | — | — | — |
+
+**4. PW de graça da biblioteca vindo de fonte que NÃO é a Bridge (Arena Rector, Sisay, Entrust; média por partida até o T10), por estrato**
+
+| estrato | base | Sisay | Sisay + janela de fim de rodada | Entrust the Spark | Loyal Tutor |
+|---|---|---|---|---|---|
+| Bridge NÃO lançada até o T6 (ou nunca) | 0.06 | 0.12 | 0.15 | 0.03 | 0.00 |
+| Bridge lançada até o T6 | 0.18 | 0.86 | 1.04 | 0.16 | 0.00 |
+| Bridge REMOVIDA pelo oponente pelo menos 1 vez | — | — | — | — | — |
+
+### Combos que a Sisay alcança (Commander Spellbook da lista atual, 12 combos; MV e "Legendary" por `type_line`/`cmc` ao vivo)
+
+| combo | peças (L = lendária, número = MV) | a Sisay busca |
+|---|---|---|
+| 2 peças | Teferi, Who Slows the Sunset [L4] + The Chain Veil [L4] | as DUAS |
+| 2 peças | Teferi, Who Slows the Sunset [L4] + The Peregrine Dynamo [L3] | as DUAS |
+| 2 peças | Teferi, Temporal Archmage [L6] + The Chain Veil [L4] | as DUAS |
+| 2 peças | Vorinclex [L6] + Vraska, Betrayal's Sting [L6] | as DUAS |
+| 2 peças | Innkeeper's Talent [não lendária, 2] + Vraska [L6] | só a Vraska |
+| 3 peças | Carth [L4] + Teferi TA [L6] + Chain Veil [L4] | as TRÊS |
+| 3 peças | Aminatou [L3] + Bolas [L5] + Oath of Teferi [L5] / The Chain Veil [L4] (2 combos) | as TRÊS |
+| 4 peças | Aminatou + Doubling Season [não lendária] + Ichormoon Gauntlet [não lendária] + Ugin [L8] ou Liliana [L6] | Aminatou e Liliana |
+| 4 peças | Aminatou + Ichormoon Gauntlet + Vorinclex + Ugin [L8] ou Liliana [L6] | Aminatou, Vorinclex, Liliana |
+
+Com a Bridge em campo a Sisay é 7/7 (MV ≤ 6): **em todos os 4 combos de 2 peças de PW/artefato as duas peças são alcançáveis**, então uma
+peça em campo + 5 mana + a Sisay fecha o combo no mesmo turno. **O simulador só executa o loop da Vraska** (auditoria.md, seção de combos),
+então nenhum desses números está nas tabelas acima: o valor de tutor de combo é PISO zero aqui, não medido. Sem a Bridge o poder cai (2 +
+cores das outras lendárias) e o Chain Veil (MV 4) já pede 3 cores em campo.
+
+### Qualidade do PW que entra (MV médio e % com MV ≥ 6, até o T10; conjurados e de graça)
+
+| fonte | padrão | resiliência |
+|---|---|---|
+| Bridge (aleatório) | MV 4,96; 42% com MV ≥ 6 | MV 4,95; 42% |
+| **Sisay** (escolhe; MV < poder) | **MV 5,20; 56%** | **MV 5,40; 66%** |
+| Arena Rector (qualquer PW) | — (não morre no padrão) | MV 7,42; 97% (Ugin/Kaya) |
+| Entrust the Spark (qualquer PW) | MV 7,21; 94% | MV 7,16; 95% |
+| conjurado da mão | MV 4,59; 30% | MV 4,45; 26% |
+
+### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
+
+**Pelo deck:**
+- **A Sisay é um segundo motor de verdade, mas chega tarde e depende do primeiro.** Custa {2}{W} + {W}{U}{B}{R}{G} por busca (mediana de
+  entrada: T8), e a Bridge é quem a deixa 7/7. A Bridge falhando por mana/cores (não lançada até o T6, 21% das partidas padrão) derruba
+  a Sisay pelo mesmo motivo: **falha correlacionada**, não redundância. Onde ela seria redundância de verdade é quando a Bridge já
+  foi lançada e depois removida: a Sisay continua buscando (menor, sem os 5 tons da Bridge).
+- **Complementa em qualidade e em controle, não em tempo:** a Bridge é aleatória (42% de PW MV ≥ 6); a Sisay escolhe, mas só até MV ≤ 6
+  (MV médio 5,2), então não alcança Ugin/Kaya, que são justamente o que Arena Rector e Entrust entregam (MV 7,2 a 7,4).
+- **Melhor redundância pelo TEMPO é o Loyal Tutor** (PW garantido no próximo upkeep, 1 mana): +0,44 PW em campo até o T8, contra +0,27
+  do Entrust e +0,22 da Sisay.
+
+**Medido (padrão, goldfish):**
+- Base tem 60,1% das partidas com ≥ 1 PW de graça da biblioteca até o T8 (só a Bridge; a Arena Rector nunca dispara sem oponente).
+  Com a Sisay: 62,6% (+2,5 pp), e com ≥ 2: 34,6% → 39,6% (+4,9 pp). PWs em campo até o T8: 3,56 → 3,78.
+- **Quando o motor falha** (Bridge não lançada até o T6): 12,9% → 14,7% de ter ≥ 1 PW de graça até o T8, +1,8 pp: praticamente nada,
+  igual ao Entrust e ao Loyal Tutor (+1,5 pp). Quando a Bridge sai, a Sisay soma 1,21 PW por partida de FORA da Bridge até o T10
+  (1,40 com a janela de fim de rodada), contra 0,17 do Entrust e 0 da Arena Rector no padrão: aí ela é o outro motor.
+- **Resiliência:** a Sisay NÃO aumenta o número de PWs em campo (+0,03 PW até o T8, dentro do ruído; ≥ 1 até o T8 +0,4 pp, ruído);
+  só a chance de ter ≥ 2 sobe +1,5 pp. A Arena Rector dava 0,15 PW por partida aqui e a Sisay entrega 0,67 mas os PWs buscados
+  deixam de ser conjurados (conjurados: 3,32 → 3,16).
+
+### Limites (Regra #7)
+
+- **A Bridge removida pelo oponente:** na resiliência o simulador nunca remove a Bridge (0 de 3.000 partidas; a remoção legada que
+  mirava nela está desligada nesse modo), então esse estrato só existe no padrão, onde a remoção legada atinge a Bridge em 72% das
+  partidas (parâmetro do modelo antigo que eu NÃO validei contra jogo real). No padrão, nas partidas com Bridge removida ao menos uma
+  vez a Sisay soma +2,9 pp de ≥ 1 PW de graça até o T8 (63,2% → 66,1%), pouco acima da média (+2,5 pp).
+- **NÃO verificado:** a Sisay com a Bridge fora de campo, separada por poder (a instrumentação não divide as buscas por presença da
+  Bridge); busca em resposta a remoção; combos (o simulador só executa o da Vraska); a Sisay contra a Bridge de segunda cópia (Loyal
+  Tutor a acerta por design).
+- Cartas com MV: Kaya (7) e Ugin (8) ficam fora do alcance da Sisay por regra (MV < poder, e o poder máximo na lista é 7).
+
+## Sisay com a janela de fim de rodada — "ela parece MUITO melhor que o Rector" — 2026-09-29
+
+**Comentário do usuário:** "Ela parece MUITO melhor que o rector." Hipótese testada (Regra #5, o simulador como possível subestimador):
+o simulador só ativava a Sisay no MEU turno, embora a habilidade não tenha {T} nem restrição de timing. **Tam e Loyal Tutor já
+usam por padrão a janela de fim de rodada** (end step do último oponente, com a mana que sobrou do meu turno, `mana_held_back`,
+CR 500.1), então a comparação Sisay × Tam/Loyal Tutor estava enviesada contra a Sisay.
+
+**Implementação (`try_sisay_round_end`, chamada no topo de `play_turn` logo depois da janela da Tam):** com a chave
+`sisay_round_end` ligada, cada {W}{U}{B}{R}{G} que sobrou paga uma busca; criatura buscada entra com `creature_cast_turn = turno − 1`
+(sob meu controle desde antes do meu turno, sem doença de invocação); PW buscado ativa no meu main phase; a Peregrine Dynamo copia
+por {1} (1× por rodada). **Chave desligada por padrão**, só pra não invalidar os A/B já publicados (a diferença medida abaixo é
+pequena). Teste dirigido novo (liga/desliga, sem 5 de mana não busca, criatura sem doença, Dynamo, integração no `play_turn`).
+Validação: 137/137 testes, lista atual bit-idêntica (N = 300 padrão + 400 resiliência, 0 divergências), regressão de 40.000
+partidas com a janela ligada em 1 de cada 4 (a janela disparou em 447 delas): **0 exceções, 0 travamentos**.
+
+### 1. Sisay COM a janela de fim de rodada, no lugar de cada carta (Δ sobre a lista atual)
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay no lugar de Arena Rector | **-0.090 ±0.019** | **+2.33 pp ±0.69** | **-0.47 pp ±0.37** | -0.021 ±0.022 | +0.058 ±0.215 | +0.13 pp ±0.92 | -0.83 pp ±0.88 |
+| Sisay no lugar de Swan Song | **-0.067 ±0.018** | **+1.70 pp ±0.64** | **-0.67 pp ±0.43** | -0.014 ±0.022 | -0.177 ±0.186 | -0.43 pp ±0.87 | -0.63 pp ±0.83 |
+| Sisay no lugar de Veil of Summer | **-0.077 ±0.020** | **+2.73 pp ±0.72** | -0.30 pp ±0.48 | **-0.028 ±0.025** | +0.080 ±0.208 | -0.07 pp ±0.93 | -0.23 pp ±0.91 |
+| Sisay + Loyal Tutor (saem Arena Rector + Swan Song) | **-0.175 ±0.026** | **+4.57 pp ±0.90** | **-0.77 pp ±0.47** | **-0.072 ±0.029** | **+0.766 ±0.286** | **+1.30 pp ±1.11** | +0.50 pp ±1.05 |
+| Sisay + Tam (saem Arena Rector + Swan Song) | **-0.147 ±0.024** | **+3.83 pp ±0.89** | **-0.87 pp ±0.50** | **-0.059 ±0.030** | **-0.272 ±0.261** | **-1.13 pp ±1.09** | **-1.87 pp ±1.05** |
+| Tam + Loyal Tutor + Sisay (a Sisay no lugar do Veil of Summer) | **-0.268 ±0.031** | **+7.50 pp ±1.10** | **-0.93 pp ±0.64** | **-0.127 ±0.036** | **+0.657 ±0.320** | +0.93 pp ±1.27 | +1.00 pp ±1.18 |
+
+### 2. O que a janela SOMA à Sisay (com a janela − sem a janela, mesmo slot)
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay no lugar de Arena Rector | **-0.004 ±0.003** | +0.10 pp ±0.17 | -0.03 pp ±0.07 | **-0.015 ±0.007** | **+0.189 ±0.074** | **+0.57 pp ±0.40** | +0.33 pp ±0.36 |
+| Sisay no lugar de Swan Song | **-0.005 ±0.004** | +0.17 pp ±0.17 | +0.00 pp ±0.00 | **-0.017 ±0.006** | **+0.216 ±0.078** | **+0.50 pp ±0.42** | **+0.57 pp ±0.39** |
+| Sisay no lugar de Veil of Summer | **-0.005 ±0.003** | +0.07 pp ±0.09 | -0.03 pp ±0.11 | **-0.015 ±0.008** | **+0.245 ±0.076** | **+0.53 pp ±0.39** | **+0.87 pp ±0.41** |
+| Sisay + Loyal Tutor | **-0.004 ±0.004** | +0.07 pp ±0.16 | -0.07 pp ±0.09 | **-0.030 ±0.011** | **+0.265 ±0.095** | **+0.70 pp ±0.46** | **+0.53 pp ±0.41** |
+| Sisay + Tam | -0.003 ±0.003 | +0.03 pp ±0.15 | -0.10 pp ±0.11 | **-0.021 ±0.011** | **+0.237 ±0.086** | **+0.53 pp ±0.44** | **+0.57 pp ±0.42** |
+| Tam + Loyal Tutor + Sisay | **-0.004 ±0.002** | +0.07 pp ±0.09 | -0.03 pp ±0.11 | **-0.018 ±0.008** | **+0.243 ±0.076** | **+0.40 pp ±0.39** | **+0.37 pp ±0.34** |
+
+### 3. Sisay COM a janela contra as outras cartas no MESMO slot da Arena Rector (Sisay − outra; negativo em 1º ult/vida = Sisay melhor)
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay (com a janela) − Tam | **+0.028 ±0.017** | -0.60 pp ±0.67 | -0.10 pp ±0.30 | **+0.032 ±0.021** | **+0.315 ±0.179** | **+1.27 pp ±0.83** | +0.07 pp ±0.77 |
+
+### 3b. idem contra o Loyal Tutor
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay (com a janela) − Loyal Tutor | **+0.045 ±0.022** | **-1.17 pp ±0.74** | -0.17 pp ±0.40 | +0.023 ±0.025 | **-0.643 ±0.249** | **-1.10 pp ±0.97** | **-1.83 pp ±0.92** |
+
+### 3c. Par Sisay (com a janela) + Loyal Tutor contra Tam + Loyal Tutor
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay+LT (janela) − Tam+LT | **+0.034 ±0.017** | **-0.80 pp ±0.64** | -0.07 pp ±0.26 | **+0.034 ±0.020** | **+0.320 ±0.184** | **+0.97 pp ±0.82** | +0.03 pp ±0.79 |
+
+### 4. Uso da janela (partidas em que a Sisay entrou; slot Arena Rector)
+
+| modo | partidas em que entrou | com ≥ 1 busca no fim da rodada | média de buscas no fim da rodada (das que entraram) | média de buscas no total |
+|---|---|---|---|---|
+| std | 1378 | 369 (26.8%) | 0.58 | 3.66 |
+| res | 1339 | 316 (23.6%) | 0.45 | 2.62 |
+
+### Leitura
+
+- **A janela quase não muda a velocidade** (−0,004 turno no 1º ult, dentro do que o ruído permite distinguir) porque até o T8 quase
+  não sobra mana depois da mão. **Soma na resiliência:** +0,19 a +0,27 PW-turnos vivos, +0,4 a +0,7 pp de P(dano ≥ 40) e −0,015 a
+  −0,030 no 1º ult. Ela é usada em 27% (padrão) e 24% (resiliência) das partidas em que a Sisay entra (0,58 e 0,45 buscas por partida).
+- **Sisay (com a janela) no lugar da Arena Rector:** −0,090 turno e +2,3 pp de P(ult ≤ T8) no padrão; na resiliência vida ≤ 0
+  −0,47 pp, PW-turnos +0,06 e P(dano ≥ 40) +0,13 (ambos empate), P(dano ≥ 120) −0,83 pp (agora dentro do ruído; sem a janela era
+  −1,17 pp e pior). Ou seja: melhor em ritmo e um pouco melhor na vida, empate no resto.
+- **Contra as outras cartas no MESMO slot** ela continua atrás no ritmo: +0,028 turno mais lenta que a Tam e +0,045 mais lenta que o
+  Loyal Tutor. Na resiliência ela passa a ficar à frente da Tam (+0,32 PW-turnos, +1,3 pp de P(dano ≥ 40)). O par Sisay + Loyal Tutor
+  é +0,034 turno mais lento que Tam + Loyal Tutor no padrão e +0,032 pior no 1º ult da resiliência, mas +0,32 PW-turnos e +1,0 pp de
+  P(dano ≥ 40) melhor.
+- **"MUITO melhor" que a Arena Rector?** Os números dizem "melhor de forma consistente, mas em escala pequena": cerca de 1 turno mais
+  cedo a cada 11 partidas. Onde o efeito é maior: nas partidas em que ela de fato entra (46% delas) o ganho sobre o slot é o
+  dobro (−0,19 turno, +4,9 pp de P(ult ≤ T8); tabela condicional da seção Sisay). Isso é intrínseco ao deck: o ritmo dos ultimates
+  é limitado pela lealdade acumulando, não por achar carta, então um tutor melhor move pouco a média.
+- Continua valendo o que a Arena Rector faz e a Sisay não: Ugin/Kaya sem custo de mana (83% dos disparos) e seguro contra os
+  wipes do próprio deck.
+
+### Limites (Regra #7)
+
+- **Verificado:** a janela (teste dirigido, 6 variantes de A/B pareado, uso), com a mesma janela de Tam/Loyal Tutor.
+- **NÃO verificado:** a janela com a Tam e a Sisay disputando a mesma mana sobrando (a Tam vem primeiro; sem otimização entre as duas);
+  resposta a remoção (ativar em resposta, com 5 mana aberta); o padrão desligado ainda vale pra todas as tabelas anteriores da Sisay.
+
+## Sisay no lugar da Arena Rector — troca direta como tutor — 2026-09-29
+
+**Pedido:** "Pensei em usar ela no lugar do Arena Rector, como tutor."
+Regras #4/#5: comparar com os motores do deck e com a linha real de jogo, não só o A/B.
+
+**Oráculo ao vivo (Scryfall):** Arena Rector {3}{W}, Creature — Human Cleric **1/2**: *"When this creature dies, you may exile it. If
+you do, search your library for a planeswalker card, put it onto the battlefield, then shuffle."* Ruling (2018-06-08): se ela sai
+do cemitério antes de resolver (ficha-cópia, por exemplo), não exila e não busca. O simulador respeita (`was_card`).
+
+**Correções de premissa minhas (achadas por script sobre o oráculo ao vivo das 99 cartas; ver `checklist-oraculo.md`):**
+1. O log e o checklist diziam "a lista não tem NENHUM outlet de sacrifício de criatura". **Falso.** Outlets de mesa: Liliana −4 e
+   Eternal Wanderer −4. Wipes: Blasphemous Act, Supreme Verdict, Toxic Deluge, Damn (overload). Alvo único que eu posso apontar pra
+   ELA: Damn {B}{B}, Void Rend {W}{U}{B}, Nicol Bolas −3, Ugin +2. O simulador já modelava os de mesa; a prosa estava errada.
+2. Minha 1ª varredura (regex) perdeu o Damn (o "each creature" só está no overload). A 2ª, por alvo, achou os 4 de alvo único.
+3. Bug de política do simulador achado pela instrumentação: o −4 da Liliana sacrificava a Sisay em ~8% das partidas de
+   resiliência em que ela entrava, embora o −4 seja escolha MINHA. Corrigido (`liliana_spares_sisay`, padrão ligado; a Sisay fica
+   por último e, se ela seria uma das 2, uso o +1). Efeito nos números: pequeno e dentro do ruído (linha "Liliana −4 antigo" da
+   sensibilidade na seção Sisay). Teste dirigido novo; lista atual e swaps sem a Sisay não mudam.
+4. A linha deliberada da Arena Rector (Damn/Void Rend nela mesma) não existia no simulador. Agora existe como chave de
+   sensibilidade **desligada por padrão** (`arena_rector_outlet`, `arena_rector_outlet_pre_hand`) pra não mexer nos A/B anteriores.
+
+### O que a Arena Rector entrega hoje no simulador (instrumentação; `arena_uso.py`, N = 3.000 por modo, lista atual)
+
+| | padrão (goldfish) | resiliência (mista) |
+|---|---|---|
+| entra em campo | 43,0% das partidas (turno mediano 9) | 41,8% (turno mediano 8) |
+| morre | **0%** (sem oponente, nada a mata) | 37,8% das que entraram |
+| gatilho dispara (busca PW) | 0% | 36,3% das que entraram (15,2% de todas as partidas) |
+| PW buscado (1º disparo) | — | Ugin 291 (64%), Kaya 85 (19%), Vraska 27, Liliana 26, Wanderer 6, outros 20 |
+| fonte da morte que dispara | — | wipe de OPONENTE 236 (52%), Wanderer −4 83, Toxic Deluge 37, Damn 26, Supreme Verdict 26, Liliana −4 24, Blasphemous Act 23 |
+
+Leitura: no padrão a carta é peso morto (por isso cortá-la por um corpo sem texto custa +0,002); na resiliência ela vira wipe
+insurance: **83% dos disparos trazem Ugin ou Kaya, justamente os dois PWs que a Sisay NÃO alcança** (MV 8 e 7; a Sisay 7/7 pega
+MV ≤ 6).
+
+### A linha deliberada (Damn/Void Rend na própria Arena Rector) quanto vale? (`ab_arena_outlet_sum.py`)
+
+Chave ligada, prioridade máxima (antes da mão) e prioridade mínima (só com a mana que sobra), Δ pareado sobre a lista atual:
+
+| variante | padrão 1º ult | padrão P(ult ≤ T8) | resil. vida ≤ 0 | resil. 1º ult | resil. PW-turnos vivos | resil. P(dano ≥ 40) | resil. P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| linha antes da mão (teto) | **-0.009 ±0.005** | **+0.20 pp ±0.16** | -0.03 pp ±0.07 | -0.001 ±0.005 | **+0.079 ±0.052** | +0.10 pp ±0.27 | +0.20 pp ±0.26 |
+| linha só com a mana que sobra | +0.000 ±0.000 | +0.00 pp ±0.00 | -0.03 pp ±0.07 | **-0.005 ±0.003** | **+0.104 ±0.038** | +0.20 pp ±0.26 | +0.20 pp ±0.24 |
+
+Uso: antes da mão, em 7,2% das partidas padrão e 4,8% das de resiliência (Damn 116/76, Void Rend 100/69 partidas); só com a mana
+que sobra, 0,3% e 5,7%. **Vale pouco porque a carta de remoção e a Arena Rector em campo raramente coexistem** (2 cartas em 99). É
+teto de prioridade, não estimativa central. Bolas −3 e Ugin +2 na própria Arena Rector NÃO estão modelados (pendência, não
+estrutural; frequência menor que a de Damn/Void Rend).
+
+### A/B: Sisay no lugar da Arena Rector (N = 3.000 seeds; política final da Liliana; IC95%; negrito = não cruza 0)
+
+**Contra a lista atual e contra a Arena Rector COM a linha deliberada**
+
+| comparação (Δ pareado) | padrão 1º ult | padrão P(ult ≤ T8) | resil. vida ≤ 0 | resil. 1º ult | resil. PW-turnos vivos | resil. P(dano ≥ 40) | resil. P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay − Arena Rector (lista atual) | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.131 ±0.217 | -0.43 pp ±0.92 | **-1.17 pp ±0.87** |
+| Sisay − Arena Rector com a linha antes da mão | **-0.077 ±0.018** | **+2.03 pp ±0.67** | **-0.40 pp ±0.37** | -0.006 ±0.022 | -0.210 ±0.217 | -0.53 pp ±0.92 | **-1.37 pp ±0.87** |
+| Sisay − Arena Rector com a linha só com a mana que sobra | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.40 pp ±0.37** | -0.002 ±0.022 | **-0.235 ±0.220** | -0.63 pp ±0.92 | **-1.37 pp ±0.87** |
+
+**Sisay em cada corte, política final** (a Arena Rector é o corte em que ela perde menos na resiliência junto com Veil e Doubling Season; Swan Song, Oath e Farseek custam mais PW-turnos):
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay no lugar de Arena Rector | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.131 ±0.217 | -0.43 pp ±0.92 | **-1.17 pp ±0.87** |
+| Sisay no lugar de Swan Song | **-0.062 ±0.017** | **+1.53 pp ±0.64** | **-0.67 pp ±0.43** | +0.003 ±0.022 | **-0.394 ±0.191** | **-0.93 pp ±0.88** | **-1.20 pp ±0.83** |
+| Sisay no lugar de Veil of Summer | **-0.072 ±0.020** | **+2.67 pp ±0.72** | -0.27 pp ±0.48 | -0.013 ±0.024 | -0.165 ±0.203 | -0.60 pp ±0.90 | **-1.10 pp ±0.89** |
+| Sisay no lugar de Oath of Nissa | **-0.047 ±0.022** | **+1.70 pp ±0.77** | **-0.63 pp ±0.55** | +0.006 ±0.025 | **-0.343 ±0.219** | -0.87 pp ±0.93 | -0.77 pp ±0.82 |
+| Sisay no lugar de Farseek | **-0.047 ±0.020** | **+1.73 pp ±0.69** | -0.07 pp ±0.44 | +0.013 ±0.025 | **-0.665 ±0.247** | **-1.33 pp ±0.96** | **-1.67 pp ±0.92** |
+| Sisay no lugar de Doubling Season | **-0.033 ±0.021** | **+1.07 pp ±0.73** | **-0.60 pp ±0.56** | +0.021 ±0.025 | -0.130 ±0.232 | **-1.43 pp ±1.01** | **-2.13 pp ±0.94** |
+
+**Qual carta ocupa o slot da Arena Rector (e do Swan Song) quando os pares entram juntos** (mesmas seeds):
+
+**Cada par contra a lista atual**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay + Loyal Tutor (saem Arena Rector + Swan Song) | **-0.171 ±0.026** | **+4.50 pp ±0.90** | **-0.73 pp ±0.48** | **-0.057 ±0.029** | **+0.572 ±0.287** | +0.70 pp ±1.12 | +0.13 pp ±1.05 |
+| Sisay + Tam (saem Arena Rector + Swan Song) | **-0.144 ±0.024** | **+3.80 pp ±0.89** | **-0.83 pp ±0.50** | **-0.051 ±0.030** | **-0.453 ±0.264** | **-1.53 pp ±1.08** | **-2.23 pp ±1.02** |
+| Tam + Loyal Tutor (saem Arena Rector + Swan Song) | **-0.209 ±0.025** | **+5.37 pp ±0.89** | **-0.70 pp ±0.48** | **-0.106 ±0.030** | **+0.446 ±0.266** | +0.33 pp ±1.07 | +0.47 pp ±0.98 |
+
+**Cada par contra Tam + Loyal Tutor (positivo em 'P(...)' e negativo em 'vida ≤ 0/1º ult' = melhor que o par FRA)**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay + Loyal Tutor (saem Arena Rector + Swan Song) | **+0.038 ±0.017** | **-0.87 pp ±0.64** | -0.03 pp ±0.27 | **+0.049 ±0.021** | +0.126 ±0.186 | +0.37 pp ±0.82 | -0.33 pp ±0.77 |
+| Sisay + Tam (saem Arena Rector + Swan Song) | **+0.065 ±0.026** | **-1.57 pp ±0.95** | -0.13 pp ±0.42 | **+0.055 ±0.031** | **-0.899 ±0.288** | **-1.87 pp ±1.14** | **-2.70 pp ±1.06** |
+
+**Terceiro slot sobre o par Tam + Loyal Tutor (entra no lugar do Veil of Summer; Δ sobre o par):**
+
+| variante (Δ sobre Tam + Loyal Tutor) | padrão: 1º ult | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|---|
+| Sisay no lugar do Veil of Summer | **-0.055 ±0.019** | **+2.07 pp ±0.69** | -0.20 pp ±0.46 | -0.004 ±0.023 | -0.032 ±0.194 | +0.20 pp ±0.91 |
+| Entrust no lugar do Veil of Summer | **-0.027 ±0.011** | **+0.63 pp ±0.35** | +0.03 pp ±0.27 | **-0.020 ±0.013** | **+0.168 ±0.111** | **+0.97 pp ±0.53** |
+| Dihada no lugar do Veil of Summer | **-0.037 ±0.016** | **+1.00 pp ±0.58** | -0.30 pp ±0.41 | **-0.043 ±0.022** | **+2.491 ±0.247** | **+3.97 pp ±1.00** |
+
+### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
+
+**O que a troca muda de verdade (pelo deck):**
+- **Mesmo tipo, mesma contagem.** As duas são criatura: a Bridge continua com 17 PWs + 11 criaturas (por script sobre o `type_line`).
+  Muda a QUALIDADE do acerto da Bridge: Arena Rector é uma das menos impactantes ao entrar (1/2 que só rende se morrer); Sisay entra
+  7/7 e já ativa no mesmo turno, sem {T}.
+- **Tipos diferentes de tutor.** Arena Rector é **reativa e de graça**: qualquer PW (sem teto de MV, na prática Ugin com a Doubling
+  Season entra com 14 de lealdade), mas só quando morre. Sisay é **proativa e repetível**: qualquer lendária permanente com MV < poder
+  (PW, Chain Veil, Oath, Carth, Vorinclex, Atraxa, Dynamo), mas custa {W}{U}{B}{R}{G} por busca e só alcança MV ≤ 6.
+- **Os wipes do deck são a favor de uma e contra a outra.** Blasphemous Act, Supreme Verdict, Toxic Deluge, Damn, Liliana −4 e
+  Wanderer −4 transformam a Arena Rector em PW; matam a Sisay (Elspeth −3 também, se ela estiver 7/7, poder ≥ 4). No simulador a
+  Sisay morre em 30% das partidas de resiliência em que entra (25% por wipe de oponente, 4% por wipe meu, ~0% pela Liliana depois do
+  ajuste de política); a Arena Rector morre em 38% e ganha com isso.
+- **O que o simulador não vê e favorece a Sisay:** ativar a busca em resposta a uma remoção (com 5 mana aberta a remoção só custa o
+  corpo) e, com a janela de fim de rodada desligada por padrão, ativar no fim do turno do oponente (medido depois: soma ≤ 0,005 turno,
+  ver a seção "Sisay com a janela de fim de rodada" abaixo). **O que não vê e favorece a Arena Rector:** chump block deliberado (nenhuma das
+  mortes medidas foi por combate), Bolas −3 e Ugin +2 na própria criatura.
+
+**Medido (troca direta, slot da Arena Rector):**
+- Velocidade: **−0,086 turno no 1º ultimate (+2,2 pp de P(ult ≤ T8))**; a linha deliberada da Arena Rector reduz isso pra −0,077.
+- Sobrevivência: vida ≤ 0 −0,4 pp (melhor), PW-turnos vivos −0,13 (dentro do ruído; −0,21 a −0,24 contra a Arena Rector com a linha),
+  P(dano ≥ 40) −0,4 pp (ruído), **P(dano ≥ 120) −1,2 a −1,4 pp (pior)**. Ou seja, empate na defesa e perda pequena no dano longo.
+- No slot dela a Sisay ainda **perde pra Loyal Tutor (−0,135) e pra Tam (−0,119)** e, com o Loyal Tutor no outro slot, **Tam + Loyal
+  Tutor (−0,209) ganha de Sisay + Loyal Tutor (−0,171)** por 0,038 ±0,017 turno (e 0,049 ±0,021 de 1º ult na resiliência). Sisay + Tam
+  é o pior par (−0,144, com PW-turnos −0,45 e dano ≥ 120 −2,2 pp); provável causa: as duas são sumidouros de {W}{U}{B}{R}{G}
+  (hipótese, não medida isoladamente).
+- Como **terceira carta** por cima de Tam + Loyal Tutor (no lugar do Veil of Summer) a Sisay é a que mais acelera (−0,055 ±0,019,
+  +2,1 pp de P(ult ≤ T8)), mas não soma nada na resiliência; a Dihada acelera menos (−0,037) e soma +2,5 PW-turnos e +4,0 pp de
+  P(dano ≥ 40).
+
+**Conclusão pelo deck:** a troca Sisay ↔ Arena Rector é boa em velocidade e neutra na defesa, mas a Arena Rector NÃO é a carta morta
+que o log dizia (ela vale por Ugin/Kaya e pelos wipes). Se a decisão for entre a Sisay e a Tam ou o Loyal Tutor pro mesmo slot, a
+Sisay perde. A Sisay faz mais sentido como carta a mais (no lugar do Veil of Summer, depois de Tam + Loyal Tutor) ou no lugar da
+Arena Rector se você NÃO for usar Tam nem Loyal Tutor.
+
+### Limites desta rodada (Regra #7)
+
+- **Verificado:** oráculo e ruling da Arena Rector ao vivo; varredura por script (2 padrões, e a 1ª tinha um furo que a 2ª cobriu) do
+  que mata/sacrifica criatura minha nas 99 cartas; Spellbook antes/depois (0 combos novos ou removidos com a troca; Tam no lugar
+  também 0; controle positivo tirando a Chain Veil derrubou 4; a Arena Rector sozinha não sustenta nenhum combo nem quase-combo);
+  instrumentação de uso da Arena Rector e da Sisay; A/B pareado nos 6 cortes e em 3 pares; linha deliberada em 2 prioridades;
+  política do −4 da Liliana; testes dirigidos (136/136); regressão e bit-identidade (abaixo).
+- **NÃO verificado:** Bolas −3 e Ugin +2 na própria Arena Rector; chump block deliberado com a Arena Rector; ativação da Sisay em
+  resposta a remoção; pagamento real das 5 cores; as outras 99 cartas contra a Sisay uma a uma; a
+  frente da Esika.
+- Regressão de 40.000 partidas (20.000 padrão + 20.000 resiliência, com swaps rotativos incluindo os 3 pares e a linha
+  deliberada ligada em 1 de cada 3 partidas, alarme de 20 s): **0 exceções, 0 travamentos** (a linha deliberada disparou com Damn em 119 e com Void Rend em 117 partidas). Lista atual
+  **bit-idêntica** ao snapshot anterior: N = 300 no padrão + 400 na resiliência (4 perfis), 0 divergências.
+
+## Sisay, Weatherlight Captain (5ª candidata do dia, pedida depois das 4) — 2026-09-29
+
+**Pedido:** "E a avaliação de Sisay, Weatherlight Captain para o deck da PB?" (prós e contras, Regra #4/#5).
+Oráculo ao vivo (Scryfall): {2}{W}, Legendary Creature — Human Soldier 2/2. *"Sisay gets +1/+1 for each color among other
+legendary permanents you control. {W}{U}{B}{R}{G}: Search your library for a legendary permanent card with mana value less
+than Sisay's power, put that card onto the battlefield, then shuffle."* Rulings ao vivo (2019-06-14): última informação se
+ela sai antes da resolução; {X} na biblioteca vale 0. Cláusula a cláusula em `checklist-oraculo.md` (adendo Sisay).
+
+**Correção de premissa minha:** eu lembrava "poder = maior MV entre as outras lendárias". O oráculo é outro (+1/+1 por COR
+entre as OUTRAS lendárias; a busca é limitada pelo poder dela). Foi pego pela leitura ao vivo antes de escrever código.
+
+### O que muda no simulador (via `swap`; a lista atual não muda)
+
+- Sisay é criatura lendária de 3 MV, corpo 2/2 + `_sisay_bonus` (união das cores dos outros permanentes lendários em campo,
+  inclusive a Bridge, que é 5 cores → 7/7 na hora). Não ataca (`NON_ATTACKING_NAMES`, mesma convenção da Tam).
+- Ativação `sisay_activate`: {W}{U}{B}{R}{G}, **sem {T}** (ativa no turno em que entra), procura lendária com MV < poder que eu
+  ainda não controlo; embaralha antes dos ETBs; PW entra com lealdade (× Doubling Season) e ativa no mesmo main phase; Oath de
+  Teferi pisca; Carth olha as 7; Chain Veil registra a entrada. Peregrine Dynamo copia a ativação (1×/turno, {1}).
+  Delighted Halfling e Plaza of Heroes pagam a Sisay (é lendária).
+- Política de escolha do alvo: sem PW em campo → melhor PW; com 2+ PWs → Oath de Teferi; senão o PW de maior MV; senão peça de
+  motor. **Ordem no turno: a busca vai na frente da mão** (`sisay_pre_hand_all`). Medido: −0,086 (busca primeiro) vs −0,069
+  (política antiga: mão primeiro, busca antes só com alvo MV ≥ 6) no 1º ultimate.
+- Chaves de política novas em `CAND_POLICY`: `sisay_activate`, `sisay_pre_hand_all` e `liliana_spares_sisay` (o A/B liga/desliga cada
+  uma com `@chave`). A última nasceu na avaliação Sisay × Arena Rector (seção acima): o −4 da Liliana ("each player sacrifices two
+  creatures of their choice") é escolha MINHA, então a Sisay fica por último e, se ela seria uma das 2 sacrificadas (≤ 2 criaturas
+  minhas), o simulador usa o +1 em vez do −4. Antes o simulador sacrificava a Sisay em ~8% das partidas de resiliência em que ela
+  entrava (107 de 1.339). O efeito nos números foi pequeno e dentro do ruído (tabela de sensibilidade).
+- Estatísticas novas (`cand_stats`): `sisay_activations`, `sisay_fetches`, `sisay_fetch_pw`, `sisay_fetch_engine`,
+  `sisay_power_sum`, `sisay_dynamo_copies`, `entered_Sisay…`, `first_turn_…`.
+
+### Validação
+
+- Testes: 135/135 (11 novos: 10 da Sisay — bônus de cor, Bridge 7/7, sem {T}, alvo por MV < poder, regra da lenda, Doubling Season,
+  ordem antes/depois da mão, Dynamo, Halfling/Plaza, não ataca — e 1 da política do −4 da Liliana).
+- Lista atual **bit-idêntica** ao snapshot anterior (`bitident.py`: N = 300 no padrão + 400 na resiliência (4 perfis), 0 divergências).
+- Regressão de 40.000 partidas (20.000 padrão + 20.000 resiliência, 4 perfis de mesa, swaps rotativos incluindo Sisay sozinha em 3 slots, 3 pares e um pacote de 5
+  candidatas, linha deliberada da Arena Rector ligada em 1 de cada 3, alarme de 20 s): **0 exceções, 0 travamentos** (a Sisay entrou em 7.374 dessas partidas;
+  5.275 tiveram ao menos uma ativação).
+- Commander Spellbook (antes/depois, lista de 99 + Esika): **0 combos novos**; 2 quase-combos com Intruder Alarm (não está na
+  lista). Não é Game Changer.
+
+### A/B pareado (N = 3.000 seeds; padrão 3.000.000+, resiliência mista 6.000.000+; IC95%; negrito = não cruza 0)
+
+**Sisay no lugar de cada corte (Δ pareado sobre a lista atual; negativo em 1º ult = melhor)**
+
+| sai ↓ | padrão: 1º ult | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Arena Rector | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.131 ±0.217 | -0.43 pp ±0.92 | **-1.17 pp ±0.87** |
+| Swan Song | **-0.062 ±0.017** | **+1.53 pp ±0.64** | **-0.67 pp ±0.43** | +0.003 ±0.022 | **-0.394 ±0.191** | **-0.93 pp ±0.88** | **-1.20 pp ±0.83** |
+| Veil of Summer | **-0.072 ±0.020** | **+2.67 pp ±0.72** | -0.27 pp ±0.48 | -0.013 ±0.024 | -0.165 ±0.203 | -0.60 pp ±0.90 | **-1.10 pp ±0.89** |
+| Oath of Nissa | **-0.047 ±0.022** | **+1.70 pp ±0.77** | **-0.63 pp ±0.55** | +0.006 ±0.025 | **-0.343 ±0.219** | -0.87 pp ±0.93 | -0.77 pp ±0.82 |
+| Farseek | **-0.047 ±0.020** | **+1.73 pp ±0.69** | -0.07 pp ±0.44 | +0.013 ±0.025 | **-0.665 ±0.247** | **-1.33 pp ±0.96** | **-1.67 pp ±0.92** |
+| Doubling Season | **-0.033 ±0.021** | **+1.07 pp ±0.73** | **-0.60 pp ±0.56** | +0.021 ±0.025 | -0.130 ±0.232 | **-1.43 pp ±1.01** | **-2.13 pp ±0.94** |
+
+Controles do mesmo A/B: cortar Arena Rector por um **corpo 2/2 lendário sem texto** (mesmo custo, cor, tipo) dá
++0,002 ±0,009 no padrão (sem efeito); cortar Swan Song por ele dá +0,046 ±0,014 (o corte em si custa isso). Ou seja, **todo o
+ganho de ritmo da Sisay vem do texto (a busca), não do corpo**.
+
+**O que o TEXTO faz: Sisay − corpo 2/2 sem texto (mesmo slot; todas as partidas | só partidas em que a carta entrou)**
+
+| métrica | Arena Rector (todas) | Swan Song (todas) | Arena Rector (entrou) | Swan Song (entrou) |
+|---|---|---|---|---|
+| padrão Δ 1º ult (turno) | **-0.089 ±0.017** | **-0.108 ±0.018** | **-0.193 ±0.037** | **-0.246 ±0.039** |
+| padrão Δ P(ult ≤ T8) | **+2.30 pp ±0.62** | **+2.93 pp ±0.64** | **+5.01 pp ±1.35** | **+6.67 pp ±1.44** |
+| resil. Δ vida ≤ 0 | -0.20 pp ±0.28 | **-0.70 pp ±0.34** | -0.45 pp ±0.62 | **-1.56 pp ±0.75** |
+| resil. Δ 1º ult | **-0.064 ±0.018** | **-0.035 ±0.015** | **-0.144 ±0.039** | **-0.079 ±0.034** |
+| resil. Δ PW-turnos vivos | **+0.615 ±0.168** | **+0.334 ±0.141** | **+1.378 ±0.372** | **+0.744 ±0.314** |
+| resil. Δ PWs mortos em combate | **-0.022 ±0.010** | **-0.019 ±0.011** | **-0.049 ±0.022** | **-0.042 ±0.023** |
+| resil. Δ P(dano ≥ 40) | **+1.77 pp ±0.81** | **+1.13 pp ±0.73** | **+3.96 pp ±1.80** | **+2.53 pp ±1.62** |
+| resil. Δ P(dano ≥ 120) | **+0.83 pp ±0.72** | +0.13 pp ±0.69 | **+1.87 pp ±1.61** | +0.30 pp ±1.54 |
+
+**Sensibilidade (slot Arena Rector, Δ pareado sobre a base)**
+
+| variante | padrão Δ 1º ult | padrão Δ P(ult ≤ T8) | resil. Δ vida ≤ 0 | resil. Δ 1º ult | resil. Δ PW-turnos vivos | resil. Δ P(dano ≥ 40) |
+|---|---|---|---|---|---|---|
+| política final (busca antes da mão) | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.131 ±0.217 | -0.43 pp ±0.92 |
+| **sem a busca** (só o corpo que cresce) | +0.002 ±0.009 | -0.07 pp ±0.33 | **-0.33 pp ±0.33** | **+0.048 ±0.020** | **-0.659 ±0.176** | **-3.00 pp ±0.82** |
+| política antiga da mão (mão primeiro; busca antes só com alvo MV ≥ 6) | **-0.069 ±0.016** | **+1.73 pp ±0.61** | **-0.40 pp ±0.37** | +0.015 ±0.022 | -0.085 ±0.192 | **-1.43 pp ±0.88** |
+| Liliana −4 antigo (sacrifica a Sisay; `@liliana_spares_sisay`) | (igual: sem oponente) | (igual) | **-0.40 pp ±0.38** | +0.008 ±0.023 | -0.199 ±0.213 | -0.53 pp ±0.91 |
+
+**Sensibilidade ao perfil de mesa (só resiliência, N = 3.000 por perfil, slot Arena Rector; política final)**
+
+| candidata − controle (o que o TEXTO faz) | mista | go_wide | voltron | low |
+|---|---|---|---|---|
+| vida ≤ 0 | -0.20 pp ±0.28 | **-0.97 pp ±0.41** | **-0.53 pp ±0.32** | -0.03 pp ±0.07 |
+| 1º ult | **-0.064 ±0.018** | **-0.065 ±0.019** | **-0.086 ±0.020** | **-0.082 ±0.018** |
+| PW-turnos vivos | **+0.615 ±0.168** | **+0.446 ±0.154** | **+0.530 ±0.161** | **+0.708 ±0.172** |
+| PWs mortos em combate | **-0.022 ±0.010** | **-0.028 ±0.013** | **-0.034 ±0.013** | **-0.016 ±0.006** |
+| P(dano ≥ 40) | **+1.77 pp ±0.81** | **+1.10 pp ±0.76** | **+1.73 pp ±0.81** | **+2.27 pp ±0.85** |
+
+| candidata − base (o que o SLOT faz) | mista | go_wide | voltron | low |
+|---|---|---|---|---|
+| vida ≤ 0 | **-0.43 pp ±0.38** | **-0.97 pp ±0.48** | -0.37 pp ±0.38 | -0.10 pp ±0.11 |
+| 1º ult | -0.007 ±0.022 | -0.018 ±0.022 | **-0.040 ±0.024** | **-0.064 ±0.022** |
+| PW-turnos vivos | -0.131 ±0.217 | -0.111 ±0.191 | -0.132 ±0.214 | +0.172 ±0.206 |
+| PWs mortos em combate | **-0.024 ±0.013** | **-0.030 ±0.016** | **-0.038 ±0.016** | **-0.018 ±0.007** |
+| P(dano ≥ 40) | -0.43 pp ±0.92 | -0.50 pp ±0.83 | -0.20 pp ±0.94 | +0.77 pp ±0.93 |
+
+**Uso por partida em que a carta entrou (slot Arena Rector; mediana | média | P(>0))**
+
+| métrica | padrão (n=1.378 de 3.000) | resiliência (n=1.339 de 3.000) |
+|---|---|---|
+| ativações | 3 \| 3,18 \| 76,2% | 2 \| 2,19 \| 67,0% |
+| buscas | 3 \| 3,24 \| 76,2% | 2 \| 2,24 \| 67,0% |
+| buscas que trouxeram PW | 2 \| 2,21 \| 65,0% | 1 \| 1,50 \| 54,8% |
+| buscas que trouxeram peça de motor | 1 \| 1,03 \| 63,3% | 1 \| 0,74 \| 51,7% |
+| cópias pela Peregrine Dynamo | 0 \| 0,06 \| 6,4% | 0 \| 0,05 \| 5,2% |
+| turno em que entra | mediana 8 | mediana 8 |
+
+Ela entra em ~45% das partidas (padrão 45,9% no slot Arena Rector; 42–47% nos seis cortes).
+
+### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
+
+**Pelo deck (medido + raciocínio):**
+- **É a mais "Bridge-nativa" das candidatas.** É criatura (a Bridge a acerta, o que nenhuma das 4 PWs do dia faz), a própria Bridge
+  conta como lendária de 5 cores, então ela fica 7/7 no turno em que entra e alcança 22 das 24 lendárias da lista (só Kaya MV 7 e
+  Ugin MV 8 ficam de fora). Sem {T}: a doença de invocação não atrasa a busca.
+- A busca é um tutor repetível e gratuito em cartas (só custa {W}{U}{B}{R}{G}): traz PW (2,2 por partida em que entra no padrão),
+  que entra com o dobro de lealdade pela Doubling Season e **ativa no mesmo turno**; ou peça de motor (Chain Veil, Oath de Teferi,
+  Carth, Vorinclex, Atraxa, Peregrine Dynamo). A Dynamo copia a busca; o Chain Veil e o Oath dobram ativações.
+- **Medido:** melhor das 5 candidatas do dia no ritmo (−0,086 turno no slot Arena Rector; melhora nos 6 cortes; Dihada −0,057,
+  Guff −0,053, Sarkhan −0,010, Vronos −0,004 no mesmo slot). Todo o efeito vem da busca (sem ela: +0,002). Ainda fica atrás de
+  Loyal Tutor (−0,135) e Tam (−0,119) no mesmo slot (`ab_candidatas_vs_fra.py`, seção 7 acima).
+- No **terceiro slot** ela é marginalmente melhor que o Entrust no ritmo (−0,028 ±0,017; +1,4 pp de P(ult ≤ T8)) empata
+  na resiliência (1º ult +0,016 ±0,022; dano ≥ 40 −0,8 pp, dentro do ruído). Como **quarta carta** por cima do pacote FRA completo,
+  −0,018 ±0,020 (não significativo; vida ≤ 0 −0,6 pp, mas P(dano ≥ 40) −1,1 pp).
+
+**Contra:**
+- **5 mana com as 5 cores por ativação** (mais os 3 da conjuração): compete com a mão pelo mesmo mana; a política final põe a busca
+  na frente, mas isso custa a mão do turno. Mediana de 3 ativações por partida em que ela entra no padrão, 1 na resiliência.
+- **Depende da Bridge:** sem ela, o poder dela é 2 + cores das OUTRAS lendárias (vermelho só pelo Nicol Bolas: máximo 6/6 sem a
+  Bridge) e a busca alcança bem menos.
+- **É criatura:** exposta a remoção e wipe (a Plaza of Heroes a protege, se estiver em campo). O simulador de resiliência a
+  modela como criatura comum (não ataca; bloqueia como qualquer criatura minha; morreu em ~35% das partidas em que entrou, quase
+  todas por wipe de oponente ou wipe/Liliana −4 meus, e em nenhuma por combate). Contra o corpo 2/2 sem texto, o TEXTO ganha
+  PW-turnos vivos (+0,45 a +0,71) e 1º ult da resiliência (−0,06 a −0,09) nos 4 perfis de mesa; contra a BASE (o slot que ela
+  toma) os PW-turnos ficam entre −0,13 e +0,17 e o P(dano ≥ 40) entre −0,5 e +0,8 pp: ela paga o slot e não deixa ganho claro de
+  resiliência ou dano.
+- Entra tarde (turno mediano 8) e só em ~45% das partidas; não alcança Kaya/Ugin; o ganho em vida ≤ 0 é pequeno (−0,07 a −0,67 pp,
+  significativo em 4 dos 6 cortes).
+- Sobre a resiliência ao comparar com a BASE (não com o corpo): PW-turnos vivos −0,131 ±0,217 e P(dano ≥ 40) −0,43 pp ±0,92, ambos
+  dentro do ruído no slot Arena Rector (P(dano ≥ 120) −1,17 pp ±0,87 é pior); **o slot que ela toma é que pesa**, não a carta.
+
+**O que o simulador NÃO vê (e pode subestimar ou superestimar):**
+- ativação no fim do turno do oponente: **agora modelada como chave de sensibilidade** (`sisay_round_end`, desligada por padrão; seção "Sisay com
+  a janela de fim de rodada"): soma ≤ 0,005 turno no padrão e +0,19 PW-turnos vivos na resiliência;
+- resposta do oponente à ativação (ruling da última informação, 📊 estrutural);
+- o modelo de cor é agregado (1 fonte por cor), então **superestima** a facilidade de pagar {W}{U}{B}{R}{G} com mana real;
+- a frente da Esika.
+
+**Onde interage com a lista (Regra #4):** Bridge (alvo e fonte do bônus), Doubling Season (lealdade dobrada dos PWs buscados),
+Chain Veil/Oath de Teferi/Urza III (2 ativações do PW buscado), Peregrine Dynamo (copia a busca), Carth (o embaralhamento da busca
+muda o topo que ele olha), Delighted Halfling/Plaza of Heroes (pagam a Sisay). Combos: 0 novos. Bracket: não é Game Changer; o deck continua com 3.
+
+### Limites desta rodada (Regra #7: o que foi e o que NÃO foi verificado)
+
+- **Verificado:** oráculo e rulings ao vivo cláusula a cláusula com teste dirigido; conceitos "lendária permanente", MV e "cor entre
+  lendárias" enumerados por script sobre o `type_line`/`cmc` ao vivo; Spellbook antes/depois; A/B nos 6 cortes com controle de corte
+  e de corpo; condicional (só quando entrou); sensibilidade a política (3 variantes) e a perfil de mesa (4); bit-identidade da lista
+  atual; regressão de 40.000 partidas.
+- **NÃO verificado:** as outras 99 cartas contra a Sisay uma a uma (só os conceitos e motores listados); ativação no fim do turno do
+  oponente SÓ como sensibilidade (chave desligada por padrão); ordem da ativação contra todas as janelas do turno (só mão-primeiro vs busca-primeiro); pagamento de cor com mana real
+  (o arquivo usa 1 fonte por cor); resposta de oponente à ativação; a frente da Esika.
+
+## Rodada das 4 candidatas: Dihada, Commodore Guff, Vronos, Sarkhan the Masterless — 2026-09-29
+
+**Pedido do usuário:** "Avalie a inclusão das seguintes cartas ao deck, quero
+prós e contras mais do que sugestões de cortes no momento": Dihada (pelo −3),
+Commodore Guff (contador de lealdade em todos os PWs no end step), Vronos
+(phase out de 2 PWs até o meu próximo turno) e Sarkhan the Masterless (o +1
+vira todos os PWs em Dragões 4/4 voadores). Cláusula a cláusula, rulings,
+premissas corrigidas e escopo: `checklist-oraculo.md` (mesma data).
+
+**Duas premissas do pedido que o oráculo não confirma:** a Guff põe contador
+em **um** PW alvo por end step (não em todos); o Vronos tira de fase **outros**
+PWs (até 2), no "next end step".
+
+### O que muda no simulador
+
+- As 4 entram **só via `swap`**. A lista atual continua bit-idêntica: 900 partidas
+  padrão + 1.200 de resiliência (4 perfis) comparadas campo a campo com o código
+  anterior, 0 divergências.
+- Efeitos novos (`prismatic_bridge_goldfish_v1.py`, bloco "CANDIDATAS 2026-09-29"):
+  - Dihada: escudo da +2 (vigilância/lifelink/indestrutível numa lendária), −3 com
+    Treasure (`treasure_stock`: mana de qualquer cor, persiste, some ao gastar), −11 (untap de fontes de mana + criaturas
+    de oponente roubadas atacam com haste).
+  - Guff: gatilho de end step (`guff_end_step`), Wizard (mana {R} só pra PW: abate o genérico), −3 (X = PWs).
+  - Vronos: phase out no end step (`vronos_phase_out_step`), −2 (1 bounce por oponente), −7 (Construct 9/9).
+  - Sarkhan: estático (cada Dragão dá 1 de dano em cada atacante), +1 (PWs viram Dragão 4/4 voador), −3 (Dragão).
+  - Motores da lista que agora enxergam as 4: Doubling Season (fichas, Treasure, lealdade inicial), Bolas (empresta os −3
+    de compra), Peregrine Dynamo (copia), Oath/Chain Veil (2× no turno), Tam (4 tipos de PW novos).
+- **Correção de premissa minha, registrada:** eu tinha modelado que o PW animado pela Sarkhan não ativa mais. O ruling
+  (2019-05-03) diz que ainda ativa. Corrigi antes do A/B final; o primeiro lote de Vronos/Sarkhan foi descartado e rodado
+  de novo. O Vronos −7 também foi ajustado ao ruling (ataca no mesmo turno se o artefato já estava em campo).
+
+### Validação
+
+- **Testes dirigidos:** 124/124 (23 novos, um por cláusula e por interação: escudo da Dihada em combate e em wipe, Treasure
+  como mana de qualquer cor e consumo no fim do turno, Guff com Doubling Season/All Will Be One/fora de fase, Wizard
+  doente e depois pagando só genérico de PW, ordem Guff antes do phase out, Vronos −2/−7 e o Construct indestrutível,
+  Sarkhan animando (só os prontos atacam, ainda ativam, perdem a Gauntlet), Dragões atirando nos atacantes e o dano marcado
+  restaurado, Bolas emprestando o −3 da Guff/Dihada, 12 partidas completas por candidata e pelas 4 juntas).
+- **Bit-identidade da lista atual:** 0 divergências (600 + 300 padrão, 800 + 400 resiliência) em todos os campos do estado,
+  antes e depois das correções de ruling.
+- **Regressão:** 20.000 partidas padrão + 20.000 de resiliência (perfis rotativos), swaps rotativos (base, cada
+  candidata, 3 combinações das 4 juntas): **0 exceções, 0 travamentos** (alarme de 20 s por partida). Entraram em campo
+  em 9.160 (Dihada), 9.599 (Guff), 8.716 (Vronos) e 8.758 (Sarkhan) dessas 40.000 partidas; o −11 da Dihada disparou em
+  327 e o −7 do Vronos em 1.748.
+- **Commander Spellbook antes/depois** (`spellbook_antes_depois.py`; comandante + 99): lista atual 12 combos e 92 quase-combos. Com cada candidata e com as
+  4 juntas: **0 combos novos, 0 removidos, 0 quase-combos novos**. Controle positivo: tirar a The Chain Veil derruba 4
+  combos (o pipeline reage a mudança de lista). Nenhuma das 4 é Game Changer (`is:gamechanger`): o deck segue com 3.
+- **Oráculo:** Dihada, Vronos e Sarkhan entraram no `scryfall-cache/oracle-cache.json` (a Guff já estava, texto idêntico).
+
+### A/B pareado (N = 3.000 seeds; padrão 3.000.000+, resiliência mista 6.000.000+)
+
+Scripts: `ab_candidatas.py` (harness), `ab_candidatas_sum.py` (tabelas), `ab_vronos_protecao.py`,
+`regress_candidatas.py`. A carta nova entra **na linha** da cortada (troca posicional): a partida só diverge quando aquela
+posição é comprada ou revelada. Cortes: Arena Rector, Swan Song, Veil of Summer, Oath of Nissa, Farseek e Doubling Season
+(controle: cortar o motor tem que sair pior). Métricas sempre limitadas por partida (regra "A/B de carta" de
+`references/goldfish-sim-card-rules.md`): turno do 1º ultimate (sem ultimate = 11), P(ultimate ≤ T8), vida ≤ 0 e PW-turnos
+na resiliência, e **P(dano nosso ≥ 40 / ≥ 120)**: a média do proxy de dano é dominada pelas partidas em loop (a média com teto de
+1000 subestimava a Sarkhan: Δ −5,1 ±5,9 sobre a base no slot Arena Rector, enquanto P(dano ≥ 40) sobe +6,2 pp sobre o PW inerte); o limiar não. **Controle do lado da entrada:** um PW de lealdade 5
+**sem nenhuma habilidade** (só existe no harness), no mesmo slot. Candidata − PW inerte = valor do TEXTO, sem misturar com "é
+mais um PW" nem com o valor do slot cortado (decomposição da regra "A/B de carta cara ou tardia").
+
+**Base (lista atual, motor atual):**
+- padrão: 1º ultimate no turno 9,253; P(ult ≤ T8) 34,7%; 1,484 turnos com ultimate;
+- resiliência (mesa mista): vida ≤ 0 em 14,7% (go_wide 28,1%, voltron 18,9%, low 1,8%); 1º ult 9,693; PW-turnos vivos 15,75; PWs mortos em combate 0,577; PWs no T10 5,36.
+
+**Frequência:** Dihada e Guff entram em 44 a 47% das partidas (num slot só; chegam pela Bridge ou pela mão, mediana do
+1º turno em campo: 8); Vronos e Sarkhan em 39 a 43% (custam 5). O efeito condicional (só as partidas em que entram) é
+cerca de 2× o incondicional.
+
+
+#### 1. O que o TEXTO da carta faz: candidata menos o PW inerte no mesmo slot
+
+Negativo em 1º ult e vida ≤ 0 = melhor; positivo em P(ult ≤ T8), PW-turnos e P(dano) = melhor. Negrito = IC95% não cruza 0.
+
+**Efeito das HABILIDADES: candidata menos o PW inerte no mesmo slot (todas as partidas; negativo em 1º ult/vida ≤ 0 = melhor)**
+
+| candidata | métrica | sai Arena Rector | sai Swan Song |
+|---|---|---|---|
+| Dihada | padrão Δ 1º ult (turno) | **-0.063 ±0.014** | **-0.074 ±0.016** |
+| Dihada | padrão Δ P(ult ≤ T8) | **+1.40 pp ±0.53** | **+1.93 pp ±0.58** |
+| Dihada | padrão Δ turnos c/ ult | **+0.097 ±0.016** | **+0.097 ±0.017** |
+| Dihada | resil. Δ vida ≤ 0 | -0.23 pp ±0.30 | -0.33 pp ±0.41 |
+| Dihada | resil. Δ 1º ult | **-0.100 ±0.019** | **-0.079 ±0.018** |
+| Dihada | resil. Δ PW-turnos vivos | **+1.829 ±0.217** | **+1.649 ±0.203** |
+| Dihada | resil. Δ PWs mortos em combate | -0.002 ±0.015 | -0.006 ±0.013 |
+| Dihada | resil. Δ P(dano nosso ≥ 40) | **+5.47 pp ±0.93** | **+4.43 pp ±0.86** |
+| Dihada | resil. Δ P(dano nosso ≥ 120) | **+4.77 pp ±0.88** | **+3.27 pp ±0.79** |
+| Guff | padrão Δ 1º ult (turno) | **-0.059 ±0.012** | **-0.060 ±0.011** |
+| Guff | padrão Δ P(ult ≤ T8) | **+1.70 pp ±0.46** | **+1.50 pp ±0.46** |
+| Guff | padrão Δ turnos c/ ult | **+0.063 ±0.012** | **+0.071 ±0.012** |
+| Guff | resil. Δ vida ≤ 0 | **-0.47 pp ±0.24** | **-0.33 pp ±0.28** |
+| Guff | resil. Δ 1º ult | **-0.063 ±0.015** | **-0.052 ±0.015** |
+| Guff | resil. Δ PW-turnos vivos | **+0.619 ±0.124** | **+0.442 ±0.127** |
+| Guff | resil. Δ PWs mortos em combate | **-0.052 ±0.012** | **-0.050 ±0.013** |
+| Guff | resil. Δ P(dano nosso ≥ 40) | **+2.40 pp ±0.68** | **+1.60 pp ±0.67** |
+| Guff | resil. Δ P(dano nosso ≥ 120) | **+1.67 pp ±0.63** | **+1.13 pp ±0.61** |
+| Vronos | padrão Δ 1º ult (turno) | **-0.010 ±0.007** | -0.005 ±0.008 |
+| Vronos | padrão Δ P(ult ≤ T8) | +0.03 pp ±0.27 | +0.07 pp ±0.31 |
+| Vronos | padrão Δ turnos c/ ult | **+0.010 ±0.008** | +0.005 ±0.008 |
+| Vronos | resil. Δ vida ≤ 0 | -0.10 pp ±0.28 | +0.07 pp ±0.37 |
+| Vronos | resil. Δ 1º ult | **-0.026 ±0.015** | **-0.036 ±0.014** |
+| Vronos | resil. Δ PW-turnos vivos | -0.039 ±0.139 | **-0.130 ±0.110** |
+| Vronos | resil. Δ PWs mortos em combate | **-0.037 ±0.014** | **-0.035 ±0.014** |
+| Vronos | resil. Δ P(dano nosso ≥ 40) | **+1.33 pp ±0.66** | **+1.47 pp ±0.66** |
+| Vronos | resil. Δ P(dano nosso ≥ 120) | **+0.70 pp ±0.57** | +0.33 pp ±0.52 |
+| Sarkhan | padrão Δ 1º ult (turno) | **-0.017 ±0.007** | **-0.009 ±0.007** |
+| Sarkhan | padrão Δ P(ult ≤ T8) | +0.23 pp ±0.25 | +0.17 pp ±0.28 |
+| Sarkhan | padrão Δ turnos c/ ult | **+0.016 ±0.008** | **+0.009 ±0.008** |
+| Sarkhan | resil. Δ vida ≤ 0 | **-0.33 pp ±0.32** | -0.23 pp ±0.39 |
+| Sarkhan | resil. Δ 1º ult | **-0.013 ±0.013** | **-0.022 ±0.012** |
+| Sarkhan | resil. Δ PW-turnos vivos | -0.050 ±0.110 | **-0.125 ±0.106** |
+| Sarkhan | resil. Δ PWs mortos em combate | **-0.043 ±0.012** | **-0.042 ±0.013** |
+| Sarkhan | resil. Δ P(dano nosso ≥ 40) | **+6.20 pp ±0.93** | **+5.83 pp ±0.92** |
+| Sarkhan | resil. Δ P(dano nosso ≥ 120) | **+1.50 pp ±0.58** | **+1.40 pp ±0.60** |
+
+**Efeito das HABILIDADES: candidata menos o PW inerte no mesmo slot (só partidas em que ela entrou; negativo em 1º ult/vida ≤ 0 = melhor)**
+
+| candidata | métrica | sai Arena Rector | sai Swan Song |
+|---|---|---|---|
+| Dihada | padrão Δ 1º ult (turno) | **-0.135 ±0.030** | **-0.161 ±0.034** |
+| Dihada | padrão Δ P(ult ≤ T8) | **+2.98 pp ±1.12** | **+4.25 pp ±1.26** |
+| Dihada | padrão Δ turnos c/ ult | **+0.207 ±0.032** | **+0.214 ±0.036** |
+| Dihada | resil. Δ vida ≤ 0 | -0.43 pp ±0.63 | -0.72 pp ±0.89 |
+| Dihada | resil. Δ 1º ult | **-0.213 ±0.039** | **-0.170 ±0.039** |
+| Dihada | resil. Δ PW-turnos vivos | **+3.939 ±0.439** | **+3.578 ±0.417** |
+| Dihada | resil. Δ PWs mortos em combate | +0.000 ±0.033 | -0.009 ±0.028 |
+| Dihada | resil. Δ P(dano nosso ≥ 40) | **+11.78 pp ±1.93** | **+9.52 pp ±1.83** |
+| Dihada | resil. Δ P(dano nosso ≥ 120) | **+10.21 pp ±1.84** | **+6.99 pp ±1.69** |
+| Guff | padrão Δ 1º ult (turno) | **-0.127 ±0.024** | **-0.132 ±0.024** |
+| Guff | padrão Δ P(ult ≤ T8) | **+3.63 pp ±0.98** | **+3.31 pp ±1.01** |
+| Guff | padrão Δ turnos c/ ult | **+0.134 ±0.024** | **+0.158 ±0.026** |
+| Guff | resil. Δ vida ≤ 0 | **-0.93 pp ±0.50** | **-0.72 pp ±0.60** |
+| Guff | resil. Δ 1º ult | **-0.135 ±0.032** | **-0.111 ±0.033** |
+| Guff | resil. Δ PW-turnos vivos | **+1.355 ±0.260** | **+0.962 ±0.272** |
+| Guff | resil. Δ PWs mortos em combate | **-0.107 ±0.025** | **-0.106 ±0.028** |
+| Guff | resil. Δ P(dano nosso ≥ 40) | **+5.23 pp ±1.44** | **+3.40 pp ±1.44** |
+| Guff | resil. Δ P(dano nosso ≥ 120) | **+3.58 pp ±1.35** | **+2.39 pp ±1.32** |
+| Vronos | padrão Δ 1º ult (turno) | -0.012 ±0.015 | -0.009 ±0.017 |
+| Vronos | padrão Δ P(ult ≤ T8) | +0.00 pp ±0.58 | +0.08 pp ±0.71 |
+| Vronos | padrão Δ turnos c/ ult | +0.012 ±0.017 | +0.007 ±0.018 |
+| Vronos | resil. Δ vida ≤ 0 | -0.16 pp ±0.60 | +0.16 pp ±0.81 |
+| Vronos | resil. Δ 1º ult | **-0.065 ±0.035** | **-0.080 ±0.033** |
+| Vronos | resil. Δ PW-turnos vivos | +0.262 ±0.312 | -0.064 ±0.250 |
+| Vronos | resil. Δ PWs mortos em combate | **-0.081 ±0.032** | **-0.078 ±0.032** |
+| Vronos | resil. Δ P(dano nosso ≥ 40) | **+3.74 pp ±1.55** | **+3.40 pp ±1.56** |
+| Vronos | resil. Δ P(dano nosso ≥ 120) | **+2.03 pp ±1.34** | +0.81 pp ±1.23 |
+| Sarkhan | padrão Δ 1º ult (turno) | **-0.027 ±0.015** | **-0.018 ±0.016** |
+| Sarkhan | padrão Δ P(ult ≤ T8) | +0.47 pp ±0.54 | +0.33 pp ±0.65 |
+| Sarkhan | padrão Δ turnos c/ ult | **+0.028 ±0.016** | **+0.017 ±0.016** |
+| Sarkhan | resil. Δ vida ≤ 0 | **-0.73 pp ±0.69** | -0.56 pp ±0.85 |
+| Sarkhan | resil. Δ 1º ult | **-0.034 ±0.029** | **-0.047 ±0.027** |
+| Sarkhan | resil. Δ PW-turnos vivos | +0.230 ±0.230 | -0.047 ±0.240 |
+| Sarkhan | resil. Δ PWs mortos em combate | **-0.094 ±0.027** | **-0.095 ±0.030** |
+| Sarkhan | resil. Δ P(dano nosso ≥ 40) | **+15.57 pp ±2.11** | **+13.96 pp ±2.12** |
+| Sarkhan | resil. Δ P(dano nosso ≥ 120) | **+3.97 pp ±1.34** | **+3.39 pp ±1.42** |
+
+#### 2. Sensibilidade: desligar o que carrega cada carta (slot Arena Rector, Δ pareado sobre a base)
+
+| candidata / política | padrão Δ 1º ult (turno) | padrão Δ P(ult ≤ T8) | padrão Δ turnos c/ ult | resil. Δ vida ≤ 0 | resil. Δ 1º ult | resil. Δ PW-turnos vivos | resil. Δ PWs mortos em combate | resil. Δ P(dano nosso ≥ 40) |
+|---|---|---|---|---|---|---|---|---|
+| Dihada: política completa | **-0.057 ±0.014** | **+1.37 pp ±0.52** | **+0.087 ±0.015** | -0.33 pp ±0.35 | **-0.035 ±0.020** | **+2.199 ±0.234** | **+0.045 ±0.017** | **+3.07 pp ±0.94** |
+| Dihada: sem o −3 (só +2) | +0.003 ±0.006 | +0.13 pp ±0.21 | **-0.010 ±0.006** | **-0.37 pp ±0.31** | **+0.061 ±0.019** | **+0.445 ±0.166** | **+0.025 ±0.012** | +0.17 pp ±0.87 |
+| Guff: política completa | **-0.053 ±0.013** | **+1.67 pp ±0.49** | **+0.052 ±0.012** | **-0.57 pp ±0.33** | +0.002 ±0.020 | **+0.989 ±0.179** | -0.004 ±0.012 | +0.00 pp ±0.83 |
+| Guff: sem o −3 (só +1 e o gatilho de end step) | **-0.055 ±0.012** | **+1.63 pp ±0.48** | **+0.051 ±0.012** | **-0.57 pp ±0.33** | +0.003 ±0.020 | **+0.722 ±0.170** | -0.005 ±0.011 | -0.43 pp ±0.81 |
+| Vronos: política completa | -0.004 ±0.009 | +0.00 pp ±0.35 | -0.001 ±0.009 | -0.20 pp ±0.32 | **+0.039 ±0.021** | **+0.331 ±0.179** | +0.011 ±0.012 | **-1.07 pp ±0.84** |
+| Vronos: +1 sem phase out (só +1 de lealdade) | -0.004 ±0.009 | +0.00 pp ±0.35 | -0.000 ±0.009 | -0.27 pp ±0.31 | **+0.043 ±0.020** | **+0.300 ±0.175** | +0.012 ±0.012 | **-1.07 pp ±0.85** |
+| Sarkhan: política completa | **-0.010 ±0.008** | +0.20 pp ±0.31 | +0.006 ±0.008 | **-0.43 pp ±0.33** | **+0.051 ±0.020** | **+0.320 ±0.164** | +0.005 ±0.011 | **+3.80 pp ±0.96** |
+| Sarkhan: +1 sem animar (só +1 de lealdade; Dragões do −3 e o estático ficam) | **-0.010 ±0.008** | +0.20 pp ±0.31 | +0.006 ±0.008 | **-0.43 pp ±0.33** | **+0.051 ±0.020** | **+0.317 ±0.163** | +0.005 ±0.011 | **-1.83 pp ±0.76** |
+
+Legenda: "sem o −3" = a política nunca usa o −3 (Dihada/Guff); "sem phase out" = o +1 do Vronos só dá lealdade; "sem animar" = o +1 da Sarkhan só dá lealdade (as fichas Dragão do −3 e o estático ficam).
+
+#### 3. Sensibilidade ao perfil de mesa (candidata − PW inerte, slot Arena Rector, resiliência, N = 3.000 por perfil)
+
+| candidata − PW inerte (slot Arena Rector) | métrica | mista | go_wide | voltron | low |
+|---|---|---|---|---|---|
+| Dihada | vida ≤ 0 | -0.23 pp ±0.30 | -0.03 pp ±0.46 | **-0.43 pp ±0.38** | -0.07 pp ±0.13 |
+| Dihada | 1º ult | **-0.100 ±0.019** | **-0.103 ±0.019** | **-0.089 ±0.019** | **-0.082 ±0.017** |
+| Dihada | PWs mortos em combate | -0.002 ±0.015 | -0.007 ±0.022 | **-0.017 ±0.015** | -0.001 ±0.008 |
+| Dihada | P(dano ≥ 40) | **+5.47 pp ±0.93** | **+5.83 pp ±0.97** | **+4.67 pp ±0.91** | **+4.87 pp ±0.90** |
+| Guff | vida ≤ 0 | **-0.47 pp ±0.24** | **-0.60 pp ±0.42** | -0.33 pp ±0.35 | -0.10 pp ±0.11 |
+| Guff | 1º ult | **-0.063 ±0.015** | **-0.057 ±0.015** | **-0.051 ±0.016** | **-0.059 ±0.014** |
+| Guff | PWs mortos em combate | **-0.052 ±0.012** | **-0.089 ±0.019** | **-0.043 ±0.013** | **-0.026 ±0.007** |
+| Guff | P(dano ≥ 40) | **+2.40 pp ±0.68** | **+1.83 pp ±0.65** | **+2.10 pp ±0.70** | **+2.30 pp ±0.72** |
+| Vronos | vida ≤ 0 | -0.10 pp ±0.28 | **+0.50 pp ±0.41** | **-0.47 pp ±0.35** | -0.03 pp ±0.07 |
+| Vronos | 1º ult | **-0.026 ±0.015** | **-0.031 ±0.013** | **-0.037 ±0.016** | **-0.014 ±0.012** |
+| Vronos | PWs mortos em combate | **-0.037 ±0.014** | **-0.056 ±0.017** | **-0.076 ±0.017** | **-0.012 ±0.007** |
+| Vronos | P(dano ≥ 40) | **+1.33 pp ±0.66** | **+1.93 pp ±0.66** | **+1.87 pp ±0.74** | **+1.67 pp ±0.66** |
+| Sarkhan | vida ≤ 0 | **-0.33 pp ±0.32** | +0.27 pp ±0.39 | **-0.43 pp ±0.34** | -0.07 pp ±0.09 |
+| Sarkhan | 1º ult | **-0.013 ±0.013** | **-0.015 ±0.011** | **-0.014 ±0.013** | -0.007 ±0.012 |
+| Sarkhan | PWs mortos em combate | **-0.043 ±0.012** | **-0.038 ±0.014** | **-0.030 ±0.015** | **-0.020 ±0.007** |
+| Sarkhan | P(dano ≥ 40) | **+6.20 pp ±0.93** | **+4.93 pp ±0.84** | **+5.33 pp ±0.90** | **+6.67 pp ±0.96** |
+
+Base por perfil (vida ≤ 0): mista: 14.7% | go_wide: 28.1% | voltron: 18.9% | low: 1.8%
+
+
+#### 4. Vronos: o que o phase out protege de fato (resiliência mista, N = 3.000; `ab_vronos_protecao.py`)
+
+#### Vronos: onde o phase out aparece (todas as partidas; n=3000)
+
+| métrica | Vronos completo − base | Vronos sem phase out − base | phase out (completo − sem) | Vronos − PW inerte |
+|---|---|---|---|---|
+| Δ soma da lealdade dos PWs no fim (cap 1000) | **-18.652 ±8.057** | **-17.474 ±8.001** | -1.179 ±2.792 | +0.671 ±6.310 |
+| Δ PWs vivos no T10 (cap 50) | +0.046 ±0.088 | +0.047 ±0.088 | -0.001 ±0.024 | -0.020 ±0.070 |
+| Δ PW-turnos vivos | **+0.331 ±0.179** | **+0.300 ±0.175** | +0.031 ±0.039 | -0.039 ±0.139 |
+| Δ PWs mortos em combate | +0.011 ±0.012 | +0.012 ±0.012 | -0.001 ±0.004 | **-0.037 ±0.014** |
+| Δ dano de combate recebido pelos PWs (cap 1000) | +0.062 ±0.073 | **+0.106 ±0.074** | **-0.045 ±0.021** | **-0.395 ±0.087** |
+| Δ remoções sofridas | +0.015 ±0.019 | +0.015 ±0.018 | +0.000 ±0.004 | -0.000 ±0.018 |
+| Δ vida ≤ 0 | -0.20 pp ±0.32 | -0.27 pp ±0.31 | +0.07 pp ±0.09 | -0.10 pp ±0.28 |
+| Δ 1º ultimate (turno) | **+0.039 ±0.021** | **+0.043 ±0.020** | **-0.004 ±0.004** | **-0.026 ±0.015** |
+
+#### Vronos: onde o phase out aparece (só as 1231 partidas em que o Vronos entrou; n=1231)
+
+| métrica | Vronos completo − base | Vronos sem phase out − base | phase out (completo − sem) | Vronos − PW inerte |
+|---|---|---|---|---|
+| Δ soma da lealdade dos PWs no fim (cap 1000) | **-34.351 ±18.558** | **-31.478 ±18.422** | -2.872 ±6.805 | +6.650 ±14.687 |
+| Δ PWs vivos no T10 (cap 50) | **+0.312 ±0.204** | **+0.314 ±0.202** | -0.002 ±0.058 | +0.103 ±0.162 |
+| Δ PW-turnos vivos | **+1.119 ±0.405** | **+1.042 ±0.394** | +0.076 ±0.096 | +0.262 ±0.312 |
+| Δ PWs mortos em combate | +0.014 ±0.027 | +0.016 ±0.027 | -0.002 ±0.010 | **-0.081 ±0.032** |
+| Δ dano de combate recebido pelos PWs (cap 1000) | +0.126 ±0.161 | **+0.235 ±0.164** | **-0.109 ±0.050** | **-0.819 ±0.196** |
+| Δ remoções sofridas | +0.036 ±0.043 | +0.036 ±0.042 | +0.000 ±0.011 | +0.008 ±0.042 |
+| Δ vida ≤ 0 | **-0.73 pp ±0.66** | **-0.89 pp ±0.61** | +0.16 pp ±0.23 | -0.16 pp ±0.60 |
+| Δ 1º ultimate (turno) | **+0.068 ±0.046** | **+0.079 ±0.045** | **-0.011 ±0.010** | **-0.065 ±0.035** |
+
+PWs tirados de fase por partida em que o Vronos entrou: média 3.53, P(>0) 71.6%
+
+#### 5. Frequência e uso por partida em que a carta entrou
+
+| candidata | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada (std) | 47.0% | 45.5% | 45.4% | 44.1% | 44.6% | 45.0% |
+| Dihada (res) | 46.7% | 46.2% | 48.4% | 46.4% | 47.9% | 48.1% |
+| Guff (std) | 46.9% | 45.3% | 45.4% | 44.0% | 44.5% | 45.1% |
+| Guff (res) | 46.5% | 46.1% | 48.2% | 46.3% | 47.7% | 48.0% |
+| Vronos (std) | 42.0% | 40.2% | 40.6% | 38.6% | 39.4% | 39.2% |
+| Vronos (res) | 41.0% | 41.2% | 43.0% | 40.1% | 41.9% | 42.3% |
+| Sarkhan (std) | 42.1% | 40.4% | 40.7% | 38.7% | 39.5% | 39.2% |
+| Sarkhan (res) | 41.1% | 41.3% | 43.1% | 40.1% | 41.9% | 42.5% |
+| CONTROLE (PW sem habilidade) (std) | 47.4% | 45.8% | — | — | — | — |
+| CONTROLE (PW sem habilidade) (res) | 46.9% | 46.4% | — | — | — | — |
+
+**Uso (slot Arena Rector; mediana | média com teto 1000 por partida | P(>0))**
+
+**Dihada — std** (n=1410 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| dihada_minus3 | 3 | 3.86 | 94.0% |
+| dihada_plus2_targets | 1 | 2.25 | 53.3% |
+| dihada_legends_to_hand | 2 | 3.05 | 81.1% |
+| dihada_pws_to_hand | 1 | 1.99 | 70.5% |
+| dihada_milled | 11 | 12.41 | 94.0% |
+| dihada_milled_pw_or_creature | 1 | 0.87 | 54.8% |
+| dihada_treasures | 14 | 126.91 | 94.0% |
+| dihada_treasures_spent | 1 | 3.83 | 51.3% |
+| dihada_ult | 0 | 0.00 | 0.0% |
+| dihada_stolen_power | 0 | 0.00 | 0.0% |
+| 1º turno em campo | 8 | 8.13 | — |
+
+**Dihada — res** (n=1401 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| dihada_minus3 | 2 | 3.15 | 94.0% |
+| dihada_plus2_targets | 0 | 1.76 | 45.0% |
+| dihada_legends_to_hand | 2 | 2.52 | 78.8% |
+| dihada_pws_to_hand | 1 | 1.64 | 67.5% |
+| dihada_milled | 8 | 10.08 | 93.9% |
+| dihada_milled_pw_or_creature | 0 | 0.68 | 44.7% |
+| dihada_treasures | 9 | 87.50 | 93.9% |
+| dihada_treasures_spent | 1 | 3.37 | 54.4% |
+| dihada_ult | 0 | 0.12 | 7.6% |
+| dihada_stolen_power | 0 | 2.40 | 7.6% |
+| 1º turno em campo | 8 | 8.03 | — |
+
+**Guff — std** (n=1406 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| guff_plus1 | 4 | 4.27 | 94.2% |
+| guff_wizards | 4 | 8.47 | 86.3% |
+| guff_wizard_mana | 0 | 1.52 | 34.4% |
+| guff_minus3 | 1 | 1.21 | 51.3% |
+| guff_minus3_cards | 4 | 14.85 | 51.3% |
+| guff_end_triggers | 2 | 2.57 | 96.4% |
+| guff_end_counters | 5 | 213.33 | 96.4% |
+| 1º turno em campo | 8 | 8.13 | — |
+
+**Guff — res** (n=1395 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| guff_plus1 | 3 | 4.05 | 96.1% |
+| guff_wizards | 3 | 6.23 | 91.9% |
+| guff_wizard_mana | 0 | 0.65 | 26.9% |
+| guff_minus3 | 0 | 0.37 | 31.7% |
+| guff_minus3_cards | 0 | 2.07 | 31.7% |
+| guff_end_triggers | 2 | 2.21 | 93.0% |
+| guff_end_counters | 4 | 132.39 | 93.0% |
+| 1º turno em campo | 8 | 8.03 | — |
+
+**Vronos — std** (n=1259 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| vronos_plus1 | 3 | 4.00 | 96.6% |
+| vronos_phased_out | 5 | 6.74 | 93.7% |
+| vronos_minus2 | 0 | 0.00 | 0.0% |
+| vronos_bounced | 0 | 0.00 | 0.0% |
+| vronos_ult | 0 | 0.00 | 0.0% |
+| vronos_attack_damage | 0 | 0.00 | 0.0% |
+| 1º turno em campo | 9 | 8.40 | — |
+
+**Vronos — res** (n=1231 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| vronos_plus1 | 1 | 1.99 | 74.6% |
+| vronos_phased_out | 2 | 3.53 | 71.6% |
+| vronos_minus2 | 0 | 0.82 | 39.2% |
+| vronos_bounced | 0 | 2.04 | 39.2% |
+| vronos_ult | 0 | 0.55 | 39.8% |
+| vronos_attack_damage | 0 | 8.27 | 24.1% |
+| 1º turno em campo | 9 | 8.31 | — |
+
+**Sarkhan — std** (n=1264 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| sarkhan_plus1 | 3 | 4.08 | 96.4% |
+| sarkhan_animated | 19 | 40.01 | 96.4% |
+| sarkhan_ready_attackers | 8 | 23.54 | 90.0% |
+| sarkhan_attack_power_potential | 36 | 206.66 | 90.0% |
+| sarkhan_attack_damage | 0 | 0.00 | 0.0% |
+| sarkhan_minus3 | 0 | 0.00 | 0.0% |
+| sarkhan_ping_kills | 0 | 0.00 | 0.0% |
+| sarkhan_ping_damage | 0 | 0.00 | 0.0% |
+| 1º turno em campo | 9 | 8.39 | — |
+
+**Sarkhan — res** (n=1233 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| sarkhan_plus1 | 2 | 2.96 | 89.9% |
+| sarkhan_animated | 12 | 26.91 | 89.9% |
+| sarkhan_ready_attackers | 5 | 15.45 | 83.5% |
+| sarkhan_attack_power_potential | 20 | 130.26 | 83.5% |
+| sarkhan_attack_damage | 18 | 75.79 | 80.6% |
+| sarkhan_minus3 | 0 | 0.48 | 36.7% |
+| sarkhan_ping_kills | 0 | 0.53 | 10.6% |
+| sarkhan_ping_damage | 0 | 1.26 | 20.4% |
+| 1º turno em campo | 9 | 8.32 | — |
+
+#### 6. As 4 juntas
+
+| métrica | Δ pareado |
+|---|---|
+| padrão Δ 1º ult (turno) | +0.026 ±0.030 |
+| padrão Δ P(ult ≤ T8) | -0.57 pp ±1.06 |
+| padrão Δ turnos c/ ult | -0.012 ±0.029 |
+| resiliência Δ vida ≤ 0 | **-0.83 pp ±0.82** |
+| resiliência Δ 1º ult | **+0.067 ±0.037** |
+| resiliência Δ PW-turnos vivos | **+3.284 ±0.373** |
+| resiliência Δ PWs mortos em combate | **+0.032 ±0.028** |
+| resiliência Δ P(dano nosso ≥ 40) | **+6.37 pp ±1.47** |
+| resiliência Δ P(dano nosso ≥ 120) | +1.00 pp ±1.23 |
+
+#### 7. "Vale a pena?": as candidatas do dia (Dihada, Guff, Vronos, Sarkhan e, na rodada seguinte, Sisay) contra as 3 de Reality Fracture (Tam, Loyal Tutor, Entrust the Spark) nos MESMOS slots fracos
+
+Os três cortes mais fracos da lista (Arena Rector, Swan Song, Veil of Summer) já estão reservados às 3 de FRA
+(`checklist-oraculo.md`, rodada de 2026-09-25). Então a pergunta real é se alguma delas ganha desse uso do slot (a Sisay entrou depois, na seção própria acima; as linhas dela estão nas mesmas tabelas).
+Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA usa os mesmos cortes da rodada anterior).
+
+**1. Uma carta por vez no slot Arena Rector (Δ sobre a lista atual)**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| Loyal Tutor (FRA) | **-0.135 ±0.023** | **+3.50 pp ±0.78** | -0.30 pp ±0.34 | **-0.045 ±0.025** | **+1.23 pp ±0.97** |
+| Tam (FRA) | **-0.119 ±0.017** | **+2.93 pp ±0.65** | **-0.37 pp ±0.36** | **-0.053 ±0.024** | **-1.13 pp ±0.83** |
+| Entrust the Spark (FRA) | **-0.064 ±0.014** | **+1.60 pp ±0.51** | -0.20 pp ±0.29 | +0.002 ±0.020 | +0.23 pp ±0.86 |
+| Dihada | **-0.057 ±0.014** | **+1.37 pp ±0.52** | -0.33 pp ±0.35 | **-0.035 ±0.020** | **+3.07 pp ±0.94** |
+| Guff | **-0.053 ±0.013** | **+1.67 pp ±0.49** | **-0.57 pp ±0.33** | +0.002 ±0.020 | +0.00 pp ±0.83 |
+| Vronos | -0.004 ±0.009 | +0.00 pp ±0.35 | -0.20 pp ±0.32 | **+0.039 ±0.021** | **-1.07 pp ±0.84** |
+| Sarkhan | **-0.010 ±0.008** | +0.20 pp ±0.31 | **-0.43 pp ±0.33** | **+0.051 ±0.020** | **+3.80 pp ±0.96** |
+| Sisay | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.43 pp ±0.92 |
+
+**2. Terceiro slot (Tam→Arena Rector e Loyal Tutor→Swan Song fixos; Veil of Summer sai). Δ sobre a lista atual**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| Tam + Loyal Tutor + **Entrust** | **-0.236 ±0.027** | **+6.00 pp ±0.95** | **-0.67 pp ±0.55** | **-0.125 ±0.033** | **+1.30 pp ±1.15** |
+| Tam + Loyal Tutor + **Dihada** | **-0.246 ±0.029** | **+6.37 pp ±1.04** | **-1.00 pp ±0.60** | **-0.149 ±0.036** | **+4.30 pp ±1.35** |
+| Tam + Loyal Tutor + **Guff** | **-0.227 ±0.029** | **+6.03 pp ±1.04** | **-0.97 pp ±0.59** | **-0.107 ±0.035** | +1.10 pp ±1.25 |
+| Tam + Loyal Tutor + **Vronos** | **-0.183 ±0.029** | **+4.87 pp ±0.99** | -0.57 pp ±0.57 | **-0.088 ±0.035** | +0.63 pp ±1.24 |
+| Tam + Loyal Tutor + **Sarkhan** | **-0.185 ±0.029** | **+4.93 pp ±0.98** | **-0.80 pp ±0.57** | **-0.068 ±0.035** | **+4.63 pp ±1.32** |
+| Tam + Loyal Tutor + **Sisay** | **-0.264 ±0.031** | **+7.43 pp ±1.10** | **-0.90 pp ±0.64** | **-0.109 ±0.036** | +0.53 pp ±1.26 |
+
+**3. O mesmo terceiro slot, Δ sobre o pacote com Entrust (positivo em 'P(...)' e negativo em 'vida ≤ 0/1º ult' = melhor que o Entrust)**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| Dihada no lugar do Entrust | -0.010 ±0.015 | +0.37 pp ±0.57 | -0.33 pp ±0.37 | **-0.024 ±0.020** | **+3.00 pp ±0.99** |
+| Guff no lugar do Entrust | +0.010 ±0.014 | +0.03 pp ±0.55 | -0.30 pp ±0.33 | +0.018 ±0.019 | -0.20 pp ±0.85 |
+| Vronos no lugar do Entrust | **+0.054 ±0.013** | **-1.13 pp ±0.48** | +0.10 pp ±0.30 | **+0.037 ±0.018** | -0.67 pp ±0.85 |
+| Sarkhan no lugar do Entrust | **+0.052 ±0.013** | **-1.07 pp ±0.48** | -0.13 pp ±0.24 | **+0.057 ±0.018** | **+3.33 pp ±0.91** |
+| Sisay no lugar do Entrust | **-0.028 ±0.017** | **+1.43 pp ±0.66** | -0.23 pp ±0.40 | +0.016 ±0.022 | -0.77 pp ±0.88 |
+
+**4. Quarta carta por cima do pacote FRA completo (Tam + Loyal Tutor + Entrust), entrando no lugar do Oath of Nissa. Δ sobre o pacote FRA**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| + Dihada (sai Oath of Nissa) | -0.003 ±0.020 | +0.20 pp ±0.72 | -0.47 pp ±0.51 | -0.025 ±0.025 | **+3.00 pp ±1.00** |
+| + Guff (sai Oath of Nissa) | +0.008 ±0.020 | -0.23 pp ±0.71 | -0.40 pp ±0.54 | **+0.032 ±0.024** | -0.37 pp ±0.90 |
+| + Vronos (sai Oath of Nissa) | **+0.055 ±0.021** | **-1.13 pp ±0.72** | -0.13 pp ±0.52 | **+0.043 ±0.023** | -0.67 pp ±0.89 |
+| + Sarkhan (sai Oath of Nissa) | **+0.053 ±0.021** | **-0.97 pp ±0.71** | -0.40 pp ±0.51 | **+0.059 ±0.023** | **+3.33 pp ±1.00** |
+| + Sisay (sai Oath of Nissa) | -0.018 ±0.020 | **+0.83 pp ±0.72** | **-0.57 pp ±0.52** | +0.013 ±0.025 | **-1.07 pp ±0.92** |
+
+**Leitura:**
+- Sozinhas no slot Arena Rector, **Loyal Tutor (−0,135) e Tam (−0,119) valem mais que qualquer uma das 5 novas** (Sisay −0,086, Entrust −0,064, Dihada −0,057, Guff −0,053, Sarkhan −0,010, Vronos −0,004 no turno do 1º ultimate). A Sisay é a melhor das 5 em velocidade.
+- No **terceiro slot** (ao lado de Tam + Loyal Tutor): a **Sisay ganha do Entrust no ritmo** (−0,028 ±0,017 no turno do 1º ult; +1,4 pp de P(ult ≤ T8)) e a **Dihada empata com ele** (−0,010, dentro do ruído). Na resiliência a Dihada fica melhor que o Entrust (1º ult −0,024; P(dano ≥ 40) +3,0 pp) e a Sisay empata com ele (1º ult +0,016 ±0,022; P(dano ≥ 40) −0,8 pp, dentro do ruído; política final da Liliana). Guff empata no ritmo e não traz o resto. Vronos e Sarkhan são piores que o Entrust no ritmo (+0,05 turno).
+- Como **quarta carta** por cima do pacote FRA completo, nenhuma acelera de forma clara (Dihada ±0; Sisay −0,018 ±0,020, não significativo, com +0,8 pp de P(ult ≤ T8), vida ≤ 0 −0,6 pp e P(dano ≥ 40) −1,1 pp; Vronos e Sarkhan pioram ~0,055 turno e −1 pp de P(ult ≤ T8)): o Oath of Nissa vale tanto quanto elas nesse slot. A Dihada e a Sarkhan só somam dano (+3 pp de P(dano ≥ 40)).
+
+### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
+
+**O que o simulador mede:** velocidade dos ultimates dos 17 PWs, sobrevivência dos PWs e da vida contra 3 oponentes com
+criaturas, e um proxy de dano de combate. **O que ele NÃO mede:**
+- instantâneo de oponente no MEU turno (afeta só os PWs animados da Sarkhan);
+- a QUALIDADE do PW protegido (o oponente simulado bate no de maior lealdade fora de fase e desvia o resto);
+- a frente da Esika (não existe no arquivo);
+- Dihada −11 e Vronos −2 além de criatura de oponente (📊 estrutural).
+
+Por isso as conclusões abaixo separam "medido" de "raciocínio pelo deck".
+
+**Dihada — a candidata cujo efeito é mais forte e vem inteiro do −3.**
+- Medido: sem o −3 (só +2) o ganho some (padrão Δ 1º ult −0,057 → +0,003; resiliência Δ 1º ult −0,035 → +0,061, pior que a base). Contra o PW inerte: 1º ult −0,063 no padrão e −0,100 na resiliência; P(dano ≥ 40) +5,5 pp. Nos 4 perfis de mesa o 1º ult melhora 0,08 a 0,10.
+- Pelo deck: o −3 é um tutor de "lendária" e a lista tem 24 (17 PWs + Chain Veil, Oath of Teferi, Oath of Nissa, Vorinclex, Carth, Atraxa, Peregrine Dynamo). P(≥1 lendária nas 4) = 67,7% e P(≥1 PW) = 53,5% na biblioteca cheia. Em partida: mediana 3 usos, ~3,1 lendárias na mão (2,0 PWs).
+- O "custo" do mill é quase zero porque as cartas moídas são aleatórias (a Dihada só seleciona); a perda específica é criatura/PW que a Bridge acertaria: 0,87 por partida.
+- Treasure paga os PWs que ela mesma pôs na mão (7 PWs custam 6+), mas sobra: mediana 1 Treasure gasto por partida (51% das partidas gastam algum). A carta chega tarde (T8 mediano), então não é ramp.
+- Contra: 4 mana R/W/B; puxar PW pra mão tira ele da pilha que a Bridge põe de graça (o Treasure compensa em mana, não em tempo); o −11 só dispara em 7,6% das partidas de resiliência em que ela entra.
+
+**Commodore Guff — vale pelo gatilho de end step e pelos Wizards, não pelo −3, e é UM PW por turno.**
+- Medido: contra o PW inerte, 1º ult −0,059 (padrão) e −0,063 (resiliência); vida ≤ 0 −0,47 pp; PWs mortos −0,052. Sem o −3 o ganho de velocidade é o mesmo (−0,055 vs −0,053): o −3 só acrescenta PW-turnos (+0,99 vs +0,72).
+- Pelo deck: o contador passa por `add_loyalty`, então Doubling Season/Vorinclex/Innkeeper nv.3 dobram e o All Will Be One dispara; o alvo é o PW mais perto do ultimate. O Wizard (dobrado pela Doubling Season) é bloqueador e a {R} paga PW (34% das partidas em que ela entra usam essa mana). O −3 compra X = PWs em campo (mediana 4, usado em 51% das partidas em que entra).
+- Contra: **o "todos os PWs" que motivou a inclusão já existe** na lista (8 cartas dão proliferate, por varredura do oráculo: Atraxa no MESMO end step, Evolution Sage, Flux Channeler, Inexorable Tide, Ichormoon Gauntlet [0], Mutational Advantage, Ripples of Potential e Vraska 0; o Deepglow Skate dobra os contadores); a Guff soma 1 contador (2 com dobrador) em 1 PW. Entra tarde (T8 mediano), 4 mana U/R/W, precisa estar viva no end step.
+
+**Vronos — a mais fraca no que dá pra medir; a proteção é redundante com a lista.**
+- Medido: padrão sem efeito no ritmo (Δ 1º ult −0,010 vs inerte). O phase out em si: −0,109 de dano de combate nos PWs por partida em que ele entra, mas mortes de PW (−0,002) e vida ≤ 0 (+0,16 pp) não mudam, porque o dano vai pros PWs que ficaram. O efeito medido sobre o inerte (PWs mortos −0,037 no geral e −0,081 quando entra) vem principalmente do −2 (por eliminação: com e sem o phase out o número é o mesmo). Na mesa go_wide a vida ≤ 0 até piora (+0,50 pp).
+- −2: 1 bounce por oponente (3 na mesa de 4), usado em 39% das partidas de resiliência em que ele entra. −7: Construct 9/9 impossível de bloquear, indestrutível, com vigilância; usado em 40% dessas partidas e o Construct ataca em 24% (dano médio 8,3 por partida).
+- Contra: protege só OUTROS PWs e só até o meu untap (no meu turno todos ficam expostos); o Vronos e a Bridge (encantamento) ficam na linha de fogo; PW fora de fase perde os estáticos (Teferi Time Raveler, Narset, Wanderer) e a ativação instantânea do emblema do Teferi TA; a lista já tem **Ripples of Potential** (phase out de TODOS os PWs por {1}{U}, instantâneo, com proliferate), Mutational Advantage, Veil of Summer e Sterling Grove. 5 mana UU no tempo de feitiço.
+
+**Sarkhan the Masterless — abre uma linha de vitória que a lista não tem, com risco que o simulador não vê.**
+- Medido: contra o PW inerte, P(dano ≥ 40) **+6,2 pp** (+15,6 pp nas partidas em que entra) e P(≥ 120) +1,5 pp; vida ≤ 0 −0,33 pp; PWs mortos −0,043. A animação sozinha vale +5,6 pp de P(dano ≥ 40) (+3,80 pp com ela, −1,83 pp sem); a queda de vida ≤ 0 vem das fichas Dragão e do estático, não da animação. Nas partidas em que ela entra na resiliência, 81% usam o +1 com dano e o dano mediano é 18. No padrão o ganho é mínimo (Δ 1º ult −0,017).
+- Pelo deck: hoje a lista fecha por veneno (Vraska −9: elimina um oponente em 33% das partidas até o T10), Bolas −8, Elspeth −7 ou turnos extras. Com 4 a 6 PWs prontos são 16 a 24 de dano voador por turno, dividido entre 3 oponentes (por isso P(≥ 120) só sobe 1,5 pp: sozinha não fecha a mesa). Doubling Season: entra com 10.
+- Regras que pesam (rulings): o PW animado **deixa de ser planeswalker** até o fim do turno (perde as habilidades que a Ichormoon Gauntlet concede, mas ainda ativa as próprias); só ataca quem estava sob controle desde o começo do turno; sem vigilância (a da Esika exige a frente em campo, que exclui a Bridge). A lista tem 0 Dragões, então o estático só conta as fichas do −3.
+- Contra: no meu turno os PWs viram criaturas 4/4: um Swords to Plowshares ou wipe em resposta exila/mata Ugin, Kaya, Elspeth. **O simulador não modela instantâneo de oponente no meu turno, então esta carta é a mais superestimada aqui.** 5 mana RR.
+
+**As 4 juntas** (Dihada→Arena Rector, Guff→Swan Song, Vronos→Veil of Summer, Sarkhan→Oath of Nissa): o ritmo padrão não muda (1º ult +0,026 ±0,030, P(ult ≤ T8) −0,57 pp ±1,06: os cortes de Swan Song/Veil/Oath e o fato de Vronos/Sarkhan não acelerarem cancelam o ganho de Dihada e Guff); na resiliência: vida ≤ 0 −0,83 pp, PW-turnos +3,28, P(dano ≥ 40) +6,4 pp, mas o 1º ult piora (+0,067). Ou seja, o ganho do pacote é sobrevivência e dano, não velocidade.
+
+**Onde cada uma interage com a lista (Regra #4):**
+- Bridge: as 4 são PWs, então entram de graça pelo gatilho de upkeep e ativam no mesmo turno (CR 606.3); a fatia de PW do pool da Bridge passa de 17/28 para 21/32.
+- Urza cap. II pode botá-las de graça (todas MV ≤ 6); Carth acha mais PWs no top 7; Arena Rector nunca as escolhe (busca o de maior MV: Ugin/Kaya).
+- Doubling Season: lealdade inicial 10, fichas dobradas (Treasure, Wizard, Dragão); Chain Veil/Oath de Teferi/Urza III: 2 ativações no turno; Peregrine Dynamo copia o −3 da Guff/Dihada.
+- Aminatou −1 e Oath de Teferi devolvem a candidata com lealdade nova; Oko −5 copia (regra da lenda).
+- Combos: 0 novos (Spellbook). Bracket: nenhuma é Game Changer; o deck continua com 3.
+
+### Limites desta rodada (Regra #7: o que foi e o que NÃO foi verificado)
+
+- **Verificado:** oráculo e rulings ao vivo das 4, cláusula a cláusula, com teste dirigido; combos (Spellbook antes/depois + controle); os conceitos "lendária", "Dragão", "artefato" e "Wizard" enumerados por script sobre o `type_line`; A/B com controle de corte (Doubling Season/Farseek) e de entrada (PW inerte); condicional; sensibilidade a política (4 chaves) e a perfil de mesa (3); bit-identidade da lista atual; regressão de 40.000 partidas.
+- **NÃO verificado:** as outras 99 cartas contra as 4 uma a uma (só os conceitos e motores listados); instantâneo de oponente no meu turno; a frente da Esika; ordem do gatilho da Guff contra todos os outros gatilhos de end step (só Oath, Atraxa, Sterling Grove, Vronos); a qualidade do PW protegido pelo Vronos; a interação real do −11 da Dihada com PW/artefato/encantamento do oponente (📊).
+- **Sem o efeito do Carth na Sarkhan animada:** o Carth cobra [+1] "planeswalkers' loyalty abilities"; um PW animado não é planeswalker. Não achei ruling; o simulador mantém o imposto (conservador).
+
+
+<details><summary>Tabelas completas: cada candidata contra cada corte (incondicional e condicional)</summary>
+
+**Modo padrão — todas as partidas (incondicional)**
+
+| candidata ↓ / sai → | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada: Δ 1º ult (turno) | **-0.057 ±0.014** | **-0.028 ±0.016** | **-0.027 ±0.016** | -0.008 ±0.021 | +0.013 ±0.019 | **+0.020 ±0.018** |
+| Dihada: Δ P(ult ≤ T8) | **+1.37 pp ±0.52** | **+0.70 pp ±0.64** | **+0.93 pp ±0.61** | +0.40 pp ±0.73 | -0.03 pp ±0.66 | -0.40 pp ±0.66 |
+| Dihada: Δ turnos c/ ult | **+0.087 ±0.015** | **+0.044 ±0.017** | **+0.049 ±0.017** | **+0.023 ±0.021** | +0.013 ±0.019 | +0.002 ±0.017 |
+| Guff: Δ 1º ult (turno) | **-0.053 ±0.013** | **-0.014 ±0.014** | **-0.016 ±0.015** | +0.002 ±0.021 | **+0.021 ±0.017** | +0.013 ±0.018 |
+| Guff: Δ P(ult ≤ T8) | **+1.67 pp ±0.49** | +0.27 pp ±0.58 | **+0.77 pp ±0.59** | -0.10 pp ±0.72 | -0.37 pp ±0.62 | +0.00 pp ±0.63 |
+| Guff: Δ turnos c/ ult | **+0.052 ±0.012** | **+0.018 ±0.015** | **+0.023 ±0.015** | -0.015 ±0.020 | -0.014 ±0.018 | -0.009 ±0.017 |
+| Vronos: Δ 1º ult (turno) | -0.004 ±0.009 | **+0.041 ±0.013** | **+0.032 ±0.014** | **+0.049 ±0.021** | **+0.061 ±0.018** | **+0.054 ±0.017** |
+| Vronos: Δ P(ult ≤ T8) | +0.00 pp ±0.35 | **-1.17 pp ±0.52** | **-0.63 pp ±0.49** | **-1.00 pp ±0.71** | **-1.37 pp ±0.61** | **-1.03 pp ±0.59** |
+| Vronos: Δ turnos c/ ult | -0.001 ±0.009 | **-0.048 ±0.014** | **-0.032 ±0.014** | **-0.076 ±0.020** | **-0.056 ±0.018** | **-0.057 ±0.016** |
+| Sarkhan: Δ 1º ult (turno) | **-0.010 ±0.008** | **+0.037 ±0.013** | **+0.031 ±0.014** | **+0.048 ±0.021** | **+0.061 ±0.018** | **+0.051 ±0.017** |
+| Sarkhan: Δ P(ult ≤ T8) | +0.20 pp ±0.31 | **-1.07 pp ±0.51** | **-0.57 pp ±0.49** | **-1.00 pp ±0.71** | **-1.30 pp ±0.61** | **-0.90 pp ±0.58** |
+| Sarkhan: Δ turnos c/ ult | +0.006 ±0.008 | **-0.045 ±0.014** | **-0.030 ±0.014** | **-0.074 ±0.020** | **-0.055 ±0.018** | **-0.054 ±0.016** |
+| CONTROLE (PW sem habilidade): Δ 1º ult (turno) | +0.006 ±0.006 | **+0.046 ±0.014** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(ult ≤ T8) | -0.03 pp ±0.24 | **-1.23 pp ±0.52** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ turnos c/ ult | **-0.011 ±0.007** | **-0.053 ±0.014** | — | — | — | — |
+
+**Resiliência — todas as partidas (incondicional)**
+
+| candidata ↓ / sai → | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada: Δ vida ≤ 0 | -0.33 pp ±0.35 | **-0.50 pp ±0.46** | **-0.43 pp ±0.42** | **-0.67 pp ±0.53** | +0.00 pp ±0.47 | **-0.60 pp ±0.52** |
+| Dihada: Δ 1º ult | **-0.035 ±0.020** | **-0.024 ±0.021** | **-0.039 ±0.022** | **-0.027 ±0.025** | -0.004 ±0.026 | **+0.025 ±0.024** |
+| Dihada: Δ PW-turnos vivos | **+2.199 ±0.234** | **+1.964 ±0.219** | **+2.219 ±0.233** | **+1.789 ±0.253** | **+1.714 ±0.266** | **+2.098 ±0.235** |
+| Dihada: Δ PWs mortos em combate | **+0.045 ±0.017** | **+0.036 ±0.016** | **+0.033 ±0.017** | **+0.035 ±0.018** | **+0.026 ±0.017** | **+0.025 ±0.017** |
+| Dihada: Δ P(dano nosso ≥ 40) | **+3.07 pp ±0.94** | **+2.63 pp ±0.97** | **+2.50 pp ±0.94** | **+2.63 pp ±1.02** | **+3.23 pp ±1.02** | **+1.97 pp ±1.00** |
+| Dihada: Δ P(dano nosso ≥ 120) | **+2.83 pp ±0.90** | **+2.03 pp ±0.82** | **+2.17 pp ±0.86** | **+2.40 pp ±0.93** | **+1.60 pp ±0.97** | +0.67 pp ±0.96 |
+| Guff: Δ vida ≤ 0 | **-0.57 pp ±0.33** | **-0.50 pp ±0.45** | -0.30 pp ±0.41 | -0.53 pp ±0.55 | +0.23 pp ±0.48 | -0.37 pp ±0.50 |
+| Guff: Δ 1º ult | +0.002 ±0.020 | +0.003 ±0.020 | +0.001 ±0.022 | **+0.031 ±0.024** | **+0.039 ±0.024** | **+0.047 ±0.023** |
+| Guff: Δ PW-turnos vivos | **+0.989 ±0.179** | **+0.756 ±0.168** | **+0.971 ±0.182** | **+0.462 ±0.205** | **+0.499 ±0.222** | **+1.035 ±0.199** |
+| Guff: Δ PWs mortos em combate | -0.004 ±0.012 | -0.008 ±0.016 | -0.006 ±0.016 | -0.003 ±0.016 | -0.008 ±0.017 | **-0.019 ±0.016** |
+| Guff: Δ P(dano nosso ≥ 40) | +0.00 pp ±0.83 | -0.20 pp ±0.83 | -0.13 pp ±0.84 | **-0.90 pp ±0.90** | -0.43 pp ±0.91 | -0.87 pp ±0.95 |
+| Guff: Δ P(dano nosso ≥ 120) | -0.27 pp ±0.77 | -0.10 pp ±0.74 | +0.23 pp ±0.76 | -0.23 pp ±0.79 | -0.23 pp ±0.84 | **-1.50 pp ±0.87** |
+| Vronos: Δ vida ≤ 0 | -0.20 pp ±0.32 | -0.10 pp ±0.40 | -0.03 pp ±0.38 | -0.13 pp ±0.57 | +0.40 pp ±0.48 | -0.10 pp ±0.49 |
+| Vronos: Δ 1º ult | **+0.039 ±0.021** | **+0.019 ±0.018** | **+0.029 ±0.021** | **+0.044 ±0.024** | **+0.058 ±0.025** | **+0.075 ±0.022** |
+| Vronos: Δ PW-turnos vivos | **+0.331 ±0.179** | **+0.185 ±0.151** | **+0.377 ±0.158** | +0.078 ±0.199 | -0.055 ±0.222 | **+0.304 ±0.164** |
+| Vronos: Δ PWs mortos em combate | +0.011 ±0.012 | +0.006 ±0.014 | +0.003 ±0.014 | -0.003 ±0.017 | -0.002 ±0.017 | -0.001 ±0.014 |
+| Vronos: Δ P(dano nosso ≥ 40) | **-1.07 pp ±0.84** | -0.33 pp ±0.83 | -0.60 pp ±0.85 | -0.77 pp ±0.92 | -0.73 pp ±0.91 | **-1.57 pp ±0.89** |
+| Vronos: Δ P(dano nosso ≥ 120) | **-1.23 pp ±0.72** | **-0.90 pp ±0.70** | **-1.40 pp ±0.73** | **-0.83 pp ±0.81** | **-1.53 pp ±0.87** | **-2.80 pp ±0.83** |
+| Sarkhan: Δ vida ≤ 0 | **-0.43 pp ±0.33** | -0.40 pp ±0.43 | -0.33 pp ±0.37 | -0.43 pp ±0.56 | +0.13 pp ±0.46 | -0.30 pp ±0.48 |
+| Sarkhan: Δ 1º ult | **+0.051 ±0.020** | **+0.033 ±0.018** | **+0.045 ±0.020** | **+0.060 ±0.023** | **+0.081 ±0.025** | **+0.089 ±0.023** |
+| Sarkhan: Δ PW-turnos vivos | **+0.320 ±0.164** | **+0.190 ±0.148** | **+0.420 ±0.154** | +0.055 ±0.195 | -0.111 ±0.218 | **+0.397 ±0.169** |
+| Sarkhan: Δ PWs mortos em combate | +0.005 ±0.011 | -0.001 ±0.013 | +0.006 ±0.013 | +0.003 ±0.017 | +0.006 ±0.016 | -0.013 ±0.013 |
+| Sarkhan: Δ P(dano nosso ≥ 40) | **+3.80 pp ±0.96** | **+4.03 pp ±0.96** | **+4.13 pp ±0.97** | **+3.37 pp ±1.02** | **+3.67 pp ±1.04** | **+3.60 pp ±1.02** |
+| Sarkhan: Δ P(dano nosso ≥ 120) | -0.43 pp ±0.75 | +0.17 pp ±0.69 | -0.03 pp ±0.79 | +0.00 pp ±0.82 | -0.50 pp ±0.86 | **-1.57 pp ±0.85** |
+| CONTROLE (PW sem habilidade): Δ vida ≤ 0 | -0.10 pp ±0.30 | -0.17 pp ±0.44 | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ 1º ult | **+0.065 ±0.019** | **+0.055 ±0.018** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ PW-turnos vivos | **+0.370 ±0.164** | **+0.315 ±0.149** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ PWs mortos em combate | **+0.048 ±0.013** | **+0.042 ±0.015** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(dano nosso ≥ 40) | **-2.40 pp ±0.77** | **-1.80 pp ±0.78** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(dano nosso ≥ 120) | **-1.93 pp ±0.69** | **-1.23 pp ±0.67** | — | — | — | — |
+
+**Modo padrão — só as partidas em que a candidata entrou em campo (condicional)**
+
+| candidata ↓ / sai → | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada: Δ 1º ult (turno) | **-0.122 ±0.030** | **-0.061 ±0.035** | **-0.063 ±0.035** | -0.034 ±0.045 | +0.008 ±0.041 | +0.023 ±0.036 |
+| Dihada: Δ P(ult ≤ T8) | **+2.91 pp ±1.11** | **+1.54 pp ±1.38** | **+2.13 pp ±1.34** | +0.98 pp ±1.60 | +0.30 pp ±1.45 | -0.81 pp ±1.35 |
+| Dihada: Δ turnos c/ ult | **+0.186 ±0.032** | **+0.101 ±0.036** | **+0.112 ±0.036** | **+0.074 ±0.045** | **+0.049 ±0.041** | +0.028 ±0.035 |
+| Guff: Δ 1º ult (turno) | **-0.114 ±0.026** | **-0.032 ±0.030** | **-0.038 ±0.034** | -0.014 ±0.044 | +0.025 ±0.037 | +0.008 ±0.036 |
+| Guff: Δ P(ult ≤ T8) | **+3.56 pp ±1.03** | +0.59 pp ±1.26 | **+1.76 pp ±1.30** | -0.15 pp ±1.59 | -0.37 pp ±1.35 | +0.07 pp ±1.29 |
+| Guff: Δ turnos c/ ult | **+0.112 ±0.026** | **+0.045 ±0.033** | **+0.054 ±0.033** | -0.010 ±0.044 | -0.010 ±0.038 | +0.003 ±0.036 |
+| Vronos: Δ 1º ult (turno) | -0.001 ±0.019 | **+0.095 ±0.031** | **+0.073 ±0.033** | **+0.078 ±0.047** | **+0.097 ±0.038** | **+0.111 ±0.037** |
+| Vronos: Δ P(ult ≤ T8) | -0.08 pp ±0.75 | **-2.82 pp ±1.23** | **-1.40 pp ±1.19** | **-1.90 pp ±1.66** | **-2.20 pp ±1.40** | **-2.30 pp ±1.30** |
+| Vronos: Δ turnos c/ ult | -0.007 ±0.020 | **-0.109 ±0.032** | **-0.072 ±0.032** | **-0.137 ±0.046** | **-0.090 ±0.039** | **-0.114 ±0.035** |
+| Sarkhan: Δ 1º ult (turno) | -0.016 ±0.018 | **+0.086 ±0.031** | **+0.071 ±0.034** | **+0.077 ±0.046** | **+0.099 ±0.038** | **+0.102 ±0.036** |
+| Sarkhan: Δ P(ult ≤ T8) | +0.40 pp ±0.64 | **-2.56 pp ±1.21** | **-1.23 pp ±1.19** | **-1.89 pp ±1.65** | **-2.11 pp ±1.41** | **-1.96 pp ±1.28** |
+| Sarkhan: Δ turnos c/ ult | +0.009 ±0.019 | **-0.099 ±0.032** | **-0.067 ±0.033** | **-0.134 ±0.046** | **-0.090 ±0.038** | **-0.108 ±0.035** |
+| CONTROLE (PW sem habilidade): Δ 1º ult (turno) | +0.013 ±0.013 | **+0.099 ±0.030** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(ult ≤ T8) | -0.07 pp ±0.50 | **-2.69 pp ±1.12** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ turnos c/ ult | **-0.022 ±0.014** | **-0.111 ±0.031** | — | — | — | — |
+
+**Resiliência — só as partidas em que a candidata entrou em campo (condicional)**
+
+| candidata ↓ / sai → | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada: Δ vida ≤ 0 | **-0.71 pp ±0.71** | **-1.30 pp ±0.91** | **-1.10 pp ±0.83** | **-1.29 pp ±1.01** | -0.70 pp ±0.80 | **-1.66 pp ±0.86** |
+| Dihada: Δ 1º ult | **-0.075 ±0.043** | **-0.050 ±0.044** | **-0.079 ±0.043** | **-0.073 ±0.051** | -0.031 ±0.052 | +0.032 ±0.046 |
+| Dihada: Δ PW-turnos vivos | **+4.745 ±0.465** | **+4.399 ±0.428** | **+4.616 ±0.444** | **+4.017 ±0.507** | **+3.898 ±0.504** | **+4.339 ±0.449** |
+| Dihada: Δ PWs mortos em combate | **+0.095 ±0.035** | **+0.073 ±0.034** | **+0.072 ±0.033** | **+0.081 ±0.036** | **+0.048 ±0.032** | **+0.054 ±0.031** |
+| Dihada: Δ P(dano nosso ≥ 40) | **+6.50 pp ±1.98** | **+6.20 pp ±2.03** | **+5.51 pp ±1.90** | **+5.90 pp ±2.13** | **+6.89 pp ±2.08** | **+4.44 pp ±2.04** |
+| Dihada: Δ P(dano nosso ≥ 120) | **+6.07 pp ±1.92** | **+4.61 pp ±1.70** | **+4.62 pp ±1.74** | **+5.61 pp ±1.95** | **+3.69 pp ±1.96** | +1.73 pp ±1.94 |
+| Guff: Δ vida ≤ 0 | **-1.36 pp ±0.64** | **-1.30 pp ±0.89** | **-0.83 pp ±0.81** | -0.86 pp ±1.06 | -0.49 pp ±0.79 | **-1.18 pp ±0.80** |
+| Guff: Δ 1º ult | +0.003 ±0.042 | +0.009 ±0.041 | +0.002 ±0.043 | +0.049 ±0.049 | **+0.059 ±0.049** | **+0.081 ±0.045** |
+| Guff: Δ PW-turnos vivos | **+2.178 ±0.373** | **+1.796 ±0.340** | **+2.045 ±0.362** | **+1.155 ±0.423** | **+1.372 ±0.427** | **+2.132 ±0.393** |
+| Guff: Δ PWs mortos em combate | -0.014 ±0.024 | -0.024 ±0.033 | -0.008 ±0.031 | +0.001 ±0.032 | -0.023 ±0.033 | **-0.037 ±0.029** |
+| Guff: Δ P(dano nosso ≥ 40) | -0.07 pp ±1.78 | +0.07 pp ±1.73 | +0.00 pp ±1.70 | -1.73 pp ±1.88 | -0.77 pp ±1.86 | -1.46 pp ±1.94 |
+| Guff: Δ P(dano nosso ≥ 120) | -0.57 pp ±1.65 | +0.00 pp ±1.55 | +0.62 pp ±1.56 | -0.07 pp ±1.64 | -0.14 pp ±1.71 | **-2.78 pp ±1.76** |
+| Vronos: Δ vida ≤ 0 | **-0.73 pp ±0.66** | -0.49 pp ±0.81 | -0.23 pp ±0.79 | -1.00 pp ±1.06 | -0.48 pp ±0.70 | **-0.87 pp ±0.80** |
+| Vronos: Δ 1º ult | **+0.068 ±0.046** | +0.036 ±0.040 | **+0.062 ±0.045** | +0.042 ±0.051 | **+0.080 ±0.054** | **+0.154 ±0.047** |
+| Vronos: Δ PW-turnos vivos | **+1.119 ±0.405** | **+0.777 ±0.333** | **+1.017 ±0.349** | **+0.800 ±0.426** | **+0.648 ±0.457** | **+0.733 ±0.366** |
+| Vronos: Δ PWs mortos em combate | +0.014 ±0.027 | +0.009 ±0.031 | +0.008 ±0.028 | -0.007 ±0.034 | -0.025 ±0.034 | -0.002 ±0.027 |
+| Vronos: Δ P(dano nosso ≥ 40) | -1.95 pp ±1.97 | +0.08 pp ±1.90 | -0.85 pp ±1.91 | -0.83 pp ±2.10 | -0.80 pp ±2.05 | **-2.92 pp ±2.04** |
+| Vronos: Δ P(dano nosso ≥ 120) | **-2.52 pp ±1.70** | -1.46 pp ±1.60 | **-2.87 pp ±1.66** | -0.92 pp ±1.88 | **-2.47 pp ±1.94** | **-6.23 pp ±1.91** |
+| Sarkhan: Δ vida ≤ 0 | **-0.97 pp ±0.71** | **-1.13 pp ±0.89** | **-1.01 pp ±0.79** | **-1.75 pp ±1.04** | **-0.79 pp ±0.62** | **-1.10 pp ±0.81** |
+| Sarkhan: Δ 1º ult | **+0.101 ±0.044** | **+0.069 ±0.039** | **+0.101 ±0.044** | **+0.089 ±0.050** | **+0.134 ±0.052** | **+0.191 ±0.049** |
+| Sarkhan: Δ PW-turnos vivos | **+1.056 ±0.364** | **+0.781 ±0.323** | **+1.110 ±0.339** | **+0.744 ±0.415** | **+0.508 ±0.448** | **+0.944 ±0.375** |
+| Sarkhan: Δ PWs mortos em combate | +0.001 ±0.024 | -0.008 ±0.029 | +0.013 ±0.027 | +0.008 ±0.035 | -0.006 ±0.034 | **-0.030 ±0.026** |
+| Sarkhan: Δ P(dano nosso ≥ 40) | **+9.89 pp ±2.21** | **+10.65 pp ±2.17** | **+10.13 pp ±2.15** | **+9.57 pp ±2.34** | **+9.70 pp ±2.32** | **+9.25 pp ±2.30** |
+| Sarkhan: Δ P(dano nosso ≥ 120) | -0.57 pp ±1.76 | +1.13 pp ±1.58 | +0.31 pp ±1.81 | +1.25 pp ±1.89 | +0.00 pp ±1.93 | **-3.29 pp ±1.95** |
+| CONTROLE (PW sem habilidade): Δ vida ≤ 0 | -0.43 pp ±0.59 | -0.57 pp ±0.87 | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ 1º ult | **+0.136 ±0.040** | **+0.119 ±0.038** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ PW-turnos vivos | **+0.830 ±0.345** | **+0.835 ±0.301** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ PWs mortos em combate | **+0.099 ±0.027** | **+0.084 ±0.032** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(dano nosso ≥ 40) | **-5.18 pp ±1.63** | **-3.37 pp ±1.61** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(dano nosso ≥ 120) | **-4.12 pp ±1.46** | **-2.44 pp ±1.37** | — | — | — | — |
+
+</details>
+
+## Rodada Reality Fracture (Tam, Loyal Tutor, Entrust the Spark) — 2026-09-25
+
+Detalhe cláusula por cláusula e os 3 bugs de motor em `checklist-oraculo.md`.
+
+### Correções de motor: antes/depois (2.000 partidas, mesmas seeds, lista atual)
+
+Modo padrão: seeds 3.000.000+. Resiliência: mesa mista, seeds 6.000.000+.
+Etapas acumulativas.
+
+| etapa | 1ª Bridge | gatilhos Bridge | ativações | ultimates | PWs no T10 | compras via PW | turnos extras (Gauntlet) | oponentes envenenados | res: vida ≤ 0 | res: PW-turnos vivos | res: ativações |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| antes (commit ba77495) | 5,16 | 4,41 | 22,3 | 6,71 | 5,32 | 17,9 | — | — | 14,6% | 14,57 | 19,6 |
+| a. genérico real no desconto | 5,16 | 4,39 | 22,3 | 6,69 | 5,31 | 17,8 | 0,35 | 0,56 | 14,6% | 14,57 | 19,6 |
+| b. **PW ativa no turno em que entra (CR 606.3)** | 5,17 | 5,25 | **34,4** | **10,81** | 5,99 | **28,4** | 0,56 | 0,82 | 14,9% | 15,72 | **30,9** |
+| c. lore da Urza por proliferate/Deepglow | 5,17 | 5,26 | 34,4 | 10,76 | 6,00 | 28,2 | 0,57 | 0,82 | 14,9% | 15,71 | 31,0 |
+
+Cada correção moveu a métrica esperada:
+- **(a)** O Notebook deixou de baratear Bolas, Narset, Counterspell e afins. Efeito pequeno, pra baixo.
+- **(b)** 5,0 PWs por partida passaram a ativar no turno em que entram:
+  - ativações: +54%;
+  - ultimates: +61%;
+  - turnos extras do Gauntlet: +60%.
+- **(c)** PW posto de graça pelo capítulo II da Urza: de 0,108 para 0,142 por partida (+31%).
+
+No modo resiliência a vida ≤ 0 subiu 0,3 pp. Está dentro do ruído, mas a
+direção faz sentido: com mais ativações os PWs viram alvo maior de remoção.
+
+### Validação
+
+- **Testes dirigidos:** 101/101 (`test_prismatic_bridge_goldfish.py`). São 16
+  novos, um por cláusula e interação: desconto só genérico, X por tipo,
+  Doubling Season, doença de invocação, janela main só com ultimate,
+  Dynamo copiando a Tam, Loyal Tutor com a Bridge / na mana que sobrou /
+  segurado sem a Bridge, Entrust + Carth depois da busca + ativação no mesmo
+  turno, Urza por proliferate, troca posicional. O teste antigo "PW
+  conjurado ganha lealdade" foi atualizado: agora ele também ativa (4 → 5).
+- **Regressão:** 40.000 partidas (20.000 padrão + 20.000 resiliência nos 4
+  perfis de mesa), metade com as 3 candidatas dentro via troca. Resultado:
+  **0 exceções, 0 travamentos** (alarme de 20 s por partida).
+- **Lista atual:** o snapshot final (2.000 + 2.000 partidas) é idêntico à
+  etapa c em todas as métricas. A Tam, o Loyal Tutor, o Entrust e a cópia da
+  Dynamo sobre a Tam só agem quando a carta está na lista.
+- **Troca posicional (`apply_swaps`):** a carta nova entra na linha da cortada
+  (regra do teste pareado), então cada partida A/B só diverge quando a carta
+  trocada é comprada.
+
+### A/B pareado: cada candidata × 10 cortes (2.000 + 2.000 partidas por variante)
+
+Scripts: `ab_reality_fracture.py` e `ab_reality_fracture_sum.py`. Seeds iguais
+às do snapshot; resiliência em mesa mista.
+
+**Por que não a média de ultimates:** a contagem de ultimates explode nas
+partidas já ganhas (loops de Oko/Doubling Season/Gauntlet: 80+ numa partida
+só). Uma partida a mais nesse estado move a média em +2 e não diz nada.
+Métricas usadas, todas limitadas por partida:
+- turno do 1º ultimate (sem ultimate = 11);
+- P(ultimate até o T8);
+- vida ≤ 0 na resiliência.
+
+Mais detalhes em `references/goldfish-sim-card-rules.md`, seção "A/B de carta".
+
+**Base (lista atual, motor corrigido):**
+- modo padrão: 1º ultimate no turno 9,28 em média; P(ult ≤ T8) = 33,8%;
+- resiliência: vida ≤ 0 em 14,9%; P(ult ≤ T8) = 23,5%.
+
+**Modo padrão — Δ do turno médio do 1º ultimate** (negativo = mais rápido; negrito = IC95% não cruza 0):
+
+| entra ↓ / sai → | Arena Rector | Dovin's Veto | Void Rend | Swan Song | Veil of Summer | Oath of Nissa | Blasphemous Act | Farseek | Three Visits | Doubling Season (controle) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Loyal Tutor | **−0,146 ±0,029** | **−0,130 ±0,027** | **−0,117 ±0,027** | **−0,107 ±0,025** | **−0,106 ±0,027** | **−0,084 ±0,027** | **−0,089 ±0,024** | **−0,065 ±0,025** | **−0,071 ±0,028** | **−0,065 ±0,025** |
+| Tam, the Possibility | **−0,127 ±0,021** | **−0,096 ±0,022** | **−0,101 ±0,022** | **−0,053 ±0,020** | **−0,070 ±0,021** | **−0,046 ±0,027** | **−0,064 ±0,021** | **−0,062 ±0,024** | **−0,033 ±0,023** | **−0,040 ±0,025** |
+| Entrust the Spark | **−0,072 ±0,017** | **−0,040 ±0,015** | **−0,037 ±0,015** | **−0,019 ±0,011** | **−0,022 ±0,012** | −0,001 ±0,022 | **−0,018 ±0,009** | +0,014 ±0,020 | **+0,029 ±0,020** | +0,013 ±0,015 |
+
+**Resiliência — Δ de vida ≤ 0 até o T10** (negativo = melhor):
+
+| entra ↓ / sai → | Arena Rector | Dovin's Veto | Void Rend | Swan Song | Veil of Summer | Oath of Nissa | Blasphemous Act | Farseek | Three Visits | Doubling Season |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Loyal Tutor | −0,2 pp ±0,4 | **−0,5 pp ±0,4** | −0,1 pp ±0,4 | −0,3 pp ±0,4 | −0,3 pp ±0,4 | −0,5 pp ±0,6 | **+0,8 pp ±0,5** | +0,3 pp ±0,6 | −0,1 pp ±0,5 | −0,5 pp ±0,6 |
+| Tam, the Possibility | −0,4 pp ±0,5 | **−1,1 pp ±0,6** | **−0,5 pp ±0,5** | **−0,4 pp ±0,4** | −0,6 pp ±0,6 | −0,5 pp ±0,7 | +0,4 pp ±0,6 | +0,1 pp ±0,6 | +0,1 pp ±0,6 | **−0,8 pp ±0,6** |
+| Entrust the Spark | −0,1 pp ±0,4 | **−0,3 pp ±0,3** | +0,1 pp ±0,4 | +0,1 pp ±0,4 | +0,1 pp ±0,4 | +0,1 pp ±0,6 | **+1,1 pp ±0,5** | **+0,6 pp ±0,6** | **+0,6 pp ±0,5** | −0,1 pp ±0,5 |
+
+**Leitura:**
+- **O controle funciona.** Cortar Doubling Season fica sempre no fundo do
+  ranking, junto com os tutores de terreno (Farseek/Three Visits: ramp já é
+  curto, 9 peças). O método separa corte ruim de corte bom.
+- **Arena Rector é o melhor corte pras 3 cartas.** Ela é alvo da Bridge (criatura)
+  que não dá PW. O gatilho de morte ("When this creature dies ... search your
+  library for a planeswalker card") ~~não tem como ser ligado de propósito:
+  a lista não tem NENHUM outlet de sacrifício de criatura~~ (**correção
+  2026-09-29:** Liliana −4 e Eternal Wanderer −4 são outlets de propósito, e
+  Blasphemous Act/Supreme Verdict/Toxic Deluge/Damn matam a criatura; ver a
+  seção Sisay × Arena Rector no topo deste log). Na resiliência, cortá-la não
+  piora a sobrevivência de nenhuma das 3.
+- **Blasphemous Act não deve sair.** Cortá-la piora a sobrevivência na
+  resiliência (+0,8 e +1,1 pp com Loyal Tutor/Entrust). O wipe protege os PWs.
+- **Uso por partida** (10 turnos, modo padrão):
+  - Loyal Tutor: sai em 21,2% das partidas (quase sempre que é comprado), 96% delas pela linha da Bridge.
+  - Tam: ativa em 23,6% das partidas, 0,41 ativação e 0,43 de mana economizado por partida. A cópia pela Dynamo aparece em 0,9%.
+  - Entrust: conjurado em 15,1% das partidas.
+
+### Pacotes (as 3 juntas) — mesmas seeds
+
+| pacote | 1º ult (Δ) | P(ult ≤ T8) | res: vida ≤ 0 | res: 1º ult (Δ) | res: PW-turnos (Δ) |
+|---|---|---|---|---|---|
+| base | 9,28 | 33,8% | 14,9% | 9,69 | 15,71 |
+| **P1: Tam→Arena Rector, Loyal Tutor→Swan Song, Entrust→Veil of Summer** | **−0,246 ±0,033** | **40,1%** | 14,2% (−0,7 ±0,7) | **−0,140 ±0,040** | **+0,76 ±0,35** |
+| P2: Tam→Arena Rector, Loyal Tutor→Dovin's Veto, Entrust→Void Rend | **−0,281 ±0,036** | **41,3%** | 14,3% (−0,6 ±0,7) | **−0,145 ±0,041** | **+0,73 ±0,38** |
+| P3: só Tam→Arena Rector + Loyal Tutor→Swan Song | **−0,226 ±0,032** | **39,6%** | 14,2% (−0,7 ±0,6) | **−0,130 ±0,038** | **+0,61 ±0,33** |
+| P4: só Loyal Tutor→Swan Song + Entrust→Arena Rector (sem Tam) | **−0,169 ±0,030** | **38,3%** | 14,5% (−0,4 ±0,5) | **−0,056 ±0,034** | **+0,81 ±0,33** |
+
+Comparações pareadas entre pacotes:
+- **Entrust na margem (P3 → P1):**
+  - 1º ult −0,021 ±0,012 (significativo, mas pequeno);
+  - P(ult ≤ T8) +0,5 pp ±0,4;
+  - vida ≤ 0: 0,0.
+- **Tam na margem (P4 + Tam no lugar de Veil):**
+  - 1º ult −0,077 ±0,023;
+  - P(ult ≤ T8) +1,8 pp ±0,9;
+  - 1º ult na resiliência −0,084 ±0,030.
+- **Cortes "melhores no simulador" (P2) × cortes pelo deck (P1):**
+  - 1º ult −0,035 ±0,039, **indistinguível**;
+  - vida ≤ 0: +0,1 pp ±0,7.
+
+O simulador não separa as duas opções, então quem decide é o deck
+(Regra #5, ver `checklist-oraculo.md`). Void Rend e Dovin's Veto são
+incontraláveis e mais amplas do que o modelo de oponente consegue medir: o
+oponente aqui só tem criatura, remoção, wipe e contramágica na Bridge.
+
+## Rodada dedicada de gaps — auditoria completa das 100 cartas — 2026-09-24
+
+**Pedido do usuário:** "Sim, faz a rodada dedicada fechando os gaps restantes".
+Detalhe cláusula por cláusula em `checklist-oraculo.md`.
+
+### Antes/depois de cada correção (2.000 partidas, mesmas seeds)
+
+Modo padrão = seeds 3.000.000+; resiliência = mesa mista, seeds 6.000.000+.
+Médias (as partidas "explosivas" puxam a média de ativações/ultimates pra
+cima — ver medianas na tabela seguinte).
+
+| etapa | 1ª Bridge | gatilhos Bridge | ativações | ultimates | PWs no T10 | land drops | res: vida ≤ 0 (%) | res: remoções sofridas | res: PWs no T10 |
+|---|---|---|---|---|---|---|---|---|---|
+| 0. reestruturação (md5 idêntico) | 4,28 | 3,88 | 10,0 | 2,12 | 2,34 | 4,92 | 19,0 | 1,50 | 1,85 |
+| 1. Doubling Season não dobra custo | 4,28 | 3,88 | 10,0 | 2,10 | 2,33 | 4,91 | 19,0 | 1,51 | 1,83 |
+| 2. Carth = +1 lealdade (não mana) | 4,29 | 3,96 | 10,5 | 2,43 | 2,40 | 4,92 | 18,9 | 1,53 | 1,88 |
+| 3. mulligan sem embaralhar o fundo | 4,30 | 3,98 | 10,6 | 2,45 | 2,44 | 4,96 | 18,9 | 1,54 | 1,88 |
+| 4. Halfling/Plaza/Beacon/Oath of Nissa/Bloom Tender (mana) | 4,22 | 4,09 | 10,8 | 2,49 | 2,50 | 4,97 | 16,7 | 1,61 | 1,95 |
+| 5. shock/dor/World Tree | 4,26 | 4,04 | 10,6 | 2,39 | 2,46 | 4,97 | 18,0 | 1,59 | 1,93 |
+| 6. gatilhos de conjuração centralizados | 4,26 | 4,04 | 10,7 | 2,49 | 2,49 | 4,97 | 17,6 | 1,58 | 1,96 |
+| 7. Kaya 0, seleção real (Narset/Teferis), Vraska vida | 4,26 | 4,07 | 11,0 | 2,60 | 2,56 | 4,98 | 17,6 | 1,59 | 1,97 |
+| 8. **PW conjurado da mão ganha lealdade** | 4,25 | 4,18 | **19,3** | **4,25** | **4,91** | 5,01 | 14,4 | 1,76 | 4,03 |
+| 9. Aminatou + ETB das Oaths | 4,22 | 4,25 | 20,4 | 4,98 | 5,14 | 5,01 | 14,0 | 1,80 | 4,37 |
+| 10. Oko +1/−5, fichas-cópia, Haze | 4,23 | 5,25 | 21,3 | 5,62 | 5,43 | 5,03 | 14,0 | 1,81 | 4,46 |
+| 11. Teferis (desvirar/emblemas) | 4,23 | 6,60 | 45,4 | 13,07 | 5,53 | 5,08 | 13,8 | 1,85 | 4,53 |
+| 12a. **terreno não é mágica** | **5,15** | 4,13 | **22,8** | **5,48** | 4,34 | **7,40** | 16,1 | 1,36 | 3,41 |
+| 12b. Tamiyos (emblema/Notebook) | 5,15 | 4,62 | 32,5 | 8,73 | 5,51 | 7,41 | 16,1 | 1,40 | 3,84 |
+| 13. Bolas (estático) | 5,15 | 4,74 | 33,4 | 10,21 | 5,56 | 7,39 | 16,1 | 1,40 | 3,82 |
+| 14. Ichormoon + ordem do turno extra | 5,15 | 4,44 | 30,4 | 9,06 | 5,54 | 7,41 | 16,1 | 1,37 | 3,86 |
+| 15. Vraska −9 / veneno | 5,15 | 4,28 | 21,1 | 5,81 | 5,39 | 7,40 | 16,1 | 1,32 | 3,84 |
+| 16. Peregrine Dynamo | 5,15 | 4,40 | 22,2 | 6,51 | 5,40 | 7,41 | 16,3 | 1,31 | 3,90 |
+| 17. Nesting Grounds/Grove/Ugin landfall/Urza | 5,16 | 4,42 | 22,3 | 6,71 | 5,33 | 7,36 | 16,4 | 1,31 | 3,95 |
+| 18. respostas (só resiliência) | 5,16 | 4,42 | 22,3 | 6,71 | 5,33 | 7,36 | **14,6** | **0,86** | **4,79** |
+| 19. Innkeeper nível 1 em todo modo | 5,16 | 4,42 | 22,3 | 6,71 | 5,33 | 7,36 | 14,6 | 0,86 | 4,79 |
+
+Notas: a etapa 15 (veneno) derruba a MÉDIA de ativações só nas partidas em
+que um oponente morre envenenado (24% delas): com oponente eliminado há menos
+turnos de oponente pro emblema do Teferi Archmage — nas outras partidas nada
+muda (mediana igual, 11). A etapa 11 → 12a mostra o tamanho do bug do
+terreno: toda a "explosão" de mana da etapa 11 vinha, em parte, dos terrenos
+baixados de graça.
+
+### Commit anterior × agora (3.000 partidas, mesmas seeds)
+
+| | antes | agora |
+|---|---|---|
+| 1ª Bridge (turno médio) | 4,34 (mediana 4) | 5,18 (mediana 5) |
+| Bridge nunca conjurada até o T10 | 10,1% | 6,6% |
+| Land drops em 10 turnos | 4,92 | 7,35 |
+| Gatilhos da Bridge | 3,87 | 4,58 |
+| Ativações de PW | 10,0 (mediana 6) | 23,1 (mediana 11) |
+| Ultimates | 2,17 (mediana 1) | 7,07 (mediana 1) |
+| PWs em campo no T10 | 2,35 (mediana 1) | 5,40 (mediana 4) |
+| Cartas via PW | 5,8 (mediana 2) | 18,7 (mediana 5) |
+| **Resiliência (mesa mista):** vida ≤ 0 até o T10 | 18,2% | 15,3% |
+| remoções sofridas | 1,52 | 0,84 (contramágicas/proteções) |
+| mortes de PW | 2,17 | 2,23 (com o dobro de PWs em campo) |
+| PWs mortos em combate | 0,34 | 0,64 |
+| PWs em campo no T10 | 1,87 | 4,82 |
+
+### A/B de pillowfort refeito (4.000 partidas por célula, seeds 11.000.000+)
+
+Mudou o que o A/B mede: a Oath of Nissa (o slot trocado) agora tem efeito
+real (ETB + mana de PW), então o teste é "pillowfort × Oath of Nissa". O perfil
+`low` (quase sem combate) serve de controle: o efeito lá é quase todo "custo
+de tirar a Oath"; o que sobra nas mesas agressivas é a proteção de verdade.
+
+| Δ PW-turnos vivos por partida | Silent Arbiter | Dueling Grounds | Sphere of Safety | Ghostly Prison |
+|---|---|---|---|---|
+| mesa mista | −0,67 | −0,38 | −0,29 | −0,46 |
+| go-wide | −0,61 | −0,28 | −0,32 | −0,49 |
+| voltron | −0,74 | −0,43 | −0,30 | −0,43 |
+| low (controle) | −0,86 | −0,48 | −0,37 | −0,51 |
+| **proteção líquida na mista (mista − low)** | +0,19 | +0,10 | +0,08 | +0,05 |
+
+PW mortos em combate (mista): Arbiter −0,036, Dueling −0,028, Sphere −0,013,
+Ghostly **+0,009** (empurra ataque pro PW, como antes). Silent Arbiter continua
+roubando gatilho da Bridge (−0,11 PW acertado/partida). Nenhuma das 4 muda a
+taxa de "vida ≤ 0" na mesa mista.
+
+**Leitura:** a conclusão da rodada anterior fica mais forte. Com o motor
+corrigido, o deck põe o dobro de PWs em campo e o ganho de proteção de
+qualquer pillowfort (+0,05 a +0,19 PW-turno por partida na mesa mista) é
+menor que o custo de tirar até uma carta barata como a Oath of Nissa.
+
+## Modelo de combate + A/B de pillowfort (Silent Arbiter / Dueling Grounds / Sphere of Safety / Ghostly Prison) — 2026-09-24
+
+**Pergunta do usuário:** "Conseguimos implementar no goldfish um simulador de
+ataque aos PW? [...] Vale incluir Silent Arbiter e Dueling [Grounds]?" —
+mesa real: **mista**. Modelo e suposições em `checklist-oraculo.md`.
+
+### Antes/depois de cada correção (2.000 partidas, mesmas seeds)
+
+Modo padrão (seeds 3.000.000+, 10 turnos). `s0` = só o modelo de combate
+(modo padrão bit-idêntico ao commit anterior).
+
+| etapa | gatilhos Bridge | PW acertados | ativações | ultimates | fichas | tutor Carth | PWs no fim |
+|---|---|---|---|---|---|---|---|
+| s0 modelo de combate | 3,243 | 1,960 | 8,799 | 1,542 | 2,309 | 0,244 | 1,809 |
+| s1 `creature_enters` (doença + ETB Deepglow/Carth de todo ponto) | 3,244 | 1,973 | 8,952 | 1,635 | 2,285 | 0,334 | 1,877 |
+| s2 Sphinx (fase inicial adicional real) | **3,884** | **2,352** | 9,989 | 1,980 | 2,503 | 0,367 | 2,320 |
+| s3 Atraxa proliferate no end step | 3,885 | 2,344 | 10,026 | 2,118 | 2,465 | 0,352 | 2,337 |
+| s4 Doubling Season dobra ficha | 3,885 | 2,344 | 10,026 | 2,118 | **2,744** | 0,352 | 2,337 |
+| s5 Damn só preta | 3,881 | 2,341 | 10,021 | 2,118 | 2,743 | 0,351 | 2,336 |
+| s6 Oath+Urza III não somam | 3,877 | 2,341 | 9,985 | 2,110 | 2,727 | 0,351 | 2,333 |
+| s7 lore da Urza dobrado + Read ahead | 3,880 | 2,350 | 10,030 | 2,125 | 2,743 | 0,352 | 2,340 |
+| s8 All Will Be One | = s7 (só métrica nova: 9,9 gatilhos/partida em média; em campo em 12,2% das partidas) |||||||
+| s9 vida real (Kaya/Teferi Sunset/Ugin/Chain Veil) | = s8 (vida não é lida no modo padrão) |||||||
+
+Resiliência, mesa mista (seeds 6.000.000+):
+
+| etapa | vida final | PW mortos em combate | PW-turnos vivos | ultimates | PWs no fim |
+|---|---|---|---|---|---|
+| antes do modelo (ataque genérico antigo) | 37,22 | — | — | 1,120 | 1,429 |
+| s0 modelo de combate | 22,12 | 0,348 | 7,297 | 0,898 | 1,429 |
+| s2 Sphinx | 21,89 | 0,358 | 8,373 | 1,226 | 1,774 |
+| s8 All Will Be One | 22,04 | 0,344 | 8,546 | 1,335 | 1,851 |
+| s9 vida real | **24,74** | 0,344 | 8,546 | 1,335 | 1,851 |
+
+### A/B pareado (5.000 partidas por célula, seeds 11.000.000+, 10 turnos)
+
+Cada candidata entra no slot da **Oath of Nissa** (que o simulador ainda
+não modela = slot "vazio"; mede o ganho marginal da carta). Mesma seed =
+mesma ordem de biblioteca, então as partidas são idênticas até a carta
+aparecer. "Condicional" = só partidas em que a carta chegou ao campo,
+comparadas com a mesma seed sem ela.
+
+**Mesa mista (a real):** base = 17,7% das partidas chegam a vida ≤ 0 até o T10;
+0,33 PW morto em combate por partida (de 2,20 mortes de PW no total — a
+maior parte vem de remoção de oponente e dos próprios ultimates).
+
+| Δ vs base (por partida) | Silent Arbiter | Dueling Grounds | Sphere of Safety | Ghostly Prison |
+|---|---|---|---|---|
+| em campo até o T6 | 14,6% | 10,3% | 5,0% | 10,7% |
+| "morreu" até o T10 | −1,0 pp | −0,8 pp | −0,2 pp | −0,7 pp |
+| PW mortos em combate | −0,024 | −0,008 | −0,007 | **+0,012** |
+| PW-turnos vivos | **−0,287** | +0,007 | 0,000 | −0,053 |
+| ultimates | −0,033 | −0,004 | +0,002 | −0,021 |
+| PWs acertados pela Bridge | **−0,106** | 0,000 | −0,001 | −0,006 |
+| dano de combate nosso (proxy) | −2,6 | −1,9 | −0,3 | −0,3 |
+| condicional: "morreu" | −3,0 pp | −4,2 pp | −2,4 pp | −3,8 pp |
+| condicional: PW-turnos vivos | **−0,74** | +0,01 | −0,05 | −0,25 |
+
+**Mesa go-wide (pior caso pra PW):** base 27,2% "morreu", 0,41 PW morto em
+combate. Dueling Grounds é a melhor: condicional −8,6 pp de morte, −0,145
+PW morto em combate, **+0,37 PW-turnos vivos**, +0,10 ultimate. Sphere:
+condicional +0,29 PW-turnos, −6,4 pp. Silent Arbiter: condicional −0,65
+PW-turnos (Bridge diluída). Ghostly Prison: condicional **+0,12 PW morto em
+combate** (empurra ataque pro PW). **Voltron e low:** as 4 ficam ~neutras
+(só 1 atacante relevante; Silent Arbiter continua negativa pela diluição).
+
+**Sensibilidade (mesa focada em mim, atenção 2/3):** o risco vira MORRER
+(vida final média −8 na mista, −29 na go-wide); as 4 ajudam a vida
+(+0,9 a +4,0) mas os PWs quase não mudam — a conclusão não vira.
+
+### Leitura (Regra #5: deck primeiro, simulador como apoio)
+
+- **Silent Arbiter: não.** É criatura num deck cuja Bridge revela "até
+  achar criatura OU planeswalker" — cada criatura não-PW a mais rouba
+  gatilho da Bridge (−0,27 PW acertado quando ela aparece). Morre nos
+  nossos próprios 5 wipes. Limita nosso ataque (fichas da Elspeth/Samurai/
+  Elk/Oko).
+- **Ghostly Prison: não pra proteger PW.** Ruling oficial: não protege
+  planeswalker — e o atacante que não paga vai pro PW (medido: mais PW
+  morto em combate).
+- **Dueling Grounds: a única com efeito real, e só contra go-wide.** Na
+  mesa mista o ganho nos PWs é ~zero; protege vida. Não para comandante
+  voltron (ele já é 1 atacante só).
+- **Sphere of Safety:** efeito pequeno, 5 de mana, raramente em campo cedo.
+- O deck já tem a defesa anti-criatura que importa: 5 wipes, 4 remoções
+  pontuais, 13 modos de remoção/controle em 11 PWs, All Will Be One (agora
+  modelada), o estático da Eternal Wanderer. Combate responde por ~15% das
+  mortes de PW no modelo; o maior risco medido é a nossa VIDA (17,7% das
+  partidas chegam a 0 na mesa mista), não o PW.
+
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 2 call sites reais neste deck (diferente dos outros 8) —
+`remove_permanent` (resiliência) E `resolve_removal_round` (sistema
+legado, roda em modo padrão também). Ambos desviavam o comandante
+direto pra zona de comando sem passar pelo cemitério. Bridge é
+Enchantment (não Creature/Planeswalker) — Carth the Lion, único
+gatilho de morte do deck, não reage a ela — correção puramente
+estrutural nos 2 pontos.
+
+**Resultado:** modo padrão idêntico nas 2 variantes de lista (com/sem
+Greater Auramancy), 0/3000 mismatches cada.
+
+**Validação:** regressão de 20.000 partidas em modo padrão + 20.000 em
+modo de resiliência, 0 exceções nos 2, 0 comandantes presos no
+cemitério + 3 testes dirigidos.
+
+## `try_smart_opponent_removal` nunca respeitava shroud de Sterling Grove/Greater Auramancy — 2026-09-21
+
+**Gatilho:** usuário perguntou se a proteção de Sterling Grove/Greater
+Auramancy (shroud pra "other enchantments you control") e a menor
+frequência real de wipe de encantamento tinham sido consideradas.
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado:** shroud não se aplica a NENHUMA das wipes reais da lista
+(nenhuma usa "target"), então o número de enchantment wipe do A/B
+anterior está correto. Mas achei um bug real na categoria de remoção
+ALVO (`try_smart_opponent_removal`) — nunca respeitava a proteção,
+diferente do sistema legado que já fazia isso certo antes do modo de
+resiliência substituir ele.
+
+**Resultado (A/B 2000 jogos mesma seed_base):** Sterling Grove passa a
+ser removido em 0,3% dos jogos (0,0% antes — nunca era alvo desta
+categoria). Efeito pequeno mas real (janela estreita: Sterling Grove
+precisa estar em campo no exato momento do roll de remoção).
+
+**Validação:** modo padrão 100% bit-idêntico (2.000 seeds) + regressão
+de 20.000 partidas em modo resiliência, 0 exceções + 3 testes
+dirigidos.
+
+---
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (unificado — 1 rolagem "algum
+wipe acontece" + escolha ponderada de 1 tipo só, pesos 0.4/0.2/0.15).
+Achado real: a própria Bridge É Enchantment — o único dos 3 tipos de
+wipe que a alcança, corretamente roteada pra zona de comando (CR
+903.9), nunca cemitério.
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 38,7% pra 64,5% (antes = commit
+`d66e569`, só wipe de criatura). Avg wipes totais por jogo: 0,465 →
+0,982. 16,4% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+27,9% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `d66e569`
+(2.000 seeds) + regressão de 20.000 partidas, 0 exceções + teste
+dirigido confirmando o roteamento CR 903.9 da Bridge (1.241/1.241
+disparos corretos em 3.000 chamadas).
+
+---
+
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "Repita o processo todo com o deck da Prismatic Bridge" —
+mesmo modo já validado em Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek/Toph.
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Diferença real vs. os outros 6 decks:** este arquivo já tinha
+`resolve_removal_round`, sistema de remoção próprio (12%/oponente/turno,
+sempre ativo, mira Bridge/protetores) construído pra responder "vale
+Greater Auramancy?". Perguntei ao usuário antes de implementar como
+reconciliar — escolha: modo de resiliência SUBSTITUI o antigo dentro
+dele mesmo (via `play_turn(..., skip_legacy_removal=True)`), modo padrão
+continua 100% intocado com o sistema antigo rodando normal.
+
+**2 bugs reais de Carth the Lion corrigidos** (achados por acaso, não
+relacionados ao modo de resiliência, mas já alcançáveis em modo padrão
+hoje): "put the rest on the bottom" estava recolocando no TOPO da
+biblioteca; a metade "planeswalker morre" do gatilho nunca disparava
+(1.861 mortes de planeswalker em 3.000 jogos de modo padrão, evento
+comum, não raro). Ambos corrigidos e validados.
+
+**Achado de calibração importante:** a Bridge sobrevive MUITO mais sob
+o novo modo de resiliência do que sob o sistema antigo, porque o novo
+sistema (mesma convenção dos outros 6 decks) não mira o comandante
+diretamente — Bridge removida 1,24x em média (sistema antigo) vs. 0,00x
+(sistema novo); em campo no fim 72,0% vs. 90,8%. Consequência esperada
+da decisão de design escolhida, não um bug — mas muda o que os números
+do modo de resiliência respondem comparado à pergunta original do
+Greater Auramancy (essa continua respondida pelo modo padrão intocado).
+
+**Validação:** regressão de 20.000 partidas em modo padrão E resiliência
+(0 exceções nos dois) + testes dirigidos (comandante→zona de comando,
+sincronização de loyalty na morte de planeswalker + gatilho da Carth,
+sistema antigo desligado de verdade dentro do modo de resiliência,
+ordem de biblioteca da Carth batendo com o oráculo real).
+
+**Comparativo — FIX real da Carth (2000 jogos, mesma seed, modo padrão antes/depois):**
+
+| Métrica | Antes do fix | Depois do fix |
+|---|---|---|
+| Avg tutores via Carth | 0,114 | 0,244 |
+| Avg mortes de planeswalker | 0,633 | 0,632 |
+| Avg planeswalkers em campo no fim | 1,734 | 1,745 |
+
+**Comparativo — ANTES (padrão, com fix da Carth) vs. DEPOIS (modo de resiliência), 2000 jogos, 10 turnos:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Bridge nunca conjurada em 10 turnos | 7,8% | 9,2% |
+| Bridge em campo no fim da partida | 72,0% | 90,8% |
+| Avg vezes que a Bridge foi removida | 1,24 | 0,00 |
+| Avg gatilhos da Bridge | 3,20 | 5,58 |
+| Avg acertos em criatura | 1,25 | 2,18 |
+| Avg acertos em planeswalker | 1,95 | 3,40 |
+| Avg ativações de planeswalker | 8,38 | 10,42 |
+| Avg ultimates usados | 1,44 | 1,41 |
+| Avg tokens criados por PW | 2,28 | 2,98 |
+| Avg cartas compradas via PW | 4,54 | 5,64 |
+| Avg planeswalkers em campo no fim | 1,74 | 1,68 |
+| Avg tutores via Carth | 0,24 | 0,44 |
+
+**Métricas exclusivas do modo de resiliência (2000 jogos):** vida final
+36,82; ataques sofridos 2,04; remoções inteligentes 1,80 (miram
+planeswalkers, não a Bridge); descartes 1,33; board wipes 0,77 (56,1%
+das partidas); graveyard wipe 0,59; graveyard snipe 0,64; counterspells
+0,06; Bridge recastada após remoção em 4,5% das partidas.
+
+---
+
 ## Simulação #1 — gerada por Claude (RNG real, não é partida sua)
 
 **Método:** embaralhei a lista de 100 cartas de `lista.md` com `random.shuffle` do Python (sem seed fixa, usa entropia do sistema operacional) em 2026-08-20. Mão inicial = 7 cartas do topo pós-embaralhamento. Convenção: jogador na ponta ("on the play"), sem compra no turno 1, compra 1 carta a partir do turno 2. Efeitos de "olhe o topo N" (ex: Oath of Nissa) foram resolvidos consultando a ordem real da biblioteca simulada, não escolhidos livremente. Este é um teste solo sem oponente — anotei explicitamente onde isso limita alguma carta (ex: Exotic Orchard).

@@ -1,0 +1,57 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8005 (80.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0223       0.0212      -0.0011 ±0.0006  
+   commander_cast_turn__ate_T3                  0.8035       0.8030      -0.0005 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.9150       0.9175      +0.0025 ±0.0010  
+  *commander_cast_turn__ate_T5                  0.9394       0.9419      +0.0025 ±0.0010  
+  *life_total                                  39.7154      39.5241      -0.1913 ±0.0086  
+  *len_graveyard                                0.1460       0.3074      +0.1614 ±0.0073  
+  *next_uid                                    18.7242      18.8030      +0.0788 ±0.0135  
+  *len_battlefield                             17.0057      17.0822      +0.0765 ±0.0134  
+  *tokens_created                               0.8207       0.8411      +0.0204 ±0.0037  
+  *len_library                                 76.0373      75.9913      -0.0460 ±0.0114  
+  *kutzil_draws_total                           4.3890       4.4002      +0.0112 ±0.0048  
+  *len_hand                                     3.2492       3.2359      -0.0133 ±0.0070  
+  *commander_cast_turn__ate_T6                  0.9575       0.9590      +0.0015 ±0.0008  
+  *commander_uid                                5.3689       5.3803      +0.0114 ±0.0064  
+  *tapped_land_first_plays_total                0.3450       0.3429      -0.0021 ±0.0012  
+  *commander_cast_count                         0.9777       0.9788      +0.0011 ±0.0006  
+  *commander_in_play                            0.9777       0.9788      +0.0011 ±0.0006  
+  *warp_plot_free_casts_total                   0.0598       0.0588      -0.0010 ±0.0007  
+
+[so_fetch_lands - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8085 (80.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0223       0.0212      -0.0011 ±0.0006  
+   commander_cast_turn__ate_T3                  0.8035       0.8030      -0.0005 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.9150       0.9175      +0.0025 ±0.0010  
+  *commander_cast_turn__ate_T5                  0.9394       0.9419      +0.0025 ±0.0010  
+  *life_total                                  39.7154      39.5241      -0.1913 ±0.0086  
+  *len_graveyard                                0.1460       0.3074      +0.1614 ±0.0073  
+  *next_uid                                    18.7242      18.7865      +0.0623 ±0.0132  
+  *len_battlefield                             17.0057      17.0658      +0.0601 ±0.0131  
+  *len_library                                 76.0373      75.9914      -0.0459 ±0.0114  
+  *kutzil_draws_total                           4.3890       4.4001      +0.0111 ±0.0048  
+  *len_hand                                     3.2492       3.2358      -0.0134 ±0.0070  
+  *commander_cast_turn__ate_T6                  0.9575       0.9590      +0.0015 ±0.0008  
+  *commander_uid                                5.3689       5.3803      +0.0114 ±0.0064  
+  *tapped_land_first_plays_total                0.3450       0.3429      -0.0021 ±0.0012  
+  *commander_cast_count                         0.9777       0.9788      +0.0011 ±0.0006  
+  *commander_in_play                            0.9777       0.9788      +0.0011 ±0.0006  
+  *tokens_created                               0.8207       0.8246      +0.0039 ±0.0026  
+  *warp_plot_free_casts_total                   0.0598       0.0588      -0.0010 ±0.0007  
+
+[so_land_enter_triggers_all - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9859 (98.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *next_uid                                    18.7242      18.7389      +0.0147 ±0.0025  
+  *tokens_created                               0.8207       0.8354      +0.0147 ±0.0025  
+  *len_battlefield                             17.0057      17.0203      +0.0146 ±0.0024  
+  *proxy_damage_total                         138.4894     138.6091      +0.1197 ±0.0634  
+  *counters_placed_total                       65.8685      65.9440      +0.0755 ±0.0461  
+  *commander_damage_dealt                      42.8281      42.8339      +0.0058 ±0.0045  
+   cards_drawn_extra                           14.0625      14.0626      +0.0001 ±0.0002  
+   commander_damage_win                         0.7130       0.7131      +0.0001 ±0.0002  
+   kutzil_draws_total                           4.3890       4.3891      +0.0001 ±0.0002  
+   len_hand                                     3.2492       3.2493      +0.0001 ±0.0002  
+   len_library                                 76.0373      76.0372      -0.0001 ±0.0002  

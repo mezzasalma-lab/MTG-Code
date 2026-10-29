@@ -5,6 +5,8 @@ Data da auditoria: 2026-08-22
 
 **Atualização (2026-08-22):** lista revisada após troca de 2 cartas — **Rakdos Signet → Gleaming Splendor** e **Insatiable Avarice → Smaug the Magnificent**. Seções 3, 5, 6 e 9 abaixo foram recalculadas contra a lista atual (confirmado via Scryfall). Também foi encontrada e corrigida uma fonte de Treasure que a varredura original tinha deixado de fora (Life Insurance).
 
+**Atualização (2026-10-04, 12ª rodada, decisão do usuário):** **Blood Money → Mythos of Snapdax** (`−1 Blood Money`, `+1 Mythos of Snapdax`; nada mais mudou). Conferido ao vivo no Scryfall: Mythos `{2}{W}{W}` Sorcery, identidade `BRW` (dentro do Mardu), legal em Commander, sem `flavor_name`. Efeitos nas seções abaixo, que **não** foram reescritas (o texto de 2026-08-22 fica como registro; cada ponto afetado ganhou uma nota datada): CMC médio dos não-terrenos (seção 2), fontes de Treasure (seção 3), wipes (seção 7), tabela de sinergia EDHREC (seção 10). Commander Spellbook antes × depois (lista de `a17049f` × lista atual, com 2 controles positivos): **4 combos nos dois lados, nenhum sumiu, nenhum surgiu**; Bracket inalterado. Dados e como reproduzir: `resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/LEIAME.md`.
+
 ---
 
 ## 1. Validação formal
@@ -31,7 +33,7 @@ Nota mecânica: um Treasure virado 3/3 Construct **Assassin** é, ele mesmo, um 
 ## 2. Terrenos e curva
 
 - Terrenos: **35** (varredura de `type_line` em qualquer face, incluindo o MDFC Brightclimb Pathway // Grimclimb Pathway) — inalterado pela troca (nenhuma das 4 cartas trocadas é terreno.
-- Não-terrenos (sem comandante): **64** — CMC médio: **3,47** (recalculado pós-troca; subiu levemente de 3,42 porque Smaug the Magnificent, CMC 4, substituiu uma carta de CMC menor — puxado pra cima também por Marionette Master, Blood Money, Goldspan Dragon, Witch of the Moors).
+- Não-terrenos (sem comandante): **64** — CMC médio: **3,47** (recalculado pós-troca; subiu levemente de 3,42 porque Smaug the Magnificent, CMC 4, substituiu uma carta de CMC menor — puxado pra cima também por Marionette Master, Blood Money, Goldspan Dragon, Witch of the Moors). **Nota de 2026-10-04:** o Blood Money (CMC 7) saiu e a Mythos of Snapdax (CMC 4) entrou, então o CMC médio dos 64 não-terrenos agora é **3,42** (3,4219; soma 219; era 3,4688, soma 222; por script, `resumos/oraculo_mythos.txt`).
 
 **Contagem de fontes de cor nos terrenos, direto do `produced_mana` da Scryfall:**
 
@@ -50,6 +52,8 @@ Preto é a cor primária (bate com o volume de remoção/aristocratas em preto),
 Esse é, de longe, o tema mais denso do deck. **Recontagem rigorosa (2026-08-22)** via busca literal por "treasure" no `oracle_text` das 99 cartas + checagem manual de cada resultado: **30 fontes reais de criação de Treasure** (a auditoria original tinha contado 23 e havia deixado Life Insurance de fora — corrigido agora):
 
 Big Score, Black Market Connections, Blood Money, Captain Lannery Storm, Deadly Derision, Deadly Dispute, Goldspan Dragon, Grim Hireling, Inspired Tinkering, Jan Jansen (via sac de artefato-criatura), Kellogg Dangerous Mind, **Life Insurance** (`Whenever a nontoken creature dies, you lose 1 life and create a Treasure token` — simétrico, mas dispara também com mortes de criaturas suas), Lotho Corrupt Shirriff, Magda the Hoardmaster, Mahadi Emporium Master, Mari the Killing Quill (via drain), Monologue Tax, Olivia Opulent Outlaw, Orochi Soul-Reaver, Pitiless Plunderer, Professional Face-Breaker, Prosper Tome-Bound, Rain of Riches, Revel in Riches, **Smaug the Magnificent** (upkeep, nova — trocada por Insatiable Avarice), Smothering Tithe, The Reaver Cleaver, Treasure Vault, Unexpected Windfall.
+
+**Nota de 2026-10-04:** o **Blood Money saiu** da lista e a Mythos of Snapdax **não** cria Treasure; essa lista passa a ter uma fonte a menos. A varredura literal por script do dia (texto de oráculo ao vivo com `Treasure` em *create…*/*token*) dá **31 → 30** cartas (`resumos/oraculo_mythos.txt`; a contagem manual de 2026-08-22 acima é de outra metodologia e não foi refeita).
 
 Mais **1 fonte condicional nova**: **Gleaming Splendor** (trocada por Rakdos Signet) — `Whenever an opponent draws their second card each turn, you create a Treasure token` + `{2}{W}: Two target players each draw a card`. Interação real encontrada nesta auditoria: se você ativa a habilidade dela mirando dois oponentes **depois** que eles já tiveram sua compra normal do turno, a compra provocada é a "segunda carta" de cada um — ou seja, por `{2}{W}` você pode gerar 2 Treasures de uma vez (1 por oponente atingido), de forma autocontida e repetível a cada turno que você tiver mana sobrando. Não é infinito (custa mana real a cada ativação), mas é um mini-motor real, não só decorativo.
 
@@ -115,9 +119,10 @@ Caretaker's Talent, Big Score, Unexpected Windfall, Deadly Dispute, Black Market
 
 **Wipes:**
 - Blasphemous Act — `{8}{R}` reduzido por criatura em campo, 13 de dano em todas — geralmente muito barato de conjurar tarde no jogo.
-- Blood Money — destroy all creatures, e cada criatura não-token destruída vira um Treasure tapped pra você — outro wipe que alimenta o próprio motor.
+- ~~Blood Money~~ *(saiu em 2026-10-04)* — destroy all creatures, e cada criatura não-token destruída vira um Treasure tapped pra você — outro wipe que alimentava o próprio motor.
+- **Mythos of Snapdax** *(entrou em 2026-10-04)* — `{2}{W}{W}`, cada jogador escolhe um artefato, uma criatura, um encantamento e um planeswalker entre os permanentes não-terreno que controla e **sacrifica o resto**; com `{B}{R}` gastos, **eu** escolho os permanentes de cada jogador. É **sacrifício**, não destruição: liga Mayhem Devil, Mirkwood Bats e Captain Lannery Storm, ignora indestrutível (Boros Charm não protege; Teferi's Protection protege) e deixa o Vihaan de pé quando eu o escolho.
 
-7 peças de interação real (5+2) é uma contagem razoável pro Bracket 3-4, com o detalhe de que **duas delas (Deadly Derision, Blood Money) geram valor positivo pro próprio jogador ao mesmo tempo que interagem** — não é "remoção pura", é remoção com upside.
+7 peças de interação real (5+2) é uma contagem razoável pro Bracket 3-4, com o detalhe de que **duas delas (Deadly Derision, Blood Money) geram valor positivo pro próprio jogador ao mesmo tempo que interagem** — não é "remoção pura", é remoção com upside. *(2026-10-04: com a troca, só a Deadly Derision gera Treasure; a Mythos interage sem devolver Treasure, mas o Vihaan e 1 artefato + 1 encantamento ficam de pé.)*
 
 ---
 
@@ -153,7 +158,7 @@ Consultado `json.edhrec.com/pages/commanders/vihaan-goldwaker.json` (2026-08-22)
 | 3 | Xorn | +0,710 | ✅ |
 | 4 | Mari, the Killing Quill | +0,669 | ✅ |
 | 5 | Pitiless Plunderer | +0,668 | ✅ |
-| 6 | Blood Money | +0,661 | ✅ |
+| 6 | Blood Money | +0,661 | ✅ *(saiu em 2026-10-04; tabela de 2026-08-22, não refeita)* |
 | 7 | Jan Jansen, Chaos Crafter | +0,631 | ✅ |
 | 8 | Grim Hireling | +0,621 | ✅ |
 | 9 | Big Score | +0,606 | ✅ |

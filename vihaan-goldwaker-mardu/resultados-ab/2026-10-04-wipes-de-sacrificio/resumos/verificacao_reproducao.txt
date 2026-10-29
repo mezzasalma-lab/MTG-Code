@@ -1,0 +1,13 @@
+IGUAL  dry_run_padrao_10000.txt
+IGUAL  dry_run_resiliencia_10000.txt
+IGUAL  paridade_oponente_padrao.txt
+IGUAL  paridade_oponente_resiliencia.txt
+IGUAL  enumeracao.txt
+IGUAL  smoke.txt
+IGUAL  testes_dirigidos.txt
+IGUAL  efeitos_unilaterais.txt
+IGUAL  dry_run_padrao_10000.txt (re-execucao)
+IGUAL  dry_run_resiliencia_10000.txt (re-execucao)
+IGUAL  regressao_dry_run_padrao_20000.txt (re-execucao)
+IGUAL  regressao_dry_run_resiliencia_20000.txt (re-execucao)
+12/12 saidas byte a byte iguais

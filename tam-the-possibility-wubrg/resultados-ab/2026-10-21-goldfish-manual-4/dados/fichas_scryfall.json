@@ -1,0 +1,312 @@
+{
+ "Graveborn (oponente, T5; provavel ficha)": {
+  "consulta": "t:token name:Graveborn",
+  "total_resultados": 1,
+  "amostra": [
+   {
+    "name": "Graveborn",
+    "type_line": "Token Creature — Graveborn",
+    "power": "3",
+    "toughness": "1",
+    "colors": [
+     "B",
+     "R"
+    ],
+    "keywords": [
+     "Haste"
+    ],
+    "oracle_text": "Haste",
+    "set": "tcmm",
+    "collector_number": "38",
+    "scryfall_uri": "https://scryfall.com/card/tcmm/38/graveborn?utm_source=api"
+   }
+  ]
+ },
+ "Vex (oponente, T5; provavel ficha)": {
+  "consulta": "t:token name:Vex",
+  "total_resultados": null,
+  "amostra": []
+ },
+ "Spider (oponente, T8; ficha)": {
+  "consulta": "t:token t:spider",
+  "total_resultados": 7,
+  "amostra": [
+   {
+    "name": "Spider",
+    "type_line": "Token Enchantment Creature — Spider",
+    "power": "1",
+    "toughness": "3",
+    "colors": [
+     "G"
+    ],
+    "keywords": [
+     "Reach"
+    ],
+    "oracle_text": "Reach",
+    "set": "tjou",
+    "collector_number": "5",
+    "scryfall_uri": "https://scryfall.com/card/tjou/5/spider?utm_source=api"
+   },
+   {
+    "name": "Spider",
+    "type_line": "Token Creature — Spider",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+     "B"
+    ],
+    "keywords": [
+     "Reach",
+     "Menace"
+    ],
+    "oracle_text": "Menace, reach",
+    "set": "tafr",
+    "collector_number": "7",
+    "scryfall_uri": "https://scryfall.com/card/tafr/7/spider?utm_source=api"
+   },
+   {
+    "name": "Spider",
+    "type_line": "Token Creature — Spider",
+    "power": "2",
+    "toughness": "4",
+    "colors": [
+     "B"
+    ],
+    "keywords": [
+     "Reach"
+    ],
+    "oracle_text": "Reach",
+    "set": "ttsr",
+    "collector_number": "6",
+    "scryfall_uri": "https://scryfall.com/card/ttsr/6/spider?utm_source=api"
+   },
+   {
+    "name": "Spider",
+    "type_line": "Token Creature — Spider",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+     "B",
+     "G"
+    ],
+    "keywords": [
+     "Reach",
+     "Menace"
+    ],
+    "oracle_text": "Menace, reach",
+    "set": "tmkm",
+    "collector_number": "11",
+    "scryfall_uri": "https://scryfall.com/card/tmkm/11/spider?utm_source=api"
+   },
+   {
+    "name": "Spider",
+    "type_line": "Token Creature — Spider",
+    "power": "1",
+    "toughness": "2",
+    "colors": [
+     "G"
+    ],
+    "keywords": [
+     "Reach"
+    ],
+    "oracle_text": "Reach",
+    "set": "tfdc",
+    "collector_number": "12",
+    "scryfall_uri": "https://scryfall.com/card/tfdc/12/spider?utm_source=api"
+   },
+   {
+    "name": "Spider",
+    "type_line": "Token Creature — Spider",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+     "G"
+    ],
+    "keywords": [
+     "Reach"
+    ],
+    "oracle_text": "Reach",
+    "set": "tspm",
+    "collector_number": "3",
+    "scryfall_uri": "https://scryfall.com/card/tspm/3/spider?utm_source=api"
+   },
+   {
+    "name": "Spider",
+    "type_line": "Token Creature — Spider",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+     "G"
+    ],
+    "keywords": [
+     "Reach"
+    ],
+    "oracle_text": "Reach",
+    "set": "tdsk",
+    "collector_number": "12",
+    "scryfall_uri": "https://scryfall.com/card/tdsk/12/spider?utm_source=api"
+   }
+  ]
+ },
+ "Phyrexian Horror (ficha da Nissa, Ascended Animist)": {
+  "consulta": "t:token name:\"Phyrexian Horror\"",
+  "total_resultados": 3,
+  "amostra": [
+   {
+    "name": "Phyrexian Horror",
+    "type_line": "Token Artifact Creature — Phyrexian Horror",
+    "power": "*",
+    "toughness": "*",
+    "colors": [],
+    "keywords": [],
+    "oracle_text": "",
+    "set": "tmoc",
+    "collector_number": "40",
+    "scryfall_uri": "https://scryfall.com/card/tmoc/40/phyrexian-horror?utm_source=api"
+   },
+   {
+    "name": "Phyrexian Horror",
+    "type_line": "Token Creature — Phyrexian Horror",
+    "power": "*",
+    "toughness": "*",
+    "colors": [
+     "G"
+    ],
+    "keywords": [],
+    "oracle_text": "",
+    "set": "tone",
+    "collector_number": "7",
+    "scryfall_uri": "https://scryfall.com/card/tone/7/phyrexian-horror?utm_source=api"
+   },
+   {
+    "name": "Phyrexian Horror",
+    "type_line": "Token Creature — Phyrexian Horror",
+    "power": "*",
+    "toughness": "1",
+    "colors": [
+     "R"
+    ],
+    "keywords": [
+     "Haste",
+     "Trample"
+    ],
+    "oracle_text": "Trample, haste",
+    "set": "tone",
+    "collector_number": "4",
+    "scryfall_uri": "https://scryfall.com/card/tone/4/phyrexian-horror?utm_source=api"
+   }
+  ]
+ },
+ "Cadet (ficha do Ajani Unrelenting)": {
+  "consulta": "t:token name:Cadet",
+  "total_resultados": 1,
+  "amostra": [
+   {
+    "name": "Cadet",
+    "type_line": "Token Creature — Wizard Soldier",
+    "power": "2",
+    "toughness": "2",
+    "colors": [],
+    "keywords": [],
+    "oracle_text": "",
+    "set": "tfra",
+    "collector_number": "1",
+    "scryfall_uri": "https://scryfall.com/card/tfra/1/cadet?utm_source=api"
+   }
+  ]
+ },
+ "Beast 4/4 (Garruk Curse Breaker -3)": {
+  "consulta": "t:token t:beast pow=4 tou=4 c:g",
+  "total_resultados": 5,
+  "amostra": [
+   {
+    "name": "Beast",
+    "type_line": "Token Creature — Beast",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+     "G"
+    ],
+    "keywords": [],
+    "oracle_text": "",
+    "set": "teoc",
+    "collector_number": "6",
+    "scryfall_uri": "https://scryfall.com/card/teoc/6/beast?utm_source=api"
+   },
+   {
+    "name": "Beast",
+    "type_line": "Token Creature — Beast",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+     "G"
+    ],
+    "keywords": [
+     "Trample"
+    ],
+    "oracle_text": "Trample",
+    "set": "tfra",
+    "collector_number": "8",
+    "scryfall_uri": "https://scryfall.com/card/tfra/8/beast?utm_source=api"
+   },
+   {
+    "name": "Beast",
+    "type_line": "Token Creature — Beast",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+     "G",
+     "R"
+    ],
+    "keywords": [
+     "Trample"
+    ],
+    "oracle_text": "Trample",
+    "set": "trvr",
+    "collector_number": "14",
+    "scryfall_uri": "https://scryfall.com/card/trvr/14/beast?utm_source=api"
+   },
+   {
+    "name": "Fungus Beast",
+    "type_line": "Token Creature — Fungus Beast",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+     "G"
+    ],
+    "keywords": [
+     "Trample"
+    ],
+    "oracle_text": "Trample",
+    "set": "tsoc",
+    "collector_number": "17",
+    "scryfall_uri": "https://scryfall.com/card/tsoc/17/fungus-beast?utm_source=api"
+   },
+   {
+    "name": "Phyrexian Beast",
+    "type_line": "Token Creature — Phyrexian Beast",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+     "G"
+    ],
+    "keywords": [],
+    "oracle_text": "",
+    "set": "tfdc",
+    "collector_number": "11",
+    "scryfall_uri": "https://scryfall.com/card/tfdc/11/phyrexian-beast?utm_source=api"
+   }
+  ]
+ },
+ "Vex (carta de oponente, T5/T6): resolvida, nao e' ficha": {
+  "consulta": "cards/named?exact=Vex",
+  "resultado": {
+   "name": "Vex",
+   "mana_cost": "{2}{U}",
+   "type_line": "Instant",
+   "oracle_text": "Counter target spell. That spell's controller may draw a card.",
+   "set": "dst"
+  },
+  "nota": "entrada tambem gravada em scryfall-cache/oracle-cache.json (Regra 15)"
+ }
+}

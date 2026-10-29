@@ -1,0 +1,78 @@
+{
+ "flags_off": {
+  "HERD_HEIRLOOM_IN_DECK": false,
+  "HERD_HEIRLOOM_MANA": false,
+  "HERD_HEIRLOOM_DRAW": false,
+  "BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT": false
+ },
+ "ignora_campos": [
+  "heirloom_cast_turn",
+  "heirloom_mana_uses",
+  "heirloom_draw_activations",
+  "heirloom_draws",
+  "heirloom_mana_turns_reserved_for_draw",
+  "heirloom_tapped_this_turn",
+  "heirloom_mana_armed"
+ ],
+ "sensibilidade": {
+  "so_gatilho_beorn": {
+   "HERD_HEIRLOOM_IN_DECK": false,
+   "HERD_HEIRLOOM_MANA": false,
+   "HERD_HEIRLOOM_DRAW": false
+  },
+  "troca_sem_habilidades": {
+   "HERD_HEIRLOOM_MANA": false,
+   "HERD_HEIRLOOM_DRAW": false,
+   "BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT": false
+  },
+  "troca_so_mana": {
+   "HERD_HEIRLOOM_DRAW": false,
+   "BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT": false
+  },
+  "troca_so_compra": {
+   "HERD_HEIRLOOM_MANA": false,
+   "BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT": false
+  },
+  "troca_gatilho_antigo": {
+   "BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT": false
+  }
+ },
+ "turns": 8,
+ "extra": null,
+ "deck": "beorn-fierce",
+ "sim": "resultados-ab/2026-10-23-herd-heirloom/codigo/beorn_goldfish_v1_DEPOIS.py",
+ "snapshot": "codigo/beorn_goldfish_v1_ANTES_1b7dd73.py",
+ "destaque": [
+  "commander_cast_turn__nunca",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "finisher_turn__nunca",
+  "finisher_turn__ate_T4",
+  "finisher_turn__ate_T5",
+  "finisher_turn__ate_T6",
+  "finisher_turn__ate_T7",
+  "finisher_turn__ate_T8",
+  "spells_cast",
+  "extra_draws",
+  "ramp_pieces_in_play",
+  "bear_count_final",
+  "beorn_bear_draws",
+  "beorn_combat_triggers",
+  "counters_on_board_final",
+  "combat_damage_draws",
+  "removal_cast",
+  "own_interaction_used",
+  "finishers_resolved",
+  "cards_discarded_to_hand_size",
+  "battlefield_count",
+  "hand_size",
+  "lands_played_total",
+  "heirloom_mana_uses",
+  "heirloom_draw_activations",
+  "heirloom_draws",
+  "heirloom_mana_turns_reserved_for_draw",
+  "roaming_throne_doublings"
+ ]
+}

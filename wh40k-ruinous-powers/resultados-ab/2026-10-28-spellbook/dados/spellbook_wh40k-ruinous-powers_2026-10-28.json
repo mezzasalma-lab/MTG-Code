@@ -1,0 +1,735 @@
+{
+ "deck": "wh40k-ruinous-powers",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Abaddon the Despoiler",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Narset's Reversal + Reverberate": {
+     "id": "11-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Pyromancer's Goggles + Reverberate": {
+     "id": "5026-6790",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Reverberate + Twincast": {
+     "id": "1534-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Be'lakor, the Dark Master + Rite of Replication": {
+     "id": "1744-4071",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite card draw",
+      "Near-infinite damage",
+      "Near-infinite draw triggers"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Dual Strike + Reverberate": {
+     "id": "3407-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Alania, Divergent Storm + Reverberate": {
+     "id": "5026-5959",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Prismari, the Inspiration + Reverberate": {
+     "id": "5026-7683",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Exalted Flamer of Tzeentch + Time Warp": {
+     "id": "481-4872",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Bloodthirster + Rionya, Fire Dancer": {
+     "id": "1908-3057",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Exalted Flamer of Tzeentch + Temporal Manipulation": {
+     "id": "481-2104",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Assault Suit + Bronze Bombshell": {
+     "id": "4447-4859",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Adaptive Training Post + Reverberate": {
+     "id": "5026-6452",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Be'lakor, the Dark Master + Orthion, Hero of Lavabrink": {
+     "id": "2136-4071",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite card draw",
+      "Near-infinite damage",
+      "Near-infinite draw triggers"
+     ]
+    },
+    "Capture of Jingzhou + Exalted Flamer of Tzeentch": {
+     "id": "481-2103",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Reverberate + Rootha, Mercurial Artist": {
+     "id": "2634-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Bloodthirster + Mirage Phalanx": {
+     "id": "1378-3057",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Raptor Hatchling + Warstorm Surge": {
+     "id": "2773-5191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Assault Suit + Endrek Sahr, Master Breeder": {
+     "id": "387-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Exalted Flamer of Tzeentch + Walk the Aeons": {
+     "id": "481-4377",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Assault Suit + Phylactery Lich": {
+     "id": "319-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Lurebound Scarecrow": {
+     "id": "1713-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Dandân": {
+     "id": "4447-4781",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Bloodthirster + Koh, the Face Stealer": {
+     "id": "3057-7074",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite combat damage"
+     ]
+    },
+    "Assault Suit + Seasinger": {
+     "id": "2126-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Manta Ray": {
+     "id": "788-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Kukemssa Serpent": {
+     "id": "3950-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Vodalian Knights": {
+     "id": "576-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Serendib Djinn": {
+     "id": "591-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Pirate Ship": {
+     "id": "2962-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Bog Serpent": {
+     "id": "2278-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Phyrexian Devourer": {
+     "id": "4447-4899",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Merchant Ship": {
+     "id": "4447-4741",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Skeleton Ship": {
+     "id": "1109-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Giant Shark": {
+     "id": "1415-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Sea Serpent": {
+     "id": "3104-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Ronom Serpent": {
+     "id": "1956-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Island Fish Jasconius": {
+     "id": "1855-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Slipstream Serpent": {
+     "id": "4403-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Nested Ghoul + Warstorm Surge": {
+     "id": "1344-2773",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Assault Suit + Marjhan": {
+     "id": "1280-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Barbarian Outcast": {
+     "id": "1197-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Be'lakor, the Dark Master",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Narset's Reversal + Reverberate": {
+     "id": "11-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Pyromancer's Goggles + Reverberate": {
+     "id": "5026-6790",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Reverberate + Twincast": {
+     "id": "1534-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Be'lakor, the Dark Master + Rite of Replication": {
+     "id": "1744-4071",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite card draw",
+      "Near-infinite damage",
+      "Near-infinite draw triggers"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Dual Strike + Reverberate": {
+     "id": "3407-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Alania, Divergent Storm + Reverberate": {
+     "id": "5026-5959",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Prismari, the Inspiration + Reverberate": {
+     "id": "5026-7683",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Exalted Flamer of Tzeentch + Time Warp": {
+     "id": "481-4872",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Bloodthirster + Rionya, Fire Dancer": {
+     "id": "1908-3057",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Exalted Flamer of Tzeentch + Temporal Manipulation": {
+     "id": "481-2104",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Assault Suit + Bronze Bombshell": {
+     "id": "4447-4859",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Adaptive Training Post + Reverberate": {
+     "id": "5026-6452",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Be'lakor, the Dark Master + Orthion, Hero of Lavabrink": {
+     "id": "2136-4071",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite card draw",
+      "Near-infinite damage",
+      "Near-infinite draw triggers"
+     ]
+    },
+    "Capture of Jingzhou + Exalted Flamer of Tzeentch": {
+     "id": "481-2103",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Reverberate + Rootha, Mercurial Artist": {
+     "id": "2634-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Bloodthirster + Mirage Phalanx": {
+     "id": "1378-3057",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Raptor Hatchling + Warstorm Surge": {
+     "id": "2773-5191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Assault Suit + Endrek Sahr, Master Breeder": {
+     "id": "387-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Exalted Flamer of Tzeentch + Walk the Aeons": {
+     "id": "481-4377",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Assault Suit + Phylactery Lich": {
+     "id": "319-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Lurebound Scarecrow": {
+     "id": "1713-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Dandân": {
+     "id": "4447-4781",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Bloodthirster + Koh, the Face Stealer": {
+     "id": "3057-7074",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite combat damage"
+     ]
+    },
+    "Assault Suit + Seasinger": {
+     "id": "2126-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Manta Ray": {
+     "id": "788-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Kukemssa Serpent": {
+     "id": "3950-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Vodalian Knights": {
+     "id": "576-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Serendib Djinn": {
+     "id": "591-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Pirate Ship": {
+     "id": "2962-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Bog Serpent": {
+     "id": "2278-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Phyrexian Devourer": {
+     "id": "4447-4899",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Merchant Ship": {
+     "id": "4447-4741",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Skeleton Ship": {
+     "id": "1109-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Giant Shark": {
+     "id": "1415-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Sea Serpent": {
+     "id": "3104-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Ronom Serpent": {
+     "id": "1956-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Island Fish Jasconius": {
+     "id": "1855-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Slipstream Serpent": {
+     "id": "4403-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Nested Ghoul + Warstorm Surge": {
+     "id": "1344-2773",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Assault Suit + Marjhan": {
+     "id": "1280-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Assault Suit + Barbarian Outcast": {
+     "id": "1197-4447",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

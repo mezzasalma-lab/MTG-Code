@@ -1,0 +1,26 @@
+# Ensaio no simulador (mothman_goldfish_v1.py), N = 300 sementes por turno
+
+## T6 (compra do log: Overgrown Tomb)
+- O usuario jogou no T6: 1 terreno (Overgrown Tomb); Ruin Crab (retrace) e Memory Erosion
+- Simulador (media por partida, N = 300): terrenos que entraram 6.79; entradas de terreno do cemiterio (Icetill) 1.06; gatilhos do Ruin Crab 0.23; cartas milladas de oponente 2.33; contadores +1/+1 postos (total no campo) 21.27
+- Simulador: 2+ terrenos entraram em 100%; 1o terreno entrou SEM Ruin Crab em campo em 100%
+- Exemplo (semente 1): entraram ['Bramble Familiar // Fetch Quest', 'Forest', 'Forest', 'Island', 'Kodama of the West Tree', 'Memory Erosion', 'Overgrown Tomb', 'Rampant Frogantua', 'Yavimaya Hollow']; terrenos que entraram: 6; gatilhos do Crab: 0
+
+## T7 (compra do log: Generous Patron)
+- O usuario jogou no T7: 0 terrenos da mao/cemiterio; Patron, Wave Goodbye, Hardened Scales (retrace)
+- Simulador (media por partida, N = 300): terrenos que entraram 6.99; entradas de terreno do cemiterio (Icetill) 2.01; gatilhos do Ruin Crab 6.99; cartas milladas de oponente 64.02; contadores +1/+1 postos (total no campo) 118.84
+- Simulador: 2+ terrenos entraram em 100%; Ruin Crab ja' em campo quando o 1o terreno entrou em 100%
+- Exemplo (semente 1): entraram ['Breeding Pool', 'Forest', 'Hardened Scales']; terrenos que entraram: 4; gatilhos do Crab: 4
+
+## T8 (compra do log: Agadeem's Awakening // Agadeem, the Undercrypt)
+- O usuario jogou no T8: 1 terreno (Urza's Saga do cemiterio) DEPOIS de Ruin Crab, Mothman e Icetill
+- Simulador (media por partida, N = 300): terrenos que entraram 2.92; entradas de terreno do cemiterio (Icetill) 2.00; gatilhos do Ruin Crab 2.92; cartas milladas de oponente 26.25; contadores +1/+1 postos (total no campo) 21.43
+- Simulador: 2+ terrenos entraram em 100%; Ruin Crab ja' em campo quando o 1o terreno entrou em 100%
+- Exemplo (semente 1): entraram ['Breeding Pool', 'Icetill Explorer', 'Ruin Crab', 'The Wise Mothman']; terrenos que entraram: 3; gatilhos do Crab: 3
+
+## T9 (compra do log: Swiftfoot Boots)
+- O usuario jogou no T9: 0 terrenos ate o fim do log; Six e Kami
+- Simulador (media por partida, N = 300): terrenos que entraram 2.91; entradas de terreno do cemiterio (Icetill) 1.99; gatilhos do Ruin Crab 2.91; cartas milladas de oponente 26.22; contadores +1/+1 postos (total no campo) 27.32
+- Simulador: 2+ terrenos entraram em 99%; Ruin Crab ja' em campo quando o 1o terreno entrou em 100%
+- Exemplo (semente 1): entraram ['Breeding Pool', 'Generous Patron', 'Hedge Shredder', 'Kami of Whispered Hopes', 'Six', 'Waterlogged Grove']; terrenos que entraram: 3; gatilhos do Crab: 3
+

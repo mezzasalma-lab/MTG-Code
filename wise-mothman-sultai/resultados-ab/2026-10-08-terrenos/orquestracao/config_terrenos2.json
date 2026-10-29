@@ -1,0 +1,105 @@
+{
+ "sim": "resultados-ab/2026-10-08-terrenos/codigo/mothman_goldfish_v1_lista_atual.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "commander_cast_turn__nunca",
+  "casualties_casts",
+  "atomize_casts",
+  "trophy_casts",
+  "regenerations_used",
+  "protection_used_total",
+  "smart_removals_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "mana_spent_total",
+  "prox_mana_wasted_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total",
+  "rad_counters_given_opp_total"
+ ],
+ "compacto": [
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "casualties_casts",
+  "atomize_casts",
+  "regenerations_used",
+  "mana_spent_total"
+ ],
+ "variantes": {
+  "base": {},
+  "l1_lantern_swamp": {
+   "SWAPS": [
+    [
+     "Soul-Guide Lantern",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "l2_boots_swamp": {
+   "SWAPS": [
+    [
+     "Swiftfoot Boots",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "l3_heroic_swamp": {
+   "SWAPS": [
+    [
+     "Heroic Intervention",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "l4_selkie_swamp": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "l5_lantern_swamp_boots_forest": {
+   "SWAPS": [
+    [
+     "Soul-Guide Lantern",
+     "Swamp"
+    ],
+    [
+     "Swiftfoot Boots",
+     "Forest"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "l1_lantern_swamp",
+  "l2_boots_swamp",
+  "l3_heroic_swamp",
+  "l4_selkie_swamp",
+  "l5_lantern_swamp_boots_forest"
+ ],
+ "regressao": [
+  "l5_lantern_swamp_boots_forest"
+ ]
+}

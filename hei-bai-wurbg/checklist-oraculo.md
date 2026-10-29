@@ -1,5 +1,319 @@
 # Checklist cláusula-a-cláusula — Hei Bai, Forest Guardian
 
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Fetchland: sacrifício + 1 de vida + busca por subtipo + thinning | 🐛 corrigido: `crack_fetch`, atrás de `FETCH_LANDS_ENABLED` |
+| "then shuffle" da fetch | 📊 não modelado (a biblioteca já é uma permutação aleatória e nada põe carta no topo antes do terreno) |
+| Terreno buscado entra virado quando o oráculo manda (Indatha/Ketria Triome) | ✅ contado em `tapped_lands_this_turn` |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`.
+
+---
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Fetchlands (8 no deck) | 🐛 corrigido na onda 4 (mesma data, seção "Fetchlands reais" acima): sacrifício, 1 de vida, busca por subtipo, thinning |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
+## Mulligan com escolha do fundo + imposto de comandante + ordem de set determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| London Mulligan, CR 103.5 (escolher as cartas do fundo) | 🐛 corrigido: `choose_bottom`, atrás de `MULLIGAN_SMART_BOTTOM_ENABLED` |
+| 1º mulligan grátis em multiplayer, CR 103.5c | ✅ já estava (`penalty = max(0, mulls - 1)`) |
+| Imposto de comandante, CR 903.8 | 🐛 corrigido: `commander_cast_count` + `effective_cost`, atrás de `COMMANDER_TAX_ENABLED` (conta cast anulado) |
+| Determinismo entre processos (`set` de str iterado em ordem de hash) | 🐛 corrigido: `DETERMINISTIC_SET_ORDER_ENABLED` (laço de reações de Shrine) |
+| Upkeep antes do draw (CR 503/504) | ✅ já estava: `play_turn` chama `upkeep_step` antes de comprar |
+| Ordem de terrenos / entrada virada (T1/T2); fetchlands (8 no deck) | não tratado nesta seção |
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`.
+
+---
+
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Achado específico deste deck:** `remove_permanent()` desviava o
+comandante direto pra zona de comando, pulando o cemitério
+inteiramente. Este deck tem **0 cartas com gatilho "whenever ~
+dies"/"creature put into graveyard" compartilhado** (grep confirmado) —
+a única carta com "when ~ dies" é o próprio Enduring Vitality, e ela
+reage a SI MESMA morrendo (excecão dinâmica real do oráculo, "return it
+to the battlefield... as an enchantment"), nunca ao comandante. Cuidado
+extra na correção: a ordem dos `if` em `remove_permanent()` importa —
+o check do comandante teve que ficar ANTES do check do Enduring
+Vitality (já estava assim, preservado), senão um nome igual por
+coincidência quebraria a lógica; confirmado com teste dirigido que a
+exceção do Enduring Vitality continua 100% intacta depois do fix.
+
+**Corrigido mesmo assim** por consistência estrutural (Regra #1 do
+`CLAUDE.md`): o comandante agora entra no cemitério de verdade via
+`put_into_graveyard()`, e só DEPOIS é removido de lá pra representar a
+escolha do dono de movê-lo pra zona de comando.
+
+**Validação:** compilação OK. Bit-identidade em modo padrão
+(`simulate_one`, 3000 seeds, seed_base 9100000) contra o commit
+anterior: **0/3000 mismatches** (ambos os call sites de
+`remove_permanent` — `try_smart_opponent_wipe`/`try_smart_opponent_
+removal` — só disparam com `interaction_rng` ativo). Regressão de
+20.000 partidas em modo de resiliência (seed_base 9500000): 0
+exceções, 0/20000 partidas com o comandante preso no cemitério. 3
+testes dirigidos: (1) comandante removido → `commander_in_play=False`,
+fora do campo, não preso no cemitério; (2) permanente comum vai pro
+cemitério e fica lá; (3) Enduring Vitality ainda volta corretamente
+pro campo como enchantment puro na 1ª morte (excecão intacta, não
+afetada pelo fix do comandante).
+
+**Resultado:** correção estrutural sem impacto numérico observável
+nesta lista atual (0 cartas reagem à morte do comandante), mas fecha o
+gap de consistência com CR 903.9a.
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Raciocínio completo
+em `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado real específico deste deck:** o Enduring Vitality tem uma
+exceção dinâmica real (`state.enduring_vitality_enchantment_only`) que
+já fazia `try_smart_opponent_wipe` tratá-lo como NÃO-criatura quando
+voltou só como encantamento. Extraído `is_creature_now(state, name)`
+(mesma exceção, reusável) pra que `wiped_this_round` continue correto
+quando um wipe de encantamento o destrói nesse estado — ele é
+encantamento de verdade (`is_enchantment_card` já inclui
+"enchantment_creature"), mas não conta como perda de poder de ataque
+se já não era criatura no momento.
+
+**Implementado (1ª versão, SUPERSEDIDA no mesmo dia):** inicialmente 2
+funções novas com rolagens INDEPENDENTES (`ARTIFACT_WIPE_CHANCE_FACTOR
+= 0.2`, `ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15`) somadas ao wipe de
+criatura já existente.
+
+### Correção de design: unificado num único roll + escolha ponderada — 2026-09-20
+
+**Gatilho:** mesma correção do usuário aplicada primeiro no Megatron —
+*"Obviamente tem que ter uma alternância de remoções, aleatória, até pq
+wipes de criaturas são muito mais comuns que remoção de artefatos e
+encantamentos"*. Raciocínio completo em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado (final):** `try_smart_opponent_wipe()` único — 1 rolagem
+"algum wipe acontece" (`chance = interaction_chance() *
+TOTAL_WIPE_CHANCE_FACTOR`, soma dos 3 pesos = 0.75) seguida de escolha
+ponderada de 1 TIPO só (`WIPE_TYPE_WEIGHTS = {"creature": 0.4,
+"artifact": 0.2, "enchantment": 0.15}`), restrita aos tipos com alvo
+legal em campo. Este deck roda vários encantamentos reais, incluindo
+enchantment creatures, então a categoria de encantamento é
+particularmente relevante aqui. Hei Bai nunca é artefato nem
+encantamento (Legendary Creature — Bear Spirit, confirmado via
+Scryfall).
+
+`is_creature_now(state, name)` (exceção dinâmica real do Enduring
+Vitality — `state.enduring_vitality_enchantment_only`) preservada
+dentro da função unificada, tanto pros candidatos de criatura quanto
+pro cálculo de `wiped_this_round` quando um wipe de outro tipo também
+derruba uma enchantment creature de verdade (`is_enchantment_card` já
+inclui "enchantment_creature").
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (2.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+testes dirigidos (no máximo 1 tipo por chamada; distribuição ponderada
+correta; `is_creature_now` continua respeitando a exceção do Enduring
+Vitality dentro da função unificada).
+
+**Resultado (A/B 2000 jogos mesma seed_base, design unificado final):**
+% de jogos com pelo menos 1 wipe de qualquer tipo sobe de 53,8% pra
+75,2% (antes = commit `8b84daf`, só wipe de criatura). Avg wipes totais
+por jogo: 0,687 → 1,238. 13,1% dos jogos "depois" sofrem pelo menos 1
+artifact wipe, 29,5% pelo menos 1 enchantment wipe (a categoria mais
+relevante deste deck em particular, como esperado).
+
+## Bug de design: modelo assumia 100% da mesa mirando em mim, todo turno, de todo oponente — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
+*"se sempre for 3 contra 1, aí não consigo fazer nada, nunca!"* —
+medição real mostrou 88,4% das rodadas com pelo menos 1 evento de
+interação contra mim, o pior dos 3 decks. Raciocínio completo e opções
+levantadas em `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** mesmo padrão do Megatron/Ur-Dragon —
+`OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS`, gate rolado no início de
+`try_smart_opponent_turn()` antes de qualquer categoria.
+
+**Validação:** modo padrão 100% bit-idêntico ao HEAD anterior (5.000
+seeds) + regressão de 20.000 partidas no modo resiliência, 0 exceções.
+
+**Resultado (A/B mesma seed, 2000 jogos):**
+
+| Métrica | Antes do gate | Depois do gate |
+|---|---|---|
+| Rodadas com zero interação | 11,6% | 50,1% |
+| Avg ataques de oponente sofridos | 4,01 | 1,47 |
+| Avg vida final | 33,69 | 37,67 |
+
+## Bug real de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
+*"se jogador A faz wipe, jogador C não tem como atacar até voltar ao
+turno do jogador A, a não ser no caso de haste!"* — a correção anterior
+só tornava wipe/ataque mutuamente exclusivos no MESMO turno do wiper.
+Raciocínio e validação completos em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** mesmo padrão do Megatron/Ur-Dragon —
+`state.wiped_this_round` (setado por `try_smart_opponent_wipe`,
+resetado 1x por rodada), `try_smart_opponent_attack()` reduz a própria
+chance pra `POST_WIPE_ATTACK_HASTE_FACTOR = 0.15` quando o flag está
+ligado. Gate manual antigo removido de `try_smart_opponent_turn()`.
+
+**Validação:** modo padrão confirmado 100% bit-idêntico ao HEAD anterior
+(5.000 seeds) + regressão de 20.000 partidas no modo resiliência, 0
+exceções.
+
+**Resultado (A/B mesma seed, 2000 jogos):**
+
+| Métrica | Antes (wipe só bloqueia o próprio turno) | Depois (wipe suprime a rodada inteira) |
+|---|---|---|
+| Avg board wipes sofridos | 1,579 | 1,573 |
+| Avg ataques de oponente sofridos | 4,009 | 3,753 |
+| Avg vida final | 33,69 | 34,11 |
+
+## Bug real de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
+board wipe é sorcery (main phase de UM oponente), ataque vem de
+criatura em campo DAQUELE MESMO oponente. Se o wipe for simétrico, ele
+não ataca no mesmo turno. Regra #6 do CLAUDE.md. Raciocínio e
+validação completos em `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `try_smart_opponent_turn()` simula o turno de 1 oponente
+por vez (`NUM_OPPONENTS = 3` por rodada, nova constante, mesma
+convenção do Megatron/Ur-Dragon), wipe e ataque mutuamente exclusivos
+dentro do MESMO turno de oponente.
+
+**Validação:** teste dirigido (2000 seeds, exclusão mútua 100%) +
+regressão de 20.000 partidas, 0 exceções + modo padrão intocado.
+
+**Resultado (batch 2000 jogos mesma seed):**
+
+| Métrica | Modelo antigo (1 rolagem/rodada) | Modelo novo (3 turnos/rodada) |
+|---|---|---|
+| Avg board wipes sofridos | 0,74 | 1,59 |
+| Graveyard wipe sofrido (partidas) | 48,8% | 79,6% |
+| Avg remoções inteligentes sofridas | 0,99 | 1,46 |
+| Avg dano proxy total | 37,72 | 3,14 |
+
+Queda AINDA mais acentuada que o Ur-Dragon (37,72→3,14, ~8% do valor
+anterior) — Elesh Norn/Sanctum of All multiplicam praticamente todo o
+board, e com board wipe agora disparando em quase 80% das partidas (em
+vez de ~49%), o motor "que se realimenta" raramente sobrevive intacto
+até o fim.
+
+## Modo de resiliência portado do Megatron/Ur-Dragon (6 categorias + counterspell) — 2026-09-20
+
+**Gatilho:** usuário pediu pra implementar mesmo assim, depois de eu
+usar este deck como piloto pra avaliar esforço (achado que ele tem 2
+lacunas estruturais sérias: sem `sacrifice()`/remoção central, sem
+combate/P-T modelado nenhum). Pedido: mesmo comparativo antes/depois
+que o Ur-Dragon.
+
+**Achado real MAIS IMPORTANTE desta rodada:** o próprio docstring do
+arquivo (linhas ~187-193) já documentava **Enduring Vitality** ("When
+~ dies, if it was a creature, return it to the battlefield... It's an
+enchantment") como fora de escopo — mas especificamente PORQUE "este
+simulador não mata criaturas nomeadas... essa cláusula nunca teria
+janela real pra disparar". Ao implementar wipe/remoção pela 1ª vez
+neste arquivo, essa janela passa a existir de verdade — se eu não
+tratasse isso, teria reintroduzido exatamente o gap que a nota dizia
+ser estruturalmente impossível. Confirmei o oráculo real via Scryfall
+antes de implementar (Regra #1): *"When Enduring Vitality dies, if it
+was a creature, return it to the battlefield under its owner's
+control. It's an enchantment. (It's not a creature.)"*
+
+`remove_permanent()` trata isso: na primeira morte como criatura, ela
+NUNCA vai pro cemitério — volta direto pro campo como enchantment puro
+(`state.enduring_vitality_enchantment_only`). E `try_smart_opponent_
+wipe()` precisa saber que, uma vez flagada, ela **não é mais alvo
+legal de "destroy all creatures"**, mesmo `is_creature_card()` (lookup
+estático no `CARD_DB`) dizendo que sim — mesmo padrão do Megatron-
+Vehicle/Living-Metal (Regra #3 do CLAUDE.md: conceito compartilhado
+errado pra um subconjunto de quem o lê, porque é um efeito contínuo
+que muda o tipo, não o tipo impresso na carta).
+
+**Outras diferenças estruturais reais vs. Megatron/Ur-Dragon:**
+- Sem `power`/`toughness` rastreado em NENHUMA criatura (`Card` só tem
+  `mv`/`ctype`/`tags`) — ataque de oponente aqui NUNCA é bloqueado,
+  mesma limitação do Ur-Dragon, mais extrema (nem o combate do PRÓPRIO
+  jogador existe neste arquivo).
+- Sem taxa de comandante nenhuma (diferente do Megatron/Ur-Dragon) —
+  counterspell mais simples de portar, sem bookkeeping de taxa.
+- Alvo do graveyard snipe usa o MESMO critério que `do_life_origin_
+  reanimate()`/`do_hall_of_heliods_generosity()` já usam (maior MV
+  entre ENCANTAMENTO no cemitério) — recursão real deste deck é de
+  encantamento, não de artefato/Dragão.
+- `INTERACTION_ENGINE_PRIORITY` curada a partir do `auditoria.md` real
+  (seção 2, "motor que se realimenta"): Sanctum of All (dobra Shrine
+  com 6+ em campo + tutor, multiplicador central), Elesh Norn (dobra
+  ETB incondicional), Sythis/Sanctum Weaver (draw/mana), shrines de
+  draw/drain recorrentes, Go-Shintai of Life's Origin, Displacer
+  Kitten.
+
+**Validação:** 6 testes unitários dirigidos (gating; **Enduring
+Vitality retorna como enchantment ao morrer, nunca vai pro cemitério**;
+**2º wipe confirma que ela fica IMUNE uma vez flagada não-criatura**;
+removal mira prioridade correta; graveyard snipe mira maior MV
+encantamento; counterspell sem taxa) + 5.000 seeds de equivalência
+bit-a-bit do modo padrão (0 diferenças) + smoke test + regressão de
+20.000 partidas em CADA modo, 0 exceções nos dois.
+
+**Resultado (A/B 2000 jogos mesma seed):**
+
+| Métrica | Padrão | Resiliência |
+|---|---|---|
+| Turno médio de conjuração (resolveu) | 3,60 | 3,68 |
+| Nunca resolveu em 8 turnos | 0,9% | 0,9% |
+| Avg dano proxy total | 231,65 | 37,72 (16% do original) |
+| Avg drain proxy total | 33,61 | 6,89 |
+| Avg dobras via Elesh Norn | 80,93 | 11,05 |
+| Avg tokens criados | 53,84 | 14,20 |
+| Avg board wipes sofridos | — | 0,74 (11,43 criaturas perdidas quando dispara) |
+| Graveyard wipe sofrido (partidas) | — | 48,8% |
+| Avg remoções inteligentes sofridas | — | 0,99 |
+| Avg counterspells sofridos | — | 0,12 |
+
+Queda proporcional MAIOR que o Ur-Dragon (16% vs. 31% do dano
+original) — coerente com a estrutura do deck: Elesh Norn e Sanctum of
+All são multiplicadores praticamente sobre TUDO (qualquer ETB de
+Shrine), então perdê-los (ou perder Shrines em massa pro board wipe —
+11,43 em média por wipe, contra um board médio de ~10 Shrines) corta o
+motor de forma muito mais desproporcional do que no Ur-Dragon.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/

@@ -1,0 +1,14 @@
+Replay do goldfish manual #6 | modo resiliencia | perfil playtester | N=300 ordens do resto do baralho
+turno | planeswalkers: mediana [Q1-Q3] | usuario (log) | usuario (premissa Fracture no T4) | P(sim >= usuario)
+  T 1 |  0.0 [0-0] | 0 | 0 | 100.0%
+  T 2 |  0.0 [0-0] | 0 | 0 | 100.0%
+  T 3 |  0.0 [0-0] | 0 | 0 | 100.0%
+  T 4 |  1.0 [1-1] | 1 | 0 |  91.7%
+  T 5 |  2.0 [2-2] | 2 | 1 |  83.3%
+  T 6 |  3.0 [2-3] | 3 | 2 |  65.3%
+  T 7 |  3.0 [2-3] | 4 | 3 |   6.3%
+  T 8 |  4.0 [3-5] | 4 | 4 |  54.7%
+  T 9 |  5.0 [4-7] | 4 | 4 |  81.0%
+  T10 |  8.0 [5-10] | 5 | 5 |  79.3%
+  T11 | 10.0 [7-13] | 6 | 6 |  82.3%
+Tam conjurada: mediana T3.0 (300/300 partidas); o usuario: T3

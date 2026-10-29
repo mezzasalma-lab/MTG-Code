@@ -1,5 +1,306 @@
 # Goldfish Log — Edgar Markov
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Rodada 2026-10-05 (Fetchlands reais (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`](resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md)
+
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-fetchlands-reais/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. Modo padrão, N=10.000: comandante em campo até T3 0,7% → 0,8% (+0,02 ± 0,06 pp), até T4 -0,12 ± 0,12 pp, até T5 +0,62 ± 0,24 pp; comandante que nunca entra +0,75 ± 0,30 pp. Modo resiliência: comandante em campo até T3 0,4% → 0,5% (+0,04 ± 0,06 pp), até T4 +0,01 ± 0,14 pp, até T5 +0,54 ± 0,28 pp; comandante que nunca entra +1,26 ± 0,44 pp. Fetches de fato quebradas por partida: 0,56 (N=10.000, padrão); sem alvo na biblioteca: 0,00 por partida. Vida no fim (resiliência): -0,515 ± 0,021 (1 de vida por fetch).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Fetchland ficava em campo como terreno dual estático.** O oráculo da fetch é "{T}, Pay 1 life, Sacrifice this land: Search your library for a [tipo] or [tipo] card, put it onto the battlefield, then shuffle". O simulador deixava a fetch em campo produzindo mana das duas cores, sem sacrifício, sem busca (a biblioteca nunca afinava), sem ir pro cemitério e sem a vida do custo. Mesma classe do Megatron (Evolving Wilds / Terramorphic Expanse / Rocky Tar Pit, corrigido em 2026-10-03). Achado pela varredura mecânica de fetches (`varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`).
+
+**O que mudou:**
+- `FETCH_LANDS_ENABLED` (padrão `True`): ao jogar a fetch, `crack_fetch` a manda pro cemitério, paga 1 de vida e busca na biblioteca um terreno com subtipo compatível com o texto da fetch (básico OU dual tipada, por SUBTIPO do `type_line` do oráculo, não por nome); o terreno buscado entra em campo pelas regras de entrada do deck. Escolha: o terreno que cobre a cor ausente (W/B/R) e, por último, o que entra virado (Savai Triome). Sem alvo na biblioteca a fetch fica em campo como antes (contado em `fetch_no_target_total`). Contadores novos: `fetches_cracked_total`, `fetch_no_target_total`. Com a chave em `False` o caminho antigo volta bit a bit.
+- **Sevinne's Reclamation devolve fetch:** a fetch que volta do cemitério pro campo (permanente de MV ≤ 3) também busca (oráculo: pode ser ativada assim que volta). Achado pelo próprio teste de integração (FT8): sem isso a fetch devolvida ficava em campo como dual.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8279 (82.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3877       6.3421      -0.0456 ±0.0048  
+  *commander_cast_turn__nunca                   0.2198       0.2273      +0.0075 ±0.0030  
+   commander_cast_turn__ate_T3                  0.0074       0.0076      +0.0002 ±0.0006  
+   commander_cast_turn__ate_T4                  0.0686       0.0674      -0.0012 ±0.0012  
+  *commander_cast_turn__ate_T5                  0.1816       0.1878      +0.0062 ±0.0024  
+  *sevinnes_reclamation_returns                 0.0048       0.0513      +0.0465 ±0.0041  
+  *creatures_sacrificed_total                   2.6748       2.7078      +0.0330 ±0.0097  
+  *death_trigger_events                         2.3710       2.4235      +0.0525 ±0.0160  
+  *eminence_tokens_created                      2.9751       3.0059      +0.0308 ±0.0095  
+  *ramp_pieces_cast                             0.6394       0.6434      +0.0040 ±0.0018  
+  *tutors_used_total                            0.3745       0.3795      +0.0050 ±0.0023  
+  *lifegain_total                               3.9704       4.0302      +0.0598 ±0.0283  
+  *welcoming_vampire_draws                      0.3454       0.3530      +0.0076 ±0.0038  
+  *unholy_annex_draws                           0.5696       0.5745      +0.0049 ±0.0027  
+  *elenda_counters                              0.1773       0.1848      +0.0075 ±0.0042  
+  *tapped_land_skipped_for_play_total           0.1206       0.1237      +0.0031 ±0.0019  
+  *urzas_saga_construct_tokens                  0.1578       0.1588      +0.0010 ±0.0006  
+  *voldaren_estate_blood_tokens                 0.3029       0.3072      +0.0043 ±0.0029  
+  *black_market_treasures                       0.4279       0.4319      +0.0040 ±0.0028
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5749 (57.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.2213       6.1765      -0.0448 ±0.0063  
+  *commander_cast_turn__nunca                   0.3175       0.3301      +0.0126 ±0.0044  
+   commander_cast_turn__ate_T3                  0.0042       0.0046      +0.0004 ±0.0006  
+   commander_cast_turn__ate_T4                  0.0431       0.0432      +0.0001 ±0.0014  
+  *commander_cast_turn__ate_T5                  0.1155       0.1209      +0.0054 ±0.0028  
+  *len_library                                 82.1827      81.6294      -0.5533 ±0.0211  
+  *life                                        38.2100      37.6952      -0.5148 ±0.0209  
+  *len_graveyard                                3.1199       3.4737      +0.3538 ±0.0265  
+  *sevinnes_reclamation_returns                 0.0487       0.0728      +0.0241 ±0.0032  
+  *graveyard_wipe_used                          0.3043       0.3327      +0.0284 ±0.0051  
+  *len_smart_graveyard_wipe_log                 0.3043       0.3327      +0.0284 ±0.0051  
+  *smart_graveyard_wipes_total                  0.3043       0.3327      +0.0284 ±0.0051  
+  *commander_cast_count                         0.8265       0.8103      -0.0162 ±0.0048  
+  *land_played                                  0.5271       0.5131      -0.0140 ±0.0046  
+  *creatures_sacrificed_total                   2.1581       2.1889      +0.0308 ±0.0123  
+  *tutors_used_total                            0.3372       0.3437      +0.0065 ±0.0026  
+  *ramp_pieces_cast                             0.6164       0.6210      +0.0046 ±0.0020  
+  *eminence_tokens_created                      2.7155       2.7393      +0.0238 ±0.0106  
+  *bastion_of_remembrance_tokens                0.1407       0.1437      +0.0030 ±0.0017
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** a biblioteca afina (−1 terreno por fetch, ligeiramente mais cartas úteis nos próximos draws), o terreno buscado entra pelas regras de entrada do deck (virado quando o oráculo manda) e cada fetch custa 1 de vida e põe uma carta no cemitério; o efeito no comandante em T3–T5 é de segunda ordem.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `edgar_markov_goldfish_v1_ANTES_fd34e07.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 9/9 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Fetch real:** leitura de `play_land` (e do caminho de entrada de terreno) + testes dirigidos FT1–FT8 (a fetch vai pro cemitério, a biblioteca perde exatamente 1 carta, o buscado tem subtipo compatível — varre TODAS as fetches do deck —, custo de 1 de vida, sem alvo → fica em campo, escolhe o que entra desvirado, thinning, chave desligada = caminho antigo, 300 partidas completas por modo); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com a chave desligada × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro (contadores novos ignorados).
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Sevinne's Reclamation × fetch no cemitério:** teste dirigido FT9 e o efeito medido na tabela (`sevinnes_reclamation_returns` sobe porque o cemitério agora tem alvo MV 0).
+
+**Escopo — NÃO verificado:**
+- **O "then shuffle" do oráculo NÃO é modelado:** o estado deste simulador não tem RNG próprio na biblioteca (a biblioteca já é uma permutação aleatória). Embaralhar de novo só mudaria algo se um tutor ou scry tivesse posto uma carta específica no topo entre a compra e a jogada de terreno; a ordem do turno impede isso nas linhas modeladas.
+- **Landfall:** varri o `oracle_text` das cartas da lista procurando gatilhos de "whenever a land enters"/Landfall: neste deck nenhuma carta além dos terrenos tem esse gatilho, então o terreno buscado não deixa gatilho sem disparar.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão, sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada.
+- **Oponente real:** o goldfish não modela (convenção do repositório).
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem dos payoffs determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+## Terreno virado primeiro em T1/T2 + ordem dos payoffs determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 0,7% → 0,7% (+0,02 ± 0,04 pp), até T4 +0,11 ± 0,07 pp, até T5 +0,16 ± 0,11 pp; comandante que nunca chega a entrar na partida -0,11 ± 0,07 pp. Modo resiliência: comandante em campo até T3 0,4% → 0,4% (+0,02 ± 0,04 pp), até T4 +0,06 ± 0,08 pp, até T5 +0,07 ± 0,13 pp; comandante que nunca chega a entrar na partida +0,10 ± 0,21 pp. A correção joga o terreno virado primeiro em média 0,26 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,12 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,003 ± 0,002 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+- **Ordem de iteração de `set` de strings dependia de `PYTHONHASHSEED`.** A mesma semente dava resultados diferentes em processos diferentes (o hash de `str` muda a cada execução do Python). Medido: 3 `PYTHONHASHSEED` diferentes, 1.500 sementes × 2 modos, comparando o estado final campo a campo (`resumos/determinismo.txt`). Aqui: `for payoff in DEATH_PAYOFFS` (set de nomes) decidia a ordem de disparo dos payoffs de morte. No controle (chave desligada) 0 sementes divergentes em 1.500 × 2 modos: correção **preventiva** (efeitos hoje comutativos).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `DETERMINISTIC_SET_ORDER_ENABLED` (padrão `True`): `for payoff in DEATH_PAYOFF_FORMULAS` (dict, ordem de declaração) no lugar de iterar `DEATH_PAYOFFS` (set). Com a chave em `False` o laço antigo (ordem do hash) volta.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9390 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3844       6.3877      +0.0033 ±0.0016  
+  *commander_cast_turn__nunca                   0.2209       0.2198      -0.0011 ±0.0007  
+   commander_cast_turn__ate_T3                  0.0072       0.0074      +0.0002 ±0.0004  
+  *commander_cast_turn__ate_T4                  0.0675       0.0686      +0.0011 ±0.0007  
+  *commander_cast_turn__ate_T5                  0.1800       0.1816      +0.0016 ±0.0011  
+  *eminence_tokens_created                      2.9537       2.9751      +0.0214 ±0.0046  
+  *edgar_attack_counters_total                  7.0819       7.1506      +0.0687 ±0.0163  
+  *creatures_sacrificed_total                   2.6549       2.6748      +0.0199 ±0.0048  
+  *drain_total                                  5.7359       5.8377      +0.1018 ±0.0256  
+  *pw_activations_total                         0.6328       0.6411      +0.0083 ±0.0023  
+  *death_trigger_events                         2.3414       2.3710      +0.0296 ±0.0083  
+  *lifegain_total                               3.9105       3.9704      +0.0599 ±0.0178  
+  *black_market_treasures                       0.4188       0.4279      +0.0091 ±0.0027  
+  *unholy_annex_draws                           0.5623       0.5696      +0.0073 ±0.0023  
+  *edgar_attack_turns                           1.4527       1.4591      +0.0064 ±0.0020  
+  *token_doubler_events                         0.3710       0.3819      +0.0109 ±0.0037  
+  *ophiomancer_snakes_created                   0.2532       0.2579      +0.0047 ±0.0020  
+  *warleaders_call_damage_total                 0.4822       0.4910      +0.0088 ±0.0040  
+  *roaming_throne_doublings                     0.3274       0.3357      +0.0083 ±0.0039
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8056 (80.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2200       6.2213      +0.0013 ±0.0026  
+   commander_cast_turn__nunca                   0.3165       0.3175      +0.0010 ±0.0021  
+   commander_cast_turn__ate_T3                  0.0040       0.0042      +0.0002 ±0.0004  
+   commander_cast_turn__ate_T4                  0.0425       0.0431      +0.0006 ±0.0008  
+   commander_cast_turn__ate_T5                  0.1148       0.1155      +0.0007 ±0.0013  
+  *eminence_tokens_created                      2.6980       2.7155      +0.0175 ±0.0050  
+  *drain_total                                  4.4098       4.4875      +0.0777 ±0.0235  
+  *lifegain_total                               3.0470       3.0999      +0.0529 ±0.0200  
+  *death_trigger_events                         2.5198       2.5557      +0.0359 ±0.0142  
+  *creatures_sacrificed_total                   2.1440       2.1581      +0.0141 ±0.0060  
+  *purphoros_damage_total                       0.2930       0.3074      +0.0144 ±0.0063  
+  *len_library                                 82.2039      82.1827      -0.0212 ±0.0095  
+  *pw_activations_total                         0.5088       0.5168      +0.0080 ±0.0037  
+  *urzas_saga_entered_turn__ate_T3              0.0683       0.0663      -0.0020 ±0.0010  
+  *len_hand                                     2.9911       2.9746      -0.0165 ±0.0089  
+  *voldaren_estate_blood_tokens                 0.2366       0.2411      +0.0045 ±0.0024  
+  *ramp_pieces_cast                             0.6143       0.6164      +0.0021 ±0.0012  
+  *late_pw_activations_total                    0.1845       0.1865      +0.0020 ±0.0011  
+  *unholy_annex_draws                           0.4982       0.5039      +0.0057 ±0.0033
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `edgar_markov_goldfish_v1_ANTES_0c92480.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Determinismo:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, controle × correção (`resumos/determinismo.txt`).
+- **Invariante genérica "campos negativos" (regressão):** `mana_spent_this_turn` termina negativo em ~1,9% das partidas de resiliência (374/20.000 com a correção, 370/20.000 com ela desligada; 0 no modo padrão). Não é regressão nem bug de custo: o contador é a mana LÍQUIDA gasta e fica negativo por desenho quando sobra mana bônus no fim do turno (`try_cabal_coffers`: `-= sc-2`; Treasure criado e estalado: `-= count`; Ashnod's/Phyrexian Altar e Phyrexian Tower no `sac_loop`). Conferido em 1.200 partidas de resiliência: 22 terminaram negativas, 17 delas sem altar em campo; li o campo final de 2 delas (uma com Phyrexian Tower, outra com Cabal Coffers); as outras 20 não foram inspecionadas uma a uma.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## Planeswalkers ativam no turno em que entram + Sorin só sacrifica Vampiro — 2026-09-25
+
+Detalhes em `checklist-oraculo.md`.
+- 2.000 partidas por modo, mesmas seeds: padrão 6.000.000+ e resiliência 6.000.000+, 8 turnos.
+- `PYTHONHASHSEED=0`; rodar 2× o mesmo código deu resultado idêntico.
+- Etapas acumulativas.
+
+| etapa | ativações de PW | ativações no turno em que entrou | fichas via PW | Vampiro sacrificado pelo Sorin | criatura grátis (Sorin −3) | dreno total | res: ativações de PW | res: mortes de PW |
+|---|---|---|---|---|---|---|---|---|
+| antes | 0,462 | — | 0,141 | — (pegava qualquer ficha) | 0,108 | 5,50 | 0,350 | 0,010 |
+| + Sorin só Vampiro + remoção = morte de PW | 0,462 | 0 | 0,141 | 0,069 | 0,119 | 5,39 | 0,346 | **0,063** |
+| + **PW ativa no turno em que entra (CR 606.3)** | **0,644** | 0,201 | **0,279** | 0,085 | 0,143 | 5,57 | **0,529** | 0,066 |
+
+Leitura de cada etapa:
+- **Sorin só com Vampiro:**
+  - o dreno cai um pouco (5,50 → 5,39), porque os 3 de dano + 3 de vida não saem mais sacrificando Soldier/Snake/Demon;
+  - quando não há Vampiro, o −3 (Vampiro da mão de graça) é usado mais: 0,108 → 0,119.
+- **Remoção de oponente no Sorin:** passa a contar como morte de PW na resiliência (0,010 → 0,063). Com isso a Cruel Celebrant dispara nessa morte.
+- **Ativação no turno em que entra:**
+  - +39% de ativações;
+  - as fichas da Elspeth quase dobram (0,141 → 0,279), porque o +1 dela sai já no turno em que é conjurada;
+  - o dreno volta a subir (5,57).
+- **Impacto no deck:** pequeno, porque Sorin ou Elspeth só estão em campo em ~17% das partidas de 8 turnos. Os 2 PWs são 2 cartas de 99.
+
+## London mulligan sem embaralhar o fundo — 2026-09-24
+
+Detalhes em `checklist-oraculo.md`. Efeito só nas partidas com 2+ mulligans
+(380 de 2.000, mesmas seeds). Médias nessas partidas, antes → depois:
+
+| métrica | antes | depois |
+|---|---|---|
+| skullclamp_draws | 0,263 | 0,405 |
+| black_market_treasures | 0,376 | 0,521 |
+| exsanguinate_casts | 0,089 | 0,058 |
+
+Regressão 20.000 + 20.000 partidas: 0 exceções.
+
+## CR 903.9a: comandante dispara gatilhos de morte de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** `remove_permanent()` pulava o cemitério pro comandante,
+então Pitiless Plunderer/Blood Artist/Zulaport/Vindictive Vampire/
+Bastion of Remembrance/Elenda nunca disparavam quando Edgar morria pra
+remoção de oponente — este deck TEM payoff de morte real (diferente de
+Ur-Dragon/Hei Bai), então o bug tinha impacto numérico de verdade.
+
+**Resultado:** modo padrão idêntico (0/3000 mismatches — Edgar nunca é
+sacrificado pelo próprio motor). Modo de resiliência (5000 seeds, A/B):
+`pitiless_plunderer_treasures` médio 0,1066→0,1128;
+`death_trigger_events` médio 2,2822→2,3724;
+`creatures_destroyed_by_opponent_total` médio 2,2722→2,4876. Métricas
+de RNG puro (`smart_wipes_total`/`smart_removals_total`) ficaram
+idênticas, confirmando isolamento da correção.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 4 testes dirigidos.
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (unificado — 1 rolagem "algum
+wipe acontece" + escolha ponderada de 1 tipo só, pesos 0.4/0.2/0.15 —
+este deck nunca passou pela versão com rolagens independentes dos
+outros 3).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 40,8% pra 65,5% (antes = commit
+`8faa943`, só wipe de criatura). Avg wipes totais por jogo: 0,477 →
+0,949. 15,7% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+17,4% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8faa943`
+(2.000 seeds) + regressão de 20.000 partidas, 0 exceções + testes
+dirigidos.
+
+---
+
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "Agora implementa essas mudanças no Markov" — mesmo modo
+já validado em Megatron/Ur-Dragon/Hei Bai, este deck nunca tinha
+nenhuma extensão de resiliência antes. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**Implementado (7 categorias, design final direto, sem repetir o
+histórico de 3 rodadas de correção dos outros decks):** ataque sem
+bloqueio, remoção curada (`INTERACTION_ENGINE_PRIORITY`), discard
+aleatório, board wipe, graveyard hate (mass exile + exílio único),
+counterspell no cast do comandante — com `state.wiped_this_round` +
+`POST_WIPE_ATTACK_HASTE_FACTOR` (wipe simétrico suprime ataque na
+rodada) e `OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS` (nem todo
+oponente mira em mim todo turno) já embutidos.
+
+**Novo neste deck (nunca existia antes):** `remove_permanent()` — 1º
+ponto real de "destroy"/wipe de criatura nomeada do arquivo (antes só
+sacrifício de token existia). Comandante removido vai pra zona de
+comando (CR 903.9), nunca cemitério, e fica recastável.
+
+**2 bugs de código compartilhado corrigidos como pré-requisito real do
+port** (achados só porque agora uma criatura pode de fato morrer/sair
+de campo, não visíveis em modo padrão): `eminence_trigger()` tinha uma
+condição que não cobria o estado real "Edgar destruído, de volta na
+zona de comando" (bug dormant até agora); `main_phase()` só permitia
+conjurar Edgar 1x pra sempre, bloquearia recast. Ambos confirmados 100%
+neutros em modo padrão.
+
+**Resultado (`run_batch_with_interaction`, 2000 jogos):** avg ataques
+sofridos 1,22, avg board wipes 0,51 (43,3% das partidas), avg
+counterspells 0,09, avg vida final 38,11, Edgar recastado após remoção
+em 8,6% das partidas — mesma ordem de grandeza dos outros 3 decks.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds, dict
+COMPLETO de `simulate_one` comparado, não só campos-chave) + regressão
+de 20.000 partidas em modo resiliência, 0 exceções + testes dirigidos
+(comandante→zona de comando, death payoffs corretos vs. Vito Fanatic,
+token consistency, Eminence pós-remoção, taxa pós-wipe ~0,15x).
+
 ### Correção — nome truncado "Emeritus of Woe" → nome completo — 2026-08-31
 
 Varredura de nomes de carta multi-face em todo o repositório (motivada

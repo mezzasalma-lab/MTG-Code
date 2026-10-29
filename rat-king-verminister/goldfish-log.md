@@ -1,6 +1,395 @@
 # Goldfish Log — Rat King, Verminister
 
+> **Rodada 6 de 2026-10-29 (revisão de código do PR #1: Staff após wipe, MDFC no fundo do mulligan e um desempate do ensaio do terreno virado medido e rejeitado) — dados brutos e reprodução:** [`resultados-ab/2026-10-29-revisao-codigo-pr1/LEIAME.md`](resultados-ab/2026-10-29-revisao-codigo-pr1/LEIAME.md)
+
+> **Rodada 5 de 2026-10-28 (os 3 wipes aplicam o efeito no próprio campo — Opção B — e o A/B com limites de perda própria) — dados brutos e reprodução:** [`resultados-ab/2026-10-28-wipes-no-proprio-campo/LEIAME.md`](resultados-ab/2026-10-28-wipes-no-proprio-campo/LEIAME.md)
+
+> **Rodada 4 de 2026-10-28 (Fell Mire como terreno, Black Market Connections com lifegain e um erro do ensaio do terreno virado que escondia o comandante do T2) — dados brutos e reprodução:** [`resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md`](resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md)
+
+> **Rodada 3 de 2026-10-25 (Spellbook, rulings dos conceitos compartilhados e 21 correções de simulador) — dados brutos e reprodução:** [`resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md`](resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md)
+
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Rodada 6 (2026-10-29): revisão de código do PR #1 — 2 correções, 1 medida rejeitada, 1 guarda
+
+**Pedido do usuário:** *"Revise tudo e salve no GitHub e aqui tb"*, com *"corrigir o que achar e relatar"*. A revisão automática (`code-review`, nível *high*) sobre `ratking_goldfish_v1.py` (rodadas 4 e 5) devolveu 10 apontamentos; li cada um contra o código antes de mexer. Arquivo bruto/auditável e a tabela dos 10: `resultados-ab/2026-10-29-revisao-codigo-pr1/LEIAME.md`.
+
+**Veredito:** o comportamento do Rat King quase não muda (99,91% das partidas idênticas ao `antes`; comandante até T2/T3/T4 +0,0001 ± 0,0002). O que a revisão achou de útil foi pequeno e uma das minhas correções-candidatas piorou o jogo.
+- **Corrigido, `WIPE_UNTAPS_STAFF`:** o wipe que eu conjuro no meu campo não disparava o desvirar do Thornbite Staff (todas as outras mortes disparam). **Latente:** em 20.000 partidas o holder nunca estava virado quando o wipe resolvia (0 de 89 holders equipados, 6.332 wipes); provado por teste dirigido, não pelo A/B.
+- **Corrigido, `FELL_MIRE_PROTECTED_IN_BOTTOM`:** `should_keep` contava a MDFC como terreno e `choose_bottom` a devolvia como magia de MV 4. Agora ela é protegida quando é o 3º "terreno". Muda 9 de 10.000 partidas.
+- **Medido e rejeitado, `TAPPED_FIRST_TIEBREAK_DEV = False`:** o revisor suspeitou que o ensaio do terreno virado era enganado por "sorvedouros de mana". Não é: os 8 casos "mana maior sem desenvolvimento maior" são o comandante contra Ritual + Rat Colony no T2, onde a métrica acerta. Mas a medição achou outro defeito: o mana gasto é **líquido do Dark Ritual**, então Ritual + magia no T1 empata 0 × 0 com jogar o terreno virado (52 de 3.000 partidas, 1,7%). Desempatar por MV da mão + comandante joga o desvirado e **custa o comandante no T2: −0,32 ± 0,11 pontos** (N=10.000). O defeito fica registrado e **sem correção**.
+- **Guarda de importação** nas tabelas `CREATURE_TYPES`/`CREATURE_TOUGHNESS` (hoje cobrem as 18 criaturas).
+- **6 apontamentos não eram defeito** (política escolhida por você, manutenção, ou caso inalcançável: `wipe_plan` mata todas as fichas de Rat ou nenhuma). **Não revi:** a rodada 3 e anteriores do arquivo, os outros 17 simuladores, o resto dos ~1.060 `.py` do PR.
+
+## Rodada 5 (2026-10-28): os 3 wipes passam a valer no próprio campo (Opção B) e o A/B mede o custo de cada limite
+
+**Pedido do usuário:** *"Opção B nos wipes, e meça no A/B"* (a Opção B do meu relatório: aplicar o efeito no seu campo, conjurando só quando o resultado compensa). Arquivo bruto/auditável: `resultados-ab/2026-10-28-wipes-no-proprio-campo/LEIAME.md`.
+
+**Veredito:** com a Opção B no padrão que escolhi (limite 0, perda líquida), o seu campo praticamente não muda e o que se perde é a contagem proxy de interação. Antes, os 3 wipes eram pagos e conjurados sem efeito nenhum, gastando mana à toa; agora só são conjurados quando custam no máximo 0 criaturas líquidas.
+- **Conjurados por partida (10.000, padrão):** 0,116 (Kindred Dominance 0,014; Swarmyard Massacre 0,102; **Damnation 0,000**: com qualquer criatura minha em campo ela custa pelo menos uma). Retidos por falta de compensar: 0,83 turnos-carta por partida. Criaturas minhas mortas por wipe meu: 0,096 por partida (só o Swarmyard, que cria 2 Esquilos e pode matar até 2 criaturas minhas sem perda líquida).
+- **Efeito pareado contra o `antes` (padrão, 10.000; 75,3% das partidas idênticas):** campo +0,005 ± 0,033 (nada), fichas criadas +0,258 ± 0,101, vida +0,07 ± 0,19 (nada), compras +0,05 ± 0,05 (nada), recursão +0,128 ± 0,019, **interação conjurada −0,205 ± 0,009** (é o custo: o proxy de interação cai porque os wipes deixam de ser conjurados à toa). Comandante até T3/T4: nenhuma diferença. Modo resiliência: os mesmos sinais (campo +0,001 ± 0,029; interação −0,125 ± 0,007; perda própria 0,050 por partida).
+- **Por que o campo não piora:** o Damnation e o Kindred Dominance antigos gastavam 4 e 7 de mana sem efeito; deixar de conjurá-los devolve esse mana a outras jogadas (o Damnation sozinho dá campo +0,100 ± 0,020). O Swarmyard com efeito isolado custa campo −0,112 ± 0,025 (mata criaturas minhas não protegidas: Zulaport, Konrad, Gray Merchant...).
+
+**A 1ª versão do limite estava errada e a medi antes de adotar a certa.** O limite comparava só as mortes (bruto): o Swarmyard deixava de ser conjurado sempre que matasse qualquer criatura minha, e eu perdia os 2 Esquilos grátis (−0,114 ± 0,009 Esquilos por partida; interação −0,272). Passei a comparar a perda **líquida** (mortes menos os corpos que o próprio wipe cria): `WIPE_GATE_NET_OF_NEW_TOKENS`. As duas versões estão no A/B (`limite_0_bruto` e `depois`); os brutos da 1ª execução ficam em `superado-1a-execucao/`.
+
+**O que o limite compra (vs `antes`, padrão, 10.000; "perda" = criaturas minhas mortas por wipe meu por partida):**
+
+| variante | wipes conjurados | perda | campo | fichas criadas | vida | dano proxy | interação |
+|---|---|---|---|---|---|---|---|
+| **limite 0, líquido (padrão)** | 0,116 | 0,096 | +0,005 (ns) | +0,258 | +0,07 (ns) | +0,16 (ns) | −0,205 |
+| limite 0, bruto (1ª versão) | 0,047 | 0,000 | +0,129 | +0,257 | +0,23 | +0,49 | −0,272 |
+| limite 1 | 0,148 | 0,146 | −0,055 | +0,221 | +0,04 (ns) | +0,03 (ns) | −0,175 |
+| limite 2 | 0,176 | 0,209 | −0,119 | +0,143 | −0,02 (ns) | −0,17 (ns) | −0,148 |
+| limite 5 | 0,248 | 0,513 | −0,443 | −0,237 | −0,55 | −0,89 | −0,082 |
+| conjura sempre, com efeito (Opção C) | 0,310 | 1,271 | −1,055 | −0,600 | −1,36 | −1,67 | −0,024 |
+
+Ler assim: cada ponto a mais de limite devolve interação proxy e custa campo, fichas, vida e dreno. **A escolha do limite depende do tabuleiro do oponente, que o goldfish não tem**; 0 é o piso defensável (o wipe sai quando é de graça ou pago por corpos novos), e a Opção C custa 1,06 permanente e 1,67 de dreno por partida.
+
+**O que mudou no simulador (5 chaves/constantes; desligadas = bit-idêntico ao commit `3635578`):** `WIPE_EFFECT_KINDRED`, `WIPE_EFFECT_SWARMYARD`, `WIPE_EFFECT_DAMNATION` (efeito no meu campo, mortes simultâneas por last known information, mesmos 4 payoffs de aristocrata do wipe do oponente: Zulaport, Pitiless Plunderer, Syr Konrad, Species Specialist, mais o dreno do Ninja Teen), `WIPE_CAST_MAX_OWN_LOSS = 0` (política minha) e `WIPE_GATE_NET_OF_NEW_TOKENS = True` (política minha).
+- **Kindred Dominance:** escolho o tipo que menos mata (empate: menos MV perdido, depois Rat); o Mercenary de changeling nunca morre; fichas de Esquilo morrem se o tipo é Rat.
+- **Swarmyard Massacre:** 2 Esquilos primeiro, depois −1/−1 por criatura minha Insect/Rat/Spider/Squirrel (cada criatura conta uma vez, ruling 2024-07-26); morre a carta não protegida com tenacidade ≤ N. As tenacidades e os tipos vêm do oráculo ao vivo arquivado (tabela conferida por teste).
+- **Damnation:** tudo morre, o comandante inclusive (morre e volta à zona de comando, CR 903.9a; recast com imposto: teste WP7).
+- **Disappear:** se o Rat King sobrevive e algo meu morre, o end step cria o Rat (teste WP6).
+
+**Validação (`resumos/`):** 10 testes dirigidos (`testes_dirigidos.txt`, incluindo partidas inteiras com contagem > 0 e controle positivo); smoke 99 cartas; bit-identidade com as 5 chaves desligadas == commit `3635578`, 20.000 × 2 modos: 0 diferentes; regressão 20.000 × 2 modos × 2 configurações: 0 exceções, 0 carta acima do baralho (`mana_spent_this_turn` negativo em 80/86 ligadas e 76/80 desligadas, o mesmo invariante de rituais); determinismo com 3 `PYTHONHASHSEED` × 1.500 × 2 modos: 0 divergentes; as 8 variantes do A/B diferem entre si e do `antes` (`diferem_entre_variantes.txt`); `audit_etb_sem_efeito.py` sem mudança de saída (os wipes nunca apareciam nele: a própria conjuração muda o contador de interação).
+
+**Não coberto nesta rodada (Regra #7):**
+- **Oponente real:** as criaturas do oponente continuam sem modelo ("Destroy all creatures", "that aren't of the chosen type" e o −1/−1 só têm alvo do oponente num jogo com oponente); a conjuração conta como interação (proxy). **O limite é política minha**, não do oráculo: nenhum número de "perda aceitável" existe sem um tabuleiro de oponente.
+- Skullclamp equipado e outros bônus de tenacidade não entram na conta do −1/−1 do Swarmyard; fichas de Esquilo e Rat contam como 1/1 sem bônus; a escolha do tipo do Kindred olha só os tipos das minhas criaturas.
+- Não varri as classes da Regra #10 que não mudam (entrada de terreno, compra do T1, landfall): o código novo só toca a resolução dos 3 feitiços e o filtro de conjuração.
+- Provas de uma execução só: determinismo e o scanner.
+
+---
+
+## Rodada 4 (2026-10-28): as duas faces do Fell the Profane // Fell Mire, o Black Market Connections com lifegain, e o comandante do T2 que o ensaio do terreno virado escondia
+
+**Pedido do usuário:** *"Modela sim ambas as faces"*; *"Acho que o modo mais importante do Black Market Connections é o 1o, com custo 1 de vida. Os demais só entram em cena se eu tiver algum mecanismo de lifegain rodando: Ayara, ou outro qq"*; *"Bracket 2"* (decisão sobre o combo Marrow + Staff). Arquivo bruto/auditável: `resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md`.
+
+**Veredito:**
+1. **Fell the Profane // Fell Mire agora tem as duas faces.** A face de terreno ("As this land enters, you may pay 3 life. If you don't, it enters tapped. {T}: Add {B}") é jogada quando não há outro terreno na mão e há menos de 6 terrenos em campo. Entra como terreno em 11,1% das partidas (0,111 por partida; em 5,1% pagando os 3 de vida). Isolada, sobe os terrenos jogados em +0,101 ±0,007 e tira 0,044 ±0,005 conjurações do feitiço de interação por partida (a carta que virou terreno não é conjurada).
+2. **Black Market Connections segue o que você pediu:** Sell Contraband (Treasure, −1 de vida) sempre; Buy Information (compra 1, −2) e Hire a Mercenary (Mercenary 3/2 changeling, −3) só com um permanente de lifegain repetível em campo. Isolada: compras extras −0,319 ±0,048, Mercenary −0,110 ±0,010, fichas −0,293 ±0,074, vida final +0,698 ±0,138. O motor "lifegain" estava ligado em 39% dos disparos do BMC (modo 2 em 0,131 de 0,335 disparos por partida).
+3. **Achado que não foi pedido (importante):** o ensaio a seco do "terreno virado primeiro" em T1/T2 (rodada de 2026-10-05) media só o MV que **sai da mão** e ignorava o **comandante, que sai da zona de comando**. Com tapped e untapped empatados em 0, jogava o virado e o Rat King perdia o T2. **Comandante em campo até T2: 87,2% antes → 97,9% depois da correção (+10,66 ±0,61 pontos, N=10.000)**; sem a política de 2026-10-05 nenhuma, o número é 93,9%. Ou seja, aquela política custou 6,7 pontos de comandante no T2 e a versão corrigida fica 3,9 pontos acima de não ter política. Escapou na rodada de 2026-10-05 porque a tabela daquele A/B só tinha indicadores do comandante de T3 em diante (o `abgen` gerava T3 a T6; agora gera T2 também): ela registrou −0,49 ±0,16 pp até T3 no modo resiliência e nenhuma coluna de T2, onde o efeito (−6,7 pp contra não ter a política) aparece. Chave `TAPPED_FIRST_COUNTS_MANA`.
+4. **Os outros 13 simuladores com a mesma função `_tl_dry_run_mv` (mesmo corpo, por `grep`: Azula, Bumbleflower, Captain Storm, Edgar, Hei Bai, Kutzil, Maralen, Nekusar, Prismatic Bridge, Thranduil, Toph, Ulalek, Ur-Dragon) NÃO foram medidos.** Megatron, Mothman, Tam e Vihaan têm a chave `TAPPED_LAND_FIRST_ENABLED` com outra função e não li; Beorn e Tom não têm a chave. Está na lista de pendências abaixo.
+
+**O que mudou no simulador (4 chaves; desligadas = bit-idêntico ao commit `7639380`):**
+- `FELL_MIRE_LAND_ENABLED` + `FELL_MIRE_MAX_LANDS_IN_PLAY = 6` + `FELL_MIRE_LIFE_FLOOR = 10`: face de terreno ("Fell Mire" no `CARD_DB`; a carta na mão/biblioteca/cemitério continua sendo a face da frente, ruling 2024-06-07). Paga os 3 de vida só se a vida depois fica ≥ 10 **e** um ensaio a seco da fase pré-combate mostra que entrar desvirado gasta **mais mana** no turno (empate: não paga).
+- `FELL_MIRE_COUNTS_FOR_KEEP`: `should_keep` conta a MDFC como terreno (3 terrenos, ou 2 + abertura boa). No fundo do mulligan (`choose_bottom`) ela continua contando como feitiço.
+- `BMC_MODES_NEED_LIFEGAIN` + `LIFEGAIN_ENGINES` = {Ayara, Zulaport Cutthroat, Bontu's Monument, Crypt Ghast, Valley Rotcaller} (conferido contra o oráculo ao vivo arquivado: teste BM4; o Gray Merchant fica de fora porque o ganho de vida dele é só de entrada).
+- `TAPPED_FIRST_COUNTS_MANA`: o ensaio do terreno virado primeiro passa a medir o mana gasto no turno (inclui o comandante).
+- **Políticas minhas, não do oráculo (você não as definiu):** 6 terrenos como limite para a MDFC virar terreno; piso de vida 10 para pagar os 3; nunca escolher modo do BMC que leve a vida a 0 ou menos (o oráculo diz "You lose N life", efeito e não custo; a regra permitiria). Variantes de sensibilidade no A/B: limite 4 e 99; nunca pagar vida; piso 4.
+
+**Medido (pareado, mesmas sementes, 8 turnos; diferença variante − antes ± IC95%).** Modo padrão, N=10.000 (`resumos/ab_10000.txt`, `resumos/resumo_variantes_10000.md`); 71,3% das partidas ficam idênticas ao `antes`:
+
+| campo | tudo ligado | só Fell Mire (terreno) | só BMC | só ensaio com mana |
+|---|---|---|---|---|
+| comandante até T2 | **+0,107 ±0,006** | +0,001 ±0,000 | +0,000 (ns) | **+0,106 ±0,006** |
+| comandante até T3 | +0,001 ±0,001 | +0,000 | +0,000 (ns) | +0,000 (ns) |
+| vida final | +0,879 ±0,206 | +0,157 ±0,080 | +0,698 ±0,138 | +0,157 ±0,099 |
+| compras extras | −0,182 ±0,063 | +0,085 ±0,019 | −0,319 ±0,048 | +0,071 ±0,030 |
+| Mercenary (ficha) | −0,108 ±0,011 | +0,002 ±0,002 | −0,110 ±0,010 | +0,003 ±0,002 |
+| interação conjurada | −0,051 ±0,007 | −0,044 ±0,005 | −0,012 ±0,004 | +0,002 (ns) |
+| terrenos jogados | +0,065 ±0,011 | +0,101 ±0,007 | −0,028 ±0,004 | +0,005 ±0,003 |
+| fichas criadas | +0,015 ±0,131 (ns) | +0,191 ±0,047 | −0,293 ±0,074 | +0,141 ±0,068 |
+| mulligans | −0,029 ±0,004 | +0,000 (ns) | +0,000 (ns) | +0,000 (ns) |
+
+O modo resiliência (N=10.000) dá os mesmos sinais (comandante até T2 +0,107 ±0,006; compras −0,164 ±0,051; Mercenary −0,057 ±0,007). Os mulligans caem 0,029 ±0,004 porque a MDFC passa a contar como terreno na abertura (`FELL_MIRE_COUNTS_FOR_KEEP`; só essa chave mexe nele).
+
+**Comandante até T2, N=10.000 (mesmas sementes):** `antes` 87,23% · sem a política de terreno virado primeiro 93,90% · só `TAPPED_FIRST_COUNTS_MANA` 97,81% · tudo ligado 97,89% · tudo ligado mas nunca pagando os 3 de vida do Fell Mire 97,10%.
+
+**Sensibilidade das políticas minhas (N=10.000, padrão; fração de partidas idênticas a "tudo ligado"):** limite 99 em vez de 6: 99,04% idênticas (sem efeito mensurável); limite 4: 94,97% (terrenos jogados +0,011 em vez de +0,065; interação −0,019 em vez de −0,051); nunca pagar vida: 94,89% (comandante até T2 +0,099 em vez de +0,107); **piso de vida 4 em vez de 10: 10.000 de 10.000 idênticas, ou seja, o piso nunca decide** (a vida sempre sobra; ele só existe como proteção).
+
+**Validação (`resumos/`):** 21 testes dirigidos passam (`testes_dirigidos.txt`); smoke: 99 cartas, 0 desconhecidas; bit-identidade com as 4 chaves desligadas == commit `7639380` em 20.000 partidas × 2 modos: 0 diferentes (`bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações: 0 exceções, 0 carta acima do baralho (`regressao_20000.txt`; `mana_spent_this_turn` negativo em 76/80 de 20.000 ligadas e 80/74 desligadas, o mesmo invariante de rituais da rodada 3); ensaio a seco do Fell Mire sem efeito colateral: com o ensaio rodando e o resultado ignorado == com o ensaio nem rodando, 20.000 × 2 modos idênticas (`ghost_20000.txt`), com prova de que o ensaio de fato rodou (642 execuções em 3.000 partidas, `ghost_vacuidade.txt`); a primeira versão desse teste era vácua (as duas pontas tinham piso 99 e o ensaio nunca rodava) e ficou marcada como `ghost_20000_INVALIDO_vacuo.txt`; determinismo com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 divergentes (`determinismo.txt`); varreduras da Regra #10 (`resumos/regra10_*.txt`): entrada de terreno 0 divergências (11 terrenos), `unless you control` 0 falhas, terreno ≠ magia sem alteração, colisão de nome 0 em 400 partidas (padrão e resiliência), compra do T1 COMPRA (queda 1 em 80 de 80), sem payoff de landfall, scanner de ETB igual ao da rodada 3.
+
+**Regra #3 (conceitos compartilhados que a Fell Mire toca), por teste dirigido (FM7):** o Urborg a transforma em Swamp (conta no Cabal Coffers e no Crypt Ghast); sem Urborg ela **não** é Swamp, então o Castle Locthwain ainda entra virado ao lado dela; o `{T}: Add {B}` conta na mana; a marca "entrou virada" é por nome e só há uma cópia (singleton).
+
+**Não coberto nesta rodada (Regra #7):**
+- **Os outros 13 simuladores com `_tl_dry_run_mv` de mesmo corpo e os 4 com a chave e outra função (Megatron, Mothman, Tam, Vihaan):** o erro do comandante pode estar neles; não medi nenhum.
+- `audit_entrada.py`/`audit_entrada2.py` só varrem os 11 terrenos da lista (a MDFC não está na biblioteca); a regra "paga 3 de vida ou entra virado" é coberta só pelos testes dirigidos FM4–FM6.
+- Wipes (Kindred Dominance, Swarmyard Massacre, Damnation): **decisão sua pendente** (você perguntou qual é a convenção; resposta na conversa).
+- `choose_bottom` do mulligan trata a MDFC como feitiço (só `should_keep` a conta como terreno); `try_takenuma_channel` não a conta como "outro terreno na mão".
+- Modos 2 e 3 do BMC: o "lifegain em campo" olha só a presença do permanente no começo da fase principal, não se o gatilho vai disparar neste turno (Crypt Ghast sem magia para pagar extort, Rotcaller sem atacar).
+- O modo de resiliência não foi lido cláusula a cláusula (só pelos mesmos testes e tabelas acima).
+- Provas de uma execução só: determinismo (3 hash seeds), varreduras da Regra #10.
+
+---
+
+## Rodada 3 (2026-10-25): o Spellbook acha 2 combos que a lista já tinha, e 21 divergências do simulador contra o oráculo
+
+**Pedido do usuário:** *"Quero sim"* (itens 1 e 3 do relatório "O quê falta para terminar o deck do Verminister?"). Arquivo bruto/auditável: `resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md`.
+
+**Veredito:** a lista continua fechada (100/100) e a auditoria anterior estava errada em vários pontos. **(1) O Commander Spellbook acha 2 combos que o deck já roda** (nunca tinha sido consultado neste deck): Marrow-Gnawer + Thornbite Staff (infinito, 2 cartas) e Ayara + Plague of Vermin (quase infinito). O simulador não executava nenhum dos dois. **(2) Ler os rulings e os conceitos compartilhados achou 21 divergências do simulador**, todas contra o oráculo e nenhuma de julgamento meu: a Treasure nunca era mana, o ETB do Gray Merchant não existia, "enters prepared" do Emeritus e o extort do Crypt Ghast eram fantasmas, o Bontu's disparava 2× por criatura, o sneak do Ninja Teen rodava na fase errada sem o custo de devolver um atacante, Rat Colony saía de graça com Jet Medallion + Bontu's, etc. Todas entram atrás de chave (21), e **com as chaves desligadas o simulador é bit-idêntico ao anterior (20.000 partidas × 2 modos)**.
+
+**Combos do Spellbook (`resumos/spellbook.txt`; 57 nomes resolvidos, 0 não reconhecidos; controle positivo e de corte passaram):**
+
+| combo | peças | o que produz (Spellbook) | tag do Spellbook | no simulador (padrão, 20.000 partidas, 12 turnos) |
+|---|---|---|---|---|
+| 2178-3126 | Marrow-Gnawer + Thornbite Staff (Staff preso ao Marrow; "um Rat adicional") | fichas, ETB, LTB e gatilhos de sacrifício infinitos | R (Ruthless); `definitelyTwoCard`, `speed` 5 | executado até T6 **0,12%**, T8 **1,43%**, T10 4,25%, T12 6,75% |
+| 884-5035 | Ayara + Plague of Vermin ({6}{B}, paga tudo menos 1 de vida; "você tem mais vida que os oponentes") | quase infinitas fichas, ETB e vida | O (Oddball); `arguablyTwoCard`, `speed` 3 | executado até T6 **0,29%**, T8 **1,14%**, T10 4,99%, T12 12,62% |
+| qualquer um | | | | até T6 0,41%, T8 2,51%, T10 8,53%, T12 17,56% |
+
+Forma fechada (compra do T1, 99 cartas, sem tutor): P(as duas peças entre as primeiras 7+N cartas) = T6 1,61%, T8 2,16%, T10 2,80%, T12 3,53% (`resumos/prob_combos.txt`). O simulador executa **menos** que isso até o T8 (mana: o Marrow custa 5, o Staff 2 e o Equip 4) e **mais** depois, porque o deck compra e tutora bastante (Emeritus // Demonic Tutor, Ratcatcher, Karumonix, Skullclamp, Black Market Connections). A política de Equip do simulador (só no Marrow-Gnawer) e o teto do loop (40 Rats / 12 voltas) são **minhas**, não do oráculo.
+
+**Consequência pro Bracket (decisão sua, não alterei a lista nem o Bracket declarado).** A seção 11 da `auditoria.md` dizia "combo de 2 peças antes do turno 6: não há" e confirmava o Bracket 2. O Spellbook mostra que **existe** um combo infinito de 2 cartas na lista e o `estimate-bracket` dele devolve `bracketTag = R` para o deck, com esse combo marcado `relevant`. Pela regra 7 de `user-standing-rules.md` o que decide é a velocidade e a probabilidade: 0,12% até o T6 (goldfish) é evento de cauda, mas **não é zero e não está documentado como combo no deck**. Não verifiquei o texto oficial atual do critério de Bracket nesta rodada. Ver `auditoria.md` §15.
+
+**As 21 correções (resumo; cláusula do oráculo de cada uma no LEIAME da pasta e em `checklist-oraculo.md`):** `TREASURE_MANA_ENABLED`, `THORNBITE_STAFF_ENABLED`, `ROTCALLER_EXACT_X`, `MARROW_X_AFTER_SACRIFICE`, `BIG_APPLE_PER_OPPONENT`, `AYARA_TOKEN_TRIGGER`, `AYARA_SACRIFICE_TOKENS`, `PLAGUE_PAYS_WITH_AYARA`, `JET_MEDALLION_BLACK_SPELLS`, `COST_REDUCTION_COLORED_FLOOR`, `GRAY_MERCHANT_ETB`, `NINJA_TEEN_LEVELS_AND_DRAIN`, `NINJA_TEEN_SNEAK_RULING`, `RAT_KING_REANIMATE_COST`, `SOUL_STONE_SHARED_TAP`, `PRIEST_EXACT`, `EMERITUS_ENTERS_PREPARED`, `EXTORT_ENABLED`, `ZULAPORT_SELF_DEATH`, `SACRIFICE_COST_NEEDS_FODDER`, `BONTU_TRIGGER_ONCE`.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença; `depois` = as 21 chaves ligadas):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`; por correção em `resumos/resumo_variantes_10000.md`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 1929 (19.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             16.2165      16.6925      +0.4760 ±0.0661
+  *rat_tokens                                   3.3417       4.7651      +1.4234 ±0.1806
+  *tokens_created_total                         6.2123       8.3111      +2.0988 ±0.2101
+  *proxy_damage_total                           6.5698      12.9698      +6.4000 ±0.4313
+  *life                                        38.7115      47.8034      +9.0919 ±0.4698
+  *cards_drawn_extra                            3.0050       3.6275      +0.6225 ±0.0939
+  *treasure_tokens                              0.9737       0.3939      -0.5798 ±0.0468
+  *recursion_events_total                       3.3246       3.1293      -0.1953 ±0.0497
+  *rat_king_reanimations_total                  2.7075       2.4832      -0.2243 ±0.0471
+  *tutors_used_total                            0.9053       1.2414      +0.3361 ±0.0553
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`): drenos proxy +3,15 ±0,29, vida +4,42 ±0,29, fichas criadas +0,75 ±0,16, eventos de recursão **−0,58** ±0,05, reanimações do Rat King **−0,61** ±0,05. A chegada do comandante até T3/T4 **não mudou** (−0,0001 ±0,0002).
+
+**Leitura por correção (N=10.000, modo padrão; todas as direções batem com o que o oráculo manda):**
+- **Mais efeito do deck do que o simulador mostrava:** Gray Merchant (vida +3,7, dreno +1,2), Valley Rotcaller (dreno +1,5 e vida +1,5), Extort (vida +1,6), Treasure como mana (+0,2 cartas extras, +0,4 de dreno, −0,57 Treasures paradas), Ayara × ficha (dreno +0,8), Ninja Teen nível 1 (dreno +0,53), Priest sem a vida fantasma (vida +0,6), Emeritus preparado (+0,2 compras).
+- **Menos efeito:** Bontu's disparando 1× (dreno −0,48), Marrow-Gnawer sem contar o sacrificado (−0,28 fichas), Rat King pagando os 3 Rats de verdade (**−0,35 eventos de recursão**, −0,28 de dreno; no modo resiliência −0,76 de recursão e só 64,8% das partidas idênticas), piso de cor do custo (−0,13 de dreno).
+- **Efeito pequeno ou nulo:** Soul Stone `{T}` compartilhado (Soul Stone harnessed −0,0057 ±0,0015; os demais campos dentro do IC), sneak do Ninja Teen sozinho (dreno e vida dentro do IC; −0,04 ±0,015 fichas), Zulaport na própria morte (+0,035 ±0,004 de dreno e de vida), Thornbite Staff (+0,36 ±0,09 fichas; a única fonte de fichas do Staff no código é o loop do combo com o Marrow-Gnawer; 97,7% das partidas idênticas).
+
+**Como cada número se lê:** o `antes` era o simulador da rodada de 2026-10-05; ele *subestimava* o dreno e a vida do deck e *superestimava* a recursão. Os números históricos deste log (seções abaixo) valem para aquele simulador e não são comparáveis com os desta seção.
+
+**Validação:** bit-identidade 20.000 × 2 modos com as 21 chaves desligadas (`resumos/bitident_20000.txt`: 0 partidas diferentes); regressão 20.000 × 2 modos × 2 configurações com **0 exceções** e 0 cartas acima do baralho (`resumos/regressao_20000.txt`; o invariante "contador negativo" acusa `mana_spent_this_turn` negativo em 60/49 partidas com as chaves desligadas e 80/74 com elas ligadas: é a mana líquida de Dark Ritual/Culling, que o contador soma como gasto negativo; não investiguei por que sobe); determinismo entre processos com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: **0 divergentes** (`resumos/determinismo.txt`); 37 testes dirigidos passam (`orquestracao/testes_dirigidos.py`), cada um com a chave ligada e desligada.
+
+**Primeira versão do A/B estava errada e foi refeita:** as variantes `so_*` (uma correção por vez) deixavam as outras chaves no padrão do arquivo (ligadas), então todas eram iguais a `depois`; o config passou a listar as 21 chaves em cada variante. Os números acima são da versão corrigida (variantes distintas entre si: de 76% a 99% das partidas idênticas ao `antes` no modo padrão e de 65% a 99% na resiliência).
+
+**Varredura sistêmica nova** (`varredura-2026-10-05/scripts/audit_etb_sem_efeito.py`): conjura cada carta num estado neutro e lista as que o oráculo diz ter ETB/feitiço mas não mudam nada no simulador, mais as que não reagem a nenhum de 6 eventos-padrão. Parte 1 (ETB/feitiço sem mudança de estado): no snapshot ANTES ela lista Gray Merchant e Emeritus (controle positivo, achados reais desta rodada); no DEPOIS não lista mais nenhum dos dois (27 → 25 cartas sem mudança). Parte 2 (reação a 6 eventos-padrão): no ANTES lista Crypt Ghast e Ninja Teen; no DEPOIS não lista mais (11 → 9). Gray Merchant e Emeritus continuam aparecendo na parte 2 porque só têm efeito de entrada, que esses eventos não exercitam (limite do scanner). Ver `resumos/audit_etb_sem_efeito_{ANTES,DEPOIS}.txt` para as demais; a leitura é à mão: Skullclamp, Soul Stone, Thornbite Staff, Black Market Connections e Ripples agem por outros pontos do turno que o scanner não exercita; Dictate, Karumonix e Lord Skitter são 📊.
+
+**Não coberto nesta rodada (Regra #7):** o modo de resiliência cláusula a cláusula (só o wipe do oponente foi lido); a política de Black Market Connections (escolhe sempre os 3 modos; a vida pode passar de 0 sem perder); mulligan/keep; **os 3 itens ⏸ que esperam o usuário:** wipes sem efeito no próprio campo (Kindred Dominance, Swarmyard Massacre, Damnation), a face de terreno de Fell the Profane // Fell Mire, e o Bracket; os outros 19 decks (o scanner novo só roda no Rat King e a mesma classe de erro pode existir neles).
+
+---
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: sem diferença pareada nos campos do turno do comandante (ou o simulador não os registra). Modo resiliência: comandante em campo até T3 99,2% → 98,7% (-0,49 ± 0,16 pp), até T4 -0,03 ± 0,04 pp, até T5 -0,01 ± 0,02 pp, comandante que nunca entra: sem diferença pareada. A correção joga o terreno virado primeiro em média 0,33 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,14 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,002 ± 0,004 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- Terrenos virados do deck: os de tag `etb_tapped` e Castle Locthwain sem Swamp/Urborg em campo. A ordem própria do deck (Urborg, Cabal Coffers, Nykthos, Castle Locthwain, Swamp) vale dentro de cada grupo.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7200 (72.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8447       5.8470      +0.0023 ±0.0038  
+  *len_tapped_lands_this_turn                   0.2007       0.1951      -0.0056 ±0.0029  
+  *rat_tokens                                   3.2757       3.3417      +0.0660 ±0.0548  
+  *len_battlefield                             16.1854      16.2165      +0.0311 ±0.0261  
+  *tokens_created_total                         6.1467       6.2123      +0.0656 ±0.0580  
+  *len_creature_cast_turn                       4.5104       4.5174      +0.0070 ±0.0065  
+  *mercenary_tokens                             0.1597       0.1617      +0.0020 ±0.0020  
+  *mana_spent_this_turn                         7.4141       7.4500      +0.0359 ±0.0358  
+   creatures_died_this_turn                     1.8417       1.8555      +0.0138 ±0.0139  
+   treasure_tokens                              0.9636       0.9737      +0.0101 ±0.0102  
+   soul_stone_harnessed                         0.0546       0.0538      -0.0008 ±0.0009  
+   library_emptied                              0.0020       0.0023      +0.0003 ±0.0003  
+   tutors_used_total                            0.9225       0.9053      -0.0172 ±0.0211  
+   cards_drawn_extra                            2.9853       3.0050      +0.0197 ±0.0277  
+   len_tapped_creatures_this_turn               0.7999       0.8027      +0.0028 ±0.0040
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7202 (72.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.6605       5.6596      -0.0009 ±0.0056  
+  *commander_cast_turn__ate_T3                  0.9923       0.9874      -0.0049 ±0.0016  
+   commander_cast_turn__ate_T4                  0.9966       0.9963      -0.0003 ±0.0004  
+   commander_cast_turn__ate_T5                  0.9980       0.9979      -0.0001 ±0.0002  
+  *len_smart_counter_log                        0.0499       0.0540      +0.0041 ±0.0029  
+  *smart_counters_total                         0.0499       0.0540      +0.0041 ±0.0029  
+  *len_smart_graveyard_snipe_log                0.2734       0.2684      -0.0050 ±0.0046  
+  *smart_graveyard_snipes_total                 0.2734       0.2684      -0.0050 ±0.0046  
+  *wiped_this_round                             0.1734       0.1694      -0.0040 ±0.0037  
+  *len_battlefield                             10.7435      10.7820      +0.0385 ±0.0373  
+  *commander_cast_count                         1.7040       1.7097      +0.0057 ±0.0056  
+  *creatures_died_this_turn                     2.8953       2.8495      -0.0458 ±0.0455  
+   len_tapped_lands_this_turn                   0.1679       0.1642      -0.0037 ±0.0037  
+   mercenary_tokens                             0.0658       0.0682      +0.0024 ±0.0026  
+   commander_in_play                            0.8146       0.8180      +0.0034 ±0.0037  
+   life                                        36.6752      36.6281      -0.0471 ±0.0545  
+   len_smart_discard_log                        1.1339       1.1408      +0.0069 ±0.0081  
+   smart_discards_total                         1.1339       1.1408      +0.0069 ±0.0081
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `ratking_goldfish_v1_ANTES_7918e0b.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** dois erros reais, dois consertos, bit-idênticos com a chave desligada. O efeito é pequeno porque o comandante já entra cedo neste deck (em campo até T3: 99,2% → 99,5%; +0,26 ± 0,10 pp, N=10.000). O mulligan escolhido ajuda um pouco (mais terrenos jogados: +0,018 ± 0,004 por partida); a ordem upkeep × draw muda 0,5% das partidas e **não** move nenhuma métrica além do ruído.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+- **Upkeep depois do draw.** `play_turn` comprava a carta e só então rodava `upkeep_step`. CR 502–504: upkeep vem ANTES do draw step. O tutor do Ratcatcher ("at the beginning of your upkeep, search for a Rat") buscava com a carta do topo já fora da biblioteca. Regra #6 (orquestração de turno): o código da carta estava certo; a posição da chamada não.
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+- `UPKEEP_BEFORE_DRAW_ENABLED` (padrão `True`): em `play_turn`, `upkeep_step` roda antes da compra; com a chave desligada roda depois (caminho antigo).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9355 (93.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0010       0.0006      -0.0004 ±0.0004  
+  *commander_cast_turn__ate_T3                  0.9921       0.9947      +0.0026 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.9954       0.9971      +0.0017 ±0.0008  
+  *commander_cast_turn__ate_T5                  0.9966       0.9981      +0.0015 ±0.0008  
+  *lands_played_total                           5.8267       5.8447      +0.0180 ±0.0038  
+  *len_battlefield                             16.1445      16.1854      +0.0409 ±0.0166  
+  *len_hand                                     3.2338       3.1980      -0.0358 ±0.0194  
+  *commander_cast_turn__ate_T6                  0.9973       0.9985      +0.0012 ±0.0007  
+  *tokens_created_total                         6.0888       6.1467      +0.0579 ±0.0355  
+  *rat_tokens                                   3.2295       3.2757      +0.0462 ±0.0321  
+  *len_tapped_lands_this_turn                   0.1987       0.2007      +0.0020 ±0.0016  
+  *len_tapped_creatures_this_turn               0.7959       0.7999      +0.0040 ±0.0033  
+  *ramp_pieces_cast_total                       0.6981       0.7007      +0.0026 ±0.0024  
+  *commander_cast_count                         0.9990       0.9994      +0.0004 ±0.0004  
+  *commander_in_play                            0.9990       0.9994      +0.0004 ±0.0004  
+   soul_stone_harnessed                         0.0537       0.0546      +0.0009 ±0.0010  
+   creatures_died_this_turn                     1.8354       1.8417      +0.0063 ±0.0085  
+   thrumming_stone_free_casts_total             0.4317       0.4272      -0.0045 ±0.0067
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9343 (93.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0013       0.0007      -0.0006 ±0.0005  
+  *commander_cast_turn__ate_T3                  0.9895       0.9923      +0.0028 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.9949       0.9966      +0.0017 ±0.0008  
+  *commander_cast_turn__ate_T5                  0.9965       0.9980      +0.0015 ±0.0008  
+  *lands_played_total                           5.6458       5.6605      +0.0147 ±0.0040  
+  *len_hand                                     2.6403       2.5992      -0.0411 ±0.0204  
+  *commander_cast_turn__ate_T6                  0.9973       0.9985      +0.0012 ±0.0007  
+  *len_battlefield                             10.7181      10.7435      +0.0254 ±0.0171  
+  *len_smart_removal_log                        0.5238       0.5209      -0.0029 ±0.0027  
+  *smart_removals_total                         0.5238       0.5209      -0.0029 ±0.0027  
+  *permanent_left_battlefield_this_turn         0.5767       0.5741      -0.0026 ±0.0026  
+   commander_cast_count                         1.7015       1.7040      +0.0025 ±0.0026  
+   emeritus_prepared                            0.0509       0.0500      -0.0009 ±0.0009  
+   ramp_pieces_cast_total                       0.6294       0.6315      +0.0021 ±0.0023  
+   tutors_used_total                            0.8834       0.8694      -0.0140 ±0.0174  
+   len_tapped_lands_this_turn                   0.1667       0.1679      +0.0012 ±0.0016  
+   recursion_events_total                       3.4180       3.4295      +0.0115 ±0.0155  
+   len_graveyard                                5.8854       5.9012      +0.0158 ±0.0219
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** a ordem upkeep × draw só importa quando o upkeep olha ou muda a biblioteca/mão; aqui só o tutor de Rat do Ratcatcher faz isso, e ele raramente decide uma partida. O resultado (99,5% das partidas idênticas) é coerente com isso.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `ratking_goldfish_v1_ANTES_53e6255.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 9/9 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Ordem das fases:** teste dirigido O1 (com a chave ligada o upkeep roda com a mão ainda sem a carta comprada) e leitura de `play_turn` inteiro (Regra #6).
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** `mana_spent_this_turn` negativo em ~0,3% das partidas (62/20.000 padrão, 49 resiliência; 60 e 50 com a chave desligada): é a convenção do arquivo para mana extra de ritual (`Dark Ritual`: custa 1 e faz `mana_spent_this_turn -= 3`; `Culling the Weak`: `-= 4`; o contador negativo vira mana a gastar no turno), idêntica antes e depois, não um bug da correção. 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## CR 903.9a: comandante dispara os 4 payoffs de aristocrata de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 2 pontos reais — `leave_battlefield` (chokepoint central,
+comandante especial-casado pulava ele, igual Toph/Maralen) E o cálculo
+manual de LKI (last known information) do `try_smart_opponent_wipe`,
+que excluía o comandante EXPLICITAMENTE dos 4 payoffs (Zulaport/
+Pitiless Plunderer/Syr Konrad/Species Specialist). Achado adicional: o
+Rat King tem a tag "rat" (Legendary Creature — Rat Noble) — Species
+Specialist também estava sendo silenciado, não só os outros 3.
+
+**Resultado:** modo padrão idêntico (0/20000 mismatches). Modo de
+resiliência (5000 seeds, A/B): `proxy_damage_total` médio
+3,7574→3,8632; `tokens_created_total` médio 3,956→3,9978; `life` médio
+36,4676→36,5378. Métricas de RNG puro (`smart_wipes_total`/`smart_
+removals_total`) ficaram praticamente idênticas, confirmando
+isolamento da correção.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 5 testes dirigidos.
+
+---
+
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-21
+
+**Gatilho:** "Vamos fazer a implementação no Verminister agora" — mesmo
+modo já validado em Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/
+Toph/Prismatic Bridge/Maralen. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**Achado real mais substancial da sessão nesta categoria**: aristocrats
++ simultaneidade real (CR 603.10). Um wipe matando Zulaport Cutthroat/
+Pitiless Plunderer/Syr Konrad/Species Specialist JUNTO de outras
+criaturas precisou de um recálculo manual via snapshot pra não
+subcontar os gatilhos (o caminho genérico do arquivo removia uma
+criatura de cada vez, então uma fonte de gatilho já removida no meio
+do loop parava de "ver" as mortes seguintes no mesmo wipe). Corrigido
+só dentro da função de wipe nova, sem tocar nada do modo padrão.
+
+**Resultado (A/B 2000 jogos mesma seed_base):** vida final 38,11 →
+36,24. Avg board wipes: 0,84, artifact: 0,20, enchantment: 0,08. Avg
+proxy_damage_total cai de 5,74 pra 3,59 (a perda de board pra
+interação supera o bônus do payoff simultâneo dos wipes).
+
+**Validação:** modo padrão 100% bit-idêntico (3.000 seeds) + regressão
+de 20.000 partidas, 0 exceções + 7 testes dirigidos, incluindo 3 casos
+específicos do aristocrats simultâneo (Zulaport self-inclusiva +7 vida
+com 7 mortes; Syr Konrad exclui só a própria morte, 4 de dano com 5
+mortes; comandante junto de Zulaport no mesmo wipe nunca conta pro
+total, só +1 vida).
 
 ---
 
@@ -186,6 +575,8 @@ via Scryfall, não presumidas):
 - `Fell the Profane` → **`Fell the Profane // Fell Mire`** — é uma MDFC
   verdadeira (`layout: modal_dfc`, Instant // Land), o nome sem o verso
   não é o nome completo real da carta.
+
+**[SUPERADO em 2026-08-31 e corrigido em 2026-10-25: a lista tem 100/100 (a 100ª foi o Damnation, `auditoria.md` §14), `BASE_LIBRARY` tem 99 e o assert é `len == 99`. O parágrafo abaixo é o registro histórico da rodada original, mantido sem edição.]**
 
 **⚠️ Lista ainda incompleta — não inventado aqui:** `lista.md` já tinha
 uma nota própria avisando que a lista está em 99/100 cartas (98 de

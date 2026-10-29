@@ -1,0 +1,4 @@
+(a) chave desta rodada desligada x 9e613ea | padrao: N=20000 seed_base=1000000 partidas diferentes=0 -> BIT-IDENTICO
+(a) chave desta rodada desligada x 9e613ea | resiliencia: N=20000 seed_base=1000000 partidas diferentes=0 -> BIT-IDENTICO
+(b) chaves da 7a e 8a desligadas x 8e9ab6e | padrao: N=20000 seed_base=1000000 partidas diferentes=0 -> BIT-IDENTICO
+(b) chaves da 7a e 8a desligadas x 8e9ab6e | resiliencia: N=20000 seed_base=1000000 partidas diferentes=0 -> BIT-IDENTICO

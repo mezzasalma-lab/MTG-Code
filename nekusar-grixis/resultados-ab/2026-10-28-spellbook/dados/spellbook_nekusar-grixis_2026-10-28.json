@@ -1,0 +1,844 @@
+{
+ "deck": "nekusar-grixis",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Nekusar, the Mindrazer",
+   "incluidos": {
+    "Bloodchief Ascension + Mindcrank": {
+     "id": "936-1290",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mill",
+      "Near-infinite lifegain",
+      "Near-infinite lifegain triggers",
+      "Near-infinite lifeloss"
+     ],
+     "usa": [
+      "Bloodchief Ascension",
+      "Mindcrank"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Brain Freeze + Lotus Petal + Underworld Breach": {
+     "id": "1368-1414-4856",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite magecraft triggers",
+      "Near-infinite mill"
+     ]
+    },
+    "Brain Freeze + Lion's Eye Diamond + Underworld Breach": {
+     "id": "1368-3518-4856",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite colored mana",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Jeska's Will + Underworld Breach + Wheel of Fortune": {
+     "id": "1368-1878-2706",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite draw triggers for all players",
+      "Infinite looting for all players",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Lion's Eye Diamond + Underworld Breach + Wheel of Fortune": {
+     "id": "1368-2706-3518",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Infinite looting for opponents"
+     ]
+    },
+    "Peer into the Abyss + Sheoldred, the Apocalypse": {
+     "id": "1561-2498",
+     "bracketTag": "O",
+     "produz": [
+      "Near-infinite card draw for target opponent",
+      "Near-infinite draw triggers for target opponent",
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Orcish Bowmasters + Peer into the Abyss": {
+     "id": "1561-3862",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite card draw for target opponent",
+      "Near-infinite damage"
+     ]
+    },
+    "Grinding Station + Underworld Breach": {
+     "id": "1368-3698--44",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite storm count",
+      "Near-infinite mana among colors of legendary creatures and planeswalkers you control"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Peer into the Abyss + Underworld Dreams": {
+     "id": "1561-2720",
+     "bracketTag": "O",
+     "produz": [
+      "Target opponent loses the game"
+     ]
+    },
+    "Bolas's Citadel + Sensei's Divining Top + Sheoldred, the Apocalypse": {
+     "id": "2173-2498-5078",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite lifegain"
+     ]
+    },
+    "Duskmantle Guildmage + Mindcrank": {
+     "id": "936-5069",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Infinite mill",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Nekusar, the Mindrazer + Peer into the Abyss": {
+     "id": "1561-1972",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite card draw for target opponent",
+      "Near-infinite damage to one opponent",
+      "Near-infinite draw triggers for target opponent"
+     ]
+    },
+    "Peer into the Abyss + Razorkin Needlehead": {
+     "id": "1561-5919",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage to one opponent",
+      "Near-infinite draw triggers for target opponent",
+      "Near-infinite card draw for target opponent"
+     ]
+    },
+    "Animate Dead + Worldgorger Dragon": {
+     "id": "4812-4846",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite blinking of permanents",
+      "Infinite colored mana"
+     ]
+    },
+    "Narset's Reversal + Return the Favor": {
+     "id": "11-5940",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Pyromancer's Goggles + Return the Favor": {
+     "id": "5940-6790",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Mox Opal + Tidespout Tyrant": {
+     "id": "542-4009",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Master Transmuter + The One Ring": {
+     "id": "1999-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Narset, Parter of Veils + Teferi's Puzzle Box": {
+     "id": "1177-2286",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent shuffles their hand into their library during their draw step",
+      "Opponents can't draw cards during their turn",
+      "Lock"
+     ]
+    },
+    "Fortune Teller's Talent + Sensei's Divining Top": {
+     "id": "5078-5849",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite storm count"
+     ]
+    },
+    "Prismari, the Inspiration + Return the Favor": {
+     "id": "5940-7683",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Mind Over Matter + The One Ring": {
+     "id": "3363-4067",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite card draw",
+      "Infinite self-discard triggers",
+      "Infinite draw triggers"
+     ]
+    },
+    "Alania, Divergent Storm + Return the Favor": {
+     "id": "5940-5959",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Notion Thief + Teferi's Puzzle Box": {
+     "id": "2286-3221",
+     "bracketTag": "S",
+     "produz": [
+      "Opponents put all cards in hand on the bottom of their library on each of their draw steps",
+      "Lock"
+     ]
+    },
+    "Lich's Mastery + Sheoldred, the Apocalypse": {
+     "id": "679-2498",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite lifegain"
+     ]
+    },
+    "Path of the Pyromancer + Underworld Breach": {
+     "id": "693-1368",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite rummaging",
+      "Infinite self-discard triggers"
+     ]
+    },
+    "Nekusar, the Mindrazer + Phyresis + Windfall": {
+     "id": "790-1972-4651",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Bloodchief Ascension + The Master of Lake-town": {
+     "id": "1290-7848",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mill",
+      "Near-infinite lifegain",
+      "Near-infinite lifegain triggers"
+     ]
+    },
+    "Gwenom, Remorseless + Sensei's Divining Top + Sheoldred, the Apocalypse": {
+     "id": "2498-5078-6900",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Near-infinite lifegain",
+      "Near-infinite lifegain triggers"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Phyresis + Razorkin Needlehead + Windfall": {
+     "id": "790-4651-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Orcish Bowmasters + Phyresis + Windfall": {
+     "id": "790-3862-4651",
+     "bracketTag": "P",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Drafna, Founder of Lat-Nam + The One Ring": {
+     "id": "3363-4331",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Dauthi Voidwalker + Helm of Obedience": {
+     "id": "2581-5065",
+     "bracketTag": "R",
+     "produz": [
+      "Exile target opponent's library"
+     ]
+    },
+    "Jace's Archivist + Mind Over Matter": {
+     "id": "3141-4067",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite draw triggers for all players",
+      "Infinite rummaging for all players",
+      "Infinite self-discard triggers for all players"
+     ]
+    },
+    "Cephalid Illusionist + Lightning Greaves": {
+     "id": "876-2904",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Echo of Eons + Nekusar, the Mindrazer + Phyresis": {
+     "id": "1972-4651-5280",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Nekusar, the Mindrazer + Tainted Strike + Windfall": {
+     "id": "790-1218-1972",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Animate Dead + Kederekt Leviathan": {
+     "id": "4413-4812",
+     "bracketTag": "S",
+     "produz": [
+      "Return all nonland permanents to owner's hand each turn",
+      "Lock"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Spark Double": {
+     "id": "618-3908",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Marina Vendrell's Grimoire + Sheoldred, the Apocalypse": {
+     "id": "2498-6033",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite lifegain"
+     ]
+    },
+    "Orcish Bowmasters + Requiem Monolith": {
+     "id": "3862-6804",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw for target opponent",
+      "Infinite draw triggers for target opponent",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Echo of Eons + Phyresis + Razorkin Needlehead": {
+     "id": "4651-5280-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Orcish Bowmasters + Tainted Strike + Windfall": {
+     "id": "790-1218-3862",
+     "bracketTag": "P",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Grafted Exoskeleton + Nekusar, the Mindrazer + Windfall": {
+     "id": "790-1972-3681",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Razorkin Needlehead + Tainted Strike + Windfall": {
+     "id": "790-1218-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Grafted Exoskeleton + Razorkin Needlehead + Windfall": {
+     "id": "790-3681-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Adaptive Training Post + Return the Favor": {
+     "id": "5940-6452",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Glistening Oil + Nekusar, the Mindrazer + Windfall": {
+     "id": "386-790-1972",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Flusterstorm + Guile": {
+     "id": "1623-2293",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Grafted Exoskeleton + Orcish Bowmasters + Windfall": {
+     "id": "790-3681-3862",
+     "bracketTag": "P",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Echo of Eons + Nekusar, the Mindrazer + Tainted Strike": {
+     "id": "1218-1972-5280",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Echo of Eons + Razorkin Needlehead + Tainted Strike": {
+     "id": "1218-5280-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Bloodchief Ascension + Zur's Weirding": {
+     "id": "1290-2260",
+     "bracketTag": "S",
+     "produz": [
+      "Your opponents mill cards instead of drawing them",
+      "Lock"
+     ]
+    },
+    "Glistening Oil + Orcish Bowmasters + Windfall": {
+     "id": "386-790-3862",
+     "bracketTag": "P",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Glistening Oil + Razorkin Needlehead + Windfall": {
+     "id": "386-790-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Echo of Eons + Grafted Exoskeleton + Nekusar, the Mindrazer": {
+     "id": "1972-3681-5280",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Echo of Eons + Glistening Oil + Nekusar, the Mindrazer": {
+     "id": "386-1972-5280",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Echo of Eons + Grafted Exoskeleton + Razorkin Needlehead": {
+     "id": "3681-5280-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Echo of Eons + Glistening Oil + Razorkin Needlehead": {
+     "id": "386-5280-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Mirror-Mad Phantasm + Spark Double": {
+     "id": "2084-3908",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Lich + Sheoldred, the Apocalypse": {
+     "id": "202-2498",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers"
+     ]
+    },
+    "The One Ring + Vedalken Mastermind": {
+     "id": "2529-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Nefarious Lich + Sheoldred, the Apocalypse": {
+     "id": "2498-4126",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers"
+     ]
+    },
+    "Corrupted Conscience + Razorkin Needlehead + Windfall": {
+     "id": "731-790-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Keeper of the Nine Gales + The One Ring": {
+     "id": "3363-5302",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Corrupted Conscience + Nekusar, the Mindrazer + Windfall": {
+     "id": "731-790-1972",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "The One Ring + Umbilicus": {
+     "id": "131-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Blood Clock + The One Ring": {
+     "id": "3363-4933",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Omarthis, Ghostfire Initiate + Spark Double": {
+     "id": "1965-3908",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Cephalid Aristocrat + Lightning Greaves": {
+     "id": "876-2796",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Corrupted Conscience + Orcish Bowmasters + Windfall": {
+     "id": "731-790-3862",
+     "bracketTag": "P",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Nekusar, the Mindrazer + Worldfire": {
+     "id": "1972-3765",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent loses the game",
+      "Exile all cards in hands and graveyards",
+      "Exile all permanents"
+     ]
+    },
+    "Heidar, Rimewind Master + The One Ring": {
+     "id": "3363-4782",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Corrupted Conscience + Echo of Eons + Nekusar, the Mindrazer": {
+     "id": "731-1972-5280",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Corrupted Conscience + Echo of Eons + Razorkin Needlehead": {
+     "id": "731-5280-5919",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "The One Ring + Tradewind Rider": {
+     "id": "1363-3363",
+     "bracketTag": "S",
+     "produz": [
+      "You have protection from everything",
+      "Lock",
+      "Prevent all damage that would be dealt to you"
+     ]
+    },
+    "Temporal Adept + The One Ring": {
+     "id": "1111-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Esperzoa + The One Ring": {
+     "id": "3363-8186",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "The One Ring + Tolarian Sentinel": {
+     "id": "3363-4780",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Phenomenon Investigators + The One Ring": {
+     "id": "3363-6248",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Obelisk of Undoing + The One Ring": {
+     "id": "3363-5278",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "The One Ring + Time Elemental": {
+     "id": "3363-3823",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Dauthi Voidwalker + Infinite Reflection + Lightning Greaves": {
+     "id": "876-2581-2882",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Cache Raiders + The One Ring": {
+     "id": "306-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Shi'ar Soldier + The One Ring": {
+     "id": "3363-8189",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Salvage Scuttler + The One Ring": {
+     "id": "3363-8188",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Ambassador Laquatus + Cabal Ritual + Underworld Breach": {
+     "id": "1368-4530-4923",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Sheoldred, the Apocalypse + Yawgmoth's Bargain": {
+     "id": "2498-7844",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite lifegain"
+     ]
+    },
+    "Griselbrand + Sheoldred, the Apocalypse": {
+     "id": "2498-4322",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite lifegain"
+     ]
+    },
+    "Hullbreacher + Teferi's Puzzle Box": {
+     "id": "2286-3883",
+     "bracketTag": "B",
+     "produz": [
+      "Opponents put all cards in hand on the bottom of their library on each of their draw steps",
+      "Near-infinite Treasure tokens",
+      "Near-infinite colored mana"
+     ]
+    },
+    "Black Lotus + Underworld Breach + Wheel of Fortune": {
+     "id": "1368-2706-4808",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Infinite looting for opponents"
+     ]
+    },
+    "Black Lotus + Brain Freeze + Underworld Breach": {
+     "id": "1368-4808-4856",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Hullbreacher + Underworld Breach + Wheel of Fortune": {
+     "id": "1368-2706-3883",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite looting"
+     ]
+    },
+    "Hullbreacher + Underworld Breach + Windfall": {
+     "id": "790-1368-3883",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite looting"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "R",
+    "game_changers": [
+     "Orcish Bowmasters",
+     "Underworld Breach",
+     "Demonic Tutor",
+     "Imperial Seal",
+     "Vampiric Tutor",
+     "Cyclonic Rift",
+     "Force of Will",
+     "The One Ring"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Bloodchief Ascension + Mindcrank",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "1",
+  "2",
+  "3",
+  "4"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

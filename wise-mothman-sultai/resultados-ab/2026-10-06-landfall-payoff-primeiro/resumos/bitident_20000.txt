@@ -1,0 +1,6 @@
+bitident.py 5000 x 4 blocos (sementes 5.000.000..5.019.999), 2 modos = 20.000 partidas por modo; cada partida roda 3 vezes (91b1a3d, chave desligada, chave ligada):
+N = 5000 x 2 modos (sementes 5000000..5004999): chave DESLIGADA identica ao 91b1a3d em 10000 partidas; chave LIGADA: 7204 sem disparo e identicas, 2796 com disparo (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5005000..5009999): chave DESLIGADA identica ao 91b1a3d em 10000 partidas; chave LIGADA: 7229 sem disparo e identicas, 2771 com disparo (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5010000..5014999): chave DESLIGADA identica ao 91b1a3d em 10000 partidas; chave LIGADA: 7108 sem disparo e identicas, 2892 com disparo (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5015000..5019999): chave DESLIGADA identica ao 91b1a3d em 10000 partidas; chave LIGADA: 7176 sem disparo e identicas, 2824 com disparo (podem diferir); divergencias: 0
+TOTAL: chave DESLIGADA identica ao 91b1a3d em 40.000 de 40.000 partidas; chave LIGADA: 28.717 sem disparo e identicas, 11.283 com disparo (so' estas podem diferir); divergencias: 0

@@ -1,0 +1,3 @@
+COMPACTO N=2000 modo padrao: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T6             cleared_T8            cleared_T10            cleared_T12          first_elim_T6          first_elim_T8               died_any              self_lost                 pws_T6                mana_T6
+base (media)                                                         0.0010                 0.1365                 0.6525                 0.8875                 0.0190                 0.5565                 0.0000                 0.0110                 3.1170                 6.9980

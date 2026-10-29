@@ -1,0 +1,49 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9390 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3844       6.3877      +0.0033 ±0.0016  
+  *commander_cast_turn__nunca                   0.2209       0.2198      -0.0011 ±0.0007  
+   commander_cast_turn__ate_T3                  0.0072       0.0074      +0.0002 ±0.0004  
+  *commander_cast_turn__ate_T4                  0.0675       0.0686      +0.0011 ±0.0007  
+  *commander_cast_turn__ate_T5                  0.1800       0.1816      +0.0016 ±0.0011  
+  *eminence_tokens_created                      2.9537       2.9751      +0.0214 ±0.0046  
+  *edgar_attack_counters_total                  7.0819       7.1506      +0.0687 ±0.0163  
+  *creatures_sacrificed_total                   2.6549       2.6748      +0.0199 ±0.0048  
+  *drain_total                                  5.7359       5.8377      +0.1018 ±0.0256  
+  *pw_activations_total                         0.6328       0.6411      +0.0083 ±0.0023  
+  *death_trigger_events                         2.3414       2.3710      +0.0296 ±0.0083  
+  *lifegain_total                               3.9105       3.9704      +0.0599 ±0.0178  
+  *black_market_treasures                       0.4188       0.4279      +0.0091 ±0.0027  
+  *unholy_annex_draws                           0.5623       0.5696      +0.0073 ±0.0023  
+  *edgar_attack_turns                           1.4527       1.4591      +0.0064 ±0.0020  
+  *token_doubler_events                         0.3710       0.3819      +0.0109 ±0.0037  
+  *ophiomancer_snakes_created                   0.2532       0.2579      +0.0047 ±0.0020  
+  *warleaders_call_damage_total                 0.4822       0.4910      +0.0088 ±0.0040  
+  *roaming_throne_doublings                     0.3274       0.3357      +0.0083 ±0.0039  
+
+[so_terreno - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9391 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3844       6.3877      +0.0033 ±0.0016  
+  *commander_cast_turn__nunca                   0.2209       0.2198      -0.0011 ±0.0007  
+   commander_cast_turn__ate_T3                  0.0072       0.0074      +0.0002 ±0.0004  
+  *commander_cast_turn__ate_T4                  0.0675       0.0686      +0.0011 ±0.0007  
+  *commander_cast_turn__ate_T5                  0.1800       0.1816      +0.0016 ±0.0011  
+  *eminence_tokens_created                      2.9537       2.9751      +0.0214 ±0.0046  
+  *edgar_attack_counters_total                  7.0819       7.1506      +0.0687 ±0.0163  
+  *creatures_sacrificed_total                   2.6549       2.6748      +0.0199 ±0.0048  
+  *drain_total                                  5.7359       5.8377      +0.1018 ±0.0256  
+  *pw_activations_total                         0.6328       0.6411      +0.0083 ±0.0023  
+  *death_trigger_events                         2.3414       2.3710      +0.0296 ±0.0083  
+  *lifegain_total                               3.9105       3.9703      +0.0598 ±0.0178  
+  *black_market_treasures                       0.4188       0.4279      +0.0091 ±0.0027  
+  *unholy_annex_draws                           0.5623       0.5696      +0.0073 ±0.0023  
+  *edgar_attack_turns                           1.4527       1.4591      +0.0064 ±0.0020  
+  *token_doubler_events                         0.3710       0.3819      +0.0109 ±0.0037  
+  *ophiomancer_snakes_created                   0.2532       0.2579      +0.0047 ±0.0020  
+  *warleaders_call_damage_total                 0.4822       0.4910      +0.0088 ±0.0040  
+  *roaming_throne_doublings                     0.3274       0.3357      +0.0083 ±0.0039  
+
+[so_ordem_set - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9999 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lifegain_total                               3.9105       3.9106      +0.0001 ±0.0002  

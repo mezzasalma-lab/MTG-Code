@@ -1,0 +1,331 @@
+{
+ "deck": "lotr-hosts-of-mordor",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Sauron, Lord of the Rings",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Basalt Monolith + Forsaken Monument": {
+     "id": "4131-4547",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Basalt Monolith + Rings of Brighthearth": {
+     "id": "4131-4235",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Basalt Monolith + Forensic Gadgeteer": {
+     "id": "4131-5390",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Aggravated Assault + Cavern-Hoard Dragon": {
+     "id": "3750-5988",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite combat damage to one opponent"
+     ]
+    },
+    "Basalt Monolith + Power Artifact": {
+     "id": "4131-5149",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Basalt Monolith + Mesmeric Orb": {
+     "id": "4131-4684",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Helm of the Host + Scourge of the Throne": {
+     "id": "1405-1692",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Notion Thief + Teferi's Puzzle Box": {
+     "id": "2286-3221",
+     "bracketTag": "S",
+     "produz": [
+      "Opponents put all cards in hand on the bottom of their library on each of their draw steps",
+      "Lock"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Basalt Monolith + The Enigma Jewel // Locus of Enlightenment": {
+     "id": "74-4131",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Basalt Monolith + Crackdown Construct": {
+     "id": "4131-4944",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Rionya, Fire Dancer + Scourge of the Throne": {
+     "id": "1405-1908",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Cavern-Hoard Dragon + Time Sieve": {
+     "id": "1558-5988",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite turns",
+      "Lock"
+     ]
+    },
+    "Basalt Monolith + Wake Thrasher": {
+     "id": "712-4131",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "P",
+    "game_changers": [
+     "Notion Thief"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Saruman, the White Hand",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Basalt Monolith + Forsaken Monument": {
+     "id": "4131-4547",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Basalt Monolith + Rings of Brighthearth": {
+     "id": "4131-4235",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Basalt Monolith + Forensic Gadgeteer": {
+     "id": "4131-5390",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Aggravated Assault + Cavern-Hoard Dragon": {
+     "id": "3750-5988",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite combat damage to one opponent"
+     ]
+    },
+    "Basalt Monolith + Power Artifact": {
+     "id": "4131-5149",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Basalt Monolith + Mesmeric Orb": {
+     "id": "4131-4684",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Helm of the Host + Scourge of the Throne": {
+     "id": "1405-1692",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Notion Thief + Teferi's Puzzle Box": {
+     "id": "2286-3221",
+     "bracketTag": "S",
+     "produz": [
+      "Opponents put all cards in hand on the bottom of their library on each of their draw steps",
+      "Lock"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Basalt Monolith + The Enigma Jewel // Locus of Enlightenment": {
+     "id": "74-4131",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Basalt Monolith + Crackdown Construct": {
+     "id": "4131-4944",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Rionya, Fire Dancer + Scourge of the Throne": {
+     "id": "1405-1908",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Cavern-Hoard Dragon + Time Sieve": {
+     "id": "1558-5988",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite turns",
+      "Lock"
+     ]
+    },
+    "Basalt Monolith + Wake Thrasher": {
+     "id": "712-4131",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "P",
+    "game_changers": [
+     "Notion Thief"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

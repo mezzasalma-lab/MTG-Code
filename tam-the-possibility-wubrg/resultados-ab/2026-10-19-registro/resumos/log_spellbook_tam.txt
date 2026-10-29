@@ -1,0 +1,5 @@
+nomes verificados: 116 | NAO reconhecidos pelo Spellbook: []
+deck exato: combos incluidos 2 | quase (1 carta de distancia) 92
+  COMBO: Teferi, Temporal Archmage + The Chain Veil | ['Infinite card draw', 'Infinite colored mana', 'Infinite colorless mana', 'Infinite planeswalker activations'] | bracket S
+  COMBO: Chromatic Orrery + Tezzeret the Seeker + The Chain Veil | ['Infinite card draw', 'Infinite colored mana', 'Infinite colorless mana', 'Infinite planeswalker activations'] | bracket E
+controle positivo (Thassa+Consultation aparece): True | controle de corte (sem a Consultation some): True

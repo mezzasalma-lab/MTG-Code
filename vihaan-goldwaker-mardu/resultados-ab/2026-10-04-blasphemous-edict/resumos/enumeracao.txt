@@ -1,0 +1,136 @@
+cartas distintas na lista: 94 | resolvidas: 94 | por flavor_name: {'Brightclimb Pathway // Grimclimb Pathway': 'Brightclimb Pathway // Grimclimb Pathway', 'Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel': 'Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel'} | NAO resolvidas: []
+
+== 1. criaturas (type_line) na lista: 29
+    ['Academy Manufactor', 'Aya of Alexandria', 'Captain Lannery Storm', 'Goldspan Dragon', 'Grenzo, Havoc Raiser', 'Grim Hireling', 'Jan Jansen, Chaos Crafter', 'Kambal, Profiteering Mayor', 'Kellogg, Dangerous Mind', 'Laughing Jasper Flint', 'Lotho, Corrupt Shirriff', 'Magda, the Hoardmaster', 'Mahadi, Emporium Master', 'Mari, the Killing Quill', 'Marionette Master', 'Mayhem Devil', 'Mirkwood Bats', "Nadier's Nightblade", 'Olivia, Opulent Outlaw', 'Orochi Soul-Reaver', 'Pitiless Plunderer', 'Professional Face-Breaker', 'Prosper, Tome-Bound', 'Sentinel Sarah Lyons', 'Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel', 'Smaug the Magnificent', 'Witch of the Moors', 'Xorn', 'Zulaport Cutthroat']
+
+== 2. SACRIFICIO no texto (qualquer 'sacrific'): 32
+   - Ashnod's Altar | Sacrifice a creature: Add {C}{C}.
+   - Big Score | Draw two cards and create two Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Captain Lannery Storm | Whenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.") / Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.
+   - Command Beacon | {T}, Sacrifice this land: Put your commander into your hand from the command zone.
+   - Deadly Derision | Destroy target creature or planeswalker. Create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Deadly Dispute | As an additional cost to cast this spell, sacrifice an artifact or creature. / Draw two cards and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Demolition Field | {2}, {T}, Sacrifice this land: Destroy target nonbasic land an opponent controls. That land's controller may search their library for a basic land car
+   - Dictate of Erebos | Whenever a creature you control dies, each opponent sacrifices a creature of their choice.
+   - Goldspan Dragon | Treasures you control have "{T}, Sacrifice this artifact: Add two mana of any one color."
+   - Grim Hireling | {B}, Sacrifice X Treasures: Target creature gets -X/-X until end of turn. Activate only as a sorcery.
+   - High Market | {T}, Sacrifice a creature: You gain 1 life.
+   - Inspired Tinkering | Create three Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Jan Jansen, Chaos Crafter | {T}, Sacrifice an artifact creature: Create two Treasure tokens. / {T}, Sacrifice a noncreature artifact: Create two 1/1 colorless Construct artifact creature tokens.
+   - Kellogg, Dangerous Mind | Sacrifice five Treasures: Gain control of target creature for as long as you control Kellogg. Activate only as a sorcery.
+   - Krark-Clan Ironworks | Sacrifice an artifact: Add {C}{C}.
+   - Lich-Knights' Conquest | Sacrifice any number of artifacts, enchantments, and/or tokens. Return that many creature cards from your graveyard to the battlefield.
+   - Lotho, Corrupt Shirriff | Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: 
+   - Magda, the Hoardmaster | Sacrifice three Treasures: Create a 4/4 red Scorpion Dragon creature token with flying and haste. Activate only as a sorcery.
+   - Mahadi, Emporium Master | At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with "{T}, Sacrifice this token: A
+   - Mayhem Devil | Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.
+   - Mirkwood Bats | Whenever you create or sacrifice a token, each opponent loses 1 life.
+   - Olivia, Opulent Outlaw | {3}, Sacrifice two Treasures: Put two +1/+1 counters on each creature you control. Activate only as a sorcery.
+   - Phyrexian Tower | {T}, Sacrifice a creature: Add {B}{B}.
+   - Pitiless Plunderer | Whenever another creature you control dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Professional Face-Breaker | Sacrifice a Treasure: Exile the top card of your library. You may play that card this turn.
+   - Revel in Riches | Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color."
+   - Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel | Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card. / Whenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards.
+   - Smothering Tithe | Whenever an opponent draws a card, that player may pay {2}. If the player doesn't, you create a Treasure token. (It's an artifact with "{T}, Sacrifice
+   - Treasure Vault | {X}{X}, {T}, Sacrifice this land: Create X Treasure tokens.
+   - Unexpected Windfall | Draw two cards and create two Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Urabrask's Forge | At the beginning of combat on your turn, put an oil counter on this artifact, then create an X/1 red Phyrexian Horror creature token with trample and 
+   - Witch of the Moors | At the beginning of your end step, if you gained life this turn, each opponent sacrifices a creature of their choice and you return up to one target c
+
+== 2a. REAGEM a sacrificio ('whenever you sacrifice' / 'a player sacrifices' / 'create or sacrifice'): 4
+   - Captain Lannery Storm | Whenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.") / Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.
+   - Dictate of Erebos | Whenever a creature you control dies, each opponent sacrifices a creature of their choice.
+   - Mayhem Devil | Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.
+   - Mirkwood Bats | Whenever you create or sacrifice a token, each opponent loses 1 life.
+
+== 3. REAGEM a morte / ao cemiterio / saida do campo ('dies', 'put into a graveyard from the battlefield', 'leaves the battlefield'): 10
+   - Agent of the Iron Throne 
+   - Dictate of Erebos 
+   - Life Insurance 
+   - Mari, the Killing Quill 
+   - Marionette Master 
+   - Nadier's Nightblade 
+   - Pitiless Plunderer 
+   - Revel in Riches 
+   - Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel 
+   - Zulaport Cutthroat 
+
+== 4. SO' 'destroy' sem sacrifice (Act/Blood Money destroem; efeitos de 'destroy' no texto): 5
+   - Blood Money 
+   - Deadly Derision | Destroy target creature or planeswalker. Create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Demolition Field | {2}, {T}, Sacrifice this land: Destroy target nonbasic land an opponent controls. That land's controller may search their library for a basic land car
+   - Requisition Raid 
+   - Shoot the Sheriff 
+
+== 5. indestrutivel / regenera / protecao (sobrevivem a Act mas nao a Edict, ou o contrario): 3
+   - Black Market Connections 
+   - Boros Charm 
+   - Teferi's Protection 
+
+== 6. tokens de criatura criados (contam como criatura sacrificada/destruida): 36
+   - Academy Manufactor 
+   - Aya of Alexandria 
+   - Big Score | Draw two cards and create two Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Black Market Connections 
+   - Blood Money 
+   - Captain Lannery Storm | Whenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.") / Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.
+   - Caretaker's Talent 
+   - Deadly Derision | Destroy target creature or planeswalker. Create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Deadly Dispute | As an additional cost to cast this spell, sacrifice an artifact or creature. / Draw two cards and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Gleaming Splendor 
+   - Goldspan Dragon | Treasures you control have "{T}, Sacrifice this artifact: Add two mana of any one color."
+   - Grim Hireling | {B}, Sacrifice X Treasures: Target creature gets -X/-X until end of turn. Activate only as a sorcery.
+   - Inspired Tinkering | Create three Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Jan Jansen, Chaos Crafter | {T}, Sacrifice an artifact creature: Create two Treasure tokens. / {T}, Sacrifice a noncreature artifact: Create two 1/1 colorless Construct artifact creature tokens.
+   - Kellogg, Dangerous Mind | Sacrifice five Treasures: Gain control of target creature for as long as you control Kellogg. Activate only as a sorcery.
+   - Life Insurance 
+   - Lotho, Corrupt Shirriff | Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: 
+   - Magda, the Hoardmaster | Sacrifice three Treasures: Create a 4/4 red Scorpion Dragon creature token with flying and haste. Activate only as a sorcery.
+   - Mahadi, Emporium Master | At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with "{T}, Sacrifice this token: A
+   - Mari, the Killing Quill 
+   - Marionette Master 
+   - Monologue Tax 
+   - Olivia, Opulent Outlaw | {3}, Sacrifice two Treasures: Put two +1/+1 counters on each creature you control. Activate only as a sorcery.
+   - Orochi Soul-Reaver 
+   - Pitiless Plunderer | Whenever another creature you control dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Professional Face-Breaker | Sacrifice a Treasure: Exile the top card of your library. You may play that card this turn.
+   - Prosper, Tome-Bound 
+   - Rain of Riches 
+   - Revel in Riches | Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color."
+   - Smaug the Magnificent 
+   - Smothering Tithe | Whenever an opponent draws a card, that player may pay {2}. If the player doesn't, you create a Treasure token. (It's an artifact with "{T}, Sacrifice
+   - The Reaver Cleaver 
+   - Treasure Vault | {X}{X}, {T}, Sacrifice this land: Create X Treasure tokens.
+   - Unexpected Windfall | Draw two cards and create two Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.")
+   - Urabrask's Forge | At the beginning of combat on your turn, put an oil counter on this artifact, then create an X/1 red Phyrexian Horror creature token with trample and 
+   - Xorn 
+
+== 7. 'each player sacrifices' / 'each opponent sacrifices' / 'sacrifices a creature' (edicts ja' na lista): 7
+   - Ashnod's Altar | Sacrifice a creature: Add {C}{C}.
+   - Dictate of Erebos | Whenever a creature you control dies, each opponent sacrifices a creature of their choice.
+   - High Market | {T}, Sacrifice a creature: You gain 1 life.
+   - Mayhem Devil | Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.
+   - Phyrexian Tower | {T}, Sacrifice a creature: Add {B}{B}.
+   - Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel | Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card. / Whenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards.
+   - Witch of the Moors | At the beginning of your end step, if you gained life this turn, each opponent sacrifices a creature of their choice and you return up to one target c
+
+== 8. 'damage to each creature' / 'each creature' / 'all creatures' (outros wipes na lista): 5
+   - Blasphemous Act 
+   - Blood Money 
+   - Mahadi, Emporium Master 
+   - Olivia, Opulent Outlaw 
+   - Requisition Raid 
+
+== 9. 'Treasure' + 'sacrifice' (sacrificar Treasure: Storm, Altar, etc.): 9
+   - Captain Lannery Storm | Whenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.") / Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.
+   - Goldspan Dragon | Treasures you control have "{T}, Sacrifice this artifact: Add two mana of any one color."
+   - Grim Hireling | {B}, Sacrifice X Treasures: Target creature gets -X/-X until end of turn. Activate only as a sorcery.
+   - Jan Jansen, Chaos Crafter | {T}, Sacrifice an artifact creature: Create two Treasure tokens. / {T}, Sacrifice a noncreature artifact: Create two 1/1 colorless Construct artifact creature tokens.
+   - Kellogg, Dangerous Mind | Sacrifice five Treasures: Gain control of target creature for as long as you control Kellogg. Activate only as a sorcery.
+   - Magda, the Hoardmaster | Sacrifice three Treasures: Create a 4/4 red Scorpion Dragon creature token with flying and haste. Activate only as a sorcery.
+   - Olivia, Opulent Outlaw | {3}, Sacrifice two Treasures: Put two +1/+1 counters on each creature you control. Activate only as a sorcery.
+   - Professional Face-Breaker | Sacrifice a Treasure: Exile the top card of your library. You may play that card this turn.
+   - Treasure Vault | {X}{X}, {T}, Sacrifice this land: Create X Treasure tokens.
+
+== Blasphemous Edict (oraculo ao vivo): You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield. | Each player sacrifices thirteen creatures of their choice. | Sorcery {3}{B}{B} color_identity ['B']
+== identidade de cor da Edict ⊆ {R,W,B}: True

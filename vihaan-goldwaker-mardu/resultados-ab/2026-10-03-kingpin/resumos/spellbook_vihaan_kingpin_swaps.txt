@@ -1,0 +1,91 @@
+cartas na lista: 99
+base                               n=99 incluidos=4 quase=98 id=RWB
++Kingpin, Wilson Fisk (sem cortar) n=100 incluidos=4 quase=98 id=RWB
+   novos incluidos: [] | novos quase: 0
+-Zulaport Cutthroat +Kingpin, Wilson Fisk n=99 incluidos=4 quase=96 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 2 | quase novos: 0
+-Nadier's Nightblade +Kingpin, Wilson Fisk n=99 incluidos=4 quase=96 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 2 | quase novos: 0
+-Mirkwood Bats +Kingpin, Wilson Fisk n=99 incluidos=4 quase=96 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 2 | quase novos: 0
+-Marionette Master +Kingpin, Wilson Fisk n=99 incluidos=4 quase=94 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 4 | quase novos: 0
+-Agent of the Iron Throne +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Kellogg, Dangerous Mind +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Captain Lannery Storm +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Grim Hireling +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Kambal, Profiteering Mayor +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Aya of Alexandria +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Sentinel Sarah Lyons +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Mari, the Killing Quill +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Laughing Jasper Flint +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Lotho, Corrupt Shirriff +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Orochi Soul-Reaver +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Pitiless Plunderer +Kingpin, Wilson Fisk n=99 incluidos=4 quase=64 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 34 | quase novos: 0
+-Mayhem Devil +Kingpin, Wilson Fisk n=99 incluidos=4 quase=95 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 3 | quase novos: 0
+-Prosper, Tome-Bound +Kingpin, Wilson Fisk n=99 incluidos=4 quase=97 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 1 | quase novos: 0
+-Witch of the Moors +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Monologue Tax +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Academy Manufactor +Kingpin, Wilson Fisk n=99 incluidos=4 quase=94 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 4 | quase novos: 0
+-Back in Town +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Teferi's Protection +Kingpin, Wilson Fisk n=99 incluidos=4 quase=92 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 6 | quase novos: 0
+-Requisition Raid +Kingpin, Wilson Fisk n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Life Insurance +Kingpin, Wilson Fisk n=99 incluidos=4 quase=97 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 1 | quase novos: 0
+-Smothering Tithe +Kingpin, Wilson Fisk n=99 incluidos=1 quase=96 id=RWB
+   incluidos que SUMIRAM: [('Anointed Procession', 'Gleaming Splendor', 'Smothering Tithe'), ('Gleaming Splendor', 'Goldspan Dragon', 'Smothering Tithe'), ('Gleaming Splendor', 'Smothering Tithe', 'Xorn')] | NOVOS: []
+   quase sumiram: 5 | quase novos: 3
+-Gleaming Splendor +Kingpin, Wilson Fisk n=99 incluidos=1 quase=96 id=RWB
+   incluidos que SUMIRAM: [('Anointed Procession', 'Gleaming Splendor', 'Smothering Tithe'), ('Gleaming Splendor', 'Goldspan Dragon', 'Smothering Tithe'), ('Gleaming Splendor', 'Smothering Tithe', 'Xorn')] | NOVOS: []
+   quase sumiram: 5 | quase novos: 3
+-Mahadi, Emporium Master +Kingpin, Wilson Fisk n=99 incluidos=3 quase=94 id=RWB
+   incluidos que SUMIRAM: [("Ashnod's Altar", 'Mahadi, Emporium Master', 'Revel in Riches')] | NOVOS: []
+   quase sumiram: 5 | quase novos: 1
+-Ashnod's Altar +Kingpin, Wilson Fisk n=99 incluidos=3 quase=67 id=RWB
+   incluidos que SUMIRAM: [("Ashnod's Altar", 'Mahadi, Emporium Master', 'Revel in Riches')] | NOVOS: []
+   quase sumiram: 32 | quase novos: 1

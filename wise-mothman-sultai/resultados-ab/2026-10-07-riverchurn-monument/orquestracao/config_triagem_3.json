@@ -1,0 +1,172 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_Herd Baloth": {
+   "SWAPS": [
+    [
+     "Herd Baloth",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Heroic Intervention": {
+   "SWAPS": [
+    [
+     "Heroic Intervention",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Hollowmurk Siege": {
+   "SWAPS": [
+    [
+     "Hollowmurk Siege",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Icetill Explorer": {
+   "SWAPS": [
+    [
+     "Icetill Explorer",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Island": {
+   "SWAPS": [
+    [
+     "Island",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Kami of Whispered Hopes": {
+   "SWAPS": [
+    [
+     "Kami of Whispered Hopes",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Kodama of the West Tree": {
+   "SWAPS": [
+    [
+     "Kodama of the West Tree",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Memory Erosion": {
+   "SWAPS": [
+    [
+     "Memory Erosion",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Mesmeric Orb": {
+   "SWAPS": [
+    [
+     "Mesmeric Orb",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Minamo, School at Water's Edge": {
+   "SWAPS": [
+    [
+     "Minamo, School at Water's Edge",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Mirelurk Queen": {
+   "SWAPS": [
+    [
+     "Mirelurk Queen",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Misty Rainforest": {
+   "SWAPS": [
+    [
+     "Misty Rainforest",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Morphic Pool": {
+   "SWAPS": [
+    [
+     "Morphic Pool",
+     "Riverchurn Monument"
+    ]
+   ]
+  },
+  "cut_Muldrotha, the Gravetide": {
+   "SWAPS": [
+    [
+     "Muldrotha, the Gravetide",
+     "Riverchurn Monument"
+    ]
+   ]
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_Herd Baloth",
+  "cut_Heroic Intervention",
+  "cut_Hollowmurk Siege",
+  "cut_Icetill Explorer",
+  "cut_Island",
+  "cut_Kami of Whispered Hopes",
+  "cut_Kodama of the West Tree",
+  "cut_Memory Erosion",
+  "cut_Mesmeric Orb",
+  "cut_Minamo, School at Water's Edge",
+  "cut_Mirelurk Queen",
+  "cut_Misty Rainforest",
+  "cut_Morphic Pool",
+  "cut_Muldrotha, the Gravetide"
+ ],
+ "regressao": []
+}

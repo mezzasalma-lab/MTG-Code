@@ -1,5 +1,881 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## London Mulligan e fetch lands (correção do simulador, 2ª rodada) — oráculo, rulings e cláusulas — 2026-10-03
+
+Pedido: *"Quero sim, sempre! Termine as tarefas que pararam pelo limite"* (corrigir o mulligan e modelar as fetches, os dois achados laterais da rodada do Myriad). Código: `megatron_goldfish_v1.py` (antes = commit `3dae6ba`). Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-mulligan-e-fetches/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** no Scryfall (2026-10-03) **antes** de escrever o código (Regra #3); resposta bruta em `.../dados/oraculo_e_rulings.json`.
+
+**Oráculos:** *Evolving Wilds* e *Terramorphic Expanse*: "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle." (entram untapped; 0 rulings). *Rocky Tar Pit:* "This land enters tapped. {T}, Sacrifice this land: Search your library for a Swamp or Mountain card, put it onto the battlefield, then shuffle." **Ruling (1, 2004-10-04):** *Because the "search" requires you to find a card with certain characteristics, you don't have to find the card if you don't want to.*
+
+| Cláusula do oráculo | Status | Onde / como |
+|---|---|---|
+| Evolving/Terramorphic: "enter untapped" (sem "enters tapped") | 🐛 corrigido | `ETB_TAPPED_LANDS` os tinha como "terrenos tapped" (aproximação); agora entram em campo e o piloto sacrifica na hora (`play_land` → `crack_fetchland`); o conjunto continua servindo só à política de terreno ("funcionalmente tapped") |
+| "{T}, Sacrifice this land" | 🐛 corrigido | `sacrifice()` central: cemitério, permanente (conta como "descended" do Tunnel-Grinder) |
+| "Search your library for a basic land card" (Evolving/Terramorphic) | 🐛 corrigido | alvos: Plains, Swamp, Mountain na biblioteca; escolha pela cor em déficit (comandante + pips da mão) |
+| "Search your library for a Swamp or Mountain card" (Rocky Tar Pit) | 🐛 corrigido | alvo = carta com o **tipo** (básicos **e** duais com tipo): na lista, Badlands, Scrubland, Plateau, Smoldering Marsh, Sunlit Marsh, Swamp, Mountain (`LAND_TYPES` conferido contra o `type_line` do Scryfall por script; Command Tower/Fountainport etc. não têm tipo) |
+| "put it onto the battlefield tapped" (Evolving/Terramorphic) | 🐛 corrigido | entra tapped: lista `extra_tapped_lands_this_turn` (0 de mana e 0 de cor neste turno) |
+| "put it onto the battlefield" (Rocky) | 🐛 corrigido | entra untapped, salvo a regra do próprio alvo (`land_enters_tapped`: Smoldering Marsh com menos de 2 básicos, Sunlit Marsh) |
+| "This land enters tapped" (Rocky) | ✅ | só pode ser sacrificado a partir do turno seguinte (`land_played_this_turn_name`); `try_crack_rocky_tar_pit` roda **antes** da main phase |
+| "then shuffle" | 🐛 corrigido | `state.rng.shuffle(state.library)` |
+| Ruling 2004-10-04 (a busca pode falhar) | ✅ | sem alvo na biblioteca, não sacrifica (teste F4/F8) |
+| (implícito) as 3 não têm habilidade de mana | 🐛 corrigido | `_no_mana_land`: em campo não rendem mana nem cor (antes: fonte fixa de W/B/R cada) |
+
+**Mulligan (CR 103.5, London Mulligan):** as cartas devolvidas vão ao **fundo** e o jogador as escolhe. O código antigo as punha no **topo** (`library.insert(0, …)`; `draw_cards` tira do índice 0) e escolhia a de menor MV. Conferido contra o repositório: os decks já corrigidos em 2026-09-24 (Beorn, Edgar Markov, Thranduil, Prismatic Bridge) usam `choose_bottom`; o Megatron ficou de fora dessa varredura.
+
+**Regra #3 (conceito compartilhado "terreno tapped"/"fonte de cor"):** `tapped_land_this_turn` guarda um **nome**; com básicos (várias cópias) excluiria todas. Sites lidos: `total_mana`, `color_sources`, `play_land`, `dry_run_mana_spent` (cópia rasa), `try_myriad_landscape`, `play_turn` (reset). Generalização aditiva: `extra_tapped_lands_this_turn` (uma entrada por instância), descontada uma vez em `total_mana` e `color_sources`; `colored_sources_all` (para decidir cor) ignora as fetches. O conceito "o Myriad Landscape entra tapped" também passou a usar a lista: **o teste de bit-identidade achou que, na versão anterior, os 2 básicos do Myriad contavam como mana do próprio turno** (1 partida em 20.000).
+**Regra #6 (ordem de fases):** `play_turn` = `draw → try_bahamut_saga_tick → play_land (Evolving/Terramorphic sacrificadas aqui) → try_crack_rocky_tar_pit → main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → try_myriad_landscape → end_step`. O sacrifício do Rocky precisa vir **antes** da janela de conjuração (o terreno buscado entra untapped e rende mana no mesmo turno): teste em `play_turn` completo.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 34 terrenos); bit-identidade com `legacy` + fetch desligado, 20.000+20.000 partidas; regressão 140.000 partidas, 0 exceções, 0 violações de conservação dos 13 terrenos nomeados; 33 testes dirigidos 33/33; A/B pareado N=2.000 (padrão e resiliência) e N=10.000 com a métrica nova se movendo no sentido esperado (média de terrenos numa mão de 6 cartas com 2 mulligans 1,44 → 2,35; mana T2–T4 das fetches ≈ 0 e perda só de cor). Números no `goldfish-log.md`.
+
+**Achados laterais (não corrigidos):** o mulligan de 7 outros decks sorteia as cartas do fundo; quando sacrificar a fetch (na hora/início do turno seguinte) e a regra de escolha do fundo do mulligan são convenções do piloto.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** busca/fetch sem a restrição de tipo real do oráculo (Rocky Tar Pit: "Swamp or Mountain card", não "basic"), habilidade ativada com {T} + sacrifício (as 3 fetches), conceito compartilhado (terreno tapped por instância, carta no cemitério = permanente), ordem de fases (Regra #6), escolha do piloto (mulligan).
+**Não varridas:** as demais classes e as outras cartas do `.py` (esta rodada não foi uma auditoria carta a carta).
+
+## Myriad Landscape e terreno tapped em T1/T2 (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
+
+Pedido: *"Quero que vc corrija o Myriad Landscape e o terreno tapped em T1 e T2 no simulador do Megatron"*. Código: `megatron_goldfish_v1.py` (antes = commit `22d0ed2`). Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-myriad-e-tapped-t1t2/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** no Scryfall (2026-10-03) **antes** de escrever o código (Regra #3); resposta bruta em
+`resultados-ab/2026-10-03-myriad-e-tapped-t1t2/dados/rulings_Myriad_Landscape.json`; a carta já estava em `scryfall-cache/oracle-cache.json`.
+
+**Oráculo (Myriad Landscape, impressão consultada: Edge of Eternities Commander, eoc, 2025-08-01; legal em Commander):** Land. *This land enters tapped. {T}: Add {C}. {2}, {T}, Sacrifice this land: Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.*
+**Ruling (1, 2018-03-16):** *You can choose to find one basic land card with Myriad Landscape's last ability.*
+
+| Cláusula do oráculo | Status | Onde / como |
+|---|---|---|
+| "Land" | ✅ | `LAND_NAMES` |
+| "This land enters tapped." | ✅ | `ETB_TAPPED_LANDS` + `land_enters_tapped()` (fonte única da regra de "entra tapped", usada por `play_land`, pela escolha do terreno e pela simulação a seco) |
+| "{T}: Add {C}." | ✅ | conta 1 mana genérica em `total_mana` e **não** é fonte de W/B/R (`produces=set()`: {C} não é cor) |
+| "{2}, {T}, Sacrifice this land: …" (custo) | 🐛 corrigido | `try_myriad_landscape`: paga {2} e o {T} (o próprio {C} fica indisponível: gasta 3 de mana no modelo fungível); não ativa no turno em que entrou (entra tapped, não paga o {T}) |
+| "… Sacrifice this land" | 🐛 corrigido | `sacrifice()` central: vai ao cemitério (conta como permanente em `count_permanent_cards`: "descended" do Brass's Tunnel-Grinder) |
+| "Search your library for up to two basic land cards that share a land type" | 🐛 corrigido | até 2 do **mesmo** tipo (Plains, Swamp ou Mountain: +2 fontes de UMA cor, +1 terreno líquido), removidos de `state.library`; "up to": com 1 só no grimório, busca 1 (ruling); sem nenhum, não ativa |
+| "put them onto the battlefield tapped" | ✅ por posição de fase | a ativação fica depois da 2ª main phase: os básicos entram tapped e desviram no próximo untap (`play_turn` reinicia o turno); teste M14 confirma que rendem mana no turno seguinte |
+| "then shuffle" | 🐛 corrigido | `state.rng.shuffle(state.library)` (sem `rng`, não embaralha) |
+| Ruling 2018-03-16 | ✅ | teste M5 |
+
+**Convenções do piloto (não são oráculo):** só ativa com mana que sobraria (remaining ≥3), nunca no lugar de conjurar; escolhe o tipo de maior déficit de fonte (cor que o comandante ainda exige ou maior pip de uma carta da mão), depois 2 em vez de 1, depois o de menos fontes.
+Ativar antes de conjurar (acelerar o turno seguinte) ou no fim do turno do oponente **não** foi modelado nem medido; em mana é equivalente ao fim do meu turno, e só o Tunnel-Grinder (que checa "descended" no meu end step) distingue.
+
+**Terreno tapped em T1/T2 (comportamento do piloto):** `choose_land_to_play`. Em T1..T`TAPPED_LAND_FIRST_MAX_TURN` (=2, como pedido), com um terreno tapped e um untapped na mão, joga o tapped, **salvo** se o tapped fizer perder uma jogada de desenvolvimento
+(simulação a seco `dry_run_mana_spent`: comandante primeiro, depois rocks e o resto pela ordem do `main_phase`, o rock conjurado soma mana aos casts seguintes; **só permanentes contam**: Swords/Path/Vandalblast sem alvo no goldfish e Faithless Looting não seguram um terreno tapped).
+**Conferência da regra "entra tapped" contra o oráculo ao vivo (cache) dos 16 não-básicos da lista:** Myriad Landscape, Nomad Outpost, Rocky Tar Pit, Susur Secundi, Smoldering Marsh (se <2 básicos), Sunlit Marsh entram tapped no oráculo e estão em `ETB_TAPPED_LANDS`;
+Badlands, Command Tower, Exotic/Forbidden Orchard, Fountainport, Plateau, Scrubland, Shadowblood Ridge entram untapped e não estão. **Evolving Wilds e Terramorphic Expanse** entram untapped no oráculo, mas estão no conjunto de propósito: o simulador as trata como fetch simplificada
+(terreno que não dá mana no turno em que entra e vira fonte W/B/R no seguinte), que em mana é exatamente o efeito de "joga e sacrifica na hora, o básico entra tapped".
+
+**Regra #3 (conceito compartilhado "terreno que entrou tapped"):** grep de `tapped_land_this_turn` no `.py` final: definição no `GameState`; `total_mana` (desconta 1 terreno); `color_sources` (exclui a fonte); `choose_land_to_play`/`dry_run_mana_spent` (só na cópia rasa);
+`play_land` (grava); `try_myriad_landscape` (guarda: não ativa no turno em que o Myriad entrou); `play_turn` (zera). O campo guarda **um** terreno por turno; a nova habilidade nunca precisa de mais de um porque os básicos entram no fim do turno. `LAND_NAMES`/`ETB_TAPPED_LANDS`: 14 usos conferidos.
+**Regra #6 (ordem de fases):** `play_turn` = `draw → try_bahamut_saga_tick → play_land → main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → try_myriad_landscape → end_step`. A chamada nova fica **depois** de toda a mana do turno (a mana do Myriad nunca disputa um cast)
+e **antes** do `end_step` (o gatilho do Tunnel-Grinder lá checa "descended"). Teste M13, em `play_turn` completo, confirma o contador sobe com a habilidade ligada e não sobe desligada (uma 1ª versão do teste falhou porque o flip do Megatron sacrificava o Tunnel-Grinder como combustível: erro do teste, não do código).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 34 terrenos); bit-identidade com as duas correções desligadas, 20.000+20.000 partidas (padrão e resiliência); verificação cruzada da política cega contra o `early_all` do Power Depot (outro código), 10.000/10.000 partidas;
+regressão 140.000 partidas, 0 exceções, 0 violações de conservação de cartas; 49 testes dirigidos 49/49; A/B pareado N=2.000 (padrão e resiliência) e N=10.000 com a métrica nova se movendo no sentido esperado (mana T2/T3 +0,09/+0,10; terrenos +0,15 com 15,4% de ativações = esperado). Números no `goldfish-log.md`.
+
+**[Atualização 2026-10-03, 2ª rodada: (1) o mulligan e (2) as fetches foram corrigidos. Ver a seção "London Mulligan e fetch lands" no topo deste arquivo.]**
+**Achados laterais (não corrigidos):** (1) o London Mulligan põe as cartas devolvidas no **topo** da biblioteca (`library.insert(0, worst)`), 21,4% das mãos (2+ mulligans; `resumos/mulligan_topo.txt`); (2) **fetches** (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit) seguem como fonte fixa, sem sacrifício/busca/embaralhamento: modelável, não é 📊, fica como pendência da Regra #1.
+
+**Classes da taxonomia da Regra #1 varridas (e só elas):** habilidade ativada com custo de mana + {T} + sacrifício (Myriad), busca sem a restrição de tipo real (par que compartilha tipo, "up to two"), conceito compartilhado (terreno tapped, carta no cemitério = permanente), ordem de fases (Regra #6), custo real deduzido (3 de mana).
+**Não varridas:** as demais 15 classes e as outras cartas do `.py` (esta rodada não foi uma auditoria carta a carta).
+
+## Power Depot (candidata, implementada só no harness) — oráculo, rulings e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-power-depot/orquestracao/pd_harness.py`
+(monkeypatch; `megatron_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03; Modern Horizons 2, reimpresso em Edge of Eternities;
+legal em Commander, não é Game Changer, ~US$0,60) e salvo em `scryfall-cache/oracle-cache.json`; resposta bruta e rulings em
+`resultados-ab/2026-10-03-power-depot/dados/rulings_Power_Depot.json` (e as rulings das cartas de contexto em `rulings_contexto_megatron_ultron_pia.json`).
+
+**Oráculo:** Artifact Land. *This land enters tapped. {T}: Add {C}. {T}: Add one mana of any color. Spend this mana only to cast artifact spells or activate abilities of artifacts. Modular 1.*
+**Rulings do Power Depot (4, 2021-06-18):** (1) é terreno, só pode ser jogado como terreno, não é conjurado; (2) entra com um contador +1/+1 que não faz nada enquanto for terreno; ao ir ao cemitério
+vindo do campo você pode pôr os contadores num artefato-criatura alvo, quaisquer que sejam os tipos do Depot naquele momento; (3) se for criatura e morrer por contadores −1/−1, o Modular põe tantos contadores quanto
+tinha; (4) o mana do 3º efeito não paga habilidades de cartas-artefato em outras zonas (cycling, unearth).
+**Rulings que decidem a leitura em outras cartas (Megatron, Tyrant // Destructive Force, 18):** "More Than Meets the Eye" lança a carta **convertida** (a magia na pilha é a face de trás, um artefato Vehicle) e é custo
+alternativo; o MV continua o da face frontal; "Living metal" faz o Vehicle ser artefato-criatura só no meu turno. Logo **as duas faces do comandante são magias-artefato**.
+**Pia's Revolution (5):** dispara por artefato **não-token** que vá ao SEU cemitério vindo do campo, de quem quer que o controlasse. **Scrap Trawler (4):** o alvo precisa ter MV menor que o do artefato que foi ao cemitério. **Ultron: sem rulings.**
+
+| Cláusula do oráculo | Status | Como entra no harness |
+|---|---|---|
+| "Artifact Land" (é terreno e é artefato) | ✅ terreno / ✅ parcial artefato | conta como terreno em `LAND_NAMES`/`total_mana`; é artefato só nos efeitos listados abaixo (Junker, combustível por política); **não** entra nas piscinas `is_artifact_card()` do `.py` por política (ver Regra #3) |
+| "This land enters tapped." | ✅ | `ETB_TAPPED_LANDS` + `tapped_land_this_turn` (não rende mana no turno em que entra) |
+| "{T}: Add {C}." | ✅ | conta como 1 mana qualquer em `total_mana` |
+| "{T}: any color, only for artifact spells / abilities of artifacts" | ✅ magias / ✅ habilidades (nenhuma da lista precisa) | `has_color_sources_for` do harness: para magia-ARTEFATO, cada Depot untapped cobre **um** pip faltante; para não-artefato, nada. Varredura por script: **nenhuma habilidade ativada** de artefato da lista tem mana colorido no custo (`resumos/enumeracao.txt` §6) |
+| "Modular 1" (contador entra; ao ir ao cemitério, +1/+1 num artefato-criatura alvo) | 📊 não modelado | o contador é inócuo em campo (ruling); o efeito só ocorre se o Depot for sacrificado/destruído e há 17 artefatos-criatura na lista (Megatron incluído) como alvo; não afeta nenhuma métrica da rodada |
+| ruling: pode ser jogado só como terreno | ✅ | só pela jogada de terreno (`play_land`), nunca por `cast_card` |
+| Demonic Junker "Affinity for artifacts" | ✅ | cada Depot em campo reduz {1} (o simulador só conta cartas com tag `artifact`) |
+| Pia's Revolution devolvendo o Depot à mão (artefato não-token que vai ao cemitério) | 📊 não modelado | o `.py` trata como artefato só cartas com tag; com o Depot sacrificado, o retorno à mão e a nova jogada como terreno **não** entram (piso) |
+| Ultron copiando o Depot por {2} (terreno tapped que vira 2/2) | 📊 não modelado | o simulador só copia artefato com MV≥3 ou rock/Moxite (`CHEAP_WORTH_COPYING_TAGS`); sem ruling oficial do Ultron sobre o token-terreno |
+
+**Regra #3 (conceito compartilhado "artefato"):** `is_artifact_card()` tem 33 usos no `.py` além da definição (conferido por grep): piscinas de cemitério (Welder, Engineer, Trash for Treasure, Scrap Trawler, Junk Diver, Myr Retriever,
+Ironsoul Enforcer, Mishra), combustível do Megatron (`best_megatron_fuel`: maior MV), fodder (`best_weld_fodder`: menor MV), Ultron (`artifact_etb_hooks`), reduções de custo (Junker, Metalwork Colossus),
+`daretti_rocketeer` (poder = maior MV), `pia_revolution` (via `sacrifice`). Marcar o Depot como artefato no `CARD_DB` o jogaria em TODAS essas piscinas de uma vez (o fodder de menor MV o escolheria à toa, sacrificando terreno
+no T2); por isso o harness o mantém fora por política e liga só os efeitos reais com decisão deliberada: Junker (sempre), combustível de Welder/Engineer/Trash com ≥7 terrenos em campo (`fodder7`).
+O Depot como combustível do Megatron renderia 0 de dano (MV 0): fora de propósito. Ruling do Megatron consultado antes de escrever o código.
+**Regra #6 (ordem de fases):** `play_turn` = `draw → try_bahamut_saga_tick → play_land → main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → end_step`; o terreno é jogado antes do 1º main, então um Depot
+jogado no turno N só paga mana de N+1 em diante (tapped), e a fixação para o comandante vale a partir do N+1.
+
+**[Atualização 2026-10-03, mesma data, depois: (a) Myriad Landscape e (b) terreno tapped em T1/T2 foram corrigidos; as fetches seguem simplificadas. Ver a seção "Myriad Landscape e terreno tapped em T1/T2" no topo deste arquivo.]**
+**Achado lateral do simulador (não corrigido nesta rodada, Regra #1):** (a) a **habilidade do Myriad Landscape** ({2},{T}, sacrifique: busca até dois básicos para o campo, tapped) **não é modelada**: o `.py` o trata como "terreno tapped que dá {C}" (`produces=set()`); o mesmo vale pelas fetches (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit), modeladas como fonte fixa W/B/R já em campo. Comparar o Depot contra esses slots **favorece o Depot**.
+(b) o piloto original joga terrenos por cor faltante e, em empate, pela ordem da mão: **não joga terreno tapped no T1/T2** como um jogador faria. Com a política deliberada `early_all` (qualquer terreno tapped primeiro no T1/T2, na base e nas variantes) o comandante conjurado até T4 sobe de 77,8% para 82,6% e o dano médio de 83,4 para 85,1 (N=10.000, mesmas sementes): é um piso do simulador, não um limite do deck.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** conceito compartilhado (artefato, terreno, cor de magia-artefato), custo alternativo (MTMTE do comandante), gatilho de fase (ordem de `play_land`), custo dinâmico (Junker/Metalwork), tipo (artefato × terreno).
+**Não varridas:** auditoria carta-a-carta do `.py` (não era o pedido); Modular, Pia's Revolution e Ultron com o Depot (📊 acima); oponente real.
+
+## Inevitable Defeat (candidata, implementada só no harness) — oráculo, ruling e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-inevitable-defeat/orquestracao/meg_harness.py`
+(monkeypatch; `megatron_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03) e salvo em `scryfall-cache/oracle-cache.json`;
+resposta bruta e rulings em `resultados-ab/2026-10-03-inevitable-defeat/dados/rulings_Inevitable_Defeat.json`.
+
+**Oráculo:** {1}{R}{W}{B}, Instant. *This spell can't be countered. Exile target nonland permanent. Its controller loses 3 life and you gain 3 life.*
+
+**Rulings (1):** 2025-04-04 — se o alvo for ilegal quando a magia tenta resolver, ela não resolve e nenhum efeito acontece: ninguém ganha nem perde vida.
+
+| Cláusula do oráculo | Status | Como entra no harness |
+|---|---|---|
+| "This spell can't be countered." | 📊 estrutural | o goldfish não tem contramágica de oponente; sem efeito mensurável |
+| "Exile target nonland permanent." | 📊 estrutural | exílio de permanente de OPONENTE (não modelado); conta como spell de interação (tag `interaction`) |
+| "Its controller loses 3 life" | ✅ | `proxy_drain(state, 3)`: alimenta `life_lost_by_opponents_this_turn`, que o Megatron lê no pós-combate |
+| "and you gain 3 life." | ✅ | `gain_life(state, 3)` |
+| ruling 2025-04-04 (alvo ilegal ⇒ nada acontece) | 📊 estrutural | o goldfish assume alvo sempre legal |
+| custo {1}{R}{W}{B} | ✅ | `pips={"R":1,"W":1,"B":1}`, validado por `can_cast`/`has_color_sources_for` do próprio simulador |
+
+**Regra #3 (conceitos compartilhados que a carta lê):** (a) "vida perdida pelos oponentes neste turno" é lido só por `megatron_postcombat`
+(conferido por grep: `life_lost_by_opponents_this_turn` aparece em `proxy_drain`, no reset de `play_turn` e em `megatron_postcombat`); (b) a carta
+não é artefato nem criatura, então nenhum conceito de tipo (`is_artifact`, "artifact card" de Welder/Engineer/Trash for Treasure) a toca.
+**Regra #6 (ordem de fases):** `play_turn` = `try_portal_phyrexia_upkeep → draw → try_bahamut_saga_tick → play_land → main_phase → try_equip_haste →
+combat_step → megatron_postcombat → main_phase → end_step`; a Defeat só alimenta o flip se resolver num main 1 ou no combate do mesmo turno.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** custo alternativo (nenhum no oráculo), gatilho de fase nomeado (nenhum na carta;
+o do Megatron foi conferido), vida como recurso (ganho e perda modelados), tipo (não é artefato/criatura). **Não varridas:** auditoria carta-a-carta do `.py`
+(não era o pedido), contramágica/oponente real (📊).
+
+## CR 903.9a: comandante DISPARA gatilhos de morte de verdade antes de ir pra zona de comando — 2026-09-21
+
+**Gatilho:** usuário perguntou diretamente, depois de eu documentar em
+TODOS os 9 decks desta sessão que "o comandante nunca dispara gatilho
+de morte": *"O comandante não morre e ao invés de ir pro cemitério,
+pode ser movido de volta a zona de comando? Pq até onde sei,
+comandantes podem ser mortos sim! Confere essa regra com muita calma e
+atenção!"*
+
+**Erro real cometido (de memória, nunca verificado contra o texto
+oficial):** eu tratava CR 903.9 como um único efeito de substituição
+que sempre desvia o comandante pra zona de comando, nunca disparando
+gatilho de morte de outras cartas. Confirmado via texto oficial
+(`rules-cache/comprehensive-rules.txt`, agora cacheado localmente —
+Regra 18 de `references/user-standing-rules.md`) que são 2 regras
+diferentes: **903.9b** (mão/biblioteca) é substituição de verdade;
+**903.9a** (cemitério/exílio — o caso de morte/destruição) é **AÇÃO
+BASEADA EM ESTADO** (CR 704), não substituição — o comandante vai pro
+cemitério DE VERDADE primeiro (CR 700.4, "dies"), e só DEPOIS o dono
+PODE escolher movê-lo pra zona de comando. Confirmado de forma
+independente: o motor open-source "Mage" tinha o mesmo bug documentado
+e corrigido (issue #6866).
+
+**Corrigido em `sacrifice()`:** o comandante agora passa pelo mesmo
+caminho de "vai pro cemitério" que qualquer artefato/criatura — Scrap
+Trawler (evento "artefato put into graveyard", não exige que o
+Megatron continue lá depois), `death_trigger` (sem caso próprio pro
+comandante, no-op seguro), Rakdos (baseado só no MV, sem interação com
+o cemitério) todos disparam normalmente. **Pia's Revolution e o
+emblema do Daretti (-10) ficam de fora de propósito**: os dois agem
+sobre "that card" especificamente, e a ordem real (CR 704.3 — ações
+baseadas em estado são checadas ANTES de gatilhos entrarem na pilha)
+significa que o comandante já foi pra zona de comando antes dessas 2
+resolverem — não há mais "that card" no cemitério pra elas agirem.
+
+**Achado real durante a validação:** esta é a PRIMEIRA correção da
+sessão nesta categoria onde o modo PADRÃO também muda (não só
+resiliência) — o próprio combo do deck (Chandra's Ignition, "each
+other creature" também atinge o Megatron) já sacrifica o comandante em
+modo padrão. Divergência real e pequena (5/5000 seeds, 0,10%,
+`recursion_events_total` médio 2,883→2,884) — mesmo padrão de "RNG
+ripple esperado" já documentado pro fix do Blightsteel Colossus nesta
+sessão, validado por comparação agregada A/B em vez de bit-identidade
+(bit-identidade não é o critério certo aqui, já que o comportamento
+antigo estava genuinamente errado).
+
+**Validação:** regressão de 20.000 partidas em modo padrão + 20.000 em
+modo resiliência, 0 exceções nas duas + 5 testes dirigidos (Scrap
+Trawler dispara com o comandante morrendo; Pia's Revolution NÃO
+devolve o comandante; Rakdos dispara baseado no MV; emblema do Daretti
+não enfileira o comandante; taxa de recast preservada).
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** *"Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…"* — até esta rodada, a
+única categoria de "board wipe" do modo de resiliência era "destroy all
+creatures". Cartas reais de mesa (Vandalblast com overload, By Force,
+metade de Austere Command, modo de Farewell) destroem TODOS os
+artefatos ou TODOS os encantamentos, categorias de efeito
+completamente diferentes que nunca estavam representadas.
+
+**Achado real específico deste deck:** Megatron é artefato em QUALQUER
+face — confirmado via Scryfall, as 2 faces reais são "Legendary
+Artifact Creature" (Tyrant) e "Legendary Artifact" (Destructive
+Force/Vehicle), `tags={"artifact", ...}` fixo no `CARD_DB`,
+independente de `state.megatron_face`. Isso é DIFERENTE do wipe de
+criatura (que só a alcança na face Tyrant, via a exceção real de
+Living Metal) — um wipe de artefato a alcança em qualquer face, porque
+Vandalblast não se importa se ela é criatura no momento, só que é um
+artefato. Testado diretamente (`try_smart_opponent_artifact_wipe` com
+Megatron na face Vehicle → ela é um alvo legal; `try_smart_opponent_
+wipe` no mesmo cenário → nunca dispara, sem alvo).
+
+**Implementado (1ª versão, SUPERSEDIDA no mesmo dia — ver correção
+abaixo):** inicialmente `try_smart_opponent_artifact_wipe()`/`try_
+smart_opponent_enchantment_wipe()` como 2 funções NOVAS, cada uma com
+sua própria rolagem independente (`ARTIFACT_WIPE_CHANCE_FACTOR = 0.2`,
+`ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15`), chamadas as 3 (`try_smart_
+opponent_wipe` + as 2 novas) sem exclusão mútua dentro de `try_smart_
+opponent_turn`.
+
+### Correção de design: rolagens independentes permitiam 2-3 sweepers no MESMO turno de oponente — 2026-09-20
+
+**Gatilho:** usuário apontou o problema direto na sequência: *"Obviamente
+tem que ter uma alternância de remoções, aleatória, até pq wipes de
+criaturas são muito mais comuns que remoção de artefatos e
+encantamentos."* Com 3 rolagens independentes, um único turno de
+oponente podia (embora raro) disparar "destroy all creatures" E
+"destroy all artifacts" ao mesmo tempo — nenhum oponente real de mesa
+conjura 2 sweepers no mesmo turno. Além disso, tratar os 3 tipos como
+igualmente prováveis contraria a frequência real de decks de Commander
+(sweeper de criatura é MUITO mais comum que os outros 2 tipos).
+
+**Correção:** unificados de volta numa ÚNICA função `try_smart_
+opponent_wipe()`, em 2 passos: 1) rola 1x se ALGUM wipe acontece esse
+turno (`chance = interaction_chance() * TOTAL_WIPE_CHANCE_FACTOR`, onde
+`TOTAL_WIPE_CHANCE_FACTOR = soma dos 3 pesos = 0.75`); 2) SÓ se disparar,
+escolhe qual TIPO via `state.interaction_rng.choices()` ponderado pelos
+mesmos 3 fatores (`WIPE_TYPE_WEIGHTS = {"creature": 0.4, "artifact":
+0.2, "enchantment": 0.15}`), restrito aos tipos com pelo menos 1 alvo
+legal em campo (nunca "desperdiça" a escolha numa categoria vazia). No
+máximo 1 tipo de sweeper por turno de oponente, exatamente como um
+oponente real jogaria.
+
+4 encantamentos reais no deck (Sneak Attack, Pia's Revolution, Warstorm
+Surge, Black Market Connections) — motores de valor de verdade, agora
+alcançáveis. A função delega pra `sacrifice(is_own_sacrifice=False)`, o
+mesmo chokepoint central de sempre — Blightsteel Colossus (artifact
+creature via tag, `ctype="creature"` + `"artifact"` em `tags`) continua
+corretamente redirecionado pro shuffle-into-library mesmo quando morre
+por wipe de artefato. Se o tipo escolhido não for "creature" mas algum
+permanente destruído TAMBÉM for uma criatura de verdade,
+`state.wiped_this_round` é setado igual — a causa nomeada não muda a
+consequência real pro combate. Megatron na face Vehicle: excluído dos
+candidatos de criatura (mesma exceção de Living Metal de sempre), mas
+alvo legal de artifact wipe em qualquer face (confirmado via Scryfall —
+"Legendary Artifact Creature"/"Legendary Artifact" nas 2 faces).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (3.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+5 testes dirigidos: (a) no máximo 1 tipo de wipe dispara por chamada
+(0 violações em 2.000 chamadas); (b) distribuição ponderada bate com os
+pesos relativos quando os 3 tipos têm alvo puro disponível (creature
+53,6% vs. esperado 53,3%; artifact 26,5% vs. 26,7%; enchantment 19,8%
+vs. 20,0%, todos dentro de 3pp); (c) Megatron/Vehicle nunca é alvo de
+wipe de criatura mas sempre de artifact wipe quando escolhido (500/500
+chamadas corretas); (d) Blightsteel Colossus como único artefato em
+campo é corretamente atingido por artifact wipe E seta `wiped_this_
+round` (955/955 disparos); (e) com só 1 tipo tendo alvo legal, esse
+tipo é sempre escolhido (500/500).
+
+**Resultado (A/B 2000 jogos mesma seed_base, antes = commit `8b84daf`
+— só wipe de criatura, depois = design unificado final com os 3
+tipos):** % de jogos com pelo menos 1 wipe de qualquer tipo sobe de
+35,5% pra 62,9%. Avg wipes totais por jogo: 0,402 → 0,871. Dos jogos
+"depois": 34,1% sofreram pelo menos 1 artifact wipe, 5,9% pelo menos 1
+enchantment wipe (creature wipe continua dominante, como esperado pela
+ponderação 0.4/0.2/0.15).
+
+## Bug de design: modelo assumia 100% da mesa mirando em mim, todo turno, de todo oponente — 2026-09-20
+
+**Gatilho:** usuário perguntou diretamente, depois de ver a 2ª correção
+de orquestração de turno: *"Vc levou em conta, como no modelo do
+Archidekt, que com 3 oponentes nem todo turno meu deck será o alvo de
+interação dos oponentes? [...] Pq se sempre for 3 contra 1, aí não
+consigo fazer nada, nunca!"*
+
+**Medição real antes de mexer em qualquer código** (instrumentação
+direta, não estimativa): rodei os 3 decks contando, por rodada a partir
+do turno 3, se PELO MENOS 1 dos 6 tipos de interação (ataque, remoção,
+discard, wipe, GY wipe, GY snipe) disparava contra mim.
+
+| Deck | % de rodadas com ZERO interação (antes) |
+|---|---|
+| Megatron | 20,8% |
+| Ur-Dragon | 21,8% |
+| Hei Bai | 11,6% |
+
+Ou seja, **78-88% das rodadas tinham pelo menos 1 evento contra mim** —
+quase o dobro da calibração original de 2026-09-16 (quando as 6
+categorias eram roladas 1x por rodada, agregando os 3 oponentes num só
+`interaction_chance()`): recalculando esse cenário hipotético de
+"1 rolagem agregada" com os dados reais de jogo, a taxa de rodada livre
+subia pra 48,1%.
+
+**Causa raiz:** a 1ª correção de orquestração de turno desta sessão
+(`try_smart_opponent_turn` simulando `NUM_OPPONENTS = 3` turnos de
+oponente reais por rodada) passou a rolar a MESMA fórmula
+`interaction_chance()`, sem nenhuma escala, 3 vezes por rodada em vez
+de 1 — dobrando a pressão agregada sem querer. Documentei isso na hora
+como "consequência genuína da correção" mas nunca chequei se ainda
+fazia sentido pro pod real do usuário. Mais fundo que isso: **o modelo
+nunca teve conceito nenhum de "esse oponente está de olho em outra
+coisa esse turno"** — cada um dos 3 turnos de oponente simulados
+tentava as 6 categorias incondicionalmente, como se 100% da hostilidade
+da mesa mirasse sempre em mim.
+
+**Opções levantadas e decisão do usuário:** apresentei 3 caminhos —
+(a) só reescalar `interaction_chance()` pra baixo, (b) um gate explícito
+de "atenção do oponente" separado das 6 categorias, (c) manter como
+está (mesa de 4 real gera mais pressão que o "oponente" genérico do
+Archidekt mesmo). Usuário escolheu **(b) gate explícito**.
+
+**Corrigido:** nova constante `OPPONENT_ATTENTION_CHANCE = 1.0 /
+NUM_OPPONENTS` (1/3 ≈ 0,333) — raciocínio: num turno de oponente
+qualquer, há 3 alvos possíveis pra atenção dele (eu e os outros 2
+oponentes que este simulador não modela o board), então por simetria a
+chance BASE de que aquele turno seja sobre MIM é 1/NUM_OPPONENTS, antes
+de qualquer ajuste por ameaça de board real (que já fica dentro de
+`interaction_chance()` via `board_impact`, intocado). `try_smart_
+opponent_turn()` agora rola esse gate 1x no INÍCIO, antes de qualquer
+uma das 6 categorias — se falhar, o oponente gastou o turno com outra
+coisa (desenvolver o próprio board, atacar outro oponente, segurar mana
+pro próprio plano) e nenhuma categoria é sequer checada. Ajustável:
+documentado no comentário da constante que uma mesa real onde este
+deck é sempre o alvo óbvio pode justificar valor mais alto.
+
+**Validação:**
+- Modo padrão confirmado 100% bit-idêntico ao HEAD anterior nos 3 decks
+  (5.000 seeds cada, campos-chave comparados).
+- Regressão de 20.000 partidas em modo resiliência nos 3 decks, 0
+  exceções.
+- Taxa de "rodada com zero interação" remedida depois do gate (3.000
+  seeds Megatron, 2.000 Ur-Dragon/Hei Bai):
+
+| Deck | Antes do gate | Depois do gate |
+|---|---|---|
+| Megatron | 20,8% | 57,9% |
+| Ur-Dragon | 21,8% | 58,7% |
+| Hei Bai | 11,6% | 50,1% |
+
+**Resultado (A/B mesma seed, 2000 jogos, antes/depois do gate):**
+
+| Métrica | Megatron antes → depois | Ur-Dragon antes → depois | Hei Bai antes → depois |
+|---|---|---|---|
+| Avg ataques de oponente sofridos | 3,16 → 1,21 | 2,98 → 1,19 | 4,01 → 1,47 |
+| Avg vida final | 33,76 → 36,56 | 35,28 → 38,14 | 33,69 → 37,67 |
+| Avg dano proxy (só Megatron) | 49,16 → 65,64 | — | — |
+
+Mesma correção aplicada de forma idêntica nos 3 decks — ver
+`checklist-oraculo.md` de Ur-Dragon e Hei Bai pros números completos de
+cada um.
+
+## Bug real de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira, não só pro próprio turno do wiper — 2026-09-20
+
+**Gatilho:** usuário apontou, na sequência imediata da correção anterior
+(rolagem 1x/turno-meu → `NUM_OPPONENTS` turnos de oponente reais):
+*"Na verdade se jogador A faz wipe, jogador C não tem como atacar até
+voltar ao turno do jogador A, a não ser no caso de haste!"* — a correção
+anterior só tornava wipe e ataque mutuamente exclusivos dentro do turno
+do MESMO oponente que wipou; ainda deixava um oponente POSTERIOR na
+mesma rodada atacar normalmente, o que é errado porque um board wipe é
+**simétrico** (destrói as criaturas de TODOS na mesa, não só as minhas)
+— então nenhum oponente da mesma rodada tem criatura pra atacar depois
+de um wipe, salvo com haste.
+
+**Corrigido:** novo campo `state.wiped_this_round: bool`, setado por
+`try_smart_opponent_wipe()` no momento em que o wipe realmente dispara,
+e resetado pra `False` 1x por rodada em `simulate_one_with_interaction()`
+(antes do loop de `NUM_OPPONENTS`). `try_smart_opponent_attack()` agora
+lê esse flag e reduz (nunca zera) a própria chance via
+`POST_WIPE_ATTACK_HASTE_FACTOR = 0.15` sempre que ele estiver ligado —
+cobre uniformemente tanto o turno do próprio wiper (o flag já está
+`True` quando o ataque dele é checado, já que o wipe roda primeiro
+dentro do mesmo `try_smart_opponent_turn`) quanto qualquer oponente
+posterior na mesma rodada. O gate manual antigo (`if not wiped: try_
+smart_opponent_attack(...)`) foi removido de `try_smart_opponent_turn()`
+porque ficou redundante — o próprio `try_smart_opponent_attack()` agora
+se auto-regula pelo flag em vez de depender de um `if` externo que só
+cobria o caso do mesmo turno.
+
+Chance reduzida, nunca zerada, por decisão direta da Regra #1 do
+CLAUDE.md: só impossibilidade estrutural justifica não modelar algo, e
+um atacante com haste conjurado DEPOIS do wipe é fisicamente possível —
+zerar o ataque por completo seria julgamento de valor, não regra real.
+
+**Validação:**
+- Teste dirigido (20.000 rolagens de `try_smart_opponent_attack`,
+  metade com `wiped_this_round=True` fixo, metade com `False`) — taxa
+  de ataque com o flag ligado caiu pra ~13,5% da taxa base, bem próximo
+  do `POST_WIPE_ATTACK_HASTE_FACTOR=0.15` esperado.
+- Teste dirigido confirmando que `try_smart_opponent_wipe()` seta
+  `wiped_this_round=True` no exato momento em que dispara (não antes).
+- Teste dirigido confirmando que o flag reseta corretamente entre
+  rodadas (`simulate_one_with_interaction` zera antes de cada rodada
+  nova, incluindo o branch de `extra_turns_pending`).
+- Regressão de 20.000 partidas no modo resiliência, **0 exceções**.
+- Modo padrão (`simulate_one`/`run_batch`) confirmado **100%
+  bit-idêntico** ao HEAD anterior a esta correção, 5.000 seeds
+  comparadas campo a campo (`turn`, `life`, `proxy_damage_total`,
+  `commander_cast_count`, `attackers_total_all_turns`,
+  `library_emptied`, `megatron_face`) — o diff desta rodada toca só
+  `GameState.wiped_this_round`, `try_smart_opponent_wipe`, `try_smart_
+  opponent_attack`, `try_smart_opponent_turn` e `simulate_one_with_
+  interaction`, nenhuma função usada pelo modo padrão.
+
+**Resultado (batch 2000 jogos mesma seed, antes = só 1ª correção de
+orquestração / depois = + supressão simétrica pós-wipe):**
+
+| Métrica | Antes (wipe só bloqueia o próprio turno) | Depois (wipe suprime a rodada inteira, exceto haste) |
+|---|---|---|
+| Avg board wipes sofridos | 0,904 | 0,896 |
+| Avg ataques de oponente sofridos (total) | 3,156 | 3,028 |
+| Avg vida final | 33,76 | 33,94 |
+
+Mesma correção aplicada de forma idêntica no Ur-Dragon e no Hei Bai —
+ver `checklist-oraculo.md` de cada deck.
+
+## Bug real de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** usuário apontou, depois de ver o comparativo antes/depois:
+*"Wipes geralmente são sorceries, jogadas na main phase 1 ou 2, logo
+não há ataques normalmente nos turnos em que há wipes, só após uma
+rodada completa de turnos entre os 4 oponentes!"* — achado real de
+orquestração de turno (Regra #6 do CLAUDE.md: auditoria carta-a-carta
+não pega isso, só rodando o motor de verdade e questionando a
+sequência de fases).
+
+**O bug real:** as 6 categorias "fora do meu turno" (wipe, graveyard
+wipe, graveyard snipe, remoção, ataque, discard) rolavam TODAS juntas,
+1x por turno MEU, com o comentário explícito dizendo que o wipe rodava
+primeiro "de propósito" pra limpar bloqueadores antes do ataque —
+implicitamente tratando isso como o mesmo oponente, no mesmo turno,
+fazendo as duas coisas. Isso não bate com a regra real: board wipe é
+sorcery (main phase), ataque vem de criatura em campo — se o wipe for
+simétrico, as criaturas do PRÓPRIO oponente que wipou também morrem,
+então ele não ataca nesse mesmo turno.
+
+**Corrigido:** `try_smart_opponent_turn()` — nova função que simula O
+TURNO DE UM oponente por vez, chamada `NUM_OPPONENTS = 3` vezes por
+rodada (mesma premissa de mesa de 4 já documentada). Dentro de CADA
+turno de oponente, wipe e ataque agora são **mutuamente exclusivos**
+(`wiped = try_smart_opponent_wipe(state); if not wiped: try_smart_
+opponent_attack(state)`) — mas um wipe de um oponente ANTERIOR na
+rodada continua afetando corretamente o ataque de um oponente
+POSTERIOR na MESMA rodada, porque as chamadas usam o `state` em
+sequência (meus bloqueadores já estão mortos de verdade quando o
+próximo oponente ataca — não precisa fingir isso, é uma consequência
+real do modelo). As outras 4 categorias continuam podendo coexistir
+com wipe OU ataque no mesmo turno de oponente (um jogador real pode
+conjurar mais de 1 spell de main phase se tiver mana).
+
+**Consequência real na calibração:** como agora são 3 rolagens
+independentes por rodada (uma por oponente) em vez de 1 rolagem
+agregada, a frequência total de cada categoria por rodada sobe de
+verdade (cada `interaction_chance()` individual não mudou, só o número
+de vezes que é checada) — isso é uma correção genuína do modelo
+anterior estar SUBESTIMANDO a pressão real de uma mesa de 4, não uma
+inflação arbitrária.
+
+**Validação:** teste dirigido (2000 seeds confirmando que wipe e
+ataque NUNCA disparam juntos dentro de `try_smart_opponent_turn`,
+único achado True 100% das vezes; teste separado confirmando que o
+efeito do wipe persiste corretamente pro oponente seguinte na mesma
+rodada) + regressão de 20.000 partidas no modo resiliência, 0
+exceções + confirmado que o modo padrão continua intocado (nenhuma
+função compartilhada foi tocada nesta rodada, só o loop de
+`simulate_one_with_interaction`).
+
+**Resultado (batch 2000 jogos mesma seed, modelo antigo 1-rolagem vs. novo 3-turnos-de-oponente):**
+
+| Métrica | Modelo antigo (1 rolagem/rodada) | Modelo novo (3 turnos/rodada) |
+|---|---|---|
+| Avg board wipes sofridos | 0,44 | 0,89 |
+| Graveyard wipe sofrido (partidas) | 36,3% | 68,9% |
+| Avg remoções inteligentes sofridas | 0,60 | 0,84 |
+| Avg ataques de oponente sofridos | 0,86 | 2,54 |
+| Avg descartes forçados sofridos | 1,10 | 2,60 |
+| Avg dano/perda-de-vida proxy total | 63,57 | 48,90 |
+
+Mesma correção aplicada de forma idêntica no Ur-Dragon e no Hei Bai —
+ver `checklist-oraculo.md` de cada deck.
+
+## Comparativo antes/depois das extensões de resiliência desta sessão — 2026-09-20
+
+**Gatilho:** usuário pediu o mesmo comparativo antes/depois já feito
+pro Ur-Dragon e Hei Bai, usando a cópia de segurança
+`megatron_goldfish_v1_original.py` (commit `82dc479`, escolhido pelo
+usuário como o checkpoint "antes só das extensões de resiliência desta
+sessão" — mantém o fix do Cityscape Leveler e o registro da Partida
+#1, mas fica antes de discard/board wipe/counterspell/graveyard hate/
+fix do Blightsteel).
+
+**Diferença importante vs. Ur-Dragon/Hei Bai: aqui o GOLDFISH PADRÃO
+também mudou um pouco** — não é bit-idêntico como nos outros 2 decks.
+Motivo real: o fix central do Blightsteel Colossus (`put_into_
+graveyard()`) e a correção do Goblin Engineer (nunca mais busca o
+próprio Blightsteel) tocam funções usadas pelo `simulate_one`/
+`run_batch` padrão também, não só pelo modo de resiliência — a mudança
+é uma correção de bug real (Blightsteel indo pro cemitério quando o
+oráculo diz que nunca pode), já validada e documentada na rodada do
+fix, não uma regressão.
+
+**Resultado real (batch 2000 jogos mesma seed):**
+
+| Métrica (goldfish padrão) | Antes (82dc479) | Depois (atual) |
+|---|---|---|
+| Avg dano/perda-de-vida proxy total | 83,80 | 82,45 |
+| Avg conversões do Megatron | 6,92 | 6,80 |
+| Avg mana gerada pela conversão | 70,96 | 69,39 |
+| Nunca conjurado em 8 turnos | 4,5% | 4,6% |
+
+| Métrica (modo resiliência) | Antes (3 categorias) | Depois (7 categorias) |
+|---|---|---|
+| Avg remoções inteligentes sofridas | 0,77 | 0,60 |
+| Avg ataques sofridos / bloqueios com sucesso | 0,80 / 0,67 | 0,86 / 0,44 |
+| Avg counterspells sofridos | — | 0,07 |
+| Avg board wipes sofridos | — | 0,44 (3,54 criaturas perdidas quando dispara) |
+| Graveyard wipe sofrido (partidas) | — | 36,3% (máx. 1x/partida) |
+| Avg graveyard snipes sofridos | — | 0,45 |
+| Avg descartes forçados sofridos | — | 1,10 |
+| Avg dano/perda-de-vida proxy total | 78,02 | 63,57 |
+| Avg vida final | 36,04 | 36,04 |
+
+Direção esperada: dano proxy no modo resiliência caiu mais um terço
+(78,02→63,57) com as 4 categorias novas por cima das 3 que já
+existiam — bloqueios com sucesso despencaram (0,67→0,44, o board wipe
+limpa bloqueadores antes do ataque rolar, mesmo efeito já documentado
+na rodada do board wipe). Vida final ficou igual (36,04→36,04, mera
+coincidência de arredondamento — a vida só é afetada por ataque
+desbloqueado, que subiu de 0,80→0,86 sofridos, compensado por menos
+partidas chegando tão longe pela pressão adicional).
+
+## Modo de resiliência ganha graveyard hate (2 modelos) + fix central de Blightsteel Colossus em 7 pontos — 2026-09-20
+
+**Gatilho:** usuário apontou que graveyard hate real tem 2 modelos
+distintos — exílio em massa (Bojuka Bog, Soul-Guide Lantern) e exílio
+de carta única (Scavenging Ooze, Cease, "Hardened Veteran"). Antes de
+aceitar, busquei os 3 exemplos no Scryfall (Regra #1/#2): Scavenging
+Ooze e Cease confirmados reais (Cease: "Exile up to two target cards
+from a single graveyard..."); **"Hardened Veteran" não existe** —
+busca exata, fuzzy e por `flavor_name` no Scryfall não retornaram nada,
+então ficou de fora do design, sem ser incluído "de memória". Usuário
+confirmou a divisão e adicionou o insight decisivo: *"se o oponente
+gastar o Bojuka bog no 4º turno, não tem mais como repetir isso"* —
+ou seja, o modelo mass-exile precisa de um limite de 1x/partida, o
+modelo single-exile não.
+
+**Implementado — `try_smart_opponent_graveyard_wipe()`:** estilo Bojuka
+Bog, exila `state.graveyard` inteiro de uma vez. `state.graveyard_wipe_
+used` garante NO MÁXIMO 1 disparo por partida inteira (nunca de novo,
+mesmo que o cemitério se encha de novo depois) — modelo diferente das
+outras categorias (que representam um POOL de múltiplos oponentes/
+cópias hipotéticas); aqui é uma carta física única. `GRAVEYARD_WIPE_
+CHANCE_FACTOR = 0.4`, mesmo tier do board wipe de criatura.
+
+**Implementado — `try_smart_opponent_graveyard_snipe()`:** estilo
+Scavenging Ooze/Cease, exila 1 carta específica por instância, SEM
+flag de uso único (repetível todo turno, efeito real barato). Alvo
+SMART: sempre a maior MV entre criatura/artefato no cemitério —
+reaproveita o MESMO critério que `try_feldon`/`try_scarecrone`/Goblin
+Welder/Osgir já usam internamente pra escolher alvo de recursão (um
+oponente esperto sniparia exatamente o que a minha própria recursão
+mais quer de volta). `GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5`.
+
+**Sequência no turno:** wipe de criatura → graveyard wipe → graveyard
+snipe → remoção → ataque → discard. De propósito: criaturas mortas pelo
+wipe (vão pro cemitério via `sacrifice()`) ficam elegíveis pro
+graveyard hate NO MESMO TURNO — "pior turno possível" combinado.
+
+**Achado real e mais importante desta rodada — bug pré-existente
+exposto pela própria validação:** ao rodar o batch do graveyard snipe
+novo, o relatório mostrou "Blightsteel Colossus sniped do cemitério" —
+estado IMPOSSÍVEL pelo oráculo real ("If Blightsteel Colossus would be
+put into a graveyard from **anywhere**, reveal and shuffle into
+library instead"). O redirect já existia dentro de `sacrifice()` desde
+2026-09-02, mas **7 call sites diferentes** no arquivo mandavam carta
+pro cemitério direto via `state.graveyard.append()`/`.extend()`, sem
+passar por nenhum redirect:
+
+1. Melded Moxite (ETB discard)
+2. Faithless Looting (draw 2/discard 2)
+3. Limite de mão no `end_step`
+4. Daretti, Scrap Savant +2 ("discard up to two cards") — descarta os
+   2 primeiros da mão SEM filtro de MV nenhum, o mais exposto dos 3
+   discards "reais"
+5. `try_smart_opponent_discard` (resiliência, 2026-09-19) — alvo
+   puramente aleatório, sem NENHUMA proteção — foi o que tornou o bug
+   estatisticamente visível nos testes (os outros usam
+   `worst_discard_target`, que quase nunca escolheria o MV 12 mais
+   caro do deck como "pior carta")
+6. Goblin Engineer (tutor biblioteca→cemitério) — pior ainda: a lógica
+   de alvo já priorizava "maior MV", então escolheria o PRÓPRIO
+   Blightsteel de propósito e desperdiçaria a busca inteira (embaralha
+   de volta sem nenhum efeito)
+7. Improvise-mill de biblioteca (Saheeli's Directive) — `.extend()` em
+   vez de `.append()`, **não apareceu no primeiro grep** de
+   `state.graveyard.append(` — só foi achado instrumentando a lista do
+   cemitério em runtime e rastreando o traceback de toda inserção
+   (Regra #6: auditoria estática de texto tem ponto cego real,
+   precisa rodar o motor de verdade pra pegar tudo)
+
+**Corrigido:** `put_into_graveyard(state, name)` — função central nova
+(mesmo padrão do `sacrifice()`), redireciona Blightsteel Colossus pra
+biblioteca em vez do cemitério. Os 7 call sites acima foram trocados
+pra chamar essa função. Adicionalmente, o Goblin Engineer (site 6) teve
+o PRÓPRIO POOL de alvos corrigido pra excluir Blightsteel Colossus
+(`c != "Blightsteel Colossus"`) — não é só redirect de zona, é um alvo
+estrategicamente ruim pra escolher de propósito (um jogador esperto
+buscaria a 2ª maior MV em vez de desperdiçar a busca).
+
+**Validação:** 3 testes unitários dirigidos com biblioteca de tamanho
+realista (Daretti +2, Goblin Engineer, Combustible Gearhulk mill —
+todos confirmam Blightsteel nunca fica no cemitério, e o dano do
+Combustible Gearhulk continua contando o MV 12 dele normalmente, já
+que o mill aconteceu de verdade, só o destino mudou) + testes dos 2
+novos graveyard hate (mass wipe dispara 1x só mesmo com cemitério
+recheado depois; snipe sempre pega a maior MV, ignora token, repetível
+entre turnos) + **varredura de runtime com lista instrumentada**
+(subclasse de `list` rastreando `append`/`extend`, 3000 seeds, 0
+aparições) + regressão de **20.000 partidas em CADA modo (padrão e
+resiliência)**, 0 exceções, 0 ocorrências do bug nos dois. A/B 2000
+jogos mesma seed no modo padrão: bug era alcançável em 99/2000 partidas
+(4,95%) ANTES do fix, 0/2000 DEPOIS; dano proxy 83,80→82,45 (queda
+pequena e esperada — Blightsteel preso incorretamente no cemitério às
+vezes virava alvo de recursão que não deveria estar disponível).
+
+## Modo de resiliência ganha counterspell (4ª e última categoria) — 2026-09-19
+
+**Gatilho:** usuário confirmou "Faça" pra implementar a última categoria
+pendente do simulador de interação do Archidekt (ordem combinada:
+discard > board wipe > counterspell, as 2 primeiras já implementadas
+nesta mesma sessão).
+
+**Diferença estrutural das outras 3 categorias:** wipe/remoção/ataque/
+discard rolam 1x por turno DEPOIS de `play_turn()` inteiro terminar —
+representam o oponente reagindo fora do meu turno. Um counterspell só
+faz sentido no exato momento em que eu conjuro algo, DENTRO do meu
+turno — não dá pra "contra-atacar" um spell depois que o turno inteiro
+já passou. Por isso `try_smart_opponent_counter()` não mora no loop de
+`simulate_one_with_interaction` — é chamada direto de dentro de
+`cast_megatron()`, no ponto exato onde a mana é gasta e a resolução
+aconteceria.
+
+**Escopo (alvo fixo, mesma lógica de "oponente esperto" já usada na
+remoção):** só mira a conjuração do próprio Megatron — quase todo o
+plano do deck depende dele resolver (Warstorm Surge, conversão pra
+mana), então é o alvo óbvio de quem guarda interação. Outros spells
+(Chandra's Ignition, Blightsteel Colossus) ficam fora por enquanto,
+mesmo critério de escopo incremental das outras categorias.
+
+**Regra real aplicada:** a taxa de comandante (CR 903.10a) conta
+"vezes CONJURADO", não "vezes RESOLVIDO" — um Megatron contra-atacado
+ainda paga taxa extra na próxima tentativa. `cast_megatron()` já gasta
+a mana e incrementa `commander_cast_count` ANTES de checar o counter;
+só a entrada em campo (`battlefield.append`, `commander_in_play`,
+`commander_cast_turn`) fica condicionada a NÃO ter sido contra-atacado.
+`commander_cast_turn` só é setado numa resolução real — métrica de
+"turno de conjuração" não conta um cast que nunca chegou a resolver.
+
+**Risco real desta rodada (por que validei com tanto cuidado):**
+`cast_megatron()` é a MESMA função usada pelo goldfish padrão
+(`simulate_one`/`run_batch`) — ao contrário das 3 categorias
+anteriores (funções novas, só chamadas pelo modo de resiliência), esta
+mexeu numa função compartilhada. Rodei 5.000 seeds comparando
+`simulate_one` ANTES/DEPOIS desta mudança, campo a campo
+(`commander_cast_turn`, `megatron_conversions_total`,
+`megatron_mana_generated_total`, `proxy_damage_total`, `life`,
+`cards_drawn_extra`, `commander_cast_count`) — **0 diferenças**,
+confirmando que `try_smart_opponent_counter` retorna `False` de
+imediato sem `interaction_rng` e a refatoração (variável `face`
+extraída, reordenação do incremento de `commander_cast_count`) não
+mudou nenhum comportamento do modo padrão.
+
+**Implementado:**
+1. `state.smart_counters_total` / `state.smart_counter_log`.
+2. `COUNTERSPELL_CHANCE_FACTOR = 0.5` — fator intermediário entre
+   remoção (1.0x) e wipe (0.4x) sobre a mesma `interaction_chance()`.
+3. `try_smart_opponent_counter()` — mesma janela
+   (`INTERACTION_SETUP_TURNS`), retorna bool (alvo é sempre o mesmo,
+   não precisa de lista/nome como as outras).
+4. `cast_megatron()` reestruturado: mana gasta + taxa incrementada
+   primeiro, DEPOIS checa counter, só então resolve (entra em campo).
+5. `run_batch_with_interaction()` — nova linha (avg counters sofridos)
+   + turno médio de conjuração do Megatron QUE RESOLVEU + % que nunca
+   resolveu em N turnos (métrica que só faz sentido reportar agora que
+   existe uma forma real de Megatron NUNCA resolver no modo resiliência).
+
+**Validação:** 5 testes unitários isolados (gating sem rng/turno de
+setup; dispara e retorna True; `cast_megatron` contra-atacado gasta
+mana+paga taxa mas não resolve, `commander_cast_turn` fica `None`;
+modo padrão sem rng resolve normal; recast no turno seguinte após ser
+contra-atacado paga taxa mais alta e resolve) + **5.000 seeds de
+equivalência bit-a-bit do modo padrão** (0 diferenças) + smoke test +
+A/B 2000 jogos mesma seed (dano proxy 66,73→65,22, direção esperada,
+delta pequeno pois a chance efetiva é baixa nos primeiros turnos) +
+regressão de 20.000 partidas em CADA modo (padrão e resiliência), 0
+exceções nos dois. `smart_counters_total` confirmado em 0,08/partida,
+Megatron nunca resolve em 8 turnos em 6,2% dos jogos (métrica nova).
+
+**As 4 categorias do simulador de interação do Archidekt (ataque,
+remoção, discard, counterspell) estão todas implementadas agora** no
+modo de resiliência opcional do Megatron.
+
+## Modo de resiliência ganha board wipe (destroy all creatures) — 2026-09-19
+
+**Gatilho:** usuário confirmou "Pode começar" pra implementar a 2ª
+categoria pendente do simulador de interação do Archidekt (ordem
+combinada na rodada anterior: discard > board wipe > counterspell).
+
+**Achado de regra real ao implementar (o mais importante desta rodada):**
+as 4 funções do modo de resiliência (`try_smart_opponent_wipe/removal/
+attack/discard`) rodam DEPOIS de `play_turn()`, ou seja, representam
+interação do oponente **fora do meu turno**. O Megatron na face
+Destructive Force (Vehicle) só é criatura por causa de "Living metal
+(During your turn, this Vehicle is also a creature)" — fora do meu
+turno essa cláusula não vale, então ele NÃO é alvo legal de "destroy
+all creatures" nesse momento. `is_creature_card(COMMANDER)` sozinho
+NUNCA pega isso (`ctype` é fixo "creature" no CARD_DB, não muda com a
+face) — é o mesmo padrão de bug da Regra #3 do CLAUDE.md (conceito
+compartilhado errado pra um subconjunto de quem o lê), só que a
+checagem certa (`state.megatron_face == "vehicle"` exclui) já existia
+em código desde 2026-09-16, em `try_smart_opponent_attack` (Megatron
+nunca bloqueia). Copiei a mesma checagem pro wipe. Na face Tyrant
+(Legendary Artifact CREATURE, sem depender de Living Metal) ele
+continua sendo alvo legal — vai pra zona de comando via `sacrifice()`
+(mesmo tratamento do comandante já existente).
+
+**Implementado:**
+1. `state.smart_wipes_total` / `state.smart_wipe_log` (lista de
+   `(turno, [nomes destruídos])`).
+2. `BOARD_WIPE_CHANCE_FACTOR = 0.4` — sweeper é bem mais raro que
+   remoção pontual numa lista de 99 (decks reais rodam ~8-12 spot
+   removals contra 2-4 sweepers); em vez de inventar fórmula nova,
+   aplica esse fator redutor sobre a MESMA `interaction_chance()`
+   compartilhada das outras 3 categorias.
+3. `try_smart_opponent_wipe()` — mesma janela
+   (`INTERACTION_SETUP_TURNS`), destrói TODAS as criaturas em campo
+   (exceto Megatron-Vehicle, ver acima) via `sacrifice(is_own_
+   sacrifice=False)` uma por uma — reaproveita 100% do tratamento já
+   existente pra comandante→zona de comando, Warp/Unearth→exílio,
+   Blightsteel→biblioteca, e dispara os gatilhos reais de morte
+   (Scrap Trawler/toolbox Myr Retriever-Junk Diver/Triplicate Titan)
+   pra cada criatura perdida. Sem nenhuma criatura elegível em campo,
+   nunca dispara (oponente esperto não gasta wipe em board vazio).
+4. `simulate_one_with_interaction()` — chama o wipe PRIMEIRO na
+   sequência do turno (antes de remoção/ataque/discard), representando
+   o "pior turno possível" pra teste de resiliência (limpa bloqueadores
+   antes de checar ataque desbloqueado) — não é exigência de regra
+   real, as 4 categorias continuam independentes.
+5. `run_batch_with_interaction()` — nova seção de relatório (avg wipes,
+   avg criaturas perdidas por wipe, top-5 mais perdidas).
+
+**Validação:** 6 testes unitários isolados (gating sem rng/turno de
+setup; board vazio nunca dispara; dispara e mata TODAS as criaturas
+menos terreno/artefato não-criatura; Megatron face Tyrant É alvo legal
+e vai pra zona de comando; **Megatron face Vehicle é IMUNE, confirmado
+que ele permanece em campo intocado enquanto a outra criatura morre**;
+Vehicle-Megatron sozinho sem outra criatura nunca dispara o wipe) +
+smoke test + A/B 2000 jogos mesma seed:
+
+| Métrica | Sem wipe | Com wipe |
+|---|---|---|
+| Board wipes sofridos | — | 0,46 |
+| Criaturas perdidas por wipe (quando dispara) | — | 3,90 |
+| Remoções inteligentes sofridas | 0,72 | 0,62 |
+| Ataques sofridos / bloqueios com sucesso | 0,78 / 0,64 | 0,89 / 0,46 |
+| Dano/vida perdida proxy | 74,91 | 66,73 |
+| Cartas compradas extra | 15,32 | 14,54 |
+
+Direção esperada em tudo: menos bloqueios com sucesso (wipe limpa o
+board antes do ataque rolar), mais ataques conectando, dano/draw geral
+caem mais — resiliência ficou mais dura, coerente com adicionar uma
+4ª fonte real de pressão. Regressão de 20.000 partidas via
+`simulate_one_with_interaction`, 0 exceções. Confirmado que o modo
+padrão (sem `interaction_rng`) fica com `smart_wipes_total == 0`
+sempre, zero impacto fora do modo opcional.
+
+**Ainda falta** (última categoria pendente, ordem combinada com o
+usuário): counterspell — nenhuma categoria hoje impede a conjuração do
+Megatron/outra bomba.
+
+## Modo de resiliência estendido: discard/disrupção de mão aleatória de oponente — 2026-09-19
+
+**Gatilho:** usuário pesquisou o anúncio oficial do simulador de
+interação do Archidekt (que o modo de resiliência já usa como
+referência desde 2026-09-16) e confirmou que ele modela 3 categorias
+reais — ataque, remoção, **e counterspell/discard** — sendo que o
+nosso modo só cobria as 2 primeiras. Pedido direto: "Implementa o
+discard/disrupção de mão primeiro, aleatoriamente como no modelo do
+Archidekt que vc ja estudou".
+
+**Achado que motivou a prioridade (discard antes de counterspell/
+board wipe):** a Partida #1 registrada em `goldfish-log.md` (2026-09-18)
+já tinha exposto esse buraco na prática — a mão inteira foi descartada
+por um Jace's Archivist do oponente no Turno 2, evento que o modo de
+resiliência simplesmente não conseguia representar antes desta rodada.
+
+**Diferença de design importante vs. `try_smart_opponent_removal`:** o
+Archidekt puxa uma carta REAL aleatória de uma pool via Scryfall por
+categoria, e documenta explicitamente que NÃO valida se o alvo sugerido
+faz sentido pro board atual (ex. real citado no changelog: sugeriu
+Assassin's Trophy com só um Kraken Hatchling em campo). O usuário pediu
+"aleatoriamente" de propósito — ao contrário da remoção (sempre mira a
+peça-motor de maior prioridade de uma lista curada,
+`INTERACTION_ENGINE_PRIORITY`), o novo `try_smart_opponent_discard()`
+escolhe a carta a descartar por `state.interaction_rng.choice(state.
+hand)` **sem nenhum filtro** — pode descartar terreno, pode descartar a
+melhor bomba da mão, exatamente a imprevisibilidade real que o
+Archidekt aceitou como tradeoff deliberado.
+
+**Implementado:**
+1. `state.smart_discards_total` / `state.smart_discard_log` — mesmos
+   padrões de `smart_removals_total`/`smart_removal_log`.
+2. `try_smart_opponent_discard()` — mesma janela (`INTERACTION_SETUP_
+   TURNS = 2`) e mesma fórmula de chance (`interaction_chance()`) das
+   outras 2 categorias, rolando **independente** (as 3 podem disparar
+   no mesmo turno, mesmo modelo do Archidekt de múltiplas categorias
+   por turno). Descarta exatamente 1 carta aleatória da mão por
+   instância (mesma granularidade de 1-permanente/1-atacante das outras
+   2); mão vazia retorna `None` sem erro.
+3. `simulate_one_with_interaction()` — chama as 3 funções (remoção,
+   ataque, discard) em sequência a cada turno, incluindo o loop de
+   turno extra.
+4. `run_batch_with_interaction()` — nova linha de relatório com
+   `Avg descartes forçados sofridos` + top-5 cartas mais descartadas.
+
+**Validação:** 4 testes unitários isolados (sem `interaction_rng`/turno
+de setup nunca dispara; dispara e descarta uma carta real da mão pro
+cemitério, removendo da mão — confirmado em 200 seeds; mão vazia nunca
+quebra; roda em conjunto com remoção+ataque sem interferir) + smoke
+test + A/B 2000 jogos mesma seed (batch ANTES desta rodada vs. DEPOIS,
+`seed_base=1_000_000`):
+
+| Métrica | Sem discard | Com discard |
+|---|---|---|
+| Remoções inteligentes sofridas | 0,77 | 0,72 |
+| Ataques de oponente sofridos | 0,80 | 0,78 |
+| Dano/vida perdida proxy | 78,02 | 74,91 |
+| Cartas compradas extra | 16,07 | 15,32 |
+| Vida final | 36,04 | 36,13 |
+
+Direção esperada em tudo: descarte aleatório reduz levemente o
+desenvolvimento de board (menos permanentes = `interaction_chance()`
+mais baixa = leve queda em remoção/ataque sofridos também, efeito
+colateral coerente, não bug de RNG — a ordem de consumo do
+`interaction_rng` pra remoção/ataque não mudou, o discard só foi
+adicionado DEPOIS dos outros dois na sequência de chamadas). Avg
+descartes forçados: 1,23/partida. Regressão de 20.000 partidas via
+`simulate_one_with_interaction`, 0 exceções. Confirmado que o modo
+padrão (`simulate_one`/`run_batch`, sem `interaction_rng`) continua
+com `smart_discards_total == 0` sempre — zero impacto fora do modo
+opcional.
+
+**Ainda faltam** (próximas rodadas, por ordem de prioridade combinada
+com o usuário): board wipe (nenhuma categoria hoje mata mais de 1
+permanente por vez) e counterspell (nenhuma categoria hoje impede a
+conjuração do Megatron/outra bomba).
+
 ## Cityscape Leveler: gatilho de ataque não disparava pra token-cópia (Ultron/Osgir/Feldon) — 2026-09-19
 
 **Gatilho:** usuário pediu pra verificar se o Cityscape Leveler

@@ -180,6 +180,13 @@ não velocidade):**
 - Registrar esse cálculo explicitamente na auditoria/log, não só a
   conclusão — pra não repetir o erro de alarmar sobre reclassificação de
   Bracket antes de checar viabilidade real.
+- **O Commander Spellbook ignora, sem erro, nome de carta que não
+  reconhece** (achado de 2026-10-05, deck Mothman). Antes de dizer "essa
+  carta não cria combo", resolver o nome via `GET /cards/?q=<nome>` (carta
+  de 2 faces: `Frente // Verso`), gravar nos dados se foi reconhecida e
+  rodar um controle positivo (combo conhecido aparece) e um controle de
+  corte (tirar peça de combo da lista o faz sumir). Rodadas anteriores
+  que usaram nomes sem essa checagem não foram reauditadas.
 
 ## 8. Necessidade real de mana é turno-a-turno, não soma agregada de pips
 
@@ -611,6 +618,21 @@ carta (substitui a Regra 13 como primeiro passo, não a invalida):**
    com carta de face múltipla merece essa mesma varredura antes de
    confiar no cache pra ele.
 
+**Reincidência registrada (2026-09-24):** o usuário perguntou "pq ainda
+temos cartas sem o oráculo salvo no nosso repositório como mandei". A
+varredura do item 4 achou **1.527 cartas sem oráculo no cache**: o arquivo
+não recebia nenhuma entrada desde 2026-09-14. Ficaram de fora os 27 precons
+(listas adicionadas em 21/09 só com os nomes), o Tom Bombadil (22/09), as
+trocas do Megatron e da Ms. Bumbleflower, e as cartas citadas na conversa de
+24/09 (comparação com o EDHREC do Prismatic Bridge, pillowfort, logs das
+partidas manuais) — o oráculo dessas foi buscado na API e guardado só em
+arquivo temporário do scratchpad, nunca no cache. Corrigido: 1.512 entradas
+novas + 1 `oracle_text` vazio (Stensian Sanguinist // Exsanguinate).
+**Regra operacional:** todo oráculo buscado na API vai pro
+`scryfall-cache/oracle-cache.json` NO MESMO passo em que é buscado (nunca só
+pro scratchpad), e toda lista nova (inclusive precon sem simulador) só é
+commitada junto com as entradas do cache de todas as cartas dela.
+
 ## 15. Salvar o oráculo de TODA carta que o usuário mencionar, não só as que entram num deck/simulador
 
 Citação literal do usuário (2026-08-31): *"Sempre salve o oráculo de TODAS
@@ -625,6 +647,27 @@ AS CARTAS EU MENCIONAR."*
 - Vale pra cartas citadas de passagem, em pergunta hipotética ("e se eu
   trocasse X por Y"), em comparação, ou mencionadas só de exemplo — qualquer
   nome de carta na conversa dispara a checagem/gravação no cache.
+- **Reforço explícito do usuário (2026-09-24):** *"Mesmo as cartas que
+  perguntar ou sugerir, quero que elas sejam compiladas no cache."* Isso
+  cobre as 3 origens, sem exceção:
+  1. carta que o usuário **pergunta** ("essa carta funciona aqui?",
+     "o que faz X?");
+  2. carta que **eu sugiro** (upgrade, troca, corte por EDHREC,
+     alternativa budget, carta citada como comparação), **mesmo que o
+     usuário nunca adote**;
+  3. carta de **coleção nova ou spoiler** que o usuário pedir pra
+     acompanhar.
+  A gravação acontece **no mesmo passo** em que o oráculo é buscado na API
+  (mesma regra operacional da Regra 14), e entra no **mesmo commit** da
+  resposta/análise que citou a carta. Nunca deixar oráculo buscado só no
+  scratchpad nem só na resposta do chat.
+- **Coleção inteira** (pedido de 2026-09-24 pra FRA, Reality Fracture):
+  baixar via `/cards/search?q=e:<set>&unique=cards` (paginando `next_page`),
+  gravar todas as cartas no `oracle-cache.json` e manter uma lista legível
+  em `scryfall-cache/sets/<set>-<nome>.md` + `.json`. Se a coleção ainda não
+  lançou (spoiler em andamento), rodar de novo
+  `scryfall-cache/sets/fetch_set.py <set>` antes de qualquer análise com
+  cartas dela: a lista pode ter crescido e o texto pode ter mudado.
 
 ## 16. Conferir carta por carta, sempre — nunca inventar, inferir ou presumir
 
@@ -664,6 +707,134 @@ tempo todo."*
   entre sessões), errar pro lado de registrar — o custo de uma entrada a
   mais neste arquivo é baixo comparado ao custo de repetir a mesma correção
   numa sessão futura.
+
+## 18. `rules-cache/comprehensive-rules.txt` é OBRIGATÓRIO consultar primeiro pra qualquer regra do jogo — nunca citar Comprehensive Rules de memória
+
+Citação literal do usuário (2026-09-21), depois de eu ter implementado em
+TODOS os 9 decks com modo de resiliência que "o comandante nunca dispara
+gatilho de morte, vai direto pra zona de comando, nunca morre de
+verdade": *"O comandante não morre e ao invés de ir pro cemitério, pode
+ser movido de volta a zona de comando? Pq até onde sei, comandantes podem
+ser mortos sim! Confere essa regra com muita calma e atenção!"* e, depois
+da confirmação do erro: *"Já pedi para vc parar de fazer as coisas de
+memória, a não ser que compile uma copia das regras oficiais para
+consulta imediata."*
+
+**Achado real que motivou a regra:** eu tinha implementado `remove_
+permanent()` em TODOS os 9 decks (Megatron/Ur-Dragon/Hei Bai/Edgar
+Markov/Ulalek/Toph/Prismatic Bridge/Maralen/Rat King) tratando "CR 903.9"
+como um efeito de substituição único que sempre desvia o comandante pro
+comando, NUNCA disparando gatilho de morte de outras cartas (Zulaport
+Cutthroat, Pitiless Plunderer, Syr Konrad, Ayara, etc.) — de memória,
+sem checar o texto real. A regra real (confirmada via texto oficial,
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896) tem DUAS
+cláusulas diferentes:
+- **903.9b** (mão/biblioteca): efeito de SUBSTITUIÇÃO de verdade — o
+  comandante nunca chega lá.
+- **903.9a** (cemitério/exílio — o caso de "morrer"): **AÇÃO BASEADA EM
+  ESTADO** (CR 704), não substituição — o comandante vai pro cemitério
+  DE VERDADE primeiro (zona muda de verdade, CR 700.4 "dies" = ir pro
+  cemitério a partir do campo, gatilhos de morte de OUTRAS cartas
+  disparam normalmente), e só DEPOIS, como ação separada, o dono PODE
+  (não é obrigado) escolher mover pra zona de comando. Comandante PODE
+  ficar morto de verdade se o dono não exercer essa opção.
+
+Confirmado de forma independente: o motor open-source "Mage" (usado em
+simuladores tipo MTGO) tinha exatamente esse mesmo bug documentado e
+corrigido (`magefree/mage` issue #6866) — sintoma idêntico (comandante
+nunca entra de verdade no cemitério, gatilhos de morte nunca disparam).
+
+**A partir de agora, ordem OBRIGATÓRIA de consulta pra qualquer regra do
+jogo (Comprehensive Rules) — mesmo padrão já estabelecido pra oráculo de
+carta na Regra 14, agora pra REGRA do jogo em si:**
+
+1. **Primeiro**, `grep`/buscar em `rules-cache/comprehensive-rules.txt`
+   (arquivo TXT oficial completo da Wizards, baixado de
+   `https://media.wizards.com/[ano]/downloads/MagicCompRules
+   [YYYYMMDD].txt` — link real em `Magic.Wizards.com/Rules`). Citar o
+   número exato da regra/subregra (ex.: "903.9a") e o texto literal
+   encontrado, nunca parafrasear de memória.
+2. **Nunca implementar ou afirmar uma regra do jogo a partir de memória
+   ou "essa eu sei"** — mesmo regras que parecem óbvias/batidas (CR
+   903.9 é citada o tempo todo nesta sessão, e ainda assim eu errei a
+   nuance real). Mesma lição da Regra 14 pro oráculo de carta, agora
+   pra regra do jogo.
+3. **Manter o arquivo atualizado**: a Wizards publica uma nova versão a
+   cada lançamento de set (efetiva numa data futura anunciada com
+   antecedência — verificado em 2026-09-21 que já havia uma versão
+   datada 2026-09-25 publicada no CDN deles antes de entrar em vigor).
+   Reconferir `Magic.Wizards.com/Rules` periodicamente e re-baixar
+   quando uma versão mais nova entrar em vigor — nunca usar uma versão
+   claramente desatualizada (checar a data "effective as of" na linha 3
+   do arquivo) nem uma versão ainda não-efetiva.
+   **Atualizado em 2026-09-25** para a versão "effective as of September
+   25, 2026" (`MagicCompRules 20260925.txt`, link tirado da própria página
+   `magic.wizards.com/en/rules`). Traz as regras de Reality Fracture:
+   701.71 Empower Jace e 722 Preparation Cards. Também inclui "Dellian" na
+   lista de tipos de planeswalker da 205.3j. A 606.3 e a 701.34a não mudaram.
+4. Se uma regra específica já foi citada/confirmada nesta sessão a
+   partir do arquivo, não precisa re-baixar/re-buscar de novo — mas
+   qualquer citação NOVA de número de regra sempre passa pelo arquivo
+   primeiro, nunca por memória, mesmo que pareça repetir uma regra já
+   vista antes.
+5. Vale retroativamente pra qualquer implementação anterior no
+   repositório que tenha citado uma Comprehensive Rule de memória —
+   acompanha a mesma auditoria retroativa já exigida na Regra 14 (item
+   5) pro oráculo de carta.
+
+## 19. Todo resultado que sustenta uma conclusão é arquivado no repositório (dados brutos comprimidos + índice auditável)
+
+Citação literal do usuário (2026-09-30): *"Guarde tudo para referência futura,
+hoje e sempre, de forma resumida mas acessível e auditável."*
+
+- Não basta commitar as tabelas: os dados brutos (JSON por partida), os
+  comandos, as sementes e o commit do código têm que estar no repositório, senão
+  se perdem com a pasta temporária da sessão.
+- Formato completo (pasta `<deck>/resultados-ab/<data>-<tema>/`, `LEIAME.md`,
+  `SHA256SUMS`, verificação de reprodutibilidade): Regra #8 do `CLAUDE.md`.
+  Modelo: `prismatic-bridge-wurbg/resultados-ab/2026-09-29-candidatas-e-sisay/`.
+- Vale para todo deck do repositório e para toda rodada futura.
+
+## 20. A skill `mtg-commander` tem backup versionado no GitHub e é a cópia que eu consulto; toda atualização dela vai pros dois lugares
+
+Pedido do usuário (2026-09-30): *"Atualize a skill e faça uma cópia dela no GitHub para backup."*
+
+- Cópia viva: `/root/.claude/skills/synced/<id>/mtg-commander/` (pasta sincronizada
+  com a conta, fora do controle de versão). **Alterações feitas nela NÃO são gravadas na
+  conta do usuário; o próximo sync pode sobrescrevê-las.** Dizer isso ao usuário toda vez que
+  a skill for atualizada, e lembrar que o backup do GitHub é a cópia durável.
+- **Backup no GitHub: `skills-backup/mtg-commander/`** (este repositório). Toda vez que a
+  skill for alterada, rodar `bash skills-backup/sincronizar-skill.sh --para-backup` e commitar
+  no MESMO commit da alteração. `skills-backup/README.md` explica como restaurar.
+- Três arquivos de `references/` do repositório (`user-standing-rules.md`,
+  `goldfish-sim-card-rules.md`, `pod-simulator-design.md`) e o `CLAUDE.md` são espelhos
+  da skill (o `CLAUDE.md` entra na skill como `references/CLAUDE-repositorio.md`). Alterou um,
+  rode `sincronizar-skill.sh --para-skill` e depois `--para-backup`: **as cópias não podem divergir**.
+
+---
+
+## 21. Classes de erro SISTÊMICAS do motor do simulador são varridas por script em todo simulador novo/alterado; determinismo checado com `PYTHONHASHSEED` variável
+
+Pedido do usuário (2026-10-05): *"Sim, adicione a Regra #10 e sincronize a skill"* (depois de *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*).
+
+- A varredura de 2026-10-05 achou erro em 14 dos 18 decks e nenhum seria pego por auditoria carta-a-carta: o erro mora no motor (mulligan que sorteava o fundo, terreno virado nunca jogado primeiro,
+  terreno que entra desvirado contra o oráculo, fetchland que ficava em campo como dual, gatilho de "a land enters" só em parte dos pontos de entrada, resultado que dependia de `PYTHONHASHSEED`).
+- Antes de declarar pronto um simulador novo ou alterado: rodar os scripts de `varredura-2026-10-05/scripts/` (`audit_entrada`, `audit_entrada2`, `audit_fetch`, `audit_terreno_nao_e_magia`,
+  `audit_landfall`, `audit_landfall_ordem`, `colisao_nome`, `audit_compra_t1`), conferir a lista de classes do motor e checar determinismo com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (`det_check.sh`/`det_wide2.sh`): os `driver.py` fixam
+  o hash em 0 e por isso não enxergam esse bug. Texto integral e o que a regra NÃO cobre: Regra #10 do `CLAUDE.md`.
+- **Ordem terreno × payoff de landfall (achada em 2026-10-06 no Mothman, estendida em 2026-10-07):** com um terreno ainda por jogar, o simulador conjura antes o payoff de landfall que o mana de agora já paga
+  **só se um ensaio a seco do resto da fase pré-combate mostrar que o turno não perde nenhuma jogada** (comandante, rocha de mana; a fórmula "mana de agora + 1" falhou: atrasou o comandante do Beorn em 38 de 2.000 partidas e, no Mothman, ignorava a cor e superestimou o efeito, Ruin Crab +21% → +13%), senão o terreno do turno nunca dispara o landfall e a Company (Thranduil/Maralen) nunca libera o 2º land drop no turno em que entra. Chave `LANDFALL_PAYOFF_FIRST` nos 6 simuladores com
+  payoff de landfall (Mothman, Toph, Beorn, Thranduil, Maralen, Prismatic Bridge); `audit_landfall_ordem.py` tem de dar 0 candidatos. Pedido do usuário (2026-10-07): *"Corrige os simuladores com erro no script para
+  automatizar a ordem de jogadas para o landfall"*. Não coberto: magia que põe terreno em campo antes do payoff, terreno que volta ao campo, várias fases principais.
+- **Compra do 1º turno (achada em 2026-10-19/20):** Commander com 3+ jogadores não pula a compra (a regra de pular é do 1x1, CR 103.8a). O Mothman era o único dos 20 simuladores que pulava e o do Tam herdou a convenção; chave `FIRST_TURN_SKIPS_DRAW` (padrão `False`). Medir por EXECUÇÃO com `audit_compra_t1.py` (queda da biblioteca entre `turns=0` e `turns=1` ≥ 1 em toda partida; 20 de 20 COMPRA); grep de `on_play` não serve. Pedido do usuário (2026-10-20): *"Corrija todos os simuladores por conta da compra no turno 1"*.
+- **Tam (2026-10-22), pedido *"Termine tudo que falta!"*:** `audit_tam_terrenos.py` (as varreduras de terreno para o simulador do Tam, que não tem `play_land`; 0 falhas; `audit_compra_t1` reexecutado: 20 de 20 COMPRA; `audit_landfall_ordem`: 0 candidatos). Duas classes novas do goldfish #5, ambas no motor e não na carta: **contador acumulado lido como flag** (turnos extras da Ichormoon Gauntlet: dois `−12` no mesmo turno rendiam um turno extra; `EXTRA_TURNS_STACK`) e **ordem de pagamento do mana** (Bloom Tender / Faeburrow Elder tocados antes de a magia trazer a cor nova; genérico que não usa a 2ª unidade de uma fonte já tocada; `VIVID_LAST`, `SIBLING_FIRST`). Não coberto: a ordem de pagamento nos outros simuladores com Bloom Tender (Hei Bai, Maralen, Prismatic Bridge, Thranduil, Tom Bombadil). Perfil `playtester` (oponente calibrado nas taxas dos 5 logs do usuário) só existe no Tam. Um script de varredura que não roda também é vácuo (`audit_tam_terrenos.py` foi commitado com `SyntaxError`): rodar o arquivo commitado e salvar a saída antes de citar o resultado.
+- **Beorn (2026-10-23), ao implementar o Herd Heirloom que o usuário pôs no lugar do Ram Through:** terceira classe de motor, **gatilho de fase nomeada preso a `can_attack`/doença de invocação** (o gatilho da Beorn é "At the beginning of combat on your turn", não "whenever it attacks"; perdia o 1º gatilho de toda partida; o Toph tivera o mesmo com o Avatar Kyoshi). `varredura-2026-10-05/scripts/audit_inicio_de_combate.py` lista as 21 cartas candidatas em 10 decks (triagem; leitura à mão; The Ozolith em 3 decks não foi lido). Troca pedida pelo usuário também passa pela Regra #4: oráculo e rulings ao vivo, Spellbook antes/depois com controles (0 combos), condições enumeradas por script, A/B com a troca separada do conserto.
+- **Rat King (2026-10-25), pedido *"Quero sim"* ao relatório "O quê falta para terminar o deck do Verminister?":** o Commander Spellbook rodado pela primeira vez no deck achou 2 combos que a lista já tinha (Marrow-Gnawer + Thornbite Staff, infinito de 2 cartas; Ayara + Plague of Vermin) e o simulador não executava nenhum; os rulings e a enumeração de conceitos por script abriram 21 divergências de simulador (Treasure nunca mana; Gray Merchant, Emeritus "enters prepared" e extort sem efeito; Bontu's 2×; sneak do Ninja Teen fora do declare blockers e sem devolver atacante; Rat Colony de graça com Jet + Bontu's; Ayara × ficha de Rat; Rotcaller/Marrow/Big Apple; Priest, Zulaport, Soul Stone, Rat King, Deadly Dispute). Classes novas na Regra #10 do `CLAUDE.md` (d)–(j) e o script `audit_etb_sem_efeito.py`. **Tipo/cor de um conceito se enumera incluindo as FICHAS que a lista cria**, não só as cartas impressas. **`grep -rli spellbook` acha menção em só 9 dos 47 decks:** os outros 38 não têm registro de Spellbook com a lista atual (não varridos). Três decisões do usuário ficam pendentes, sem eu alterar nada: wipes sem efeito no próprio campo (Kindred Dominance, Swarmyard Massacre, Damnation), a face de terreno de Fell the Profane // Fell Mire, e o Bracket declarado do deck.
+- **Rat King (2026-10-28), respostas do usuário ao relatório da rodada 3** (*"Bracket 2"*; *"Modela sim ambas as faces"*; *"Quero todos os Spellbooks sim, e salvos no repositório"*; *"Acho que o modo mais importante do Black Market Connections é o 1o, com custo 1 de vida. Os demais só entram em cena se eu tiver algum mecanismo de lifegain rodando: Ayara, ou outro qq"*): (a) **Bracket 2 fica por decisão dele**, com os combos de cauda (Marrow + Staff 0,13% até T6 no simulador) e sem eu ter lido o texto oficial atual do critério; (b) **Fell the Profane // Fell Mire com as duas faces** (a decisão antiga "remoção é o gap real" era julgamento de valor) e **Black Market Connections com o modo 1 sempre e os modos 2/3 só com lifegain em campo**, tudo atrás de chave; as constantes numéricas que o usuário não definiu (limite de 6 terrenos, piso de vida 10, não ir a 0 de vida) ficam declaradas como **política minha** e com variante de sensibilidade; (c) **classe nova de motor (k): ensaio a seco que mede só o que sai da MÃO ignora o comandante** (zona de comando): Rat King, comandante até T2 87,2% → 97,9%; 13 simuladores têm a mesma função e não foram medidos; o `abgen` agora gera o indicador de T2; (d) **Commander Spellbook rodado nos 46 decks restantes** (`spellbook-todos-os-decks-2026-10-28/RESUMO.md`, bruto da API em `<deck>/resultados-ab/2026-10-28-spellbook/dados/`): 2.510 nomes resolvidos, 0 não reconhecidos, controles passaram nos 46; **NÃO feito:** conferir se cada simulador executa os combos achados (Toph 29, Prismatic Bridge 12, Maralen 9, Ulalek 5...). Os 3 wipes seguem pendentes (o usuário perguntou qual é a convenção atual).
+- **Rat King rodada 5 e Tam #6 (2026-10-28):** (a) o usuário decidiu os 3 wipes do Rat King com *"Opção B nos wipes, e meça no A/B"* (efeito aplicado no MEU campo, conjurado só quando compensa); o limite de perda própria é **política minha** (não há número certo sem tabuleiro de oponente) e o A/B mostra o preço de cada limite; a 1ª versão do limite comparava só as mortes e fazia o Swarmyard perder os 2 Esquilos grátis (−0,114 por partida), por isso passou a perda LÍQUIDA dos corpos criados; **uma política de "só conjura se compensa" precisa contar o que a própria carta cria**; (b) uma verificação por `cmp` com um arquivo que nunca foi gravado dá DIFERE: gravar a saída de cada teste ANTES de rodar `verificar_reproducao --tudo`; (c) goldfish manual do usuário: **perguntar, esperar a resposta e só então compilar**; resposta "não me lembro" fica registrada como pergunta aberta e sustentada só por regra/aritmética, nunca como confirmada; quando a resposta do usuário não cabe no log (Q4 do Tam #6: o Gauntlet só entra no T10), dizer isso em vez de forçar; o relato do usuário pode divergir da regra (a Tam do T9 proliferaria 4 vezes e o log tem 1) sem que o simulador esteja errado; (d) **revisão de código do PR #1 (2026-10-29)**: li *"só não usei o botão de passar turno"* como *"o turno extra do Oko não foi jogado"* e dei a dúvida 6 (Dack Fayden) como "sem fonte no log"; o bruto tinha um **2º início de turno** (7 permanentes desvirados + compra) dentro do bloco T11, só aquele bloco entre os 11. **Toda resposta que afirma o que o usuário NÃO fez se confere contra o bruto antes de virar texto** (assinatura de turno no playtester: desvirar tudo + `library → hand`; `testes/t_manual6.py`, teste da dúvida 6, com controle de corte). Corrigido também: a contagem sozinha ("239 passaram") não pega a troca de um teste que falha por um que passa; `verificar_reproducao.sh` passou a comparar uma linha por teste.
+- **Rat King rodada 6 (2026-10-29), revisão de código do PR #1 ("Revise tudo e salve no GitHub e aqui tb"; escolhas dele: revisão do diff do PR, corrigir o que achar e relatar, commit/push na branch do PR, arquivo na pasta do projeto):** (a) o `code-review` do skill leu o alvo `1` como `HEAD~1..HEAD` (só o último commit); para cobrir mais passei o intervalo `7639380..HEAD -- <arquivo>`: **conferir sempre qual intervalo a revisão leu** e declará-lo; (b) **apontamento de revisor é hipótese**: dos 10 do `ratking_goldfish_v1.py`, 2 eram defeito, 1 virou medição (a hipótese não apareceu, mas achou outro defeito: o mana gasto é líquido do Dark Ritual e esconde o desenvolvimento do T1 em 1,7% das partidas), 1 virou guarda e 6 não eram defeito; (c) a correção que eu mesmo propus para esse defeito (desempate por MV da mão + comandante) **piorou o comandante no T2 (−0,32 ± 0,11 pontos, N=10.000)** e ficou desligada: **medir a correção, não só o defeito**; (d) correção **latente** (0 disparos em 20.000 partidas) só se prova por teste dirigido, e o A/B não a mostra: dizer isso em vez de inflar o efeito; (e) `det_check.sh` roda de dentro de `varredura-2026-10-05/scripts/`; da raiz ele dá erro e parece um resultado.
+- Verificação que dá vazio/zero é vácua (conferir que o número é > 0); a tabela publicada tem que ser função só do bruto arquivado; resultado de bateria longa se confere por `Traceback` no log, não pelo `rc`. **Variante de A/B que não difere das outras também é vácua:** cada variante `sensibilidade` lista as chaves todas (o padrão do arquivo é ligado).
+- Comitar e enviar cada deck assim que a verificação fecha (o contêiner pode reiniciar no meio da rodada); não editar o simulador enquanto a verificação completa re-simula o arquivo vivo.
 
 ---
 

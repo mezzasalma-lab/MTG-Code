@@ -1,0 +1,186 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_Command Tower": {
+   "SWAPS": [
+    [
+     "Command Tower",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Danny Pink": {
+   "SWAPS": [
+    [
+     "Danny Pink",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Deepmuck Desperado": {
+   "SWAPS": [
+    [
+     "Deepmuck Desperado",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Didn't Say Please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Evolution Witness": {
+   "SWAPS": [
+    [
+     "Evolution Witness",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Fabled Passage": {
+   "SWAPS": [
+    [
+     "Fabled Passage",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Fathom Mage": {
+   "SWAPS": [
+    [
+     "Fathom Mage",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Fierce Guardianship": {
+   "SWAPS": [
+    [
+     "Fierce Guardianship",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Forest": {
+   "SWAPS": [
+    [
+     "Forest",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Freestrider Lookout": {
+   "SWAPS": [
+    [
+     "Freestrider Lookout",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Generous Patron": {
+   "SWAPS": [
+    [
+     "Generous Patron",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Gyre Sage": {
+   "SWAPS": [
+    [
+     "Gyre Sage",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Hardened Scales": {
+   "SWAPS": [
+    [
+     "Hardened Scales",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Hedge Shredder": {
+   "SWAPS": [
+    [
+     "Hedge Shredder",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_Command Tower",
+  "cut_Danny Pink",
+  "cut_Deepmuck Desperado",
+  "cut_Didn't Say Please",
+  "cut_Evolution Witness",
+  "cut_Fabled Passage",
+  "cut_Fathom Mage",
+  "cut_Fierce Guardianship",
+  "cut_Forest",
+  "cut_Freestrider Lookout",
+  "cut_Generous Patron",
+  "cut_Gyre Sage",
+  "cut_Hardened Scales",
+  "cut_Hedge Shredder"
+ ],
+ "regressao": []
+}

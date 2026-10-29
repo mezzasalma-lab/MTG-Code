@@ -1,0 +1,5 @@
+COMPACTO N=10000 modo padrao: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T8            cleared_T10          first_elim_T6              self_lost commander_cast_turn__ate_T4 commander_cast_turn__ate_T5     regenerations_used   smart_removals_total  protection_used_total
+base (media)                                                         0.5815                 0.8794                 0.4396                 0.0254                 0.6353                 0.7662                 0.0000                 0.0000                 0.0000
+e1_swarmyard_tropical                                     +0.0142±0.0041  *      +0.0093±0.0030  *      +0.0135±0.0032  *      +0.0012±0.0021         +0.0191±0.0030  *      +0.0171±0.0028  *      +0.0000±0.0000         +0.0000±0.0000         +0.0000±0.0000   
+e2_e1_mais_bog_sea                                        +0.0261±0.0051  *      +0.0152±0.0038  *      +0.0253±0.0041  *      +0.0005±0.0026         +0.0319±0.0037  *      +0.0246±0.0033  *      +0.0000±0.0000         +0.0000±0.0000         +0.0000±0.0000   

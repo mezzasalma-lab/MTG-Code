@@ -1,0 +1,23 @@
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  ab_10000_resiliencia.txt
+IGUAL  resumo_variantes_10000.md
+IGUAL  diferem_entre_variantes.txt
+IGUAL  combos_antes_depois.txt
+IGUAL  ratking_goldfish_v1.py == codigo/ratking_goldfish_v1_DEPOIS.py
+IGUAL  smoke.txt
+IGUAL  bitident_20000.txt
+IGUAL  ghost_20000.txt
+IGUAL  regressao_20000.txt
+IGUAL  testes_dirigidos.txt
+IGUAL  ghost_vacuidade.txt
+IGUAL  ab_2000.txt (re-execucao)
+IGUAL  raw_ab_2000.json.xz (bruto re-simulado identico)
+IGUAL  ab_10000.txt (re-execucao)
+IGUAL  raw_ab_10000.json.xz (bruto re-simulado identico)
+IGUAL  ab_2000_resiliencia.txt (re-execucao)
+IGUAL  raw_ab_2000_resiliencia.json.xz (bruto re-simulado identico)
+IGUAL  ab_10000_resiliencia.txt (re-execucao)
+IGUAL  raw_ab_10000_resiliencia.json.xz (bruto re-simulado identico)
+22/22 saidas byte a byte iguais

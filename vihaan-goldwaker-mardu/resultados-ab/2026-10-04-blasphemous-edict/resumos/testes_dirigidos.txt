@@ -1,0 +1,17 @@
+PASS - B1 ficha DESTRUIDA (Blood Money/Blasphemous Act) nao dispara o Mirkwood Bats (0 de dreno com 3 fichas); chave desligada = codigo antigo (3) 
+PASS - B2 ficha SACRIFICADA dispara o Mirkwood Bats (3 de dreno com 3 fichas), com a chave ligada 
+PASS - B3 Nadier's Nightblade ('leaves the battlefield') continua disparando em ficha destruida: 3 de dreno e 3 de vida 
+PASS - B4 o caminho de destruicao do OPONENTE (`on_permanent_destroyed`) tambem nao dispara o Bats 
+PASS - B5 Treasure animado SACRIFICADO por mana (ficha + criatura + artefato) dispara o Bats: 4 de dreno 
+PASS - E1 menos de 13 criaturas: sacrifica TODAS (Vihaan, Mayhem, Lotho, Olivia = 4), o Vihaan vai a zona de comando, e o Mayhem Devil dispara por cada sacrificio, inclusive o proprio (4 de dano) 
+PASS - E2 mortes simultaneas: o Zulaport dispara pela propria morte e pelas outras (4 mortes = 4 de vida e 4 de dreno); sem Mayhem Devil nao ha' dano de sacrificio 
+PASS - E3 fichas sacrificadas: Mirkwood Bats dispara por cada ficha (7) e o Mayhem Devil por cada permanente (Bats + Mayhem + 7 fichas = 9): 16 de dreno/dano no proxy 
+PASS - E4 com MAIS de 13 criaturas o jogador escolhe (ruling 2024-11-08: sacrifica 13): 17 criaturas -> 13 sacrificadas, as 13 sao as fichas (12 + 1 animado) e Vihaan, Mahadi, Mayhem e Lotho SOBREVIVEM 
+PASS - E4b 17 criaturas com so' 10 fichas: as 10 fichas + 3 nomeadas de menor valor (os motores Vihaan/Mahadi/Mayhem ficam); sacrifica exatamente 13 
+PASS - E5 custo: {3}{B}{B} = 5; com 13 ou mais criaturas no campo (aqui so' as minhas: 3 + Vihaan + 11 fichas = 15) paga {B} = 1 
+PASS - E6 mesma mesa (Vihaan, Mayhem, Lotho, Olivia; 5 terrenos): a Blasphemous Act destroi tudo SEM dano do Mayhem Devil; a Edict sacrifica tudo e o Mayhem Devil causa 4 de dano (so' o meu lado) 
+PASS - E7 custo da Edict (5) pago primeiro com os 5 animados: 5 sacrificios (5 de dano do Mayhem Devil, antes da magia) + o efeito sacrifica Vihaan, Mayhem, Lotho (3 de dano): 8 no total 
+PASS - E8 a Edict tambem e' segurada pela retencao universal da 10a rodada (nenhum wipe proprio sai sem a circunstancia mitigada) 
+PASS - E9 a circunstancia mitigada libera a Edict como libera a Act/Blood Money (Mayhem + 5 animados pagam o custo 5; dano do pagamento 5 > 4 criaturas minhas perdidas) 
+
+15/15 testes passaram

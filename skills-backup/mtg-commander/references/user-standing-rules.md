@@ -1,0 +1,843 @@
+# Regras permanentes do usuário (mezzasalma)
+
+> Espelho versionado deste repositório do arquivo canônico em
+> `references/user-standing-rules.md` dentro do skill `mtg-commander`
+> (`/root/.claude/skills/synced/mtg-commander/`, fora do controle de versão
+> deste repo). O skill é a cópia que eu realmente consulto antes de agir —
+> esta aqui existe pra ficar versionada e visível no seu histórico do
+> GitHub. Se as duas divergirem, atualize as duas juntas.
+
+
+Instruções dadas explicitamente pelo usuário ao longo de sessões de trabalho
+com decks de Commander, que valem **sempre**, não só na conversa em que foram
+ditas. Checar este arquivo no início de qualquer trabalho novo com decks
+desse usuário.
+
+---
+
+## 1. Nunca inventar dado, sempre citar fonte oficial
+
+Citação literal do usuário: *"Pare de me elogiar e sempre me diga as fontes
+oficiais das suas informações, não quero que vc crie ou invente nada, mesmo
+que eu não peça explicitamente, ok?"*
+
+- Toda afirmação sobre uma carta (custo, texto, legalidade, preço) precisa
+  vir de uma consulta real à API do Scryfall (ou cache local dela),
+  citada explicitamente — nunca de memória.
+- Toda afirmação sobre popularidade/inclusão de carta num arquétipo precisa
+  vir de uma consulta real ao EDHREC — nunca de memória ou "impressão".
+- Nenhum elogio gratuito ("ótima pergunta", "excelente ideia") — só
+  informação e análise direta.
+- Qualquer número que dependa de uma premissa não-verificável (ex: quantos
+  spells um oponente conjura por turno num goldfish solo) precisa ser
+  marcado explicitamente como premissa assumida, não como dado real — e
+  a premissa deve ser validada pelo usuário antes de virar "confirmada".
+
+## 2. Toda vez que um deck for adicionado, rodar a auditoria completa
+
+Citação literal do usuário: *"sempre que eu adicionar um deck aqui RODE A
+AUDITORIA COMPLETA"*.
+
+- Não esperar o usuário pedir a auditoria separadamente — ela é automática
+  assim que uma lista de deck nova é salva.
+- Auditoria completa = checklist de `references/commander-rules.md#analise`
+  (identidade de cor, terrenos, curva, ramp, draw, remoção, win conditions,
+  sinergia, bracket) com tudo sourced via Scryfall/EDHREC.
+
+## 3. Qualquer efeito de carta com regra estrutural precisa de implementação real em simulador, não só tag
+
+Ver `references/goldfish-sim-card-rules.md` — lista de cartas específicas
+(Roaming Throne é a primeira) cujo efeito precisa estar em código de
+verdade em **qualquer** simulador de goldfish que as inclua, não só uma tag
+decorativa. Checar essa lista antes de considerar um simulador completo.
+
+## 4. Toda regra permanente criada numa sessão tem que ser espelhada no GitHub também
+
+Citação literal do usuário (2026-08-21): *"TODA E QUALQUER REGRA QUE EU
+CRIAR AQUI TEM QUE SER COPIADA NO GITHUB TB!"*
+
+- O skill (`/root/.claude/skills/synced/mtg-commander/`) é onde a regra é
+  realmente consultada durante o trabalho — mas não é versionada no
+  controle de versão do usuário.
+- Toda regra permanente registrada aqui precisa ter uma cópia espelhada
+  em `references/` na raiz do repositório `MTG-Code` do usuário, commitada
+  e enviada pro GitHub. Este arquivo (`user-standing-rules.md`) e o
+  `goldfish-sim-card-rules.md` são os dois primeiros exemplos.
+- Se as duas cópias divergirem (uma foi atualizada e a outra não),
+  atualizar as duas juntas antes de continuar qualquer trabalho.
+
+## 5. Cartas protegidas contra corte, por deck (nunca sugerir cortar, mesmo com baixa sinergia)
+
+Cartas que o usuário vetou explicitamente, independente do que qualquer
+métrica (EDHREC, matriz de sinergia, goldfish) mostrar sobre elas.
+
+**Thranduil, the Elvenking (thranduil-sultai):**
+- **Roaming Throne** e **Maralen, Fae Ascendant** — *"Nem pensar em tirar o
+  trono ou a Maralen"* (stop hook feedback, sessão 2026-08-20/21).
+- **Thranduil's Company** — *"Não vamos tirar o Thranduil's Company em
+  hipótese alguma."* (2026-08-21), mesmo sendo o único card do deck sem
+  nenhuma proteção em nenhuma dimensão da matriz de sinergia
+  (`thranduil_synergy_matrix.py`) — vetada por decisão direta do usuário,
+  não por análise.
+
+## 6. Auditoria de manabase: sempre contar Command Tower, fetches, Arcane Signet e outros fixers flexíveis como fontes reais
+
+Citação literal do usuário (2026-08-24): *"Sempre que vc for avaliar a
+manabase, lembre de contar Command Tower, os fixers (fetch lands, arcane
+signet e outros corretores como Dryad) daqui para frente, ok?"*
+
+Contexto: numa auditoria de pips do Hei Bai, um cálculo inicial contou
+fetch lands como fontes de só as 2 cores "nomeadas" no texto delas (ex:
+Arid Mesa = R ou W), subestimando o alcance real. Fetches buscam por
+**tipo** de terreno, não só básica — então também pegam qualquer
+dual/triome que carregue aquele tipo. Testado no Hei Bai: as 8 fetches da
+lista, cada uma, alcançavam as 5 cores, porque a manabase tinha duais/
+triomes multicoloridos suficientes conectando todo tipo básico a todo o
+resto.
+
+- **Command Tower, Arcane Signet** (e qualquer fonte "any color in your
+  commander's color identity") contam como fonte de TODAS as cores da
+  identidade do comandante, não de uma cor só.
+- **Fetch lands**: não contar só as 2 cores nomeadas no texto. Cruzar
+  contra `type_line` de TODO terreno da lista (duais, triomes, básicas)
+  pra achar quais compartilham um dos 2 tipos buscados, e somar a união
+  de cores de todos esses alvos — não só o par nomeado.
+- **Fixers estáticos que mudam terrenos** (ex: Dryad of the Ilysian
+  Grove — "Lands you control are every basic land type"; Yavimaya,
+  Cradle of Growth — "Each land is a Forest in addition to its other
+  land types") contam como fonte real de cada cor que passam a habilitar,
+  uma vez em campo — mas são condicionais (precisam resolver primeiro),
+  então registrar separado da contagem "sempre disponível desde o turno 1"
+  (terrenos básicos, duais, fetches, rocks), não misturado nela.
+- Toda contagem de fonte-por-cor precisa citar de qual das categorias
+  acima veio (fixa incondicional vs. condicional-uma-vez-resolvida), não
+  só o número final — pra não repetir o erro de subestimar (ou
+  superestimar) o alcance real da manabase.
+
+**Adendo (2026-08-27), Ur-Dragon:** citação literal do usuário — *"Vc por
+acaso colocou Cavern of Souls, Haven of the Spirit Dragon e Secluded
+Courtyard como condicionais, mas elas geram mana de qualquer cor para o
+tipo de criatura escolhida (Dragão). Mais um erro importante conceitual e
+prático de sua parte!"* Eu tinha essas 3 terras tratadas como puramente
+incolores no simulador, com a justificativa de que a restrição "só pra
+criatura do tipo escolhido" era real demais pra modelar sem inflar
+fixação pro resto do deck — mas isso ignorou que, num deck com identidade
+tribal clara (comandante do tipo X + várias criaturas do tipo X), o tipo
+escolhido é óbvio e fixo, e essas fontes viram fixação real de qualquer
+cor pra exatamente a fatia de maior demanda de pips do deck. No Ur-Dragon:
+21 criaturas Dragão carregam 49% de todos os pips coloridos (70,7% da
+demanda de vermelho especificamente) — Cavern/Courtyard/Haven cobrem
+integralmente essa fatia.
+
+- **Terrenos "any color" restritos a um tipo de criatura escolhido** (ex:
+  Cavern of Souls, Secluded Courtyard) **ou fixos num tipo** (ex: Haven of
+  the Spirit Dragon): não tratar como incolor só porque a restrição
+  existe. Contar como fonte real de qualquer cor, mas só pro subconjunto
+  de spells daquele tipo — nunca despejar no `produces` geral do resto do
+  deck (isso infla artificialmente a fixação pra spells que não se
+  beneficiam, ex: removal, ramp genérico, artifacts).
+  - Calcular e citar explicitamente que fração da demanda de pips (por
+    cor) vem desse subconjunto de criaturas — se for uma fração grande
+    (tribal focado), o "incolor" está subestimando a manabase real; se for
+    pequena, o tratamento incolor pode seguir sendo a aproximação certa.
+  - Documentar a contagem separada (fontes gerais vs. fontes só-pro-tipo),
+    igual à distinção já feita acima pra fixers condicionais.
+
+## 7. Combo achado no Commander Spellbook: sempre calcular turno/probabilidade real antes de tratar como achado de Bracket
+
+Citação literal do usuário (2026-08-27), depois de eu alarmar sobre 2
+combos infinitos "já montados" no Ur-Dragon sem checar viabilidade: *"Não
+viaja, quando eu consigo executar esses combos? Algum antes do turno
+8?"* — e depois: *"Adicione nas regras a questão do turno dos combos e
+de final do jogo dos brackets na sua análise."*
+
+Contexto: Commander Spellbook (`backend.commanderspellbook.com`) confirma
+se uma combinação de cartas FUNCIONA nas regras, dado que todas estão na
+lista — não diz nada sobre quão rápido ou provável é montá-la numa
+partida real. Achar um combo "included" lá não é, por si só, motivo pra
+reclassificar Bracket. No caso do Ur-Dragon, calculei a probabilidade
+hipergeométrica real de ter as peças específicas na mão (sem tutor
+dedicado buscando as duas juntas) — deu **1,9% até o turno 8** pro combo
+de 2 cartas mais provável, **0,23%** pro de 3 cartas — antes ainda de
+contar mana, haste, e sobreviver a remoção numa mesa real de 4
+jogadores. Não é um "combo turno 3-4", é um evento de cauda.
+
+**Daqui pra frente, sempre que um combo for encontrado via Commander
+Spellbook (ou qualquer fonte que só verifique legalidade/funcionamento,
+não velocidade):**
+- Calcular a probabilidade hipergeométrica real de ter TODAS as peças na
+  mão até um turno de referência (6, 8, 10, 12), considerando o tamanho
+  real do deck e se existe algum tutor que busque especificamente essas
+  peças (o que muda a conta radicalmente).
+- Checar custo de mana de cada peça e se alguma tem haste/enabler de
+  haste já na lista — combos que exigem sobreviver um ciclo de turno
+  sem summoning sickness são mais lentos ainda do que a probabilidade de
+  draw sozinha sugere.
+- Só tratar um combo como relevante pro critério oficial de Bracket
+  ("combo infinito de 2 cartas cedo no jogo") se a análise acima mostrar
+  que ele é rápido E provável — não só "existe" — citando o número
+  calculado, não uma impressão.
+- Registrar esse cálculo explicitamente na auditoria/log, não só a
+  conclusão — pra não repetir o erro de alarmar sobre reclassificação de
+  Bracket antes de checar viabilidade real.
+- **O Commander Spellbook ignora, sem erro, nome de carta que não
+  reconhece** (achado de 2026-10-05, deck Mothman). Antes de dizer "essa
+  carta não cria combo", resolver o nome via `GET /cards/?q=<nome>` (carta
+  de 2 faces: `Frente // Verso`), gravar nos dados se foi reconhecida e
+  rodar um controle positivo (combo conhecido aparece) e um controle de
+  corte (tirar peça de combo da lista o faz sumir). Rodadas anteriores
+  que usaram nomes sem essa checagem não foram reauditadas.
+
+## 8. Necessidade real de mana é turno-a-turno, não soma agregada de pips
+
+Citação literal do usuário (2026-08-27), Ur-Dragon: *"Não, quero a
+análise real da necessidade de mana, pq quando vc soma todos os pips,
+não considera que dificilmente eu irei cast 3 dragões que precisam de
+pips vermelho no mesmo turno! Ou eles entram por habilidade do
+Ur-Dragon, ou por outras habilidades!"*
+
+Contexto: a auditoria de pips usada nas Correções #5-#10 (somar todos os
+pips coloridos do deck inteiro e comparar contra fontes de mana
+agregadas) é útil pra saber SE a manabase tem cor suficiente no
+agregado, mas superestima a pressão real — ignora que (a) só uma fração
+do deck é jogada numa partida, (b) parte relevante das ameaças pode
+entrar em campo sem pagar pip nenhum (tokens, reanimação, tutor,
+habilidades como a da própria Ur-Dragon), e (c) mesmo o que é conjurado
+de verdade está espalhado ao longo de vários turnos, não simultâneo.
+Verificado no Ur-Dragon: de ~7,85 Dragões em campo no fim de uma
+partida de 8 turnos, só 44,6% (3,50) foram realmente conjurados pagando
+mana — 48,2% eram tokens, 7,2% entraram de graça por reanimação/tutor.
+
+- **Nunca apresentar a soma agregada de pips vs. fontes agregadas como
+  "a" medida de necessidade de mana.** Ela serve só como triagem inicial
+  (existe desequilíbrio grosseiro de cor no deck?), não como conclusão
+  final sobre pressão de jogo real.
+- **A métrica correta é turno-a-turno**, calculada rodando o goldfish de
+  verdade: `color_screw_turns` / `first_color_screw_turn` (turnos onde a
+  mana total bastava mas a cor certa não estava disponível) — isso já
+  reflete curva real, mão real, e qualquer via de entrada gratuita
+  corretamente implementada no simulador.
+- **Antes de reportar "demanda de X% na cor Y", separar o que é
+  conjurado pagando mana do que entra por outra via** (token, reanimação,
+  tutor pra campo, habilidade de ataque/ETB de outra carta) — a soma de
+  pips do deck inteiro conta ameaças que nunca vão exigir aquele pip na
+  prática.
+- Isso não invalida a auditoria de pips como ferramenta (ainda é o jeito
+  mais rápido de notar "essa cor está claramente sub-representada"), só
+  não deve ser tratada como o número final sem cruzar com dado
+  turno-a-turno do simulador.
+
+## 9. Checklist obrigatória de categorias de mecânica em TODO simulador (não só a carta sendo trabalhada no momento)
+
+Citação literal do usuário (2026-08-28), depois de eu entregar o Beorn sem
+nenhum despacho de landfall apesar de 6 cartas do deck dependerem dele: *"Como
+diabos vc criou um simulador que não leva em conta a porra do Landfall???
+[...] acrescente uma maldita regra de conferir TODAS AS MALDITAS INTERAÇÕES,
+ATIVAÇÕES e COMBOS do deck na porra do simulador. Revise gatilhos, tokens,
+motores de draw e ramp, e os mana dorks, mana rocks e lands que geram mana
+fixing em TODOS OS DECKS E SIMULADORES!!!!"*
+
+Checklist completa (landfall, mana dorks/rocks/fixing, draw engines, ramp
+engines, ativadas repetíveis, combos entre peças já na lista) em
+`references/goldfish-sim-card-rules.md#checklist-obrigatória-de-categorias-de-mecânica-não-só-cartas-individuais`.
+Obrigatória antes de declarar **qualquer** simulador (novo ou em revisão)
+completo — inclusive os já existentes, não só o que está sendo escrito no
+momento.
+
+**Reforço/ampliação (2026-08-28), depois da rodada final do Beorn:** citação
+literal do usuário — *"Lembre da regra que criamos: TODA SIMULAÇÃO E DECK TEM
+QUE TER TODAS AS Ativações, gatilhos, habilidades estáticas, combos e
+métricas básicas (ramp, draw, interaction, finisher/lethality) contabilizados
+e auditados SEMPRE!"*
+
+- Duas categorias novas na checklist (itens 9 e 10 no `goldfish-sim-card-rules.md`):
+  **habilidades estáticas** (anthems, custo reduzido, "criaturas são do tipo
+  X", mudança de tipo de terreno, restrição/expansão de cor — precisam estar
+  aplicadas em TODO cálculo que afetam, não só onde foram implementadas
+  primeiro) e **métricas básicas obrigatórias no relatório de todo simulador**
+  (ramp, draw, interaction, finisher/lethality — reportadas de forma
+  auditável e separada, mesmo quando o deck já tem métricas específicas por
+  carta).
+- **"SEMPRE" é literal:** essa checklist (10 categorias completas) vale pra
+  **todo deck e todo simulador do repositório, em toda sessão**, não só o
+  deck sendo trabalhado no momento em que a regra foi criada ou reforçada —
+  inclusive decks já auditados anteriormente, que devem ser revisados de novo
+  se alguma categoria não tiver sido explicitamente checada e documentada.
+
+**2º reforço (2026-08-28), depois da checklist ampliada aplicada em Edgar
+Markov/Hei Bai:** citação literal do usuário — *"Vc precisa acrescentar a
+variável recursão e interação à lista de variáveis para avaliar, medir e
+registrar em todos os decks tb!"*
+
+- **Recursão** vira a **5ª categoria obrigatória de métrica básica** (antes
+  eram 4: ramp/draw/interaction/finisher-lethality) — ver
+  `references/goldfish-sim-card-rules.md#checklist-obrigatória-de-categorias-de-mecânica-não-só-cartas-individuais`,
+  item 10. Cobre qualquer efeito de recuperar carta do cemitério (pra mão,
+  campo, ou topo da biblioteca): reanimação, "return target card from your
+  graveyard", tutor-de-volta, etc.
+- **Interação** já estava na lista de 4, mas o reforço deixa explícito:
+  precisa de uma métrica agregada de verdade reportada no `run_batch` de
+  TODO deck com pelo menos 1 carta de remoção/proteção/interação — mesmo
+  quando o valor é 0 por decisão de arquitetura (goldfish solo sem oponente
+  real pra mirar), documentar isso como uma linha própria do relatório, não
+  como uma nota de rodapé sem número.
+- Aplica-se retroativamente aos decks já concluídos nesta sessão (Beorn,
+  Edgar Markov, Hei Bai) e a todo deck futuro, desde a auditoria inicial —
+  não é um adendo só pros próximos decks.
+
+**3º reforço (2026-08-28) — cartas de face múltipla:** depois de eu
+reportar RECURSION quase zerada no Edgar Markov, o usuário perguntou direto
+— citação literal: *"Como Edgar Markov não tem recursão? Vc auditou tudo
+mesmo? E Agadeem's Awakening e Bloodline Bidding? Rise of the Dark
+Realms?"* — e, depois de eu confirmar que Agadeem's Awakening estava
+land-primary por engano (achado real: MDFC verdadeiro nunca conjurado como
+spell) e que Rise of the Dark Realms não está na lista real: *"Então já
+tinha tirado o Rise, verifique mais uma vez todas as cartas modais/
+aventuras/preparadas/dupla face dos dois decks e acrescente essa regra de
+verificar e compilar TODOS OS EFEITOS DAS CARTAS: Rooms, battles, mdfcs,
+adventures, prepared, etc, para TODOS OS DECKS."*
+
+- Nova categoria 11 na checklist (`goldfish-sim-card-rules.md`): antes de
+  registrar QUALQUER carta com "//" no nome (ou layout multi-face), checar
+  o campo `layout` real da API do Scryfall — não adivinhar. `modal_dfc`
+  (2 faces independentes) é diferente de `transform` (só a frente é
+  castável da mão, o verso só chega via gatilho real) é diferente de
+  `split`/Room (destranca a 2ª porta depois) é diferente de `prepare`
+  (Emeritus of Woe/Stensian Sanguinist) é diferente de Adventure é
+  diferente de `battle`.
+- **Achado real que motivou a regra:** Ojer Taq, Deepest Foundation //
+  Temple of Civilization e Legion's Landing // Adanto, the First Fort
+  (Edgar Markov) tinham layout `transform` mas eram registradas DIRETO como
+  Land — isso não era só "perder valor", era simular uma ação ilegal do
+  jogo (jogar um verso que nunca poderia ter sido alcançado sem conjurar a
+  frente primeiro). Corrigido, ver `edgar-markov-mardu/goldfish-log.md`,
+  Correção #13.
+- Vale pra **todo deck do repositório**, não só o Edgar Markov — qualquer
+  carta com "//" no nome em qualquer decklist precisa passar por essa
+  verificação antes de ser considerada auditada.
+
+**4º reforço (2026-08-28) — planeswalkers:** depois de eu confirmar que o
+Prismatic Bridge (17 planeswalkers na lista) só rastreava SE a Bridge
+acertava um planeswalker, nunca o que ele fazia depois de entrar em campo
+(nenhuma lealdade, nenhuma ativação, nenhum efeito) — citação literal do
+usuário: *"Preciso que os counters de lealdade e ativações de planeswalker
+sejam sempre contabilizados, a base do Prismatic Bridge é essa! Adicione
+essa regra para tudo, sempre também!"*
+
+- Nova categoria 12 na checklist (`goldfish-sim-card-rules.md`): todo
+  planeswalker em qualquer deck do repositório precisa de lealdade
+  rastreada de verdade, uma decisão real de qual habilidade ativar a cada
+  turno, e o efeito de cada habilidade implementado — não só a tag
+  decorativa `"planeswalker"`.
+- Vale retroativamente pra qualquer deck já auditado que tenha
+  planeswalker e ainda não modele isso (Edgar Markov tem Sorin/Elspeth
+  deferidos por essa mesma razão — precisa ser revisitado) e pra todo deck
+  futuro desde a auditoria inicial.
+
+**5º reforço (2026-08-28) — Classes e Sagas ("níveis"):** citação literal
+do usuário — *"Não esqueça de verificar as cartas com 'níveis', como
+classes e sagas. Vc tb precisa criar a regra de verificar e contabilizar
+isso, pq o caretaker's talent se elevado ao nível 3 aumenta todos as token
+creatures e o innkeeper's no Prismatic no nível 3 DOBRA TODOS OS COUNTERS,
+inclusive os de lealdade de PWs ao entrarem no jogo!"*
+
+- Nova categoria 13 na checklist (`goldfish-sim-card-rules.md`): antes de
+  decidir que só a habilidade BASE de uma Class é modelável, ler o texto
+  de TODOS os níveis contra o oráculo real — um nível alto pode ser um
+  efeito de campo inteiro (anthem, dobrador de counter) que muda o valor
+  real da carta por completo. Sagas também entram (capítulos automáticos,
+  não pagos, mas podem conceder habilidade ativada que compete pelo `{T}`
+  da própria mana da carta).
+- **Achado real que motivou a regra:** Innkeeper's Talent (Prismatic
+  Bridge) nível 3 dobra TODOS os counters — incluindo a lealdade inicial
+  de planeswalker ao entrar em campo, uma interação direta com o sistema
+  de lealdade construído na correção anterior, que eu tinha deixado de
+  fora citando "precisa de engine de leveling" sem tentar construir essa
+  engine. Caretaker's Talent (Hei Bai) nível 3 dá +2/+2 a criaturas-token,
+  um anthem de campo inteiro, também deixado de fora.
+- Vale pra **todo deck do repositório** com Class/Saga na lista.
+
+## 10. Antes de sugerir qualquer alteração de deck (corte, adição, troca), levantar TODA a análise relevante primeiro — não só depois de ser questionado
+
+Citação literal do usuário (2026-08-28), durante a avaliação de adicionar
+Morophon, the Boundless ao Ur-Dragon — depois de eu sugerir cortar Sarkhan,
+Soul Aflame sem checar o impacto na curva, e só ter puxado a curva de mana
+completa quando o usuário perguntou *"Mesmo com uma diferença de cmc tão
+grande?"*: *"Pq vc não analisa tudo isso antes de me sugerir?"* — seguido
+de: *"Tem que levantar tudo, combos, estratégias, custo, curva, etc\nVc faz
+isso com mais precisão do que eu"*.
+
+Contexto: sugeri cortar Sarkhan, Soul Aflame (CMC3) pro Morophon (CMC7)
+citando só "faz o mesmo trabalho, é redundante" — sem checar a curva de
+mana do deck inteiro primeiro. Só depois de ser questionado sobre a
+diferença de CMC é que rodei a distribuição real (CMC1:6, CMC2:14, CMC3:15,
+CMC4:3, CMC5:6, CMC6:11, CMC7:6, CMC8:1, CMC9:1), que mostrou que o corte
+proposto tirava carta do slot mais cheio do deck (CMC3) pra empilhar ainda
+mais um slot já carregado (CMC7) — e que existia um corte estruturalmente
+melhor (Ramos, Dragon Engine, CMC6, também tipo Dragão de verdade, então a
+troca mantém a contagem de Dragões em campo neutra E desloca a curva só
++1 em vez de +4). Essa análise deveria ter vindo ANTES da primeira
+sugestão, não depois de ser cobrada.
+
+- **Toda sugestão de alteração de deck** (cortar carta, adicionar carta,
+  trocar carta por outra, redesenhar um pacote/subtema) precisa vir
+  acompanhada da análise completa relevante, levantada ANTES de eu
+  formular a recomendação — não corrigida reativamente depois que o
+  usuário questiona.
+- Análise completa = no mínimo, conforme o que for relevante pro caso:
+  - **Curva de mana** (distribuição CMC de todo o deck, não só da carta
+    envolvida) — pra saber se a troca está esvaziando um slot já cheio,
+    empilhando um slot já carregado, ou preenchendo um buraco real.
+  - **Combos e sinergias reais** entre a carta proposta/cortada e o resto
+    da lista (não só "combo infinito" — inclui anthems, redutores de
+    custo, contadores de tipo/tribo, motores que dependem de contagem de
+    permanentes de um tipo).
+  - **Contagem estrutural relevante** (ex: quantas criaturas de um tipo
+    tribal ficam em campo antes/depois da troca, se isso afeta gatilhos
+    que escalam com essa contagem).
+  - **Custo de mana e cor** (CMC, pips coloridos, quando isso já não
+    estiver coberto pela curva agregada).
+  - **Estratégia/win condition do deck** — se a troca reforça ou destoa do
+    plano de jogo real (ex: deck de rampa pra bombas vs. deck agressivo de
+    curva baixa).
+- Tudo isso sourced do mesmo jeito que qualquer outro dado (Scryfall real,
+  cálculo real sobre a decklist real) — nunca "impressão" ou generalização
+  de memória, mesma exigência da Regra 1.
+- Vale pra **toda sugestão de alteração em qualquer deck**, não só
+  avaliação de card individual isolado — inclui recomendações de corte,
+  adição, e resposta a "vale a pena incluir X?".
+
+**Reforço (2026-08-28)**, logo depois de eu ter aplicado a regra pela
+primeira vez (rodei o goldfish real do Ur-Dragon, testei 6 candidatos de
+corte pro Morophon, entreguei número em vez de opinião) — citação literal
+do usuário: *"A ideia de montarmos esse database com trabalho de corno é
+para usarmos nessas situações, para não vir com 'eu tiro do meu cu que
+essa é a melhor opção!'!"*
+
+- **Se o deck em questão tem um simulador de goldfish no repositório,
+  RODAR ele é obrigatório antes de qualquer recomendação de corte/adição/
+  troca** — não uma opção entre "teorizar sobre curva/sinergia" ou "medir
+  de verdade": as duas coisas, sempre, e a medição empírica (goldfish
+  real, seeds pareadas, robustez) é o critério que desempata quando a
+  análise teórica (curva, texto de carta) não é conclusiva sozinha.
+  Analisar sem rodar o simulador que já existe pra aquele deck é
+  exatamente o "tirar do cu" que essa regra existe pra evitar.
+- Testar **mais de um candidato de corte** (não só o primeiro que parecer
+  óbvio pela leitura de texto) e, quando fizer sentido, incluir pelo menos
+  1 candidato "controle" esperado ser ruim — serve pra confirmar que a
+  metodologia distingue sinal real de ruído de seed antes de confiar no
+  ranking (feito no teste do Morophon: Firdoch Core como controle, saiu
+  pior que os 3 finalistas em quase toda métrica).
+
+## 11. Registrar a regra no arquivo não basta — precisa CONSULTAR o arquivo antes de agir, não só depois de errar
+
+Citação literal do usuário (2026-08-28): *"Parece que vc não registra o que
+te peço para fazer depois…"*
+
+Contexto: esse comentário veio logo depois da Regra 10 ser criada — e é o
+mesmo padrão que já tinha se repetido a tarde toda (Edgar Markov sem
+recursão, Ur-Dragon sem loyalty tracking, corte do Morophon sem curva). Em
+todos os casos a regra relevante já existia neste arquivo, mas só foi
+aplicada de verdade depois que o usuário questionou — não antes, por conta
+própria. Escrever a regra no arquivo é necessário mas não suficiente; falta
+o passo de reler o arquivo ANTES de agir, não confiar em lembrar do que já
+foi registrado em sessões (ou até turnos) anteriores.
+
+- **Antes de qualquer trabalho novo num deck deste usuário** — simulador de
+  goldfish, sugestão de corte/adição/troca, auditoria, ou qualquer resposta
+  que envolva avaliar cartas — **ler de verdade**
+  `references/user-standing-rules.md` e (se for trabalho de simulador)
+  `references/goldfish-sim-card-rules.md` primeiro, como um passo explícito
+  da tarefa, não como conhecimento de fundo presumido.
+- Isso vale mesmo dentro da mesma sessão/conversa — uma regra criada há
+  poucos turnos atrás precisa ser reconsultada na próxima tarefa, não só
+  "lembrada" de memória de curto prazo.
+- Se uma regra já registrada aqui não foi aplicada numa resposta minha, isso
+  é falha de execução (não segui meu próprio processo), não falta de regra
+  — a correção certa é reforçar o hábito de consulta, não necessariamente
+  criar mais uma regra nova pro mesmo problema.
+
+## 12. Todo tipo de terreno precisa ter o mecanismo real de entrada verificado e implementado, não presumido
+
+Citação literal do usuário (2026-08-29), Ur-Dragon, depois de perguntar se
+Sundown Pass poderia substituir Battlefield Forge na manabase: *"Sempre
+implemente a verificação de todos os tipos de terrenos: fetch, checked,
+shock, triomas e etc!"*
+
+Contexto: Sundown Pass é um "check land" real (Innistrad: Crimson Vow —
+"This land enters tapped unless you control two or more other lands. {T}:
+Add {R} or {W}.") — um mecanismo de entrada condicional que o simulador do
+Ur-Dragon nunca tinha implementado (só tinha fetch, shock-sempre-destravado
+por premissa documentada, e triome/Path of Ancestry sempre tapped via
+`ETB_TAPPED_LANDS`). Sem esse mecanismo, eu teria simplesmente cadastrado
+Sundown Pass como "sempre destravada" (mesma simplificação incorreta que já
+tinha sido corrigida uma vez pros Triomes, achado real de 2026-08-27/28) só
+por conveniência, não por conferência real do oráculo.
+
+- **Antes de cadastrar QUALQUER terreno num simulador**, identificar o
+  ARQUÉTIPO real dele (via Scryfall, nunca de memória) entre pelo menos:
+  fetch land ("Sacrifice ~: Search your library for a [tipo] card"),
+  shock land ("you may pay 2 life. If you don't, ~ enters tapped"), check
+  land ("~ enters tapped unless you control a [tipo] or [tipo]" ou "two or
+  more other lands"), triome/terreno sempre tapped ("This land enters
+  tapped", sem condição nem opção de vida), pain land ("{T}: Add [cor].
+  This land deals 1 damage to you", nunca tapped), slow land ("~ enters
+  tapped unless you control two or more other lands" — cuidado, MESMO
+  texto de check land em alguns casos recentes, conferir a carta exata),
+  canopy/horizon land (sacrifício + draw), terreno-utilidade de cor
+  condicional (Cavern of Souls/Command Tower/Exotic Orchard — já cobertos
+  pela Regra 6), terreno sem-cor de mana dupla (Ancient Tomb), dual
+  original (sem restrição nenhuma).
+- **Cada arquétipo precisa do mecanismo de entrada REAL modelado**, não só
+  a cor que produz — check lands e slow lands em especial exigem uma
+  condição real (contagem de terrenos/tipos em campo no momento da entrada)
+  que o simulador ainda não tinha antes desta regra; implementar de forma
+  genérica (reutilizável por qualquer terreno do mesmo arquétipo), não
+  hardcoded pra uma carta só.
+- Vale **retroativamente pra toda manabase de todo deck do repositório**,
+  não só pro terreno sendo adicionado no momento — auditar a manabase
+  inteira contra essa lista de arquétipos antes de considerar um simulador
+  completo (mesmo princípio já usado nas Regras 9/10 do
+  `goldfish-sim-card-rules.md` pra mecânicas de carta em geral).
+- Documentar explicitamente, por terreno, qual arquétipo foi identificado e
+  a fonte real (Scryfall) — nunca assumir "provavelmente destravada" ou
+  "provavelmente igual a outro terreno parecido" sem conferir o texto
+  exato da carta.
+
+## 13. Texto de carta SEMPRE via consulta estruturada real (API Scryfall), nunca resumo de busca nem memória — nem "metade certa"
+
+Citação literal do usuário (2026-08-29), depois do achado de Rhythm of
+the Wild (só riot foi implementado, "creature spells can't be countered"
+nunca sequer registrado) — *"QUERO QUE VC USE O TEXTO COMPLETO DAS
+CARTAS, CARALHO! QUANTAS VEZES JÁ PEDI E REFORCEI ISSO? O QUE PRECISO
+FAZER PRA VC INCORPORAR E USAR ESSA MALDITA REGRA???"*
+
+Contexto: a Regra 1 já dizia "consulta real à API do Scryfall... nunca de
+memória", mas na prática eu vinha usando o `WebSearch`, que devolve um
+RESUMO gerado por outro modelo em cima dos resultados — não o texto
+estruturado real. Isso já tinha causado pelo menos 2 erros reais nesta
+sessão sozinha: (1) Rhythm of the Wild — só a metade do oráculo
+("riot") foi capturada, "creature spells can't be countered" ficou de
+fora inteiro; (2) auditando em lote logo depois desta cobrança,
+descobri que **Kindred Discovery estava cadastrada com mv=3 e pip VERDE
+(G:1)** — o custo real é `{3}{U}{U}`, mv=5, cor AZUL, sem nenhum pip
+verde — e **An Offer You Can't Refuse** com mv=2 em vez do real mv=1
+({U}). Nenhum desses 2 era um texto ambíguo ou obscuro — eram dados
+estruturados simples (mana_cost/cmc) que uma consulta real teria dado
+certo de primeira.
+
+**A partir de agora, o método OBRIGATÓRIO pra qualquer dado de carta
+(custo, cor, oráculo completo, tipo) é a API estruturada real da
+Scryfall via `curl`, não `WebSearch`/`WebFetch`:**
+- Carta única: `curl -s "https://api.scryfall.com/cards/named?exact=<nome
+  com %20 no lugar de espaço>"` — devolve JSON com `mana_cost`, `cmc`,
+  `colors`, `type_line`, `oracle_text` completo e literal, sem resumo.
+- Lote (até 75 por chamada): `POST
+  https://api.scryfall.com/cards/collection` com `{"identifiers":
+  [{"name": "..."}, ...]}` no corpo — usar `curl -X POST ... --data
+  @arquivo.json` (viável neste ambiente: `urllib`/`requests` do Python
+  falharam com 400 aqui, mas `curl` funciona direto, aparentemente por
+  causa do proxy configurado no ambiente — testar `curl` primeiro sempre
+  que uma chamada de API estruturada for necessária).
+- `WebSearch`/`WebFetch` só valem pra informação que a API da Scryfall
+  não tem (ex: artigos de estratégia, decklists de terceiros, preço
+  histórico fora do campo `prices` do próprio Scryfall) — NUNCA pra
+  custo, cor, tipo ou oráculo de uma carta específica quando a API
+  consegue responder direto.
+- **Ler o campo `oracle_text` INTEIRO antes de cadastrar `add()` ou
+  implementar qualquer mecânica** — nunca parar na primeira frase que
+  parece familiar/relevante. Se o texto tem 2+ frases/parágrafos, TODAS
+  precisam estar contempladas (implementadas OU documentadas como fora
+  de escopo, nunca silenciosamente ausentes — mesmo princípio já da
+  checklist de 13 categorias do `goldfish-sim-card-rules.md`, agora
+  extoldo ao próprio texto bruto da carta, não só às categorias de
+  mecânica).
+- Conferir `mana_cost`/`cmc`/`colors` da resposta ANTES de escrever
+  `mv=`/`pips=` no `add()` — nunca preencher esses valores de memória
+  "porque a carta é familiar", mesmo pra cartas muito conhecidas (achado
+  real: Kindred Discovery é uma carta relativamente famosa em decks
+  tribais, e mesmo assim a cor cadastrada estava errada).
+- Vale retroativamente: **qualquer carta já cadastrada em qualquer
+  simulador do repositório merece ser reauditada** contra a API real se
+  houver qualquer dúvida — não é preciso esperar o usuário apontar erro
+  carta por carta.
+
+## 14. `scryfall-cache/oracle-cache.json` é OBRIGATÓRIO consultar primeiro — e manter 100% completo, sem `oracle_text: null`
+
+Citação literal do usuário (2026-08-30), depois de eu ter implementado o
+Thranduil sem a habilidade estática que dá nome ao comandante: *"Quantas
+vezes vou precisar pedir para vc registrar a porra do oráculo completo de
+todas as cartas dos meus decks para consultar sempre que precisar nesta
+merda? Me irrita vc ignorar a habilidade MAIS IMPORTANTE."*
+
+**Achado real que motivou a regra:** o cache (`scryfall-cache/oracle-cache.json`,
+na raiz do repo) **já existia com 1061 cartas**, incluindo o Thranduil, e
+**já tinha o texto correto** ("Thranduil has all activated abilities of
+all Elf cards in your graveyard...") — eu simplesmente não consultei essa
+fonte antes de implementar. Auditoria completa do cache revelou um
+segundo problema estrutural: **34 cartas de face múltipla em todo o
+repositório tinham `oracle_text: null`** (Scryfall retorna `oracle_text`
+vazio no nível superior pra cartas com `card_faces` — quem populou o
+cache original não tratou esse caso), incluindo `Thranduil, Sindarin
+Liege // Silvan Rally`, `Beorn, Reluctant Host // Till and Tend`, `Bala
+Ged Recovery // Bala Ged Sanctuary` e outras 31 cartas de outros decks do
+repositório (Edgar Markov, Hei Bai, etc.) — um "buraco" real e sistêmico,
+não um problema isolado do Thranduil. Corrigido: as 34 entradas agora têm
+`oracle_text` reconstruído (join dos `card_faces`) + um campo `card_faces`
+novo preservando nome/custo/texto de cada face separadamente. 3 cartas do
+Ur-Dragon que faltavam inteiramente no cache (`Dragon's Hoard`, `Sarkhan
+Unbroken`, `Sundown Pass` — adicionadas à lista depois do cache original
+ser montado) também foram adicionadas.
+
+**A partir de agora, ordem OBRIGATÓRIA de consulta pra qualquer dado de
+carta (substitui a Regra 13 como primeiro passo, não a invalida):**
+
+1. **Primeiro**, checar `scryfall-cache/oracle-cache.json` (chave = nome
+   exato da carta, incluindo `"Front // Back"` pra cartas de face
+   múltipla). Se a entrada existe e `oracle_text` não é `null`/vazio, usar
+   esse texto — não fazer uma chamada de API repetida pra uma carta já
+   cacheada.
+2. **Se a carta não estiver no cache, OU estiver com `oracle_text: null`
+   OU vazio**: buscar via API real da Scryfall (Regra 13 — `curl`,
+   `/cards/named` ou `/cards/collection`) e **imediatamente adicionar/
+   corrigir a entrada no cache** antes de continuar o trabalho — nunca
+   deixar o cache desatualizado depois de descobrir uma lacuna. Cartas de
+   face múltipla exigem reconstruir `oracle_text` a partir de
+   `card_faces` (nunca aceitar `null` como "sem texto").
+3. **Nunca implementar uma carta a partir de memória ou impressão "essa
+   eu conheço"** mesmo que ela pareça familiar — sempre passar pelo cache
+   ou pela API, mesmo pra comandantes/cartas centrais do próprio deck
+   sendo trabalhado (esse foi exatamente o erro: Thranduil é a carta MAIS
+   óbvia de checar, e foi a que ficou sem checagem).
+4. Antes de declarar qualquer simulador/auditoria "completo", rodar uma
+   varredura programática comparando a decklist inteira contra o cache
+   (nomes faltando + `oracle_text` nulo) — não confiar em revisão manual
+   carta por carta pra pegar esse tipo de buraco.
+5. Vale retroativamente pra **todo deck do repositório**, não só os 3
+   trabalhados nesta sessão (Thranduil/Beorn/Ur-Dragon) — qualquer deck
+   com carta de face múltipla merece essa mesma varredura antes de
+   confiar no cache pra ele.
+
+**Reincidência registrada (2026-09-24):** o usuário perguntou "pq ainda
+temos cartas sem o oráculo salvo no nosso repositório como mandei". A
+varredura do item 4 achou **1.527 cartas sem oráculo no cache**: o arquivo
+não recebia nenhuma entrada desde 2026-09-14. Ficaram de fora os 27 precons
+(listas adicionadas em 21/09 só com os nomes), o Tom Bombadil (22/09), as
+trocas do Megatron e da Ms. Bumbleflower, e as cartas citadas na conversa de
+24/09 (comparação com o EDHREC do Prismatic Bridge, pillowfort, logs das
+partidas manuais) — o oráculo dessas foi buscado na API e guardado só em
+arquivo temporário do scratchpad, nunca no cache. Corrigido: 1.512 entradas
+novas + 1 `oracle_text` vazio (Stensian Sanguinist // Exsanguinate).
+**Regra operacional:** todo oráculo buscado na API vai pro
+`scryfall-cache/oracle-cache.json` NO MESMO passo em que é buscado (nunca só
+pro scratchpad), e toda lista nova (inclusive precon sem simulador) só é
+commitada junto com as entradas do cache de todas as cartas dela.
+
+## 15. Salvar o oráculo de TODA carta que o usuário mencionar, não só as que entram num deck/simulador
+
+Citação literal do usuário (2026-08-31): *"Sempre salve o oráculo de TODAS
+AS CARTAS EU MENCIONAR."*
+
+- Toda vez que uma carta for mencionada na conversa — pelo usuário, ou por
+  mim ao responder — checar `scryfall-cache/oracle-cache.json` (Regra 14) e,
+  se a entrada não existir ou tiver `oracle_text` nulo/incompleto, buscar via
+  API real (Regra 13) e salvar a entrada completa no cache imediatamente.
+  Não esperar a carta "entrar" formalmente numa decklist ou simulador pra
+  justificar salvar — a menção sozinha já é o gatilho.
+- Vale pra cartas citadas de passagem, em pergunta hipotética ("e se eu
+  trocasse X por Y"), em comparação, ou mencionadas só de exemplo — qualquer
+  nome de carta na conversa dispara a checagem/gravação no cache.
+- **Reforço explícito do usuário (2026-09-24):** *"Mesmo as cartas que
+  perguntar ou sugerir, quero que elas sejam compiladas no cache."* Isso
+  cobre as 3 origens, sem exceção:
+  1. carta que o usuário **pergunta** ("essa carta funciona aqui?",
+     "o que faz X?");
+  2. carta que **eu sugiro** (upgrade, troca, corte por EDHREC,
+     alternativa budget, carta citada como comparação), **mesmo que o
+     usuário nunca adote**;
+  3. carta de **coleção nova ou spoiler** que o usuário pedir pra
+     acompanhar.
+  A gravação acontece **no mesmo passo** em que o oráculo é buscado na API
+  (mesma regra operacional da Regra 14), e entra no **mesmo commit** da
+  resposta/análise que citou a carta. Nunca deixar oráculo buscado só no
+  scratchpad nem só na resposta do chat.
+- **Coleção inteira** (pedido de 2026-09-24 pra FRA, Reality Fracture):
+  baixar via `/cards/search?q=e:<set>&unique=cards` (paginando `next_page`),
+  gravar todas as cartas no `oracle-cache.json` e manter uma lista legível
+  em `scryfall-cache/sets/<set>-<nome>.md` + `.json`. Se a coleção ainda não
+  lançou (spoiler em andamento), rodar de novo
+  `scryfall-cache/sets/fetch_set.py <set>` antes de qualquer análise com
+  cartas dela: a lista pode ter crescido e o texto pode ter mudado.
+
+## 16. Conferir carta por carta, sempre — nunca inventar, inferir ou presumir
+
+Citação literal do usuário (2026-08-31): *"Sempre confira carta por carta,
+sem inventar, inferir ou criar."*
+
+- Reforço explícito das Regras 1 e 13: qualquer afirmação sobre o que uma
+  carta faz vem SEMPRE de consulta real (cache ou API), carta por carta —
+  nunca de memória, de "família de efeito parecido", ou generalizada a
+  partir de outra carta similar.
+- "Inferir" inclui presumir que duas cartas com nome ou tema parecido têm o
+  mesmo oráculo (achados reais já documentados nesta sessão: reskins como
+  "The Banyan Tree"/"Dragon of Mount Gulg" no Ur-Dragon, layouts de face
+  múltipla que pareciam óbvios mas exigiram checagem do campo `layout` real
+  — Regra 9, categoria 11) — cada carta precisa da sua própria consulta,
+  mesmo quando parece familiar ou já foi vista antes nesta mesma sessão.
+
+## 17. Preferência/processo de trabalho aprendido vira memória permanente sem esperar ser pedido de novo
+
+Citação literal do usuário (2026-08-31): *"Se vc já aprendeu como eu quero
+que vc faça o serviço, salve isso na sua memória pq eu odeio me repetir o
+tempo todo."*
+
+- Assim que um padrão de preferência ou processo ficar claro numa sessão —
+  não só quando o usuário diz explicitamente "regra permanente", mas
+  qualquer correção repetida, forma de reportar preferida, ordem de
+  prioridade, convenção de nomenclatura, etc. — registrar aqui como regra
+  nova (e espelhar no GitHub, Regra 4) por conta própria, sem esperar o
+  usuário pedir "salva isso como regra" explicitamente toda vez.
+- Generaliza o padrão já em uso desde a Regra 4 (toda regra permanente é
+  espelhada no GitHub) e a Regra 11 (regra registrada precisa ser
+  CONSULTADA, não só escrita): a exigência de proatividade agora é ela
+  mesma uma regra — capturar preferência de forma proativa, não só reativa
+  quando cobrado.
+- Se surgir dúvida sobre se algo "vale a pena" virar regra permanente
+  (correção pontual de uma sessão vs. preferência de processo que se repete
+  entre sessões), errar pro lado de registrar — o custo de uma entrada a
+  mais neste arquivo é baixo comparado ao custo de repetir a mesma correção
+  numa sessão futura.
+
+## 18. `rules-cache/comprehensive-rules.txt` é OBRIGATÓRIO consultar primeiro pra qualquer regra do jogo — nunca citar Comprehensive Rules de memória
+
+Citação literal do usuário (2026-09-21), depois de eu ter implementado em
+TODOS os 9 decks com modo de resiliência que "o comandante nunca dispara
+gatilho de morte, vai direto pra zona de comando, nunca morre de
+verdade": *"O comandante não morre e ao invés de ir pro cemitério, pode
+ser movido de volta a zona de comando? Pq até onde sei, comandantes podem
+ser mortos sim! Confere essa regra com muita calma e atenção!"* e, depois
+da confirmação do erro: *"Já pedi para vc parar de fazer as coisas de
+memória, a não ser que compile uma copia das regras oficiais para
+consulta imediata."*
+
+**Achado real que motivou a regra:** eu tinha implementado `remove_
+permanent()` em TODOS os 9 decks (Megatron/Ur-Dragon/Hei Bai/Edgar
+Markov/Ulalek/Toph/Prismatic Bridge/Maralen/Rat King) tratando "CR 903.9"
+como um efeito de substituição único que sempre desvia o comandante pro
+comando, NUNCA disparando gatilho de morte de outras cartas (Zulaport
+Cutthroat, Pitiless Plunderer, Syr Konrad, Ayara, etc.) — de memória,
+sem checar o texto real. A regra real (confirmada via texto oficial,
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896) tem DUAS
+cláusulas diferentes:
+- **903.9b** (mão/biblioteca): efeito de SUBSTITUIÇÃO de verdade — o
+  comandante nunca chega lá.
+- **903.9a** (cemitério/exílio — o caso de "morrer"): **AÇÃO BASEADA EM
+  ESTADO** (CR 704), não substituição — o comandante vai pro cemitério
+  DE VERDADE primeiro (zona muda de verdade, CR 700.4 "dies" = ir pro
+  cemitério a partir do campo, gatilhos de morte de OUTRAS cartas
+  disparam normalmente), e só DEPOIS, como ação separada, o dono PODE
+  (não é obrigado) escolher mover pra zona de comando. Comandante PODE
+  ficar morto de verdade se o dono não exercer essa opção.
+
+Confirmado de forma independente: o motor open-source "Mage" (usado em
+simuladores tipo MTGO) tinha exatamente esse mesmo bug documentado e
+corrigido (`magefree/mage` issue #6866) — sintoma idêntico (comandante
+nunca entra de verdade no cemitério, gatilhos de morte nunca disparam).
+
+**A partir de agora, ordem OBRIGATÓRIA de consulta pra qualquer regra do
+jogo (Comprehensive Rules) — mesmo padrão já estabelecido pra oráculo de
+carta na Regra 14, agora pra REGRA do jogo em si:**
+
+1. **Primeiro**, `grep`/buscar em `rules-cache/comprehensive-rules.txt`
+   (arquivo TXT oficial completo da Wizards, baixado de
+   `https://media.wizards.com/[ano]/downloads/MagicCompRules
+   [YYYYMMDD].txt` — link real em `Magic.Wizards.com/Rules`). Citar o
+   número exato da regra/subregra (ex.: "903.9a") e o texto literal
+   encontrado, nunca parafrasear de memória.
+2. **Nunca implementar ou afirmar uma regra do jogo a partir de memória
+   ou "essa eu sei"** — mesmo regras que parecem óbvias/batidas (CR
+   903.9 é citada o tempo todo nesta sessão, e ainda assim eu errei a
+   nuance real). Mesma lição da Regra 14 pro oráculo de carta, agora
+   pra regra do jogo.
+3. **Manter o arquivo atualizado**: a Wizards publica uma nova versão a
+   cada lançamento de set (efetiva numa data futura anunciada com
+   antecedência — verificado em 2026-09-21 que já havia uma versão
+   datada 2026-09-25 publicada no CDN deles antes de entrar em vigor).
+   Reconferir `Magic.Wizards.com/Rules` periodicamente e re-baixar
+   quando uma versão mais nova entrar em vigor — nunca usar uma versão
+   claramente desatualizada (checar a data "effective as of" na linha 3
+   do arquivo) nem uma versão ainda não-efetiva.
+   **Atualizado em 2026-09-25** para a versão "effective as of September
+   25, 2026" (`MagicCompRules 20260925.txt`, link tirado da própria página
+   `magic.wizards.com/en/rules`). Traz as regras de Reality Fracture:
+   701.71 Empower Jace e 722 Preparation Cards. Também inclui "Dellian" na
+   lista de tipos de planeswalker da 205.3j. A 606.3 e a 701.34a não mudaram.
+4. Se uma regra específica já foi citada/confirmada nesta sessão a
+   partir do arquivo, não precisa re-baixar/re-buscar de novo — mas
+   qualquer citação NOVA de número de regra sempre passa pelo arquivo
+   primeiro, nunca por memória, mesmo que pareça repetir uma regra já
+   vista antes.
+5. Vale retroativamente pra qualquer implementação anterior no
+   repositório que tenha citado uma Comprehensive Rule de memória —
+   acompanha a mesma auditoria retroativa já exigida na Regra 14 (item
+   5) pro oráculo de carta.
+
+## 19. Todo resultado que sustenta uma conclusão é arquivado no repositório (dados brutos comprimidos + índice auditável)
+
+Citação literal do usuário (2026-09-30): *"Guarde tudo para referência futura,
+hoje e sempre, de forma resumida mas acessível e auditável."*
+
+- Não basta commitar as tabelas: os dados brutos (JSON por partida), os
+  comandos, as sementes e o commit do código têm que estar no repositório, senão
+  se perdem com a pasta temporária da sessão.
+- Formato completo (pasta `<deck>/resultados-ab/<data>-<tema>/`, `LEIAME.md`,
+  `SHA256SUMS`, verificação de reprodutibilidade): Regra #8 do `CLAUDE.md`.
+  Modelo: `prismatic-bridge-wurbg/resultados-ab/2026-09-29-candidatas-e-sisay/`.
+- Vale para todo deck do repositório e para toda rodada futura.
+
+## 20. A skill `mtg-commander` tem backup versionado no GitHub e é a cópia que eu consulto; toda atualização dela vai pros dois lugares
+
+Pedido do usuário (2026-09-30): *"Atualize a skill e faça uma cópia dela no GitHub para backup."*
+
+- Cópia viva: `/root/.claude/skills/synced/<id>/mtg-commander/` (pasta sincronizada
+  com a conta, fora do controle de versão). **Alterações feitas nela NÃO são gravadas na
+  conta do usuário; o próximo sync pode sobrescrevê-las.** Dizer isso ao usuário toda vez que
+  a skill for atualizada, e lembrar que o backup do GitHub é a cópia durável.
+- **Backup no GitHub: `skills-backup/mtg-commander/`** (este repositório). Toda vez que a
+  skill for alterada, rodar `bash skills-backup/sincronizar-skill.sh --para-backup` e commitar
+  no MESMO commit da alteração. `skills-backup/README.md` explica como restaurar.
+- Três arquivos de `references/` do repositório (`user-standing-rules.md`,
+  `goldfish-sim-card-rules.md`, `pod-simulator-design.md`) e o `CLAUDE.md` são espelhos
+  da skill (o `CLAUDE.md` entra na skill como `references/CLAUDE-repositorio.md`). Alterou um,
+  rode `sincronizar-skill.sh --para-skill` e depois `--para-backup`: **as cópias não podem divergir**.
+
+---
+
+## 21. Classes de erro SISTÊMICAS do motor do simulador são varridas por script em todo simulador novo/alterado; determinismo checado com `PYTHONHASHSEED` variável
+
+Pedido do usuário (2026-10-05): *"Sim, adicione a Regra #10 e sincronize a skill"* (depois de *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*).
+
+- A varredura de 2026-10-05 achou erro em 14 dos 18 decks e nenhum seria pego por auditoria carta-a-carta: o erro mora no motor (mulligan que sorteava o fundo, terreno virado nunca jogado primeiro,
+  terreno que entra desvirado contra o oráculo, fetchland que ficava em campo como dual, gatilho de "a land enters" só em parte dos pontos de entrada, resultado que dependia de `PYTHONHASHSEED`).
+- Antes de declarar pronto um simulador novo ou alterado: rodar os scripts de `varredura-2026-10-05/scripts/` (`audit_entrada`, `audit_entrada2`, `audit_fetch`, `audit_terreno_nao_e_magia`,
+  `audit_landfall`, `audit_landfall_ordem`, `colisao_nome`, `audit_compra_t1`), conferir a lista de classes do motor e checar determinismo com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (`det_check.sh`/`det_wide2.sh`): os `driver.py` fixam
+  o hash em 0 e por isso não enxergam esse bug. Texto integral e o que a regra NÃO cobre: Regra #10 do `CLAUDE.md`.
+- **Ordem terreno × payoff de landfall (achada em 2026-10-06 no Mothman, estendida em 2026-10-07):** com um terreno ainda por jogar, o simulador conjura antes o payoff de landfall que o mana de agora já paga
+  **só se um ensaio a seco do resto da fase pré-combate mostrar que o turno não perde nenhuma jogada** (comandante, rocha de mana; a fórmula "mana de agora + 1" falhou: atrasou o comandante do Beorn em 38 de 2.000 partidas e, no Mothman, ignorava a cor e superestimou o efeito, Ruin Crab +21% → +13%), senão o terreno do turno nunca dispara o landfall e a Company (Thranduil/Maralen) nunca libera o 2º land drop no turno em que entra. Chave `LANDFALL_PAYOFF_FIRST` nos 6 simuladores com
+  payoff de landfall (Mothman, Toph, Beorn, Thranduil, Maralen, Prismatic Bridge); `audit_landfall_ordem.py` tem de dar 0 candidatos. Pedido do usuário (2026-10-07): *"Corrige os simuladores com erro no script para
+  automatizar a ordem de jogadas para o landfall"*. Não coberto: magia que põe terreno em campo antes do payoff, terreno que volta ao campo, várias fases principais.
+- **Compra do 1º turno (achada em 2026-10-19/20):** Commander com 3+ jogadores não pula a compra (a regra de pular é do 1x1, CR 103.8a). O Mothman era o único dos 20 simuladores que pulava e o do Tam herdou a convenção; chave `FIRST_TURN_SKIPS_DRAW` (padrão `False`). Medir por EXECUÇÃO com `audit_compra_t1.py` (queda da biblioteca entre `turns=0` e `turns=1` ≥ 1 em toda partida; 20 de 20 COMPRA); grep de `on_play` não serve. Pedido do usuário (2026-10-20): *"Corrija todos os simuladores por conta da compra no turno 1"*.
+- **Tam (2026-10-22), pedido *"Termine tudo que falta!"*:** `audit_tam_terrenos.py` (as varreduras de terreno para o simulador do Tam, que não tem `play_land`; 0 falhas; `audit_compra_t1` reexecutado: 20 de 20 COMPRA; `audit_landfall_ordem`: 0 candidatos). Duas classes novas do goldfish #5, ambas no motor e não na carta: **contador acumulado lido como flag** (turnos extras da Ichormoon Gauntlet: dois `−12` no mesmo turno rendiam um turno extra; `EXTRA_TURNS_STACK`) e **ordem de pagamento do mana** (Bloom Tender / Faeburrow Elder tocados antes de a magia trazer a cor nova; genérico que não usa a 2ª unidade de uma fonte já tocada; `VIVID_LAST`, `SIBLING_FIRST`). Não coberto: a ordem de pagamento nos outros simuladores com Bloom Tender (Hei Bai, Maralen, Prismatic Bridge, Thranduil, Tom Bombadil). Perfil `playtester` (oponente calibrado nas taxas dos 5 logs do usuário) só existe no Tam. Um script de varredura que não roda também é vácuo (`audit_tam_terrenos.py` foi commitado com `SyntaxError`): rodar o arquivo commitado e salvar a saída antes de citar o resultado.
+- **Beorn (2026-10-23), ao implementar o Herd Heirloom que o usuário pôs no lugar do Ram Through:** terceira classe de motor, **gatilho de fase nomeada preso a `can_attack`/doença de invocação** (o gatilho da Beorn é "At the beginning of combat on your turn", não "whenever it attacks"; perdia o 1º gatilho de toda partida; o Toph tivera o mesmo com o Avatar Kyoshi). `varredura-2026-10-05/scripts/audit_inicio_de_combate.py` lista as 21 cartas candidatas em 10 decks (triagem; leitura à mão; The Ozolith em 3 decks não foi lido). Troca pedida pelo usuário também passa pela Regra #4: oráculo e rulings ao vivo, Spellbook antes/depois com controles (0 combos), condições enumeradas por script, A/B com a troca separada do conserto.
+- **Rat King (2026-10-25), pedido *"Quero sim"* ao relatório "O quê falta para terminar o deck do Verminister?":** o Commander Spellbook rodado pela primeira vez no deck achou 2 combos que a lista já tinha (Marrow-Gnawer + Thornbite Staff, infinito de 2 cartas; Ayara + Plague of Vermin) e o simulador não executava nenhum; os rulings e a enumeração de conceitos por script abriram 21 divergências de simulador (Treasure nunca mana; Gray Merchant, Emeritus "enters prepared" e extort sem efeito; Bontu's 2×; sneak do Ninja Teen fora do declare blockers e sem devolver atacante; Rat Colony de graça com Jet + Bontu's; Ayara × ficha de Rat; Rotcaller/Marrow/Big Apple; Priest, Zulaport, Soul Stone, Rat King, Deadly Dispute). Classes novas na Regra #10 do `CLAUDE.md` (d)–(j) e o script `audit_etb_sem_efeito.py`. **Tipo/cor de um conceito se enumera incluindo as FICHAS que a lista cria**, não só as cartas impressas. **`grep -rli spellbook` acha menção em só 9 dos 47 decks:** os outros 38 não têm registro de Spellbook com a lista atual (não varridos). Três decisões do usuário ficam pendentes, sem eu alterar nada: wipes sem efeito no próprio campo (Kindred Dominance, Swarmyard Massacre, Damnation), a face de terreno de Fell the Profane // Fell Mire, e o Bracket declarado do deck.
+- **Rat King (2026-10-28), respostas do usuário ao relatório da rodada 3** (*"Bracket 2"*; *"Modela sim ambas as faces"*; *"Quero todos os Spellbooks sim, e salvos no repositório"*; *"Acho que o modo mais importante do Black Market Connections é o 1o, com custo 1 de vida. Os demais só entram em cena se eu tiver algum mecanismo de lifegain rodando: Ayara, ou outro qq"*): (a) **Bracket 2 fica por decisão dele**, com os combos de cauda (Marrow + Staff 0,13% até T6 no simulador) e sem eu ter lido o texto oficial atual do critério; (b) **Fell the Profane // Fell Mire com as duas faces** (a decisão antiga "remoção é o gap real" era julgamento de valor) e **Black Market Connections com o modo 1 sempre e os modos 2/3 só com lifegain em campo**, tudo atrás de chave; as constantes numéricas que o usuário não definiu (limite de 6 terrenos, piso de vida 10, não ir a 0 de vida) ficam declaradas como **política minha** e com variante de sensibilidade; (c) **classe nova de motor (k): ensaio a seco que mede só o que sai da MÃO ignora o comandante** (zona de comando): Rat King, comandante até T2 87,2% → 97,9%; 13 simuladores têm a mesma função e não foram medidos; o `abgen` agora gera o indicador de T2; (d) **Commander Spellbook rodado nos 46 decks restantes** (`spellbook-todos-os-decks-2026-10-28/RESUMO.md`, bruto da API em `<deck>/resultados-ab/2026-10-28-spellbook/dados/`): 2.510 nomes resolvidos, 0 não reconhecidos, controles passaram nos 46; **NÃO feito:** conferir se cada simulador executa os combos achados (Toph 29, Prismatic Bridge 12, Maralen 9, Ulalek 5...). Os 3 wipes seguem pendentes (o usuário perguntou qual é a convenção atual).
+- **Rat King rodada 5 e Tam #6 (2026-10-28):** (a) o usuário decidiu os 3 wipes do Rat King com *"Opção B nos wipes, e meça no A/B"* (efeito aplicado no MEU campo, conjurado só quando compensa); o limite de perda própria é **política minha** (não há número certo sem tabuleiro de oponente) e o A/B mostra o preço de cada limite; a 1ª versão do limite comparava só as mortes e fazia o Swarmyard perder os 2 Esquilos grátis (−0,114 por partida), por isso passou a perda LÍQUIDA dos corpos criados; **uma política de "só conjura se compensa" precisa contar o que a própria carta cria**; (b) uma verificação por `cmp` com um arquivo que nunca foi gravado dá DIFERE: gravar a saída de cada teste ANTES de rodar `verificar_reproducao --tudo`; (c) goldfish manual do usuário: **perguntar, esperar a resposta e só então compilar**; resposta "não me lembro" fica registrada como pergunta aberta e sustentada só por regra/aritmética, nunca como confirmada; quando a resposta do usuário não cabe no log (Q4 do Tam #6: o Gauntlet só entra no T10), dizer isso em vez de forçar; o relato do usuário pode divergir da regra (a Tam do T9 proliferaria 4 vezes e o log tem 1) sem que o simulador esteja errado; (d) **revisão de código do PR #1 (2026-10-29)**: li *"só não usei o botão de passar turno"* como *"o turno extra do Oko não foi jogado"* e dei a dúvida 6 (Dack Fayden) como "sem fonte no log"; o bruto tinha um **2º início de turno** (7 permanentes desvirados + compra) dentro do bloco T11, só aquele bloco entre os 11. **Toda resposta que afirma o que o usuário NÃO fez se confere contra o bruto antes de virar texto** (assinatura de turno no playtester: desvirar tudo + `library → hand`; `testes/t_manual6.py`, teste da dúvida 6, com controle de corte). Corrigido também: a contagem sozinha ("239 passaram") não pega a troca de um teste que falha por um que passa; `verificar_reproducao.sh` passou a comparar uma linha por teste.
+- **Rat King rodada 6 (2026-10-29), revisão de código do PR #1 ("Revise tudo e salve no GitHub e aqui tb"; escolhas dele: revisão do diff do PR, corrigir o que achar e relatar, commit/push na branch do PR, arquivo na pasta do projeto):** (a) o `code-review` do skill leu o alvo `1` como `HEAD~1..HEAD` (só o último commit); para cobrir mais passei o intervalo `7639380..HEAD -- <arquivo>`: **conferir sempre qual intervalo a revisão leu** e declará-lo; (b) **apontamento de revisor é hipótese**: dos 10 do `ratking_goldfish_v1.py`, 2 eram defeito, 1 virou medição (a hipótese não apareceu, mas achou outro defeito: o mana gasto é líquido do Dark Ritual e esconde o desenvolvimento do T1 em 1,7% das partidas), 1 virou guarda e 6 não eram defeito; (c) a correção que eu mesmo propus para esse defeito (desempate por MV da mão + comandante) **piorou o comandante no T2 (−0,32 ± 0,11 pontos, N=10.000)** e ficou desligada: **medir a correção, não só o defeito**; (d) correção **latente** (0 disparos em 20.000 partidas) só se prova por teste dirigido, e o A/B não a mostra: dizer isso em vez de inflar o efeito; (e) `det_check.sh` roda de dentro de `varredura-2026-10-05/scripts/`; da raiz ele dá erro e parece um resultado.
+- Verificação que dá vazio/zero é vácua (conferir que o número é > 0); a tabela publicada tem que ser função só do bruto arquivado; resultado de bateria longa se confere por `Traceback` no log, não pelo `rc`. **Variante de A/B que não difere das outras também é vácua:** cada variante `sensibilidade` lista as chaves todas (o padrão do arquivo é ligado).
+- Comitar e enviar cada deck assim que a verificação fecha (o contêiner pode reiniciar no meio da rodada); não editar o simulador enquanto a verificação completa re-simula o arquivo vivo.
+
+---
+
+<!-- Adicionar novas regras permanentes abaixo conforme o usuário as
+     estabelecer explicitamente. Cada entrada deve citar a frase literal
+     do usuário quando possível, pra não perder o contexto original. -->

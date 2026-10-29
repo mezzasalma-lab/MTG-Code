@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user-MTG-Code/6f4db589-169e-5ac7-b0c5-42b29015f83f/scratchpad/pb/bitident.py", line 7, in <module>
+    new = load("/home/user/MTG-Code/prismatic-bridge-wurbg/prismatic_bridge_goldfish_v1.py", "pb_new")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user-MTG-Code/6f4db589-169e-5ac7-b0c5-42b29015f83f/scratchpad/pb/bitident.py", line 4, in load
+    m = importlib.util.module_from_spec(spec); sys.modules[name] = m; spec.loader.exec_module(m); return m
+                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/user/MTG-Code/prismatic-bridge-wurbg/prismatic_bridge_goldfish_v1.py", line 2878
+    "arena_rector_outlet": False,  # LINHA DELIBERADA (sensibilidade; desligada por padrao pra nao mexer nos A/B
+IndentationError: unexpected indent

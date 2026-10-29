@@ -1,0 +1,9 @@
+Vihaan base N=10000 (sem Defeat na lista; o jogo para no turno em que a condição de Revel in Riches é cumprida)
+turno  P(R+W+B, pessimista)  P(R+W+B, otimista)  P(Vihaan conjurado)
+<=T3    11.1%                 14.0%               85.0%
+<=T4    62.3%                 71.0%               95.3%
+<=T5    81.2%                 84.4%               96.8%
+<=T6    88.8%                 90.1%               97.9%
+<=T8    95.7%                 96.1%               99.0%
+rwb_turn_sim: nunca até T8 4.3% | turno médio quando acontece 4.48
+rwb_turn_best: nunca até T8 3.9% | turno médio quando acontece 4.31

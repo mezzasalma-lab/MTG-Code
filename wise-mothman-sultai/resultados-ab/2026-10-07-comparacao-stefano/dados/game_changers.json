@@ -1,0 +1,901 @@
+{
+ "stefano": {
+  "The Wise Mothman": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": null
+  },
+  "Agent Frank Horrigan": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.59"
+  },
+  "An Offer You Can't Refuse": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.54"
+  },
+  "Arcane Denial": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.26"
+  },
+  "Arcane Signet": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.65"
+  },
+  "Assassin's Trophy": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.65"
+  },
+  "Atomize": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "8.77"
+  },
+  "Beast Within": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.05"
+  },
+  "Biomass Mutation": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.23"
+  },
+  "Bloatfly Swarm": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.44"
+  },
+  "Bojuka Bog": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.16"
+  },
+  "Branching Evolution": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "8.31"
+  },
+  "Breeding Pool": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "10.10"
+  },
+  "Casualties of War": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.40"
+  },
+  "Chromatic Lantern": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.78"
+  },
+  "Command Tower": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.44"
+  },
+  "Contaminated Drink": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.31"
+  },
+  "Counterspell": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.42"
+  },
+  "Crucible of Worlds": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "31.28"
+  },
+  "Cultivate": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.31"
+  },
+  "Darkwater Catacombs": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.39"
+  },
+  "Deadly Rollick": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "26.81"
+  },
+  "Drown in the Loch": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.12"
+  },
+  "Evolving Wilds": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.05"
+  },
+  "Exotic Orchard": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.31"
+  },
+  "Experimental Augury": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.37"
+  },
+  "Fellwar Stone": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.55"
+  },
+  "Feral Ghoul": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.59"
+  },
+  "Find // Finality": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.34"
+  },
+  "Fire Nation Salvagers": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.19"
+  },
+  "Forest": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.25"
+  },
+  "Fractured Sanity": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.71"
+  },
+  "Glowing One": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.81"
+  },
+  "Hardened Scales": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.21"
+  },
+  "Hinterland Harbor": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.39"
+  },
+  "Inexorable Tide": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.96"
+  },
+  "Infesting Radroach": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.83"
+  },
+  "Inspiring Call": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.39"
+  },
+  "Island": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.27"
+  },
+  "Karn's Bastion": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.75"
+  },
+  "Kodama's Reach": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.04"
+  },
+  "Loading Zone": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.99"
+  },
+  "Mariposa Military Base": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.41"
+  },
+  "Mesmeric Orb": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "18.03"
+  },
+  "Mindcrank": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "11.52"
+  },
+  "Mirelurk Queen": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.14"
+  },
+  "Mistrise Village": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "7.33"
+  },
+  "Mortuary Mire": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.34"
+  },
+  "Mutational Advantage": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "6.96"
+  },
+  "Nature's Lore": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.67"
+  },
+  "Negate": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.32"
+  },
+  "Nephalia Drownyard": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.33"
+  },
+  "Nesting Grounds": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.28"
+  },
+  "Nuclear Fallout": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.16"
+  },
+  "Opulent Palace": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.37"
+  },
+  "Overflowing Basin": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.29"
+  },
+  "Overgrown Tomb": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "10.92"
+  },
+  "Path of Ancestry": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.33"
+  },
+  "Putrefy": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.36"
+  },
+  "Radstorm": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "5.43"
+  },
+  "Rampant Growth": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.79"
+  },
+  "Raul, Trouble Shooter": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.24"
+  },
+  "Reanimate": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "9.90"
+  },
+  "Rejuvenating Springs": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.85"
+  },
+  "Ripples of Potential": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.20"
+  },
+  "Rise of the Dark Realms": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "6.75"
+  },
+  "Ruin Crab": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.29"
+  },
+  "Screeching Scorchbeast": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.93"
+  },
+  "Singularity Rupture": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.90"
+  },
+  "Sol Ring": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.08"
+  },
+  "Strength Bobblehead": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.38"
+  },
+  "Struggle for Project Purity": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.33"
+  },
+  "Swamp": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.26"
+  },
+  "Syr Konrad, the Grim": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.23"
+  },
+  "Tainted Isle": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.71"
+  },
+  "Tainted Wood": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.40"
+  },
+  "Talisman of Curiosity": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.46"
+  },
+  "Talisman of Dominance": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.87"
+  },
+  "Talisman of Resilience": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.46"
+  },
+  "Tato Farmer": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.88"
+  },
+  "Terramorphic Expanse": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.20"
+  },
+  "Terrasymbiosis": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "10.07"
+  },
+  "Tezzeret's Gambit": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.32"
+  },
+  "The Earth Crystal": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "13.04"
+  },
+  "The Master, Transcendent": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.34"
+  },
+  "Undergrowth Stadium": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "6.83"
+  },
+  "Vexing Radgull": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.43"
+  },
+  "Viridescent Bog": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.32"
+  },
+  "Watery Grave": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "10.74"
+  },
+  "Wave Goodbye": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.37"
+  },
+  "Winding Constrictor": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.47"
+  },
+  "Woodland Cemetery": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.11"
+  },
+  "Zagoth Triome": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "23.63"
+  }
+ },
+ "nossa": {
+  "Agatha's Soul Cauldron": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "41.02"
+  },
+  "Altar of Dementia": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "17.01"
+  },
+  "Altar of the Brood": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "10.16"
+  },
+  "An Offer You Can't Refuse": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.24"
+  },
+  "Angel of Suffering": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.14"
+  },
+  "Arcane Denial": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.10"
+  },
+  "Ashiok, Dream Render": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.33"
+  },
+  "Basking Broodscale": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.26"
+  },
+  "Bloodchief Ascension": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "20.65"
+  },
+  "Bojuka Bog": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.45"
+  },
+  "Boseiju, Who Endures": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "48.85"
+  },
+  "Breeding Pool": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": null
+  },
+  "Cankerbloom": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.55"
+  },
+  "Cold-Eyed Selkie": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.33"
+  },
+  "Command Tower": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.26"
+  },
+  "Danny Pink": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "19.91"
+  },
+  "Deepmuck Desperado": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.23"
+  },
+  "Didn't Say Please": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.33"
+  },
+  "Evolution Witness": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.31"
+  },
+  "Fabled Passage": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.60"
+  },
+  "Fathom Mage": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.82"
+  },
+  "Fierce Guardianship": {
+   "game_changer": true,
+   "commander": "legal",
+   "prices": "63.92"
+  },
+  "Freestrider Lookout": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.38"
+  },
+  "Generous Patron": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "6.23"
+  },
+  "Glen Elendra Archmage": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "9.70"
+  },
+  "Gyre Sage": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.95"
+  },
+  "Hardened Scales": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.23"
+  },
+  "Hedge Shredder": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.27"
+  },
+  "Herd Baloth": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.36"
+  },
+  "Heroic Intervention": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "17.53"
+  },
+  "Hollowmurk Siege": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.13"
+  },
+  "Icetill Explorer": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "23.50"
+  },
+  "Kami of Whispered Hopes": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.44"
+  },
+  "Kodama of the West Tree": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "20.89"
+  },
+  "Kozilek, Butcher of Truth": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "47.24"
+  },
+  "Memory Erosion": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "9.51"
+  },
+  "Mesmeric Orb": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "18.03"
+  },
+  "Minamo, School at Water's Edge": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "58.92"
+  },
+  "Mindcrank": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "13.43"
+  },
+  "Mirelurk Queen": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.14"
+  },
+  "Misty Rainforest": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "35.97"
+  },
+  "Morphic Pool": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "27.23"
+  },
+  "Muldrotha, the Gravetide": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.57"
+  },
+  "Nature's Lore": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "2.11"
+  },
+  "Negate": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.22"
+  },
+  "Nuclear Fallout": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.16"
+  },
+  "Ouroboroid": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "36.96"
+  },
+  "Overgrown Tomb": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": null
+  },
+  "Palantír of Orthanc": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "19.19"
+  },
+  "Plaza of Heroes": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "3.07"
+  },
+  "Polluted Delta": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "20.75"
+  },
+  "Pollywog Prodigy": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "5.70"
+  },
+  "Psychic Corrosion": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.73"
+  },
+  "Rampant Frogantua": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.93"
+  },
+  "Rejuvenating Springs": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.68"
+  },
+  "Repulsive Mutation": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.60"
+  },
+  "Ruin Crab": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.29"
+  },
+  "Shifting Woodland": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "7.05"
+  },
+  "Six": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "5.23"
+  },
+  "Smuggler's Surprise": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "4.24"
+  },
+  "Sol Ring": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.31"
+  },
+  "Soul-Guide Lantern": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.28"
+  },
+  "Strip Mine": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": null
+  },
+  "Swarmyard": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "5.58"
+  },
+  "Swiftfoot Boots": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": null
+  },
+  "Syr Konrad, the Grim": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.78"
+  },
+  "Takenuma, Abandoned Mire": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "10.55"
+  },
+  "Tear Asunder": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.32"
+  },
+  "The Gitrog Monster": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.48"
+  },
+  "The Great Henge": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "65.58"
+  },
+  "The Wise Mothman": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "12.52"
+  },
+  "Three Visits": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "5.55"
+  },
+  "Toxic Deluge": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "5.02"
+  },
+  "Undead Alchemist": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.73"
+  },
+  "Undergrowth Stadium": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "5.48"
+  },
+  "Urza's Saga": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "38.54"
+  },
+  "V.A.T.S.": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.30"
+  },
+  "Verdant Catacombs": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "29.24"
+  },
+  "Walking Ballista": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "10.68"
+  },
+  "Waterlogged Grove": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.63"
+  },
+  "Watery Grave": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": null
+  },
+  "Wave Goodbye": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "1.95"
+  },
+  "Winding Constrictor": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "0.47"
+  },
+  "Yavimaya Hollow": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": null
+  },
+  "Zagoth Triome": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": "22.15"
+  },
+  "Zellix, Sanity Flayer": {
+   "game_changer": false,
+   "commander": "legal",
+   "prices": null
+  }
+ }
+}

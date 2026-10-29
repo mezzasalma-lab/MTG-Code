@@ -1,0 +1,60 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1280 (64.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0515       0.0450      -0.0065 ±0.0047  
+   commander_cast_turn__ate_T3                  0.1360       0.1390      +0.0030 ±0.0037  
+   commander_cast_turn__ate_T4                  0.4040       0.4080      +0.0040 ±0.0054  
+  *commander_cast_turn__ate_T5                  0.7660       0.7730      +0.0070 ±0.0059  
+  *lands_played_total                           5.8460       5.8965      +0.0505 ±0.0275  
+  *commander_cast_turn__ate_T6                  0.8695       0.8770      +0.0075 ±0.0053  
+  *infinite_combo_turn__ate_T5                  0.0115       0.0085      -0.0030 ±0.0024  
+  *cards_exiled_total                          14.5530      14.7630      +0.2100 ±0.1814  
+  *commander_cast_count                         1.4810       1.4950      +0.0140 ±0.0125  
+   len_hand                                     1.7785       1.6420      -0.1365 ±0.1418  
+   maralen_free_casts_total                     2.4615       2.4850      +0.0235 ±0.0254  
+   landfall_counters_total                      0.1150       0.1235      +0.0085 ±0.0094  
+   len_flash_universal_by_turn                  7.9920       7.9960      +0.0040 ±0.0046  
+   len_flash_with_radagast_by_turn              7.9920       7.9960      +0.0040 ±0.0046  
+   turn                                         7.9920       7.9960      +0.0040 ±0.0046  
+   maralen_triggers_total                       7.4955       7.5935      +0.0980 ±0.1161  
+   interaction_spells_cast_total                1.8605       1.8830      +0.0225 ±0.0287  
+   cast_from_top_total                          0.1575       0.1675      +0.0100 ±0.0135  
+
+[so_mulligan - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1687 (84.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0515       0.0450      -0.0065 ±0.0047  
+   commander_cast_turn__ate_T3                  0.1360       0.1390      +0.0030 ±0.0037  
+   commander_cast_turn__ate_T4                  0.4040       0.4080      +0.0040 ±0.0054  
+  *commander_cast_turn__ate_T5                  0.7660       0.7730      +0.0070 ±0.0059  
+  *lands_played_total                           5.8460       5.8970      +0.0510 ±0.0193  
+  *commander_cast_turn__ate_T6                  0.8695       0.8770      +0.0075 ±0.0053  
+  *commander_cast_count                         1.4810       1.4950      +0.0140 ±0.0104  
+  *len_graveyard                                5.7340       5.8230      +0.0890 ±0.0676  
+  *len_smart_wipe_log                           0.8035       0.8160      +0.0125 ±0.0100  
+  *smart_wipes_total                            0.8035       0.8160      +0.0125 ±0.0100  
+  *interaction_spells_cast_total                1.8605       1.8845      +0.0240 ±0.0201  
+  *mana_spent_this_turn                         5.9315       5.7815      -0.1500 ±0.1357  
+  *fauna_shaman_used_this_turn                  0.0080       0.0060      -0.0020 ±0.0020  
+   wiped_this_round                             0.1655       0.1715      +0.0060 ±0.0063  
+   faerie_mastermind_draws_total                0.6045       0.5700      -0.0345 ±0.0398  
+   maralen_free_cast_used_this_turn             0.5145       0.5060      -0.0085 ±0.0102  
+   lands_played_this_turn                       0.4875       0.4955      +0.0080 ±0.0098  
+   infinite_combo_turn__ate_T6                  0.0215       0.0205      -0.0010 ±0.0014  
+
+[so_ordem - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1547 (77.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *landfall_counters_total                      0.1150       0.1260      +0.0110 ±0.0069  
+  *landfall_elf_tokens_total                    0.1025       0.1110      +0.0085 ±0.0071  
+  *infinite_combo_turn__ate_T5                  0.0115       0.0090      -0.0025 ±0.0022  
+  *faerie_tokens                                0.4810       0.5115      +0.0305 ±0.0283  
+  *staff_infinite_draws                         0.5255       0.3565      -0.1690 ±0.1636  
+   len_hand                                     1.7785       1.6625      -0.1160 ±0.1172  
+   cards_exiled_total                          14.5530      14.6600      +0.1070 ±0.1112  
+   len_flash_universal_by_turn                  7.9920       7.9960      +0.0040 ±0.0044  
+   len_flash_with_radagast_by_turn              7.9920       7.9960      +0.0040 ±0.0044  
+   turn                                         7.9920       7.9960      +0.0040 ±0.0044  
+   fauna_shaman_used_this_turn                  0.0080       0.0105      +0.0025 ±0.0029  
+   len_smart_attack_log                         1.2405       1.2510      +0.0105 ±0.0124  
+   smart_attacks_taken_total                    1.2405       1.2510      +0.0105 ±0.0124  
+   len_smart_removal_log                        0.6405       0.6490      +0.0085 ±0.0106  

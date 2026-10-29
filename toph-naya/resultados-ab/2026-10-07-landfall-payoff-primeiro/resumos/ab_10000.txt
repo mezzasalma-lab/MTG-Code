@@ -1,0 +1,27 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 4308 (43.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *landfall_triggers_fired                     15.2555      15.5179      +0.2624 ±0.0873  
+  *spells_cast_total                           11.3776      11.6116      +0.2340 ±0.0432  
+   table_damage_total                     20075228798717589980135641960505879298048.0000 156965860450013995196480127412198601802641270504423424.0000 +156965860449993918536831792042854262700802796179947520.0000 ±307653086481988033543364860774955628679564958644568064.0000
+  *lethal_turn__nunca                           0.7396       0.7055      -0.0341 ±0.0045  
+  *lethal_turn__ate_T5                          0.0005       0.0012      +0.0007 ±0.0006  
+  *lethal_turn__ate_T6                          0.0081       0.0127      +0.0046 ±0.0015  
+  *commander_cast_turn__nunca                   0.0476       0.0460      -0.0016 ±0.0010  
+   commander_cast_turn__ate_T3                  0.1441       0.1444      +0.0003 ±0.0006  
+  *commander_cast_turn__ate_T4                  0.5391       0.5433      +0.0042 ±0.0015  
+  *first_finisher_turn__ate_T6                  0.3953       0.4163      +0.0210 ±0.0031  
+  *first_finisher_turn__ate_T5                  0.2060       0.2215      +0.0155 ±0.0026  
+  *next_uid                                    49.1781      52.0300      +2.8519 ±0.5145  
+  *tokens_created                              26.0445      28.5904      +2.5459 ±0.4709  
+  *bf_version                                  72.1898      75.9108      +3.7210 ±0.7059  
+  *len_battlefield                             41.0443      43.4931      +2.4488 ±0.4684  
+  *len_names_cache                             18.6903      18.9947      +0.3044 ±0.0633  
+  *commander_damage_win                         0.0799       0.0917      +0.0118 ±0.0029  
+  *first_finisher_turn__nunca                   0.2974       0.2870      -0.0104 ±0.0025  
+  *len_earthbend_by_source                      2.4902       2.5349      +0.0447 ±0.0116  
+  *len_library                                 75.8726      75.5257      -0.3469 ±0.0905  
+  *mana_spent_total                            47.3043      48.9882      +1.6839 ±0.4416  
+  *first_finisher_turn__ate_T4                  0.0904       0.0954      +0.0050 ±0.0014  
+  *cards_drawn_extra                            4.8872       5.1741      +0.2869 ±0.0864  

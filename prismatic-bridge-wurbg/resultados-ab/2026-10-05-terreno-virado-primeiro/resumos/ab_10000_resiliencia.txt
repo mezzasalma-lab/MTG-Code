@@ -1,0 +1,19 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9264 (92.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1439       6.1453      +0.0014 ±0.0035  
+  *bridge_first_cast_turn__ate_T4               0.3318       0.3368      +0.0050 ±0.0017  
+  *pw_turns_alive_total                         6.3039       6.3661      +0.0622 ±0.0227  
+  *turns_with_ult                               0.3323       0.3400      +0.0077 ±0.0030  
+  *bridge_cast_turn__ate_T4                     0.2865       0.2912      +0.0047 ±0.0018  
+  *len_pw_enter_turn                            3.6842       3.7142      +0.0300 ±0.0118  
+  *first_pw_hit_turn__ate_T5                    0.2158       0.2196      +0.0038 ±0.0015  
+  *len_creature_cast_turn                       2.5024       2.5210      +0.0186 ±0.0074  
+  *shock_life_paid_total                        1.1494       1.1672      +0.0178 ±0.0074  
+  *bridge_first_cast_turn__ate_T5               0.6457       0.6498      +0.0041 ±0.0018  
+  *late_pw_activations_total                    1.9222       1.9428      +0.0206 ±0.0090  
+  *pw_activations_total                         9.1190       9.2390      +0.1200 ±0.0532  
+  *first_ult_turn__nunca                        0.7678       0.7637      -0.0041 ±0.0019  
+  *len_artifact_enter_turn                      0.8886       0.8955      +0.0069 ±0.0033  
+  *len_library                                 74.5996      74.4904      -0.1092 ±0.0543  

@@ -1,5 +1,116 @@
 # Checklist cláusula-a-cláusula — Nekusar, the Mindrazer
 
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Fetchland: sacrifício + 1 de vida + busca por subtipo + thinning | 🐛 corrigido: `crack_fetch`, atrás de `FETCH_LANDS_ENABLED` |
+| "then shuffle" da fetch | 📊 não modelado (a biblioteca já é uma permutação aleatória e nada põe carta no topo antes do terreno) |
+| Terreno buscado entra pelas regras de entrada do deck (virado, choque −2 de vida, surveil) | ✅ via `land_etb` (mesmas regras do ramo de terreno de `cast_card`) |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`.
+
+---
+
+## Terreno virado primeiro em T1/T2 + contagem de magias/storm (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Jogar terreno ≠ conjurar magia (CR 305.1) | 🐛 corrigido: `LAND_PLAY_NOT_A_SPELL_ENABLED` |
+| Storm do Brain Freeze (cópias = magias antes dela) | 🐛 corrigido: `STORM_SELF_COUNT_FIX_ENABLED` |
+| Fetchlands (9 no deck) | 🐛 corrigido na onda 4 (mesma data, seção "Fetchlands reais" acima): sacrifício, busca por subtipo, thinning (a vida já era paga) |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
+## Mulligan com escolha do fundo (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| London Mulligan, CR 103.5 | 🐛 corrigido: `choose_bottom`, atrás de `MULLIGAN_SMART_BOTTOM_ENABLED` |
+| Imposto de comandante, CR 903.8 | ✅ já estava no arquivo |
+| Ordem de terrenos / entrada virada (T1/T2) | não tratado nesta seção |
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`.
+
+---
+
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"Agora faça com oNekusar"* [sic], seguindo diretamente o
+porte concluído no Vihaan (mesma sessão, mesmo protocolo). Este deck
+nunca tinha nenhuma extensão de resiliência antes (auditado
+clausula-a-clausula pela última vez em 2026-09-13, mas sem
+`interaction_rng`/`remove_permanent` nenhum) — porte completo do zero,
+**2º deck desta sessão (depois do Vihaan) a nascer com a correção de CR
+903.9a nativa desde a 1ª linha**, em vez de implementada errado e
+corrigida depois via retrofit (os outros 9 decks foram todos retrofit).
+
+**Design incorporado direto do padrão final já validado nos outros 10
+decks:** 7 categorias padronizadas (removal/attack/discard/wipe
+unificado/graveyard-wipe/graveyard-snipe/counterspell), 1 rolagem
+"algum wipe acontece" + escolha ponderada de 1 TIPO só, gate de atenção
+por oponente, supressão de ataque pós-wipe simétrico.
+
+**CR 903.9a aplicada desde o início em `remove_permanent`:** comandante
+vai pro cemitério DE VERDADE primeiro (CR 700.4/704, ver
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+`references/user-standing-rules.md`), só DEPOIS é removido de lá pra
+representar a zona de comando. **Sem NENHUM efeito numérico aqui** —
+diferente do Vihaan/Edgar Markov/Rat King Verminister (que têm motor de
+aristocrata real), este é um deck de dano-por-compra/wheel/storm com
+**0 cartas "creature dies"** (grep confirmado antes de escrever a
+função: `dies|death_trigger|whenever.*(creature|permanent).*(dies|
+died|put into.*graveyard)|leaves the battlefield` — zero resultados) —
+mais próximo estruturalmente do Ur-Dragon/Hei Bai/Ulalek. **Zero token
+agregado** também (Zombie tokens do Waste Not são proxy de métrica pura,
+`zombie_tokens_total`, nunca entram em `state.battlefield` de verdade)
+— o wipe não precisa de nenhuma lógica de bucket de token, diferente do
+Vihaan/Rat King.
+
+**Achado real específico deste deck: Spark Double.** "You may have this
+creature enter as a copy of a creature... you control" — modelado via
+`state.spark_double_copy_target` (flag, não uma 2ª entrada nomeada em
+`state.battlefield`). `remove_permanent` precisa tratar 2 casos
+distintos corretamente: (1) se **Spark Double em si** for removida,
+`spark_double_copy_target` é limpo — a cópia deixa de existir com ela;
+(2) se a **criatura ORIGINAL** que ela copiou for removida depois, a
+cópia NÃO é afetada (CR 706.2 — copiar é um efeito de característica
+aplicado 1x na entrada, não um link contínuo com o original) — Spark
+Double continua sendo "uma cópia daquela criatura" pro resto do jogo,
+mesmo que o original já tenha saído de campo antes. Os 2 casos
+confirmados via teste dirigido.
+
+**Validação:** compilação OK. Bit-identidade em modo padrão (20.000
+seeds, seed_base 7300000) contra o commit anterior, comparando só as
+chaves PRÉ-EXISTENTES: **0/20000 mismatches** — diferente do Vihaan,
+aqui a regressão NÃO achou nenhum bug pré-existente do motor próprio
+(nenhum sac outlet/fallback de sacrifício existe neste deck pra ter o
+mesmo problema). Regressão de 20.000 partidas em modo de resiliência: 0
+exceções, 0 comandantes presos no cemitério. 6 testes dirigidos: (1)
+`remove_permanent` no comandante — não presa no cemitério; (2)
+permanente comum vai pro cemitério normalmente; (3) remover Spark
+Double limpa `spark_double_copy_target`; (4) remover a criatura
+original copiada NÃO afeta a cópia; (5) contra-ataque intercepta o cast
+do comandante, mana já gasta, ele nunca entra em campo; (6)
+`try_smart_opponent_wipe` inclui o comandante, ele não fica preso no
+cemitério.
+
+**Resultado:** porte limpo, sem impacto numérico (estrutural, como
+Ur-Dragon/Hei Bai/Ulalek) mas com um achado de modelagem real (Spark
+Double) que só apareceu porque este deck tem uma mecânica de cópia que
+nenhum dos outros 10 decks desta sessão tinha.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Azula/Beorn/Captain

@@ -1,0 +1,94 @@
+{
+ "Drown in the Loch": {
+  "oracle_id": "0f264e5b-264e-4e97-9a8d-8ae1d6a286ce",
+  "mana_cost": "{U}{B}",
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Counter target spell with mana value less than or equal to the number of cards in its controller's graveyard.\n• Destroy target creature with mana value less than or equal to the number of cards in its controller's graveyard.",
+  "rulings": [
+   [
+    "2019-10-04",
+    "For spells with {X} in their mana costs, use the value chosen for X to determine the spell's mana value."
+   ],
+   [
+    "2019-10-04",
+    "If a creature on the battlefield has {X} in its mana cost, X is considered to be 0."
+   ]
+  ]
+ },
+ "Atomize": {
+  "oracle_id": "4b457bc2-2d8c-42cb-9a63-bb4c459d14e3",
+  "mana_cost": "{2}{B}{G}",
+  "type_line": "Instant",
+  "oracle_text": "Destroy target nonland permanent. Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "rulings": [
+   [
+    "2024-03-08",
+    "You can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can’t choose cards in any zone other than the battlefield, even if they have counters on them."
+   ],
+   [
+    "2024-03-08",
+    "You don’t have to choose every permanent or player that has a counter—only the ones you want to add counters to. Since “any number” includes zero, you don’t have to choose any permanents at all, and you don’t have to choose any players at all."
+   ],
+   [
+    "2024-03-08",
+    "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can’t have it get just one kind of counter it already has and not the others."
+   ],
+   [
+    "2024-03-08",
+    "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it’s too late for anyone to respond."
+   ],
+   [
+    "2024-03-08",
+    "Some spells and abilities that cause you to proliferate may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won’t resolve. You won’t proliferate."
+   ]
+  ]
+ },
+ "Deadly Rollick": {
+  "oracle_id": "0456ec64-2c81-4763-a352-8ff64a4c3d6b",
+  "mana_cost": "{3}{B}",
+  "type_line": "Instant",
+  "oracle_text": "If you control a commander, you may cast this spell without paying its mana cost.\nExile target creature.",
+  "rulings": [
+   [
+    "2020-04-17",
+    "It doesn't matter whose commander you control. Any one will do. If you have two commanders, you just need to control one of them."
+   ],
+   [
+    "2020-04-17",
+    "Once you begin casting this spell, players can't take any other actions until you're done casting it. Notably, they can't try to remove the commander you control to make you pay its cost."
+   ]
+  ]
+ },
+ "Assassin's Trophy": {
+  "oracle_id": "ac10d218-f9a6-4058-9cda-a15ca1b0b7b5",
+  "mana_cost": "{B}{G}",
+  "type_line": "Instant",
+  "oracle_text": "Destroy target permanent an opponent controls. Its controller may search their library for a basic land card, put it onto the battlefield, then shuffle.",
+  "rulings": [
+   [
+    "2024-02-02",
+    "If the target permanent is a legal target but isn't destroyed, most likely because it has indestructible, its controller may search their library."
+   ],
+   [
+    "2024-02-02",
+    "If the target permanent is an illegal target by the time Assassin's Trophy tries to resolve, the spell doesn't resolve. No player searches their library."
+   ],
+   [
+    "2024-02-02",
+    "If the permanent's controller doesn't search their library, they don't shuffle their library."
+   ],
+   [
+    "2018-10-05",
+    "If the target permanent is a legal target but isn't destroyed, most likely because it has indestructible, its controller may search their library."
+   ],
+   [
+    "2018-10-05",
+    "If the permanent's controller doesn't search their library, they don't shuffle their library."
+   ],
+   [
+    "2018-10-05",
+    "If the target permanent is an illegal target by the time Assassin's Trophy tries to resolve, the spell doesn't resolve. No player searches their library."
+   ]
+  ]
+ }
+}

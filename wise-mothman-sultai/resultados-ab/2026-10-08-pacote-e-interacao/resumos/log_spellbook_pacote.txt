@@ -1,0 +1,12 @@
+nomes verificados: 99 | NAO reconhecidos: []
+base: 2 combos, 134 quase
+pacote_exato(-Offer -Negate +Horrigan +Branching) novos: [] | sumiram: [] | quase novos com a peca: 2
+base+Drown in the Loch novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Assassin's Trophy novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Putrefy novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Beast Within novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Deadly Rollick novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Atomize novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Casualties of War novos: [] | sumiram: [] | quase novos com a peca: 0
+pacote+Drown novos: [] | sumiram: [] | quase novos com a peca: 2
+controle positivo: True | controle de corte (Ascension+Mindcrank some ao cortar o Mindcrank): True

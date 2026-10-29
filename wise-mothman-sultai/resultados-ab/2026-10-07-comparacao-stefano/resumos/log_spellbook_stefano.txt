@@ -1,0 +1,13 @@
+nomes verificados: 157 | NAO reconhecidos pelo Spellbook: []
+nossa base: main 99 incluidos 2 quase 134
+Stefano: main 99 incluidos 0 quase 15
+20 / 174
+40 / 174
+60 / 174
+80 / 174
+100 / 174
+120 / 174
+140 / 174
+160 / 174
+controle positivo (Thassa+Consultation apareceu): True
+controle de corte (base tem Ascension+Mindcrank; sumiu ao cortar Mindcrank): True True

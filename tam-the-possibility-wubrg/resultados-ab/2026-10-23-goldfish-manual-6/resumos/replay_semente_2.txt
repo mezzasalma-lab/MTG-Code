@@ -1,0 +1,11 @@
+T 1: PWs 0 [] | terrenos 1 | mana(ini) 0 | Tam nao | mao 7 | outros []
+T 2: PWs 0 [] | terrenos 2 | mana(ini) 1 | Tam nao | mao 7 | outros []
+T 3: PWs 0 [] | terrenos 3 | mana(ini) 2 | Tam sim | mao 7 | outros ['Tam, the Possibility']
+T 4: PWs 1 [('Oko', 6)] | terrenos 3 | mana(ini) 3 | Tam sim | mao 7 | outros ['Tam, the Possibility', 'Food Token']
+T 5: PWs 2 [('Oko', 7), ('Jacetok', 2)] | terrenos 4 | mana(ini) 3 | Tam sim | mao 7 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox']
+T 6: PWs 3 [('Oko', 9), ('Jacetok', 2), ('Wrenn', 5)] | terrenos 5 | mana(ini) 4 | Tam sim | mao 5 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker']
+T 7: PWs 3 [('Oko', 10), ('Jacetok', 4), ('Wrenn', 7)] | terrenos 7 | mana(ini) 7 | Tam sim | mao 5 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor']
+T 8: PWs 6 [('Oko', 13), ('Jacetok', 2), ('Wrenn', 0), ('Domri', 7), ('Dihada', 3), ('Vronos', 7)] | terrenos 14 | mana(ini) 9 | Tam sim | mao 6 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor', 'Fellwar Stone', 'Food Token', 'Flux Channeler']
+T 9: PWs 10 [('Oko', 28), ('Jacetok', 0), ('Wrenn', 15), ('Domri', 0), ('Dihada', 0), ('Vronos', 14), ('Teferi', 19), ('Garruk', 13), ('The', 15), ('Dack', 13)] | terrenos 23 | mana(ini) 17 | Tam sim | mao 9 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor', 'Fellwar Stone', 'Food Token', 'Flux Channeler']
+T10: PWs 14 [('Oko', 35), ('Jacetok', 12), ('Wrenn', 12), ('Domri', 6), ('Dihada', 5), ('Vronos', 11), ('Teferi', 13), ('Garruk', 14), ('The', 19), ('Dack', 19), ('Elspeth', 9), ('Minsc', 3), ('Chandra', 5), ('Tamiyo', 7)] | terrenos 26 | mana(ini) 31 | Tam sim | mao 5 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor', 'Fellwar Stone', 'Food Token', 'Sol Ring']
+FIM da partida: mesa limpa no turno 10

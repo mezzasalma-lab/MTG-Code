@@ -1,0 +1,16 @@
+Resposta do usuario de 2026-10-28 as 9 duvidas do goldfish manual #6 (texto literal, byte a byte, a partir da linha "Sobre a Tam:").
+A 1a linha da mesma mensagem ("Opção B nos wipes, e meça no A/B") e' sobre o Rat King, nao sobre a Tam.
+
+Sobre a Tam:
+1) Não me lembro
+2) Sim
+3) Lurker
+4) deve ter sido por ativaçao de PW com custo 0 pelo Ichormoon, ou pelo Flux Channeler, não me lembro com exatidão
+5) Foi counterspell de simulador de interaçao 
+6) Não me lembro
+7) Confere, só não usei o botão de passar turno para não ter interaçao, mas já vi que errei nisso
+8) Na maior parte das vezes bloqueei com criaturas que não morreram pelo dano sofrido, nas demais eu descontei a vida
+9) Syphon mind descartou Mind Sculptor
+Prismari matou pelo 2 de dano, não considerei os outros modos
+Denial counterou a Kiora
+fichas que simulam ataques do oponente

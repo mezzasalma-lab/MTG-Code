@@ -1,0 +1,270 @@
+N=10000 partidas (modo padrao, sementes 3000000..3009999); 119958 estados amostrados (turno >= 3, 1a e 2a main).
+Colunas: %mana = conjuravel so' por quantidade de mana (o que o simulador ve'); %mana+cor = tambem cobre os simbolos de cor (otimista); custo = mana pago; N/opp = quantas criaturas CADA
+oponente sacrificaria (so' as de numero fixo/livre; as demais ficam '-'); perdidas = minhas criaturas+fichas+animados que saem (sem contar o que paga o custo); perm- = TODOS os meus permanentes
+nao-terreno que saem (criaturas, fichas, Treasures, Clues, Foods, artefatos e encantamentos; inclui o que paga o custo; negativo = ganhei mais do que perdi); estoqueΔ = variacao liquida do estoque de
+Treasures (inclui os gastos no custo); dreno = proxy de dano/dreno do meu lado (Mayhem/Zulaport/Bats/...; NAO inclui o que o lado do oponente geraria); dreno-Act = diferenca pareada vs Blasphemous Act
+nos estados em que as DUAS sao conjuraveis; Vihaan†/Mayhem† = % dos casos em que morre (entre os conjuraveis); mana+ = mana que sobra.
+
+### TODOS os estados: 119958 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  32.9%     32.8%   3.7     -    6.34   4.85     +0.52     3.21  +0.00±0.00   98.6%    9.2%    4.77
+Blood Money                                      20.8%     20.7%   7.0     -    5.81   0.27     +4.74     3.14  +0.24±0.01   96.6%    8.6%    3.43
+Blasphemous Edict                                38.2%     37.2%   4.7  13.0    4.73   3.84     +0.30     2.79  +0.54±0.04   92.7%    6.1%    3.58
+By Invitation Only [N=13]                        37.5%     33.3%   5.0  13.0    4.76   3.91     +0.27     2.77  +0.61±0.04   94.2%    6.5%    3.68
+By Invitation Only [N=motores]                   37.5%     33.3%   5.0   3.6    3.84   3.13     +0.12     2.47  +0.25±0.03    0.0%   -0.0%    3.47
+By Invitation Only [N=fodder]                    37.5%     33.3%   5.0   1.1    1.38   1.34     -0.41     1.28  -1.25±0.04    0.0%   -0.0%    3.21
+Barter in Blood                                  49.4%     46.8%   4.0   2.0    2.01   1.86     -0.19     1.02  -1.42±0.05   34.9%    0.2%    3.25
+Tergrid's Shadow                                 37.5%     36.5%   5.0   2.0    2.13   1.98     -0.23     1.18  -1.32±0.05   28.4%    0.2%    3.14
+Rankle's Prank [2 criaturas + 4 de vida]         49.4%     46.8%   4.0   2.0    2.01   1.86     -0.19     5.02  +2.58±0.05   34.9%    0.2%    3.25
+Taste of Death                                   28.4%     28.1%   6.0   3.0    2.98  -0.85     -0.11     1.87  -0.69±0.05   40.6%    1.0%    3.26
+Necrotic Hex                                     20.8%     20.8%   7.0   6.0   -2.14  -2.62     -0.18     3.12  +0.22±0.05   73.2%    5.0%    3.32
+Liliana, Dreadhorde General [-4]                 28.4%     28.1%   6.0   2.0    2.20   2.13     -0.36     1.35  -1.28±0.05   21.0%    0.2%    3.03
+Zodiark, Umbral God                              37.5%     19.7%   5.0   2.6    3.04   2.60     -0.35     2.42  -0.75±0.05    0.7%   -0.1%    4.84
+Meathook Massacre II [X max]                      9.0%      7.9%   8.1   2.0    2.96   3.61     -1.83     3.27  -1.86±0.14    0.0%   -0.2%    2.53
+Mythos of Snapdax [B+R pagos]                    49.4%     37.4%   4.0     -    3.87   6.00     -1.17     3.49  +1.71±0.09    0.0%    6.6%    2.75
+Tragic Arrogance                                 37.5%     33.3%   5.0     -    3.94   6.20     -1.21     3.59  +1.69±0.10    0.0%    6.9%    2.21
+Winnowing [convoke]                              48.2%     42.0%   2.9     -    3.91   3.07     +0.14     2.51  +0.19±0.03    0.0%    6.8%    4.37
+Winnowing [convoke, guarda os animados]          48.2%     42.0%   2.9     -    3.68   2.84     +0.41     2.13  -0.34±0.04   34.2%    6.8%    4.60
+Slaughter the Strong                             62.5%     48.5%   3.0     -    3.02   2.41     +0.08     1.94  +0.03±0.03    0.0%    5.9%    3.94
+Living Death                                     37.5%     36.5%   5.0     -    4.63   3.70     +0.34     2.80  +0.84±0.04   96.9%    5.9%    3.50
+Scrap Mastery                                    37.5%     35.1%   5.0     -    0.66   3.93     -2.04     1.85  -0.45±0.09    0.0%   -0.0%    1.01
+All Is Dust                                      20.8%     20.8%   7.0     -    5.35   6.04     +0.16     3.60  +0.72±0.05   96.6%    8.6%    3.42
+
+### com Mayhem Devil em campo: 5323 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  68.0%     67.7%   2.7     -    8.05   5.81     +1.05     4.72  +0.00±0.00   99.8%  100.0%    6.67
+Blood Money                                      40.3%     40.2%   7.0     -    7.79  -0.29     +6.96     5.23  +1.12±0.09   99.7%  100.0%    5.42
+Blasphemous Edict                                58.3%     57.7%   4.4  13.0    7.11   5.62     +0.60    11.25  +6.94±0.16   91.1%   89.4%    6.08
+By Invitation Only [N=13]                        55.6%     51.9%   5.0  13.0    7.00   5.58     +0.53    11.04  +7.11±0.17   94.6%   93.7%    6.13
+By Invitation Only [N=motores]                   55.6%     51.9%   5.0   4.9    5.41   3.99     +0.37     9.02  +5.10±0.27    0.0%    0.0%    5.58
+By Invitation Only [N=fodder]                    55.6%     51.9%   5.0   1.8    2.32   1.78     -0.35     4.55  +0.50±0.26    0.0%    0.0%    5.78
+Barter in Blood                                  62.1%     60.9%   4.0   2.0    2.45   2.25     -0.40     4.22  +0.06±0.20   14.7%    4.0%    5.74
+Tergrid's Shadow                                 55.6%     55.0%   5.0   2.0    2.47   2.30     -0.43     4.30  +0.26±0.20   14.9%    3.8%    5.33
+Rankle's Prank [2 criaturas + 4 de vida]         62.1%     60.9%   4.0   2.0    2.45   2.25     -0.40     8.22  +4.06±0.20   14.7%    4.0%    5.74
+Taste of Death                                   48.7%     48.4%   6.0   3.0    3.44  -0.66     -0.16     5.88  +1.97±0.20   31.9%   13.2%    5.34
+Necrotic Hex                                     40.3%     40.3%   7.0   6.0   -1.28  -1.95     -0.11     9.51  +5.40±0.20   69.4%   57.7%    5.42
+Liliana, Dreadhorde General [-4]                 48.7%     48.4%   6.0   2.0    2.47   2.34     -0.47     4.36  +0.42±0.21   14.1%    3.5%    5.06
+Zodiark, Umbral God                              55.6%     37.8%   5.0   3.6    4.24   3.37     -0.27     7.59  +2.81±0.20    3.1%    0.0%    7.27
+Meathook Massacre II [X max]                     18.7%     17.1%   8.7   2.3    3.53   3.93     -1.91     8.70  +1.88±0.61    0.0%    0.0%    6.39
+Mythos of Snapdax [B+R pagos]                    62.1%     56.0%   4.0     -    6.56   9.13     -1.55    16.04 +12.23±0.75    0.0%   99.7%    4.31
+Tragic Arrogance                                 55.6%     51.9%   5.0     -    6.49   9.09     -1.57    15.92 +12.19±0.79    0.0%   99.7%    3.75
+Winnowing [convoke]                              69.4%     64.5%   2.4     -    6.40   4.63     +0.63    10.25  +5.99±0.22    0.0%   99.8%    6.68
+Winnowing [convoke, guarda os animados]          69.4%     64.5%   2.4     -    5.99   4.26     +1.08     9.28  +4.95±0.20   47.5%   99.9%    7.08
+Slaughter the Strong                             69.8%     64.2%   3.0     -    5.87   4.27     +0.55     9.42  +5.53±0.23    0.0%   99.7%    6.45
+Living Death                                     55.6%     55.0%   5.0     -    7.34   5.43     +0.85    11.66  +7.88±0.26   99.7%  100.0%    5.87
+Scrap Mastery                                    55.6%     53.6%   5.0     -    1.02   5.45     -3.11     8.19  +4.27±0.66    0.0%    0.0%    1.82
+All Is Dust                                      40.3%     40.3%   7.0     -    7.26   7.27     +0.69    13.28  +9.17±0.30   99.7%  100.0%    5.38
+
+### sem Mayhem Devil em campo: 114635 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  31.2%     31.1%   3.8     -    6.17   4.75     +0.47     3.05  +0.00±0.00   98.4%    0.0%    4.57
+Blood Money                                      19.9%     19.8%   7.0     -    5.63   0.32     +4.53     2.94  +0.15±0.01   96.3%    0.0%    3.25
+Blasphemous Edict                                37.2%     36.2%   4.8  13.0    4.56   3.71     +0.28     2.16  -0.08±0.03   92.9%   -0.0%    3.39
+By Invitation Only [N=13]                        36.6%     32.5%   5.0  13.0    4.60   3.78     +0.25     2.16  -0.00±0.03   94.1%   -0.0%    3.50
+By Invitation Only [N=motores]                   36.6%     32.5%   5.0   3.5    3.72   3.07     +0.10     1.98  -0.21±0.02    0.0%   -0.0%    3.31
+By Invitation Only [N=fodder]                    36.6%     32.5%   5.0   1.0    1.31   1.31     -0.42     1.04  -1.41±0.04    0.0%   -0.0%    3.02
+Barter in Blood                                  48.8%     46.1%   4.0   2.0    1.99   1.84     -0.17     0.82  -1.56±0.05   36.2%   -0.0%    3.10
+Tergrid's Shadow                                 36.6%     35.6%   5.0   2.0    2.10   1.96     -0.21     0.95  -1.47±0.05   29.3%   -0.0%    2.99
+Rankle's Prank [2 criaturas + 4 de vida]         48.8%     46.1%   4.0   2.0    1.99   1.84     -0.17     4.82  +2.44±0.05   36.2%   -0.0%    3.10
+Taste of Death                                   27.5%     27.2%   6.0   3.0    2.94  -0.86     -0.11     1.54  -0.94±0.05   41.3%   -0.0%    3.09
+Necrotic Hex                                     19.9%     19.9%   7.0   6.0   -2.22  -2.68     -0.18     2.51  -0.29±0.05   73.5%   -0.0%    3.12
+Liliana, Dreadhorde General [-4]                 27.5%     27.2%   6.0   2.0    2.17   2.11     -0.35     1.11  -1.44±0.06   21.5%   -0.0%    2.86
+Zodiark, Umbral God                              36.6%     18.9%   5.0   2.5    2.93   2.53     -0.35     1.94  -1.11±0.04    0.5%   -0.1%    4.61
+Meathook Massacre II [X max]                      8.6%      7.5%   8.0   2.0    2.90   3.58     -1.82     2.70  -2.26±0.14    0.0%   -0.2%    2.13
+Mythos of Snapdax [B+R pagos]                    48.8%     36.5%   4.0     -    3.68   5.78     -1.14     2.59  +0.70±0.06    0.0%   -0.0%    2.63
+Tragic Arrogance                                 36.6%     32.5%   5.0     -    3.75   5.98     -1.18     2.67  +0.70±0.07    0.0%    0.0%    2.10
+Winnowing [convoke]                              47.2%     40.9%   2.9     -    3.73   2.95     +0.10     1.95  -0.38±0.02    0.0%    0.0%    4.20
+Winnowing [convoke, guarda os animados]          47.2%     40.9%   2.9     -    3.51   2.73     +0.36     1.61  -0.86±0.03   33.3%    0.0%    4.42
+Slaughter the Strong                             62.1%     47.8%   3.0     -    2.84   2.30     +0.05     1.48  -0.50±0.02    0.0%    0.0%    3.78
+Living Death                                     36.6%     35.6%   5.0     -    4.44   3.58     +0.30     2.17  +0.17±0.01   96.7%   -0.8%    3.33
+Scrap Mastery                                    36.6%     34.2%   5.0     -    0.63   3.82     -1.96     1.39  -0.90±0.07    0.0%   -0.0%    0.95
+All Is Dust                                      19.9%     19.9%   7.0     -    5.17   5.92     +0.11     2.69  -0.10±0.03   96.3%    0.0%    3.24
+
+### 2a main (apos o combate): 59979 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  23.2%     23.2%   2.1     -    9.30   6.70     +0.20     5.71  +0.00±0.00   99.4%   12.0%    5.26
+Blood Money                                       8.3%      8.3%   7.0     -   10.24   1.94     +5.13     7.61  +0.80±0.05   97.8%   11.9%    6.29
+Blasphemous Edict                                15.1%     15.0%   3.9  13.0    8.48   6.76     -0.68     7.17  +0.78±0.13   80.4%    8.7%    5.49
+By Invitation Only [N=13]                        13.7%     13.3%   5.0  13.0    8.24   6.84     -1.00     6.86  +1.07±0.13   87.8%    9.5%    5.32
+By Invitation Only [N=motores]                   13.7%     13.3%   5.0   6.5    7.94   6.43     -1.02     6.87  +1.10±0.11    0.0%   -0.2%    5.04
+By Invitation Only [N=fodder]                    13.7%     13.3%   5.0   2.8    4.28   4.15     -2.09     4.57  -1.30±0.13    0.0%   -0.2%    4.73
+Barter in Blood                                  19.2%     19.1%   4.0   2.0    3.09   3.20     -1.62     2.72  -2.65±0.16    6.4%   -0.1%    4.10
+Tergrid's Shadow                                 13.7%     13.6%   5.0   2.0    3.35   3.52     -1.97     3.30  -2.58±0.18    5.4%   -0.1%    4.72
+Rankle's Prank [2 criaturas + 4 de vida]         19.2%     19.1%   4.0   2.0    3.09   3.20     -1.62     6.72  +1.35±0.16    6.4%   -0.1%    4.10
+Taste of Death                                   10.5%     10.5%   6.0   3.0    4.51   0.28     -1.81     4.61  -1.71±0.21   14.7%    0.3%    5.66
+Necrotic Hex                                      8.3%      8.3%   7.0   6.0   -0.27  -0.96     -1.94     6.74  -0.07±0.23   50.8%    4.4%    6.04
+Liliana, Dreadhorde General [-4]                 10.5%     10.5%   6.0   2.0    3.57   3.74     -2.21     3.67  -2.67±0.22    5.3%   -0.1%    5.27
+Zodiark, Umbral God                              13.7%     11.6%   5.0   3.7    5.34   4.87     -2.04     5.32  -0.84±0.13    0.2%   -0.2%    5.27
+Meathook Massacre II [X max]                      5.9%      5.5%   8.7   2.3    4.98   5.34     -3.63     6.17  -2.66±0.34    0.0%   -0.4%    4.40
+Mythos of Snapdax [B+R pagos]                    19.2%     18.5%   4.0     -    7.30  10.79     -2.67     8.13  +3.53±0.28    0.0%   10.3%    2.98
+Tragic Arrogance                                 13.7%     13.3%   5.0     -    8.12  12.15     -3.10     9.63  +3.97±0.34    0.0%   11.2%    3.43
+Winnowing [convoke]                              26.9%     26.3%   2.5     -    6.74   5.15     -0.46     5.17  +0.60±0.08    0.0%    9.7%    3.51
+Winnowing [convoke, guarda os animados]          26.9%     26.3%   2.5     -    5.98   4.48     +0.35     4.11  -0.76±0.10   60.6%    9.7%    4.21
+Slaughter the Strong                             27.8%     26.8%   3.0     -    5.78   4.68     -0.65     4.53  +0.50±0.09    0.0%    9.3%    3.73
+Living Death                                     13.7%     13.6%   5.0     -    8.80   6.90     -0.64     7.58  +1.89±0.12   97.9%   10.3%    5.38
+Scrap Mastery                                    13.7%     13.5%   5.0     -    2.40   8.40     -4.71     5.80  -0.01±0.31    0.0%   -0.2%    1.83
+All Is Dust                                       8.3%      8.3%   7.0     -    9.16   9.28     -0.76     8.13  +1.33±0.20   97.8%   11.9%    6.46
+
+### com Mayhem Devil, 2a main: 3189 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  52.3%     52.3%   1.8     -   10.46   7.07     +0.96     7.37  +0.00±0.00   99.9%  100.0%    7.01
+Blood Money                                      18.6%     18.6%   7.0     -   11.88   0.61     +7.58    10.78  +2.94±0.23   99.8%  100.0%    9.85
+Blasphemous Edict                                33.5%     33.5%   3.5  13.0    9.75   7.58     -0.20    17.29  +8.89±0.36   78.4%   73.9%    8.33
+By Invitation Only [N=13]                        29.0%     28.0%   5.0  13.0    9.57   7.59     -0.55    17.14  +9.54±0.39   87.7%   85.3%    8.61
+By Invitation Only [N=motores]                   29.0%     28.0%   5.0   7.3    8.84   6.06     -0.31    16.30  +8.70±0.69    0.0%    0.0%    7.71
+By Invitation Only [N=fodder]                    29.0%     28.0%   5.0   3.4    4.96   3.71     -1.50    10.37  +2.75±0.68    0.0%    0.0%    8.45
+Barter in Blood                                  37.7%     37.6%   4.0   2.0    3.23   3.19     -1.58     6.67  -0.42±0.46    5.3%    1.2%    6.60
+Tergrid's Shadow                                 29.0%     29.0%   5.0   2.0    3.49   3.56     -1.94     7.53  +0.00±0.53    4.3%    0.5%    7.50
+Rankle's Prank [2 criaturas + 4 de vida]         37.7%     37.6%   4.0   2.0    3.23   3.19     -1.58    10.67  +3.58±0.46    5.3%    1.2%    6.60
+Taste of Death                                   22.4%     22.4%   6.0   3.0    4.72   0.33     -1.78     9.85  +2.16±0.62   13.9%    4.2%    9.23
+Necrotic Hex                                     18.6%     18.6%   7.0   6.0    0.09  -0.65     -1.85    14.33  +6.49±0.62   50.9%   37.9%   10.10
+Liliana, Dreadhorde General [-4]                 22.4%     22.4%   6.0   2.0    3.73   3.83     -2.19     8.05  +0.36±0.64    4.3%    0.7%    8.85
+Zodiark, Umbral God                              29.0%     24.6%   5.0   4.5    6.28   4.99     -1.58    12.61  +4.58±0.43    0.8%    0.0%    9.01
+Meathook Massacre II [X max]                     13.2%     12.4%   9.1   2.6    5.36   5.41     -3.42    13.11  +2.87±1.24    0.0%    0.0%   10.69
+Mythos of Snapdax [B+R pagos]                    37.7%     35.9%   4.0     -    9.28  12.48     -2.67    24.16 +17.58±1.67    0.0%   99.8%    4.83
+Tragic Arrogance                                 29.0%     28.0%   5.0     -    9.92  13.47     -3.11    26.46 +18.91±2.01    0.0%   99.9%    5.38
+Winnowing [convoke]                              49.4%     47.8%   2.5     -    8.74   5.97     +0.33    14.99  +8.15±0.44    0.0%   99.9%    5.80
+Winnowing [convoke, guarda os animados]          49.4%     47.8%   2.5     -    7.80   5.19     +1.28    12.92  +5.93±0.41   69.1%   99.9%    6.62
+Slaughter the Strong                             49.6%     47.1%   3.0     -    7.92   5.50     +0.13    13.69  +7.79±0.48    0.0%   99.9%    6.22
+Living Death                                     29.0%     29.0%   5.0     -   10.76   7.35     +0.32    19.12 +11.68±0.68   99.9%  100.0%    8.18
+Scrap Mastery                                    29.0%     28.5%   5.0     -    2.59   9.29     -5.55    15.26  +7.74±1.75    0.0%    0.0%    2.97
+All Is Dust                                      18.6%     18.6%   7.0     -   10.71   9.62     +0.08    20.83 +12.99±0.91   99.8%  100.0%    9.90
+
+### 2a main, 4 ou mais animados (com ou sem Mayhem Devil): 1955 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  95.1%     95.1%   1.1     -   15.39   9.03     -1.31    11.56  +0.00±0.00  100.0%   12.2%    9.49
+Blood Money                                      63.5%     63.5%   7.0     -   16.44   3.69     +4.52    13.80  +1.14±0.13  100.0%   11.9%   10.72
+Blasphemous Edict                                82.7%     82.7%   2.6  13.0   12.20   7.46     -2.69    12.17  -0.44±0.52   58.0%    5.6%    9.72
+By Invitation Only [N=13]                        74.4%     74.4%   5.0  13.0   13.19   8.30     -2.71    12.87  +0.64±0.52   75.8%    8.0%   10.39
+By Invitation Only [N=motores]                   74.4%     74.4%   5.0  10.4   14.74   9.37     -2.46    14.55  +2.31±0.45    0.0%   -0.2%   10.00
+By Invitation Only [N=fodder]                    74.4%     74.4%   5.0   6.3   10.65   7.34     -4.17    11.40  -0.84±0.47    0.0%   -0.2%    9.55
+Barter in Blood                                  81.5%     81.5%   4.0   2.0    5.67   3.69     -3.37     6.02  -5.96±0.68    2.4%   -0.3%    9.92
+Tergrid's Shadow                                 74.4%     74.4%   5.0   2.0    6.37   4.34     -3.78     6.79  -5.45±0.71    3.4%   -0.1%   10.05
+Rankle's Prank [2 criaturas + 4 de vida]         81.5%     81.5%   4.0   2.0    5.67   3.69     -3.37    10.02  -1.96±0.68    2.4%   -0.3%    9.92
+Taste of Death                                   69.2%     69.2%   6.0   3.0    7.76   0.80     -3.75     8.62  -3.85±0.72    9.2%   -0.1%   10.46
+Necrotic Hex                                     63.5%     63.5%   7.0   6.0    3.05  -0.38     -3.92    11.47  -1.19±0.69   40.2%    2.7%   10.39
+Liliana, Dreadhorde General [-4]                 69.2%     69.2%   6.0   2.0    6.80   4.73     -4.05     7.28  -5.19±0.74    4.2%   -0.1%   10.17
+Zodiark, Umbral God                              74.4%     74.3%   5.0   5.6    9.96   6.58     -3.87    10.73  -1.50±0.43    0.1%   -0.2%    9.86
+Meathook Massacre II [X max]                     52.3%     52.3%  10.2   3.1    9.74   7.41     -5.89    11.44  -3.06±0.81    0.0%   -0.4%    8.31
+Mythos of Snapdax [B+R pagos]                    81.5%     81.5%   4.0     -   14.64  17.74     -6.20    19.30  +7.32±0.86    0.0%   11.9%    6.23
+Tragic Arrogance                                 74.4%     74.4%   5.0     -   14.97  18.55     -6.71    19.92  +7.68±0.93    0.0%   12.0%    6.22
+Winnowing [convoke]                              92.8%     92.8%   2.0     -   13.85   8.53     -2.14    13.20  +1.76±0.39    0.0%   12.0%    7.31
+Winnowing [convoke, guarda os animados]          92.8%     92.8%   2.0     -    8.74   4.75     +2.30     7.24  -4.23±0.50  100.0%   12.0%   11.13
+Slaughter the Strong                             86.5%     86.5%   3.0     -   13.83   8.36     -2.15    13.67  +1.85±0.42    0.0%   12.1%    9.40
+Living Death                                     74.4%     74.4%   5.0     -   15.64   9.60     -1.89    15.51  +3.27±0.48  100.0%   10.5%   10.61
+Scrap Mastery                                    74.4%     74.4%   5.0     -    7.61  13.95     -9.57    14.06  +1.82±0.85    0.0%   -0.2%    3.29
+All Is Dust                                      63.5%     63.5%   7.0     -   13.84  11.19     -1.23    13.26  +0.60±0.59  100.0%   11.9%   11.75
+
+### com Mayhem Devil, 2a main, 4 ou mais animados: 233 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  97.0%     97.0%   1.0     -   17.39   7.96     +1.78    13.86  +0.00±0.00  100.0%  100.0%   12.77
+Blood Money                                      63.5%     63.5%   7.0     -   18.53   0.70     +9.24    18.68  +5.07±0.35  100.0%  100.0%   14.22
+Blasphemous Edict                                87.6%     87.6%   2.1  13.0   12.92   6.79     -1.04    24.17  +9.70±1.21   52.9%   45.1%   11.95
+By Invitation Only [N=13]                        74.7%     74.7%   5.0  13.0   14.17   7.29     -0.78    26.14 +12.17±1.21   71.8%   67.8%   13.48
+By Invitation Only [N=motores]                   74.7%     74.7%   5.0  11.6   15.91   7.87     -0.04    29.36 +15.39±2.65    0.0%    0.0%   12.76
+By Invitation Only [N=fodder]                    74.7%     74.7%   5.0   7.1   11.46   6.29     -2.54    21.93  +7.95±2.72    0.0%    0.0%   12.47
+Barter in Blood                                  81.5%     81.5%   4.0   2.0    5.66   3.20     -2.78    11.24  -2.84±2.01    0.5%    0.5%   11.48
+Tergrid's Shadow                                 74.7%     74.7%   5.0   2.0    6.36   3.91     -3.29    12.64  -1.34±2.05    0.6%    0.6%   11.59
+Rankle's Prank [2 criaturas + 4 de vida]         81.5%     81.5%   4.0   2.0    5.66   3.20     -2.78    15.24  +1.16±2.01    0.5%    0.5%   11.48
+Taste of Death                                   69.1%     69.1%   6.0   3.0    7.80   0.45     -3.20    15.52  +1.80±2.04    4.3%    0.6%   12.21
+Necrotic Hex                                     63.5%     63.5%   7.0   6.0    3.40  -1.01     -2.76    21.07  +7.46±1.83   39.2%   22.3%   12.78
+Liliana, Dreadhorde General [-4]                 69.1%     69.1%   6.0   2.0    6.80   4.41     -3.57    13.30  -0.42±2.13    0.6%    0.6%   11.87
+Zodiark, Umbral God                              74.7%     74.7%   5.0   6.6   10.98   6.07     -2.53    21.17  +7.20±1.56    0.6%    0.0%   12.31
+Meathook Massacre II [X max]                     52.4%     52.4%  11.0   3.5   10.52   6.63     -4.60    22.00  +5.97±3.11    0.0%    0.0%   11.03
+Mythos of Snapdax [B+R pagos]                    81.5%     81.5%   4.0     -   16.83  17.22     -3.65    44.15 +30.07±3.59    0.0%  100.0%    9.19
+Tragic Arrogance                                 74.7%     74.7%   5.0     -   17.04  18.11     -4.57    44.83 +30.86±3.83    0.0%  100.0%    8.82
+Winnowing [convoke]                              93.6%     93.6%   2.0     -   15.88   7.37     +0.90    28.70 +14.89±2.15    0.0%  100.0%   10.53
+Winnowing [convoke, guarda os animados]          93.6%     93.6%   2.0     -   10.45   3.89     +4.78    18.08  +4.26±2.08  100.0%  100.0%   13.85
+Slaughter the Strong                             87.6%     87.6%   3.0     -   15.84   7.20     +1.02    28.83 +14.86±2.31    0.0%  100.0%   12.74
+Living Death                                     74.7%     74.7%   5.0     -   18.03   8.39     +1.32    32.79 +18.82±2.65  100.0%  100.0%   14.13
+Scrap Mastery                                    74.7%     74.7%   5.0     -    8.00  14.01     -9.67    29.93 +15.95±3.15    0.0%    0.0%    4.39
+All Is Dust                                      63.5%     63.5%   7.0     -   15.44  10.22     +1.39    29.27 +15.66±2.81  100.0%  100.0%   14.84
+
+### turno >= 6 (partida mais avancada): 59958 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  61.2%     61.0%   3.6     -    6.52   4.89     +0.62     3.37  +0.00±0.00   98.5%    9.6%    5.04
+Blood Money                                      39.1%     39.0%   7.0     -    6.00   0.23     +4.93     3.30  +0.25±0.01   96.4%    8.9%    3.61
+Blasphemous Edict                                59.5%     58.7%   4.7  13.0    5.43   4.27     +0.43     3.44  +0.57±0.04   91.8%    7.5%    4.35
+By Invitation Only [N=13]                        58.1%     54.0%   5.0  13.0    5.38   4.29     +0.38     3.35  +0.64±0.04   93.6%    7.8%    4.37
+By Invitation Only [N=motores]                   58.1%     54.0%   5.0   4.1    4.48   3.56     +0.20     3.00  +0.28±0.03    0.0%   -0.0%    4.12
+By Invitation Only [N=fodder]                    58.1%     54.0%   5.0   1.3    1.67   1.57     -0.45     1.57  -1.29±0.04    0.0%   -0.0%    3.80
+Barter in Blood                                  65.5%     64.2%   4.0   2.0    2.23   1.97     -0.21     1.40  -1.50±0.05   16.6%    0.2%    4.33
+Tergrid's Shadow                                 58.1%     57.3%   5.0   2.0    2.23   2.01     -0.24     1.44  -1.41±0.05   16.4%    0.2%    3.82
+Rankle's Prank [2 criaturas + 4 de vida]         65.5%     64.2%   4.0   2.0    2.23   1.97     -0.21     5.40  +2.50±0.05   16.6%    0.2%    4.33
+Taste of Death                                   49.9%     49.5%   6.0   3.0    3.08  -0.91     -0.06     2.07  -0.74±0.05   34.4%    1.0%    3.63
+Necrotic Hex                                     39.1%     39.1%   7.0   6.0   -2.05  -2.61     -0.14     3.27  +0.22±0.06   71.6%    5.1%    3.49
+Liliana, Dreadhorde General [-4]                 49.9%     49.5%   6.0   2.0    2.24   2.10     -0.34     1.50  -1.36±0.06   15.4%    0.2%    3.37
+Zodiark, Umbral God                              58.1%     36.7%   5.0   2.7    3.19   2.68     -0.33     2.58  -0.77±0.05    0.6%   -0.1%    5.11
+Meathook Massacre II [X max]                     17.0%     15.2%   8.2   2.1    3.03   3.67     -1.86     3.40  -1.90±0.14    0.0%   -0.2%    2.62
+Mythos of Snapdax [B+R pagos]                    65.5%     58.1%   4.0     -    4.68   7.29     -1.38     4.42  +1.82±0.10    0.0%    8.3%    3.26
+Tragic Arrogance                                 58.1%     54.0%   5.0     -    4.61   7.26     -1.39     4.37  +1.80±0.10    0.0%    8.3%    2.62
+Winnowing [convoke]                              71.6%     65.8%   2.6     -    4.60   3.49     +0.26     3.11  +0.22±0.03    0.0%    8.4%    5.22
+Winnowing [convoke, guarda os animados]          71.6%     65.8%   2.6     -    4.30   3.20     +0.60     2.64  -0.35±0.04   40.2%    8.4%    5.52
+Slaughter the Strong                             72.7%     66.1%   3.0     -    4.08   3.14     +0.20     2.80  +0.05±0.03    0.0%    8.3%    5.12
+Living Death                                     58.1%     57.3%   5.0     -    5.32   4.11     +0.48     3.48  +0.89±0.04   97.1%    7.3%    4.27
+Scrap Mastery                                    58.1%     56.0%   5.0     -    0.80   4.62     -2.39     2.30  -0.45±0.09    0.0%   -0.0%    1.26
+All Is Dust                                      39.1%     39.1%   7.0     -    5.51   6.16     +0.22     3.78  +0.75±0.05   96.4%    8.9%    3.60
+
+### minhas criaturas >= 6 (um wipe e' plausivel): 22639 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  79.7%     79.6%   1.6     -    9.60   6.75     +0.93     5.64  +0.00±0.00  100.0%   13.0%    7.08
+Blood Money                                      42.0%     41.9%   7.0     -    9.89   1.05     +6.95     6.39  +0.50±0.03  100.0%   13.3%    5.67
+Blasphemous Edict                                58.2%     57.9%   4.1  13.0    9.08   6.79     +0.52     7.14  +1.00±0.10   85.5%   10.9%    6.46
+By Invitation Only [N=13]                        54.5%     52.7%   5.0  13.0    8.96   6.83     +0.41     6.92  +1.19±0.09   90.7%   11.6%    6.34
+By Invitation Only [N=motores]                   54.5%     52.7%   5.0   7.5    8.44   6.34     +0.30     6.68  +0.95±0.08    0.0%   -0.1%    6.03
+By Invitation Only [N=fodder]                    54.5%     52.7%   5.0   3.3    4.21   3.63     -0.87     4.00  -1.73±0.10    0.0%   -0.1%    5.57
+Barter in Blood                                  61.7%     61.2%   4.0   2.0    2.84   2.48     -0.81     2.66  -2.97±0.12    0.3%   -0.1%    5.74
+Tergrid's Shadow                                 54.5%     54.1%   5.0   2.0    2.87   2.57     -0.87     2.78  -2.91±0.13    0.4%   -0.1%    5.46
+Rankle's Prank [2 criaturas + 4 de vida]         61.7%     61.2%   4.0   2.0    2.84   2.48     -0.81     6.66  +1.03±0.12    0.3%   -0.1%    5.74
+Taste of Death                                   48.3%     48.1%   6.0   3.0    3.89  -0.82     -0.41     3.91  -1.84±0.13    1.7%   -0.1%    5.70
+Necrotic Hex                                     42.0%     42.0%   7.0   6.0   -0.14  -1.30     -0.35     5.94  +0.06±0.13   38.7%    3.8%    5.38
+Liliana, Dreadhorde General [-4]                 48.3%     48.1%   6.0   2.0    2.89   2.64     -0.93     2.85  -2.90±0.14    0.5%   -0.1%    5.15
+Zodiark, Umbral God                              54.5%     43.5%   5.0   4.3    5.34   4.29     -0.72     4.97  -1.09±0.10    0.0%   -0.1%    6.57
+Meathook Massacre II [X max]                     35.3%     32.2%   8.6   2.3    3.48   4.15     -2.20     4.13  -2.25±0.18    0.0%   -0.2%    2.87
+Mythos of Snapdax [B+R pagos]                    61.7%     59.1%   4.0     -    8.58  11.92     -2.00     9.36  +3.68±0.22    0.0%   12.9%    4.21
+Tragic Arrogance                                 54.5%     52.7%   5.0     -    8.63  12.13     -2.06     9.57  +3.84±0.24    0.0%   13.0%    3.85
+Winnowing [convoke]                              75.1%     73.1%   2.1     -    8.03   5.77     +0.39     6.21  +0.64±0.07    0.0%   12.6%    6.19
+Winnowing [convoke, guarda os animados]          75.1%     73.1%   2.1     -    7.30   5.08     +1.16     5.08  -0.51±0.08   79.4%   12.6%    6.86
+Slaughter the Strong                             69.4%     67.4%   3.0     -    7.65   5.56     +0.31     6.09  +0.49±0.07    0.0%   12.8%    6.45
+Living Death                                     54.5%     54.1%   5.0     -    9.57   7.06     +0.68     7.51  +1.82±0.09  100.0%   12.6%    6.32
+Scrap Mastery                                    54.5%     53.6%   5.0     -    1.95   7.56     -3.90     5.18  -0.52±0.22    0.0%   -0.1%    1.72
+All Is Dust                                      42.0%     42.0%   7.0     -    8.87   8.55     +0.56     7.13  +1.24±0.12  100.0%   13.3%    5.68
+
+### com 3 ou mais cartas de criatura no cemiterio (Living Death): 2566 estados
+variante (media por estado onde conjuravel por mana E cor; so' meu lado)  %mana %mana+cor custo N/opp perdidas  perm-  estoqueΔ    dreno dreno-Act Vihaan† Mayhem†   mana+
+Blasphemous Act                                  34.3%     34.3%   7.0     -    2.71   2.82     -1.95     1.19  +0.00±0.00   50.1%    1.0%    4.00
+Blood Money                                      41.4%     41.3%   7.0     -    1.87   0.80     -0.27     0.92  +0.04±0.04   38.1%    0.8%    4.22
+Blasphemous Edict                                48.9%     48.4%   4.9  13.0    1.61   1.83     -1.04     0.78  -0.06±0.18   36.4%    0.6%    5.26
+By Invitation Only [N=13]                        48.9%     46.6%   5.0  13.0    1.68   1.90     -1.10     0.84  -0.00±0.17   37.1%    0.6%    5.26
+By Invitation Only [N=motores]                   48.9%     46.6%   5.0   1.0    1.43   1.17     -0.98     0.95  +0.16±0.27    0.0%    0.0%    5.35
+By Invitation Only [N=fodder]                    48.9%     46.6%   5.0   0.7    1.15   1.16     -1.11     0.83  -0.01±0.20    0.0%    0.0%    5.39
+Barter in Blood                                  52.7%     52.1%   4.0   2.0    1.10   1.37     -0.84     0.50  -0.46±0.28   27.5%    0.6%    5.89
+Tergrid's Shadow                                 48.9%     48.4%   5.0   2.0    1.13   1.46     -0.93     0.54  -0.42±0.27   26.9%    0.4%    5.35
+Rankle's Prank [2 criaturas + 4 de vida]         52.7%     52.1%   4.0   2.0    1.10   1.37     -0.84     4.50  +3.54±0.28   27.5%    0.6%    5.89
+Taste of Death                                   45.5%     45.1%   6.0   3.0    1.30  -1.91     -1.03     0.64  -0.27±0.25   30.7%    0.4%    4.74
+Necrotic Hex                                     41.4%     41.4%   7.0   6.0   -5.51  -5.02     -1.31     0.82  -0.08±0.21   34.5%    0.5%    4.06
+Liliana, Dreadhorde General [-4]                 45.5%     45.1%   6.0   2.0    1.18   1.55     -1.02     0.56  -0.38±0.26   27.5%    0.4%    4.74
+Zodiark, Umbral God                              48.9%     36.7%   5.0   0.6    1.21   1.40     -1.30     0.86  -0.22±0.14    0.2%    0.0%    6.13
+Meathook Massacre II [X max]                      6.7%      6.3%   8.0   2.0    5.72   6.16     -5.16     3.62  -0.80±1.19    0.0%    0.0%    4.14
+Mythos of Snapdax [B+R pagos]                    52.7%     49.7%   4.0     -    1.36   7.12     -4.32     1.60  +1.12±0.84    0.0%    0.5%    3.16
+Tragic Arrogance                                 48.9%     46.6%   5.0     -    1.37   7.19     -4.36     1.64  +1.09±0.85    0.0%    0.4%    2.58
+Winnowing [convoke]                              50.2%     48.1%   4.9     -    1.56   1.37     -1.14     0.92  +0.06±0.22    0.0%    0.4%    4.67
+Winnowing [convoke, guarda os animados]          50.2%     48.1%   4.9     -    0.86   0.60     -0.30     0.47  -0.58±0.32   20.9%    0.5%    5.40
+Slaughter the Strong                             57.2%     54.6%   3.0     -    1.22   0.93     -0.88     0.80  +0.07±0.25    0.0%    0.6%    6.24
+Living Death                                     48.9%     48.4%   5.0     -   -2.54  -2.86     -0.90     1.03  +0.31±0.27   38.6%  -11.6%    6.02
+Scrap Mastery                                    48.9%     47.1%   5.0     -    0.77   7.52     -4.80     1.38  +0.71±0.46    0.0%    0.0%    1.59
+All Is Dust                                      41.4%     41.4%   7.0     -    1.51   2.92     -0.89     0.87  -0.01±0.28   38.2%    0.8%    4.44
+
+### Distribuicao dos estados amostrados (turno >= 3, 1a e 2a main)
+  Mayhem Devil em campo: 4.4% (5323 de 119958)
+  Mirkwood Bats em campo: 2.3% (2792 de 119958)
+  minhas criaturas (nomeadas + fichas + animados) >= 2: 72.1% (86508 de 119958)
+  minhas criaturas (nomeadas + fichas + animados) >= 4: 37.3% (44685 de 119958)
+  minhas criaturas (nomeadas + fichas + animados) >= 8: 10.2% (12247 de 119958)
+  minhas criaturas (nomeadas + fichas + animados) >= 13: 2.7% (3263 de 119958)
+  minhas criaturas (nomeadas + fichas + animados) >= 14: 2.1% (2579 de 119958)
+  criaturas minhas: media 3.60 | animados: media 0.28 | estoque de Treasures: media 1.18 | cartas de criatura no cemiterio: media 0.13
+  Vihaan em campo: 87.7% (105218 de 119958)
+  Dictate of Erebos em campo: 1.6% (1956 de 119958) | Pitiless Plunderer: 6.4% (7675 de 119958) | Mahadi: 8.5% (10236 de 119958)
+
+### Invariantes (violacoes introduzidas pelo ensaio) e excecoes: NENHUMA violacao | excecoes: 0 []

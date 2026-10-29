@@ -1,0 +1,3 @@
+base                                         main= 99 incluidos=  2 quase= 134 id=BGU
+PACOTE 5 TROCAS (sem cortar o Kozilek)       main= 99 incluidos=  2 quase= 143 id=BGU
+PACOTE 5 TROCAS + Master of Lake-town <- Negate main= 99 incluidos=  3 quase= 143 id=BGU

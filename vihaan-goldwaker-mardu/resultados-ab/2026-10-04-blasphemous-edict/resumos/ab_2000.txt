@@ -1,0 +1,8 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao (goldfish)
+ANTES: win<=T8 14.0% | Treasures criados 12.56 (estoque no fim 3.39) | dano mesa 20.87 combate 54.22 drain 9.19 | mortes de criatura 3.50 | mana bonus 2.21 | recursoes 0.06 | mana T5 5.111 T6 6.223
+variante  win<=8 pp      Treasures criados estoque no fim dano mesa      combate        drain          mortes cria.   mana bonus     mana T5        mana T6       
+bats       +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+
+variante  jogos iguais dreno atribuivel ao Bats       saidas de ficha c/ Bats (sem Nadier) Blood Money        Blasphemous Act    pool expirado 
+antes     100.0%       0.5380                         0.2810                             0.0005             0.0000             1.0870        
+bats      100.0%       0.5380                         0.2810                             0.0005             0.0000             1.0870        

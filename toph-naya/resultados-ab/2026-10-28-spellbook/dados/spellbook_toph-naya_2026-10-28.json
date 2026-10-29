@@ -1,0 +1,4039 @@
+{
+ "deck": "toph-naya",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Toph, the First Metalbender",
+   "incluidos": {
+    "Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-5702--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ],
+     "usa": [
+      "Springheart Nantuko",
+      "Tireless Provisioner"
+     ],
+     "prerequisitos": "You have a land card in hand.\nYou are able to play a land this turn."
+    },
+    "Lotus Cobra + Springheart Nantuko": {
+     "id": "3470-5702--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ],
+     "usa": [
+      "Springheart Nantuko",
+      "Lotus Cobra"
+     ],
+     "prerequisitos": "You have a land card in hand.\nYou are able to play a land this turn."
+    },
+    "Nissa, Resurgent Animist + Springheart Nantuko": {
+     "id": "2653-5702--143",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ],
+     "usa": [
+      "Springheart Nantuko",
+      "Nissa, Resurgent Animist"
+     ],
+     "prerequisitos": "You have a land card in hand.\nYou are able to play a land this turn."
+    },
+    "The Stasis Coffin + Toph, the First Metalbender": {
+     "id": "4155-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything during your opponents' turns",
+      "Lock"
+     ],
+     "usa": [
+      "Toph, the First Metalbender",
+      "The Stasis Coffin"
+     ],
+     "prerequisitos": ""
+    },
+    "Gruul Turf + Kodama of the East Tree + Tireless Provisioner": {
+     "id": "573-1479-3875",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers",
+      "Infinite artifact tokens"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Tireless Provisioner",
+      "Gruul Turf"
+     ],
+     "prerequisitos": ""
+    },
+    "Gruul Turf + Kodama of the East Tree + Scute Swarm": {
+     "id": "573-1479-2907",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Gruul Turf",
+      "Scute Swarm"
+     ],
+     "prerequisitos": ""
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Zuran Orb": {
+     "id": "539-1315-7008",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Ashaya, Soul of the Wild",
+      "Zuran Orb",
+      "Badgermole Cub"
+     ],
+     "prerequisitos": ""
+    },
+    "Kodama of the East Tree + Scute Swarm + Selesnya Sanctuary": {
+     "id": "907-1479-2907",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Selesnya Sanctuary",
+      "Scute Swarm"
+     ],
+     "prerequisitos": ""
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Zuran Orb": {
+     "id": "539-1315-7034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Ashaya, Soul of the Wild",
+      "Zuran Orb",
+      "Bumi, Eclectic Earthbender"
+     ],
+     "prerequisitos": ""
+    },
+    "Kodama of the East Tree + Selesnya Sanctuary + Tireless Provisioner": {
+     "id": "907-1479-3875",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers",
+      "Infinite artifact tokens"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Tireless Provisioner",
+      "Selesnya Sanctuary"
+     ],
+     "prerequisitos": ""
+    },
+    "Felidar Retreat + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Selesnya Sanctuary",
+      "Felidar Retreat"
+     ],
+     "prerequisitos": ""
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Zuran Orb": {
+     "id": "539-1315-7035",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Ashaya, Soul of the Wild",
+      "Zuran Orb",
+      "Earthbending Student"
+     ],
+     "prerequisitos": ""
+    },
+    "Mycosynth Lattice + Toph, the First Metalbender + Zuran Orb": {
+     "id": "1315-3263-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Toph, the First Metalbender",
+      "Zuran Orb",
+      "Mycosynth Lattice"
+     ],
+     "prerequisitos": ""
+    },
+    "Lotus Cobra + Springheart Nantuko + Toph, the First Metalbender": {
+     "id": "3470-5702-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ],
+     "usa": [
+      "Toph, the First Metalbender",
+      "Springheart Nantuko",
+      "Lotus Cobra"
+     ],
+     "prerequisitos": "You have a land card in hand.\nYou control a land that enters untapped and that can tap to produce at least {1}."
+    },
+    "Field of the Dead + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-3534",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Gruul Turf",
+      "Field of the Dead"
+     ],
+     "prerequisitos": ""
+    },
+    "Springheart Nantuko + Tireless Provisioner + Toph, the First Metalbender": {
+     "id": "3875-5702-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ],
+     "usa": [
+      "Toph, the First Metalbender",
+      "Springheart Nantuko",
+      "Tireless Provisioner"
+     ],
+     "prerequisitos": "You have a land card in hand.\nYou control a land that enters untapped and that can tap to produce at least {1}."
+    },
+    "Gruul Turf + Kodama of the East Tree + Springheart Nantuko": {
+     "id": "573-1479-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Gruul Turf",
+      "Springheart Nantuko"
+     ],
+     "prerequisitos": ""
+    },
+    "Felidar Retreat + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Gruul Turf",
+      "Felidar Retreat"
+     ],
+     "prerequisitos": ""
+    },
+    "Field of the Dead + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-3534",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Selesnya Sanctuary",
+      "Field of the Dead"
+     ],
+     "prerequisitos": ""
+    },
+    "Kodama of the East Tree + Selesnya Sanctuary + Springheart Nantuko": {
+     "id": "907-1479-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Selesnya Sanctuary",
+      "Springheart Nantuko"
+     ],
+     "prerequisitos": ""
+    },
+    "Dryad of the Ilysian Grove + Gruul Turf + Spelunking + Springheart Nantuko": {
+     "id": "573-4572-5478-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB",
+      "Infinite green mana"
+     ],
+     "usa": [
+      "Springheart Nantuko",
+      "Spelunking",
+      "Gruul Turf",
+      "Dryad of the Ilysian Grove"
+     ],
+     "prerequisitos": "You are able to play a land this turn"
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Zuran Orb": {
+     "id": "539-1315-7085",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Ashaya, Soul of the Wild",
+      "Zuran Orb",
+      "Earth Kingdom General"
+     ],
+     "prerequisitos": ""
+    },
+    "Dryad of the Ilysian Grove + Selesnya Sanctuary + Spelunking + Springheart Nantuko": {
+     "id": "907-4572-5478-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB",
+      "Infinite green mana"
+     ],
+     "usa": [
+      "Springheart Nantuko",
+      "Spelunking",
+      "Selesnya Sanctuary",
+      "Dryad of the Ilysian Grove"
+     ],
+     "prerequisitos": "You are able to play a land this turn"
+    },
+    "Dryad of the Ilysian Grove + Gruul Turf + Horizon Explorer + Springheart Nantuko": {
+     "id": "573-4572-5702-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ],
+     "usa": [
+      "Springheart Nantuko",
+      "Gruul Turf",
+      "Dryad of the Ilysian Grove",
+      "Horizon Explorer"
+     ],
+     "prerequisitos": "You are able to play a land this turn"
+    },
+    "Nissa, Resurgent Animist + Springheart Nantuko + Toph, the First Metalbender": {
+     "id": "2653-5702-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ],
+     "usa": [
+      "Toph, the First Metalbender",
+      "Springheart Nantuko",
+      "Nissa, Resurgent Animist"
+     ],
+     "prerequisitos": "You have a land card in hand.\nYou control a land that enters untapped and that can tap to produce at least {1}."
+    },
+    "Krark-Clan Ironworks + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-4659-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers",
+      "Infinite colored mana"
+     ],
+     "usa": [
+      "Toph, the First Metalbender",
+      "Krark-Clan Ironworks",
+      "Mycosynth Lattice"
+     ],
+     "prerequisitos": "You have enough mana to cast the earthbend creature."
+    },
+    "Gruul Turf + Kodama of the East Tree + Sapling Nursery": {
+     "id": "573-1479-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Gruul Turf",
+      "Sapling Nursery"
+     ],
+     "prerequisitos": ""
+    },
+    "Dryad of the Ilysian Grove + Horizon Explorer + Selesnya Sanctuary + Springheart Nantuko": {
+     "id": "907-4572-5702-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ],
+     "usa": [
+      "Springheart Nantuko",
+      "Selesnya Sanctuary",
+      "Dryad of the Ilysian Grove",
+      "Horizon Explorer"
+     ],
+     "prerequisitos": "You are able to play a land this turn"
+    },
+    "Kodama of the East Tree + Sapling Nursery + Selesnya Sanctuary": {
+     "id": "907-1479-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ],
+     "usa": [
+      "Kodama of the East Tree",
+      "Selesnya Sanctuary",
+      "Sapling Nursery"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-5702--131",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ]
+    },
+    "Lotus Cobra + Springheart Nantuko": {
+     "id": "3470-5702--131",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ]
+    },
+    "Aggravated Assault + Sword of Feast and Famine": {
+     "id": "900-3750",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases"
+     ]
+    },
+    "Nissa, Resurgent Animist + Springheart Nantuko": {
+     "id": "2653-5702--131",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Quirion Ranger": {
+     "id": "539-2900",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite landfall triggers",
+      "Infinite creature LTB"
+     ]
+    },
+    "Doubling Season + Springheart Nantuko": {
+     "id": "4772-5702--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Karn, the Great Creator + Mycosynth Lattice": {
+     "id": "3263-5089",
+     "bracketTag": "R",
+     "produz": [
+      "Activated abilities of permanents your opponents control can't be activated",
+      "Activated abilities can't be activated",
+      "Lock"
+     ]
+    },
+    "Mycosynth Lattice + Vandalblast": {
+     "id": "2552-3263",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Unleashed": {
+     "id": "539-7033",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite mana lands you control can produce",
+      "Infinite green mana"
+     ]
+    },
+    "Parallel Lives + Springheart Nantuko": {
+     "id": "2557-5702--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Lotus Cobra + Lumra, Bellow of the Woods + Springheart Nantuko + Zuran Orb": {
+     "id": "1315-3470-5531-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Lumra, Bellow of the Woods + Springheart Nantuko + Tireless Provisioner + Zuran Orb": {
+     "id": "1315-3875-5531-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Crucible of Worlds + Dryad of the Ilysian Grove + Glacial Chasm": {
+     "id": "2573-3946-4572",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Dryad Arbor + Lotus Cobra + Springheart Nantuko + Tireless Provisioner": {
+     "id": "2366-3470-3875-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite Forest tokens"
+     ]
+    },
+    "Crucible of Worlds + Glacial Chasm + Zuran Orb": {
+     "id": "1315-2573-3946",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Rampaging Baloths": {
+     "id": "573-1479-4488",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Conduit of Worlds + Dryad of the Ilysian Grove + Glacial Chasm": {
+     "id": "3946-4572-4935",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Jumbo Cactuar + Swords to Plowshares": {
+     "id": "3779-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain"
+     ]
+    },
+    "Nissa, Who Shakes the World + Springheart Nantuko": {
+     "id": "4178-5702",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped Forest tokens"
+     ]
+    },
+    "Hellkite Tyrant + Mycosynth Lattice": {
+     "id": "523-3263",
+     "bracketTag": "S",
+     "produz": [
+      "Gain control of all permanents an opponent controls during each of your turns",
+      "Lock",
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Lumra, Bellow of the Woods + Nissa, Resurgent Animist + Springheart Nantuko + Zuran Orb": {
+     "id": "1315-2653-5531-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Sylvan Safekeeper": {
+     "id": "539-6620-7008",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bumi, Unleashed + Liquimetal Torque + Toph, the First Metalbender": {
+     "id": "486-6871-7033",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite mana lands you control can produce",
+      "Infinite combat damage"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Omnath, Locus of Rage": {
+     "id": "573-1479-4862",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Dryad Arbor + Lotus Cobra + Nissa, Resurgent Animist + Springheart Nantuko": {
+     "id": "2366-2653-3470-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite Forest tokens"
+     ]
+    },
+    "Dryad Arbor + Nissa, Resurgent Animist + Springheart Nantuko + Tireless Provisioner": {
+     "id": "2366-2653-3875-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite Forest tokens"
+     ]
+    },
+    "Guildless Commons + Kodama of the East Tree + Tireless Provisioner": {
+     "id": "765-1479-3875",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Guildless Commons + Kodama of the East Tree + Scute Swarm": {
+     "id": "765-1479-2907",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Toph, the Blind Bandit + Zuran Orb": {
+     "id": "539-1315-7037",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mindslaver + Toph, the First Metalbender": {
+     "id": "1167-6871",
+     "bracketTag": "R",
+     "produz": [
+      "You control one opponent on each of their turns",
+      "Lock"
+     ]
+    },
+    "Spelunking + Springbloom Druid + Springheart Nantuko": {
+     "id": "5478-5702-7401",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite landfall triggers"
+     ]
+    },
+    "Primal Vigor + Springheart Nantuko": {
+     "id": "3129-5702--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Bumi, Unleashed + Liquimetal Coating + Toph, the First Metalbender": {
+     "id": "662-6871-7033",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite mana lands you control can produce",
+      "Infinite combat damage"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Sylvan Safekeeper": {
+     "id": "539-6620-7034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horizon Explorer + Springbloom Druid + Springheart Nantuko": {
+     "id": "5702-6763-7401",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite landfall triggers"
+     ]
+    },
+    "Mondrak, Glory Dominus + Springheart Nantuko": {
+     "id": "4365-5702--143",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Anointed Procession + Springheart Nantuko": {
+     "id": "1308-5702--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Sylvan Safekeeper": {
+     "id": "539-6620-7035",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bumi, Unleashed + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-6871-7033",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite combat phases",
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Argothian Elder + Ashaya, Soul of the Wild": {
+     "id": "539-3814",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Devoted Druid": {
+     "id": "4762-5455",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana",
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Kodama of the East Tree + Rampaging Baloths + Selesnya Sanctuary": {
+     "id": "907-1479-4488",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Tireless Tracker": {
+     "id": "573-1479-2638",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact tokens",
+      "Infinite Clue tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole + Zuran Orb": {
+     "id": "539-1315-7031",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Arid Archway + Kodama of the East Tree + Tireless Provisioner": {
+     "id": "1479-3875-5621",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Aggravated Assault + Enduring Vitality": {
+     "id": "3750-6006",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite combat phases",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Arid Archway + Kodama of the East Tree + Scute Swarm": {
+     "id": "1479-2907-5621",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Zendikar's Roil": {
+     "id": "573-1479-4677",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Elspeth, Storm Slayer + Springheart Nantuko": {
+     "id": "5702-6441--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Lotus Cobra + Perilous Forays + Scute Swarm": {
+     "id": "880-2907-3470",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature tokens",
+      "Near-infinite creature ETB",
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Perilous Forays + Scute Swarm + Tireless Provisioner": {
+     "id": "880-2907-3875",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped",
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Mycosynth Lattice + Sylvan Safekeeper + Toph, the First Metalbender": {
+     "id": "3263-6620-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence": {
+     "id": "1020-4659-7714",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Kodama of the East Tree + Omnath, Locus of Rage + Selesnya Sanctuary": {
+     "id": "907-1479-4862",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Guildless Commons + Kodama of the East Tree + Springheart Nantuko": {
+     "id": "765-1479-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Hellkite Charger + Sword of Feast and Famine": {
+     "id": "900-3398",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite damage"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Crystalline Crawler": {
+     "id": "2060-5455",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures",
+      "Infinite colored mana"
+     ]
+    },
+    "Emeria Angel + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "730-907-1479",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite landfall triggers",
+      "Infinite creature tokens"
+     ]
+    },
+    "Kodama of the East Tree + Selesnya Sanctuary + Tireless Tracker": {
+     "id": "907-1479-2638",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact tokens",
+      "Infinite Clue tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Field of the Dead + Guildless Commons + Kodama of the East Tree": {
+     "id": "765-1479-3534",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Springheart Nantuko + Stone-Seeder Hierophant": {
+     "id": "225-5702--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ]
+    },
+    "Exalted Sunborn + Springheart Nantuko": {
+     "id": "5702-6753--143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Gruul Turf + Oracle of Mul Daya + Spelunking + Springheart Nantuko": {
+     "id": "573-5449-5478-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Inkmoth Nexus + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3438-3875-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped copies of a specific land",
+      "Infinite tapped Mountain tokens"
+     ]
+    },
+    "Boros Garrison + Kodama of the East Tree + Scute Swarm": {
+     "id": "1479-2907-5233",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Ley Weaver": {
+     "id": "539-1606",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Inkmoth Nexus + Lotus Cobra + Springheart Nantuko": {
+     "id": "3438-3470-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped copies of a specific land",
+      "Infinite tapped Mountain tokens"
+     ]
+    },
+    "Gruul Turf + Icetill Explorer + Spelunking + Springheart Nantuko": {
+     "id": "573-5478-5702-6850",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Arid Archway + Kodama of the East Tree + Springheart Nantuko": {
+     "id": "1479-5621-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Sylvan Safekeeper": {
+     "id": "539-6620-7085",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Boros Garrison + Felidar Retreat + Kodama of the East Tree": {
+     "id": "1479-2692-5233",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Gonti's Aether Heart + Toph, the First Metalbender": {
+     "id": "4636-6871",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Kodama of the East Tree + Selesnya Sanctuary + Zendikar's Roil": {
+     "id": "907-1479-4677",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Amulet of Vigor + Dryad of the Ilysian Grove + Gruul Turf + Springheart Nantuko": {
+     "id": "573-654-4572-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Boros Garrison + Kodama of the East Tree + Tireless Provisioner": {
+     "id": "1479-3875-5233",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Obliterate + Teferi's Protection": {
+     "id": "2548-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Mass Land Denial",
+      "Destroy all lands, creatures, and artifacts your opponents control"
+     ]
+    },
+    "Blinkmoth Nexus + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-4806-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped copies of a specific land",
+      "Infinite tapped Mountain tokens"
+     ]
+    },
+    "Oracle of Mul Daya + Selesnya Sanctuary + Spelunking + Springheart Nantuko": {
+     "id": "907-5449-5478-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Teferi's Protection + Worldfire": {
+     "id": "3765-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent's life total becomes 1",
+      "Exile all cards in hands and graveyards",
+      "Exile all permanents opponents control"
+     ]
+    },
+    "Gruul Turf + Horizon Explorer + Icetill Explorer + Springheart Nantuko": {
+     "id": "573-5702-6763-6850",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Toggo, Goblin Weaponsmith": {
+     "id": "573-1168-1479",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact tokens",
+      "Infinite landfall triggers",
+      "Infinite Rock tokens"
+     ]
+    },
+    "Cloudstone Curio + Kodama of the East Tree + Tireless Provisioner": {
+     "id": "1479-2232-3875",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Arid Archway + Field of the Dead + Kodama of the East Tree": {
+     "id": "1479-3534-5621",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Lotus Cobra + Perilous Forays + Springheart Nantuko": {
+     "id": "880-3470-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Perilous Forays + Springheart Nantuko + Tireless Provisioner": {
+     "id": "880-3875-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Blinkmoth Nexus + Lotus Cobra + Springheart Nantuko": {
+     "id": "3470-4806-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped copies of a specific land",
+      "Infinite tapped Mountain tokens"
+     ]
+    },
+    "Anzrag's Rampage + Mycosynth Lattice": {
+     "id": "3263-7259",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Gruul Turf + Horizon Explorer + Oracle of Mul Daya + Springheart Nantuko": {
+     "id": "573-5449-5702-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Krosan Restorer": {
+     "id": "539-3181",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite untap of creatures and lands you control"
+     ]
+    },
+    "Perilous Forays + Scute Swarm + Spelunking": {
+     "id": "880-2907-5478",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Put all lands with a basic land type from your library onto the battlefield tapped",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Sage of the Maze + Springheart Nantuko": {
+     "id": "5702-5724--130",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped copies of the Gate"
+     ]
+    },
+    "Greensleeves, Maro-Sorcerer + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-3585",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Icetill Explorer + Selesnya Sanctuary + Spelunking + Springheart Nantuko": {
+     "id": "907-5478-5702-6850",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Ashnod's Altar + Badgermole Cub": {
+     "id": "539-2034-7008",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Nesting Dragon": {
+     "id": "573-1479-2783",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite landfall triggers",
+      "Infinite creature tokens"
+     ]
+    },
+    "Emeria Angel + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-730-1479",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite landfall triggers",
+      "Infinite creature tokens"
+     ]
+    },
+    "Amulet of Vigor + Dryad of the Ilysian Grove + Selesnya Sanctuary + Springheart Nantuko": {
+     "id": "654-907-4572-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Badgermole Cub + Enduring Vitality + Pili-Pala": {
+     "id": "1247-6006-7008",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Field of the Dead + Lotus Cobra + Perilous Forays": {
+     "id": "880-3470-3534",
+     "bracketTag": "P",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Spellbinder + Teferi's Protection": {
+     "id": "1328-5141",
+     "bracketTag": "S",
+     "produz": [
+      "Permanents you control phase out during your opponents' turns",
+      "You have protection from everything during your opponents' turns",
+      "Your life total can't change during your opponents' turns"
+     ]
+    },
+    "Gruul Turf + Toph, Hardheaded Teacher + Toph, the First Metalbender + Zuran Orb": {
+     "id": "573-1315-6871-7115--44",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Ghost Town + Kodama of the East Tree + Tireless Provisioner + Wooded Foothills": {
+     "id": "1479-2841-3875-8101",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite Food tokens",
+      "Infinite Treasure tokens",
+      "Infinite artifact ETB"
+     ]
+    },
+    "Selesnya Sanctuary + Toph, Hardheaded Teacher + Toph, the First Metalbender + Zuran Orb": {
+     "id": "907-1315-6871-7115--44",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Ghost Town + Kodama of the East Tree + Scute Swarm + Wooded Foothills": {
+     "id": "1479-2841-2907-8101",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Field of the Dead + Perilous Forays + Tireless Provisioner": {
+     "id": "880-3534-3875",
+     "bracketTag": "P",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Ghost Town + Kodama of the East Tree + Tireless Provisioner + Windswept Heath": {
+     "id": "1479-2841-3875-8102",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite Food tokens",
+      "Infinite Treasure tokens",
+      "Infinite artifact ETB"
+     ]
+    },
+    "Ghost Town + Kodama of the East Tree + Scute Swarm + Windswept Heath": {
+     "id": "1479-2841-2907-8102",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Greensleeves, Maro-Sorcerer + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-3585",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Phyrexian Altar": {
+     "id": "539-4050-7008",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Inkmoth Nexus + Nissa, Resurgent Animist + Springheart Nantuko": {
+     "id": "2653-3438-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped copies of a specific land",
+      "Infinite tapped Mountain tokens"
+     ]
+    },
+    "Kodama of the East Tree + Maja, Bretagard Protector + Selesnya Sanctuary": {
+     "id": "907-1479-2374",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Boros Garrison + Kodama of the East Tree + Springheart Nantuko": {
+     "id": "1479-5233-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Boros Garrison + Field of the Dead + Kodama of the East Tree": {
+     "id": "1479-3534-5233",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Chocobo Racetrack + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-6662",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Kodama of the East Tree + Living Twister + Tireless Provisioner": {
+     "id": "1046-1479-3875",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Gruul Turf + Spelunking + Springheart Nantuko + Wayward Swordtooth": {
+     "id": "573-5451-5478-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite green mana",
+      "Infinite red mana"
+     ]
+    },
+    "Nissa, Resurgent Animist + Perilous Forays + Scute Swarm": {
+     "id": "880-2653-2907",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature tokens",
+      "Near-infinite creature ETB",
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Kodama of the East Tree + Living Twister + Scute Swarm": {
+     "id": "1046-1479-2907",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Chocobo Racetrack + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-6662",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Kodama of the East Tree + Retreat to Emeria + Selesnya Sanctuary": {
+     "id": "907-1479-3678",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Doubling Season + Overlord of the Hauntwoods + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-4772-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Dryad of the Ilysian Grove + Gruul Turf + Springheart Nantuko + Tiller Engine": {
+     "id": "277-573-4572-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Felidar Retreat + Perilous Forays + Tireless Provisioner": {
+     "id": "880-2692-3875",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Perilous Forays + Spelunking + Springheart Nantuko": {
+     "id": "880-5478-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Field of the Dead + Ghost Town + Kodama of the East Tree + Wooded Foothills": {
+     "id": "1479-2841-3534-8101",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Felidar Retreat + Lotus Cobra + Perilous Forays": {
+     "id": "880-2692-3470",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Overlord of the Hauntwoods + Parallel Lives + Springheart Nantuko + Tireless Provisioner": {
+     "id": "2557-3875-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Field of the Dead + Ghost Town + Kodama of the East Tree + Windswept Heath": {
+     "id": "1479-2841-3534-8102",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Felidar Retreat + Guildless Commons + Kodama of the East Tree": {
+     "id": "765-1479-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Arid Archway + Felidar Retreat + Kodama of the East Tree": {
+     "id": "1479-2692-5621",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Lotus Cobra + Tireless Provisioner": {
+     "id": "2893-3470-3875-5455",
+     "bracketTag": "E",
+     "produz": [
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Ashnod's Altar + Ba Sing Se + Lotus Cobra + Spelunking": {
+     "id": "2034-3470-5478-7090",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ]
+    },
+    "Doubling Season + Springheart Nantuko + Wrenn and Realmbreaker": {
+     "id": "1114-4772-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Ashnod's Altar + Bumi, Eclectic Earthbender": {
+     "id": "539-2034-7034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Balancing Act + Teferi's Protection": {
+     "id": "70-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent sacrifices all permanents they control",
+      "Mass Land Denial"
+     ]
+    },
+    "Caged Sun + Toph, the First Metalbender": {
+     "id": "5175-6871",
+     "bracketTag": "R",
+     "produz": [
+      "Draw the game"
+     ]
+    },
+    "Ashnod's Altar + Ba Sing Se + Spelunking + Tireless Provisioner": {
+     "id": "2034-3875-5478-7090",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ]
+    },
+    "Broadcast Takeover + Mycosynth Lattice": {
+     "id": "3263-7277",
+     "bracketTag": "E",
+     "produz": [
+      "Gain control of all permanents until end of turn"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Ashnod's Altar + Earthbending Student": {
+     "id": "539-2034-7035",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colorless mana"
+     ]
+    },
+    "Field of the Dead + Perilous Forays + Spelunking": {
+     "id": "880-3534-5478",
+     "bracketTag": "P",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Goblin Bombardment": {
+     "id": "539-5147-7008",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Kodama of the East Tree + Scute Swarm + Storm Cauldron": {
+     "id": "1479-2907-5033",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Arcbound Ravager + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "2829-3263-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite artifact ETB",
+      "Infinite artifact LTB"
+     ]
+    },
+    "Guildless Commons + Kodama of the East Tree + Sapling Nursery": {
+     "id": "765-1479-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Altar of Dementia + Ashaya, Soul of the Wild + Badgermole Cub": {
+     "id": "539-5256-7008",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "2034-3263-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite colored mana"
+     ]
+    },
+    "Horizon Explorer + Perilous Forays + Scute Swarm": {
+     "id": "880-2907-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Put all lands with a basic land type from your library onto the battlefield tapped",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Mole Man, Moloid Master": {
+     "id": "573-1479-7705",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Doubling Season + Lotus Cobra + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "3470-4772-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Nissa, Resurgent Animist + Perilous Forays + Springheart Nantuko": {
+     "id": "880-2653-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Blinkmoth Nexus + Nissa, Resurgent Animist + Springheart Nantuko": {
+     "id": "2653-4806-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped copies of a specific land",
+      "Infinite tapped Mountain tokens"
+     ]
+    },
+    "Arid Mesa + Ghost Town + Kodama of the East Tree + Scute Swarm": {
+     "id": "1479-2841-2907-6155",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colorless mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Kodama of the East Tree + Nesting Dragon + Selesnya Sanctuary": {
+     "id": "907-1479-2783",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite landfall triggers",
+      "Infinite creature tokens"
+     ]
+    },
+    "Apocalypse + Teferi's Protection": {
+     "id": "4274-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Discard your hand",
+      "Exile all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Sporemound": {
+     "id": "573-1479-3703",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ghost Town + Kodama of the East Tree + Springheart Nantuko + Wooded Foothills": {
+     "id": "1479-2841-5702-8101",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Arid Mesa + Ghost Town + Kodama of the East Tree + Tireless Provisioner": {
+     "id": "1479-2841-3875-6155",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Ba Sing Se + Horizon Explorer + Lotus Cobra": {
+     "id": "2034-3470-6763-7090",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ]
+    },
+    "Collector Ouphe + Mycosynth Lattice": {
+     "id": "2508-3263",
+     "bracketTag": "R",
+     "produz": [
+      "Activated abilities can't be activated",
+      "Lock",
+      "Mass Land Denial"
+     ]
+    },
+    "Horizon Explorer + Icetill Explorer + Selesnya Sanctuary + Springheart Nantuko": {
+     "id": "907-5702-6763-6850",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Selesnya Sanctuary + Spelunking + Springheart Nantuko + Wayward Swordtooth": {
+     "id": "907-5451-5478-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ghost Town + Kodama of the East Tree + Springheart Nantuko + Windswept Heath": {
+     "id": "1479-2841-5702-8102",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Sarinth Greatwurm": {
+     "id": "573-1479-4288",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped Powerstone tokens"
+     ]
+    },
+    "Gruul Turf + Helm of the Host + Kodama of the East Tree": {
+     "id": "573-1479-1692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashnod's Altar + Ba Sing Se + Horizon Explorer + Tireless Provisioner": {
+     "id": "2034-3875-6763-7090",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ]
+    },
+    "Felidar Retreat + Perilous Forays + Spelunking": {
+     "id": "880-2692-5478",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Field of the Dead + Nissa, Resurgent Animist + Perilous Forays": {
+     "id": "880-2653-3534",
+     "bracketTag": "P",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Retreat to Emeria": {
+     "id": "573-1479-3678",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Gruul Turf + Horizon Explorer + Springheart Nantuko + Wayward Swordtooth": {
+     "id": "573-5451-5702-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Arid Mesa + Field of the Dead + Ghost Town + Kodama of the East Tree": {
+     "id": "1479-2841-3534-6155",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colorless mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Mycosynth Lattice + Null Rod": {
+     "id": "3263-4246",
+     "bracketTag": "R",
+     "produz": [
+      "Nobody can activate the abilites of any permanent on the battlefield",
+      "Activated abilities can't be activated",
+      "Lock"
+     ]
+    },
+    "Horizon Explorer + Perilous Forays + Springheart Nantuko": {
+     "id": "880-5702-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Felidar Retreat + Ghost Town + Kodama of the East Tree + Windswept Heath": {
+     "id": "1479-2692-2841-8102",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Phyrexian Altar": {
+     "id": "539-4050-7035",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Ashnod's Altar + Earth Kingdom General": {
+     "id": "539-2034-7085",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Pili-Pala": {
+     "id": "539-1247-7008",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Krark-Clan Ironworks + Mycosynth Lattice + Spirit Loop": {
+     "id": "2618-3263-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Lotus Cobra + Overlord of the Hauntwoods + Parallel Lives + Springheart Nantuko": {
+     "id": "2557-3470-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Arid Archway + Kodama of the East Tree + Sapling Nursery": {
+     "id": "1479-5621-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Avatar of Growth + Springheart Nantuko": {
+     "id": "5702-8097",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent puts all basic lands from their library onto the battlefield",
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Felidar Retreat + Ghost Town + Kodama of the East Tree + Wooded Foothills": {
+     "id": "1479-2692-2841-8101",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Dryad of the Ilysian Grove + Selesnya Sanctuary + Springheart Nantuko + Tiller Engine": {
+     "id": "277-907-4572-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Perilous Forays + Sapling Nursery + Tireless Provisioner": {
+     "id": "880-3875-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Phyrexian Altar": {
+     "id": "539-4050-7034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Horizon Explorer + Oracle of Mul Daya + Selesnya Sanctuary + Springheart Nantuko": {
+     "id": "907-5449-5702-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Kodama of the East Tree + Selesnya Sanctuary + Sporemound": {
+     "id": "907-1479-3703",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Lotus Cobra + Mutable Explorer + Spelunking + Springheart Nantuko": {
+     "id": "3470-5478-5702-6973",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Grinding Station + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-3698-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Kodama of the East Tree + Mole Man, Moloid Master + Selesnya Sanctuary": {
+     "id": "907-1479-7705",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Mutable Explorer + Spelunking + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-5478-5702-6973",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Consulate Crackdown + Mycosynth Lattice": {
+     "id": "1155-3263",
+     "bracketTag": "R",
+     "produz": [
+      "Exile all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Arid Mesa + Felidar Retreat + Ghost Town + Kodama of the East Tree": {
+     "id": "1479-2692-2841-6155",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colorless mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Doubling Season + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "4772-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Elfsworn Giant + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-6528",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Kodama of the East Tree + Springheart Nantuko + Storm Cauldron": {
+     "id": "1479-5033-5702",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Field of the Dead + Kodama of the East Tree + Storm Cauldron": {
+     "id": "1479-3534-5033",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Lotus Cobra + Perilous Forays + Sapling Nursery": {
+     "id": "880-3470-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Parallel Lives + Springheart Nantuko + Wrenn and Realmbreaker": {
+     "id": "1114-2557-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite tapped Forest tokens",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Mycosynth Lattice + Stony Silence": {
+     "id": "3263-4325",
+     "bracketTag": "R",
+     "produz": [
+      "Activated abilities can't be activated",
+      "Lock",
+      "Mass Land Denial"
+     ]
+    },
+    "Mycosynth Lattice + Phyrexian Altar + Toph, the First Metalbender": {
+     "id": "3263-4050-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite colored mana"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Lotus Cobra + Nissa, Resurgent Animist": {
+     "id": "2653-2893-3470-5455",
+     "bracketTag": "E",
+     "produz": [
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Maja, Bretagard Protector": {
+     "id": "573-1479-2374",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Arid Mesa + Ghost Town + Kodama of the East Tree + Springheart Nantuko": {
+     "id": "1479-2841-5702-6155",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colorless mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Blasting Station": {
+     "id": "413-539-7008",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Overlord of the Hauntwoods + Parallel Lives + Spelunking + Springheart Nantuko": {
+     "id": "2557-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Helm of the Host + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-1692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers"
+     ]
+    },
+    "Doubling Season + Nissa, Resurgent Animist + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "2653-4772-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashnod's Altar + Ba Sing Se + Nissa, Resurgent Animist + Spelunking": {
+     "id": "2034-2653-5478-7090",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ]
+    },
+    "Dryad of the Ilysian Grove + Gruul Turf + Springheart Nantuko + Stone-Seeder Hierophant": {
+     "id": "225-573-4572-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Argothian Elder + Liquimetal Torque + Toph, the First Metalbender": {
+     "id": "486-3814-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce",
+      "Infinite untap of nontoken artifacts you control",
+      "Infinite mana nontoken artifacts you control can produce"
+     ]
+    },
+    "Horizon Explorer + Lotus Cobra + Mutable Explorer + Springheart Nantuko": {
+     "id": "3470-5702-6763-6973",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Goblin Bombardment": {
+     "id": "539-5147-7035",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Phyrexian Altar": {
+     "id": "539-4050-7085",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Altar of Dementia + Ashaya, Soul of the Wild + Earthbending Student": {
+     "id": "539-5256-7035",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horizon Explorer + Mutable Explorer + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-5702-6763-6973",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Overlord of the Hauntwoods + Primal Vigor + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3129-3875-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Mondrak, Glory Dominus + Overlord of the Hauntwoods + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-4365-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Nissa, Resurgent Animist + Tireless Provisioner": {
+     "id": "2653-2893-3875-5455",
+     "bracketTag": "E",
+     "produz": [
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Altar of Dementia + Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender": {
+     "id": "539-5256-7034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Field of the Dead + Horizon Explorer + Perilous Forays": {
+     "id": "880-3534-6763",
+     "bracketTag": "P",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Petravark": {
+     "id": "539-3876",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite landfall triggers",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Goblin Bombardment": {
+     "id": "539-5147-7034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Ba Sing Se + Horizon Explorer + Nissa, Resurgent Animist": {
+     "id": "2034-2653-6763-7090",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ]
+    },
+    "Elfsworn Giant + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-6528",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Sands of Time + Strionic Resonator": {
+     "id": "2751-3737",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of permanents you control",
+      "Infinite mana permanents you control can produce"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Lotus Cobra + Spelunking": {
+     "id": "2893-3470-5455-5478",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Dancing from Dark to Dawn + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-7889",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Anointed Procession + Overlord of the Hauntwoods + Springheart Nantuko + Tireless Provisioner": {
+     "id": "1308-3875-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Felidar Retreat + Kodama of the East Tree + Living Twister": {
+     "id": "1046-1479-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Felidar Retreat + Nissa, Resurgent Animist + Perilous Forays": {
+     "id": "880-2653-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Ley Weaver + Liquimetal Torque + Toph, the First Metalbender": {
+     "id": "486-1606-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce",
+      "Infinite untap of nontoken artifacts you control",
+      "Infinite mana nontoken artifacts you control can produce"
+     ]
+    },
+    "Altar of Dementia + Ashaya, Soul of the Wild + Earth Kingdom General": {
+     "id": "539-5256-7085",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Need for Speed": {
+     "id": "539-5411-7008",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Perilous Forays + Sapling Nursery + Spelunking": {
+     "id": "880-5478-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Nissa, Resurgent Animist + Overlord of the Hauntwoods + Parallel Lives + Springheart Nantuko": {
+     "id": "2557-2653-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Realm Razer": {
+     "id": "539-1616",
+     "bracketTag": "R",
+     "produz": [
+      "Draw the game",
+      "Infinite blinking",
+      "Infinite creature ETB"
+     ]
+    },
+    "Argothian Elder + Liquimetal Coating + Toph, the First Metalbender": {
+     "id": "662-3814-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce",
+      "Infinite untap of nontoken artifacts you control",
+      "Infinite mana nontoken artifacts you control can produce"
+     ]
+    },
+    "Springheart Nantuko + Stone-Seeder Hierophant + Toph, the First Metalbender": {
+     "id": "225-5702-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped land tokens"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Spelunking + Tireless Provisioner": {
+     "id": "2893-3875-5455-5478",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Elspeth, Storm Slayer + Overlord of the Hauntwoods + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-5702-5954-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Argothian Elder + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-3814-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana lands you control can produce",
+      "Infinite untap of nontoken artifacts you control"
+     ]
+    },
+    "Dryad of the Ilysian Grove + Selesnya Sanctuary + Springheart Nantuko + Stone-Seeder Hierophant": {
+     "id": "225-907-4572-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Conduit of Worlds + Krark-Clan Ironworks + The One Ring": {
+     "id": "3363-4659-4935",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You can't cast spells",
+      "You have protection from everything"
+     ]
+    },
+    "Mana Reflection + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "579-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Clarion Conqueror + Mycosynth Lattice": {
+     "id": "3263-7000",
+     "bracketTag": "R",
+     "produz": [
+      "Activated abilities can't be activated",
+      "Lock",
+      "Mass Land Denial"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Goblin Bombardment": {
+     "id": "539-5147-7085",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mutable Explorer + Nissa, Resurgent Animist + Spelunking + Springheart Nantuko": {
+     "id": "2653-5478-5702-6973",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Primal Vigor + Springheart Nantuko + Wrenn and Realmbreaker": {
+     "id": "1114-3129-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Delina, Wild Mage + Gruul Turf + Kodama of the East Tree": {
+     "id": "282-573-1479",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers"
+     ]
+    },
+    "Mondrak, Glory Dominus + Springheart Nantuko + Wrenn and Realmbreaker": {
+     "id": "1114-4365-5702",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Lotus Cobra + Overlord of the Hauntwoods + Primal Vigor + Springheart Nantuko": {
+     "id": "3129-3470-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ley Weaver + Liquimetal Coating + Toph, the First Metalbender": {
+     "id": "662-1606-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce",
+      "Infinite untap of nontoken artifacts you control",
+      "Infinite mana nontoken artifacts you control can produce"
+     ]
+    },
+    "Goblin Bombardment + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-5147-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite damage"
+     ]
+    },
+    "Lotus Cobra + Mondrak, Glory Dominus + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "3470-4365-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Koll, the Forgemaster + Krark-Clan Ironworks": {
+     "id": "4659-4763--21--45",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Springheart Nantuko + Wrenn and Realmbreaker": {
+     "id": "1114-1308-5702",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite tapped Forest tokens",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Krark-Clan Ironworks + Yomiji, Who Bars the Way": {
+     "id": "3184-4659--187",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Felidar Retreat + Kodama of the East Tree + Storm Cauldron": {
+     "id": "1479-2692-5033",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Blasting Station + Bumi, Eclectic Earthbender": {
+     "id": "413-539-7034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Exalted Sunborn + Overlord of the Hauntwoods + Springheart Nantuko + Tireless Provisioner": {
+     "id": "3875-5702-5954-6753",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Horizon Explorer + Perilous Forays + Sapling Nursery": {
+     "id": "880-6763-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Felidar Retreat + Fertilid + Lotus Cobra + Spelunking": {
+     "id": "2692-2893-3470-5478",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Mirari's Wake + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "2800-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Blasting Station + Earthbending Student": {
+     "id": "413-539-7035",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ley Weaver + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "1606-3263-6871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana lands you control can produce",
+      "Infinite untap of nontoken artifacts you control"
+     ]
+    },
+    "Dancing from Dark to Dawn + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-7889",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Anointed Procession + Lotus Cobra + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "1308-3470-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Blasting Station + Earth Kingdom General": {
+     "id": "413-539-7085",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horizon Explorer + Selesnya Sanctuary + Springheart Nantuko + Wayward Swordtooth": {
+     "id": "907-5451-5702-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite landfall triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Elspeth, Storm Slayer + Springheart Nantuko + Wrenn and Realmbreaker": {
+     "id": "1114-5702-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Boros Garrison + Kodama of the East Tree + Sapling Nursery": {
+     "id": "1479-5233-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Overlord of the Hauntwoods + Spelunking + Springheart Nantuko + Vorinclex, Voice of Hunger": {
+     "id": "2203-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Altar of Dementia + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-5256-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Felidar Retreat + Horizon Explorer + Perilous Forays": {
+     "id": "880-2692-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Nissa, Resurgent Animist + Perilous Forays + Sapling Nursery": {
+     "id": "880-2653-7201",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Felidar Retreat + Fertilid + Spelunking + Tireless Provisioner": {
+     "id": "2692-2893-3875-5478",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Anointed Procession + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "1308-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Overlord of the Hauntwoods + Primal Vigor + Spelunking + Springheart Nantuko": {
+     "id": "3129-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Elspeth, Storm Slayer + Lotus Cobra + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "3470-5702-5954-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Horizon Explorer + Mutable Explorer + Nissa, Resurgent Animist + Springheart Nantuko": {
+     "id": "2653-5702-6763-6973",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Kodama of the East Tree + Selesnya Sanctuary + Toggo, Goblin Weaponsmith": {
+     "id": "907-1168-1479",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact tokens",
+      "Infinite landfall triggers",
+      "Infinite Rock tokens"
+     ]
+    },
+    "Overlord of the Hauntwoods + Spelunking + Springheart Nantuko + Zendikar Resurgent": {
+     "id": "4974-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Horizon Explorer + Lotus Cobra": {
+     "id": "2893-3470-5455-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Leonin Relic-Warder + Mycosynth Lattice": {
+     "id": "3263-5276",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Mondrak, Glory Dominus + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "4365-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Nissa, Resurgent Animist + Spelunking": {
+     "id": "2653-2893-5455-5478",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Horizon Explorer + Tireless Provisioner": {
+     "id": "2893-3875-5455-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Barren Glory + Krark-Clan Ironworks + Mycosynth Lattice": {
+     "id": "2686-3263-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Blasting Station + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "413-3263-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite damage"
+     ]
+    },
+    "Elspeth, Storm Slayer + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "5478-5702-5954-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Mondrak, Glory Dominus + Nissa, Resurgent Animist + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "2653-4365-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ghost Town + Kodama of the East Tree + Sapling Nursery + Wooded Foothills": {
+     "id": "1479-2841-7201-8101",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ghost Town + Kodama of the East Tree + Sapling Nursery + Windswept Heath": {
+     "id": "1479-2841-7201-8102",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Nissa, Resurgent Animist + Overlord of the Hauntwoods + Primal Vigor + Springheart Nantuko": {
+     "id": "2653-3129-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Need for Speed": {
+     "id": "539-5411-7034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Gruul Turf + Kodama of the East Tree + Seed the Land": {
+     "id": "573-1479-1659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Exalted Sunborn + Lotus Cobra + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "3470-5702-5954-6753",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Anointed Procession + Nissa, Resurgent Animist + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "1308-2653-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Mycosynth Lattice + Need for Speed + Toph, the First Metalbender": {
+     "id": "3263-5411-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Cadric, Soul Kindler + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-3604",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Need for Speed": {
+     "id": "539-5411-7035",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Cadric, Soul Kindler + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-3604",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Crystalline Crawler + Mycosynth Lattice": {
+     "id": "2060-3263-5455",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Elspeth, Storm Slayer + Nissa, Resurgent Animist + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "2653-5702-5954-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Exalted Sunborn + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "5478-5702-5954-6753",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Thermopod": {
+     "id": "539-5231-7008",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Exalted Sunborn + Springheart Nantuko + Wrenn and Realmbreaker": {
+     "id": "1114-5702-6753",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Felidar Retreat + Fertilid + Nissa, Resurgent Animist + Spelunking": {
+     "id": "2653-2692-2893-5478",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Badgermole Cub + Enduring Vitality + Farmstead Gleaner": {
+     "id": "4038-6006-7008",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Kodama of the East Tree + Seed the Land + Selesnya Sanctuary": {
+     "id": "907-1479-1659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Felidar Retreat + Fertilid + Horizon Explorer + Lotus Cobra": {
+     "id": "2692-2893-3470-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Fertilid + Horizon Explorer + Nissa, Resurgent Animist": {
+     "id": "2653-2893-5455-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Felidar Retreat + Fertilid + Horizon Explorer + Tireless Provisioner": {
+     "id": "2692-2893-3875-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Exalted Sunborn + Horizon Explorer + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "5702-5954-6753-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Overlord of the Hauntwoods + Regal Behemoth + Spelunking + Springheart Nantuko": {
+     "id": "343-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Need for Speed": {
+     "id": "539-5411-7085",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Lithatog": {
+     "id": "539-5226-7008",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Exalted Sunborn + Nissa, Resurgent Animist + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "2653-5702-5954-6753",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Elspeth, Storm Slayer + Horizon Explorer + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "5702-5954-6441-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Kodama of the East Tree + Sarinth Greatwurm + Selesnya Sanctuary": {
+     "id": "907-1479-4288",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite tapped Powerstone tokens"
+     ]
+    },
+    "Caged Sun + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "5175-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Lithatog": {
+     "id": "539-5226-7034",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Extruder + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "1477-3263-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on creatures you control",
+      "Infinite artifact ETB",
+      "Infinite artifact LTB"
+     ]
+    },
+    "Lithatog + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-5226-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Lithatog": {
+     "id": "539-5226-7035",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Thaumatog": {
+     "id": "539-1669-7008",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mana Flare + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "3512-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Thermopod": {
+     "id": "539-5231-7035",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Thermopod": {
+     "id": "539-5231-7034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Thaumatog": {
+     "id": "539-1669-7034",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Atog + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-5330-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Groundchuck & Dirtbag + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "5478-5702-5954-7288",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Dictate of Karametra + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "1682-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Thaumatog": {
+     "id": "539-1669-7035",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mycosynth Lattice + Spawning Pit + Toph, the First Metalbender": {
+     "id": "3263-3899-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Krark-Clan Ironworks + Mycosynth Lattice + Rancor": {
+     "id": "3018-3263-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Lithatog": {
+     "id": "539-5226-7085",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Felidar Retreat + Fertilid + Horizon Explorer + Nissa, Resurgent Animist": {
+     "id": "2653-2692-2893-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Delina, Wild Mage + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "282-907-1479",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Felidar Guardian + Toph, Greatest Earthbender": {
+     "id": "539-2781-7038",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Megatog + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "2981-3263-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Mycosynth Lattice + Thaumatog + Toph, the First Metalbender": {
+     "id": "1669-3263-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Groundchuck & Dirtbag + Horizon Explorer + Overlord of the Hauntwoods + Springheart Nantuko": {
+     "id": "5702-5954-6763-7288",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Down in the Valley + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-7885",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Troubled Healer": {
+     "id": "539-5414-7008",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Restoration Angel + Toph, Greatest Earthbender": {
+     "id": "539-1090-7038",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Down in the Valley + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-7885",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Thaumatog": {
+     "id": "539-1669-7085",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mycosynth Lattice + Thermopod + Toph, the First Metalbender": {
+     "id": "3263-5231-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite colored mana"
+     ]
+    },
+    "Keeper of Progenitus + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "630-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Thermopod": {
+     "id": "539-5231-7085",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mycosynth Lattice + Toph, the First Metalbender + Troubled Healer": {
+     "id": "3263-5414-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Troubled Healer": {
+     "id": "539-5414-7085",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Troubled Healer": {
+     "id": "539-5414-7035",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Troubled Healer": {
+     "id": "539-5414-7034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Overlord of the Hauntwoods + Spelunking + Springheart Nantuko + Zhur-Taa Ancient": {
+     "id": "3688-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Krark-Clan Grunt + Mycosynth Lattice + Toph, the First Metalbender": {
+     "id": "3263-4779-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Mycosynth Lattice + Ravenous Intruder + Toph, the First Metalbender": {
+     "id": "3263-5315-6871--211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Krark-Clan Ironworks + Mycosynth Lattice + Yenna, Redtooth Regent": {
+     "id": "3263-4659-4679",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite scry"
+     ]
+    },
+    "Mycosynth Lattice + Toph, the First Metalbender + Trenching Steed": {
+     "id": "3263-5413-6871--183",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Fortitude + Krark-Clan Ironworks + Mycosynth Lattice": {
+     "id": "2664-3263-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earth Kingdom General + Trenching Steed": {
+     "id": "539-5413-7085",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Earthbending Student + Trenching Steed": {
+     "id": "539-5413-7035",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Trenching Steed": {
+     "id": "539-5413-7034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Badgermole Cub + Trenching Steed": {
+     "id": "539-5413-7008",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Conduit of Worlds + Fastbond + Zuran Orb": {
+     "id": "1315-1850-4935",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Krark-Clan Ironworks + Mycosynth Lattice + Sluggishness": {
+     "id": "135-3263-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Brilliant Halo + Krark-Clan Ironworks + Mycosynth Lattice": {
+     "id": "2559-3263-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Aspect of Mongoose + Krark-Clan Ironworks + Mycosynth Lattice": {
+     "id": "3263-3501-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Krark-Clan Ironworks + Mycosynth Lattice + Reborn Hero": {
+     "id": "3263-4494-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Crucible of Worlds + Fastbond + Zuran Orb": {
+     "id": "1315-1850-2573",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Cleveland Booker, Empath + Gruul Turf + Kodama of the East Tree": {
+     "id": "573-1479-8293",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Badgermole Cub + Enduring Vitality + Torchling": {
+     "id": "3360-6006-7008",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Nikya of the Old Ways + Overlord of the Hauntwoods + Spelunking + Springheart Nantuko": {
+     "id": "3322-5478-5702-5954",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Cleveland Booker, Empath + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-8293",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Toph, Greatest Earthbender + Wispweaver Angel": {
+     "id": "539-1621-7038",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "R",
+    "game_changers": [
+     "Enlightened Tutor",
+     "Field of the Dead",
+     "Teferi's Protection"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Krark-Clan Ironworks + Mycosynth Lattice + Toph, the First Metalbender",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Mycosynth Lattice + Toph, the First Metalbender + Zuran Orb",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Mycosynth Lattice + Toph, the First Metalbender + Zuran Orb",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 6,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Kodama of the East Tree + Sapling Nursery + Selesnya Sanctuary",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Gruul Turf + Kodama of the East Tree + Sapling Nursery",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Springheart Nantuko + Tireless Provisioner",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Nissa, Resurgent Animist + Springheart Nantuko",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Lotus Cobra + Springheart Nantuko",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "The Stasis Coffin + Toph, the First Metalbender",
+      "relevant": false,
+      "borderlineRelevant": false,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": true,
+      "tag": "S"
+     },
+     {
+      "combo": "Ashaya, Soul of the Wild + Earth Kingdom General + Zuran Orb",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Ashaya, Soul of the Wild + Earthbending Student + Zuran Orb",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Zuran Orb",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 4,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Ashaya, Soul of the Wild + Badgermole Cub + Zuran Orb",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Springheart Nantuko + Tireless Provisioner + Toph, the First Metalbender",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Nissa, Resurgent Animist + Springheart Nantuko + Toph, the First Metalbender",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Lotus Cobra + Springheart Nantuko + Toph, the First Metalbender",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Dryad of the Ilysian Grove + Selesnya Sanctuary + Spelunking + Springheart Nantuko",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Dryad of the Ilysian Grove + Horizon Explorer + Selesnya Sanctuary + Springheart Nantuko",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Dryad of the Ilysian Grove + Gruul Turf + Spelunking + Springheart Nantuko",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Dryad of the Ilysian Grove + Gruul Turf + Horizon Explorer + Springheart Nantuko",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Field of the Dead + Kodama of the East Tree + Selesnya Sanctuary",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "P"
+     },
+     {
+      "combo": "Field of the Dead + Gruul Turf + Kodama of the East Tree",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "P"
+     },
+     {
+      "combo": "Kodama of the East Tree + Selesnya Sanctuary + Springheart Nantuko",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Gruul Turf + Kodama of the East Tree + Springheart Nantuko",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Gruul Turf + Kodama of the East Tree + Tireless Provisioner",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Kodama of the East Tree + Selesnya Sanctuary + Tireless Provisioner",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Felidar Retreat + Kodama of the East Tree + Selesnya Sanctuary",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Felidar Retreat + Gruul Turf + Kodama of the East Tree",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Kodama of the East Tree + Scute Swarm + Selesnya Sanctuary",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Gruul Turf + Kodama of the East Tree + Scute Swarm",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

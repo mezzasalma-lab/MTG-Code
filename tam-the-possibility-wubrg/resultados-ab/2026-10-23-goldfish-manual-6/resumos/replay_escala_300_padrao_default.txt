@@ -1,0 +1,14 @@
+Replay do goldfish manual #6 | modo padrao | perfil default | N=300 ordens do resto do baralho
+turno | planeswalkers: mediana [Q1-Q3] | usuario (log) | usuario (premissa Fracture no T4) | P(sim >= usuario)
+  T 1 |  0.0 [0-0] | 0 | 0 | 100.0%
+  T 2 |  0.0 [0-0] | 0 | 0 | 100.0%
+  T 3 |  0.0 [0-0] | 0 | 0 | 100.0%
+  T 4 |  1.0 [1-1] | 1 | 0 | 100.0%
+  T 5 |  2.0 [2-2] | 2 | 1 | 100.0%
+  T 6 |  3.0 [3-3] | 3 | 2 | 100.0%
+  T 7 |  3.0 [3-3] | 4 | 3 |   0.0%
+  T 8 |  6.0 [5-6] | 4 | 4 | 100.0%
+  T 9 |  9.0 [9-10] | 4 | 4 | 100.0%
+  T10 | 13.0 [11-14] | 5 | 5 | 100.0%
+  T11 | 13.0 [11-15] | 6 | 6 | 100.0%
+Tam conjurada: mediana T3.0 (300/300 partidas); o usuario: T3

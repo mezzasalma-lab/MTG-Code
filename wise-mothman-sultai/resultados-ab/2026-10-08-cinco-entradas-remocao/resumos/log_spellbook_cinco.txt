@@ -1,0 +1,16 @@
+nomes verificados: 95 | NAO reconhecidos: []
+base: 2 combos, 134 quase
+base+Agent Frank Horrigan | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Branching Evolution | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+base+Atomize | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Casualties of War | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Assassin's Trophy | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+as_cinco | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+lista_exata_s1_vats_wave_deluge | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+lista_exata_s2_vats_arcane_dsp | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+lista_exata_s3_vats_wave_arcane | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+lista_exata_s4_vats_wave_dsp | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+lista_exata_s5_vats_deluge_arcane | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+lista_exata_s6_vats_deluge_dsp | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+lista_exata_s7_tear_wave_deluge | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 2
+controle positivo: True | controle de corte (Ascension+Mindcrank some ao cortar o Mindcrank): True

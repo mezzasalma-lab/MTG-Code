@@ -1,0 +1,2 @@
+Controle: variante 'base' (10 turnos, este código) vs tom_v1_runs.jsonl (8 turnos, gerado antes): turno de lançamento do Tom (só ≤ T8) difere em 0 de 3000 partidas
+mana_by_turn dos 8 primeiros turnos idêntico em: 3000 de 3000

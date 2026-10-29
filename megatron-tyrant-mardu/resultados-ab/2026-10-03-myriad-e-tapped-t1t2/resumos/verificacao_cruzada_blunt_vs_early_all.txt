@@ -1,0 +1,3 @@
+N=10000 partidas; campos comparados: cmd_turn, proxy_dmg, mana_convert, conversions, weld, recursion, cards_extra, poison_win, cmd_dmg_win, lands_end, hand, ramp
+partidas com TODOS os campos iguais: 10000/10000
+partidas diferentes por campo: {'cmd_turn': 0, 'proxy_dmg': 0, 'mana_convert': 0, 'conversions': 0, 'weld': 0, 'recursion': 0, 'cards_extra': 0, 'poison_win': 0, 'cmd_dmg_win': 0, 'lands_end': 0, 'hand': 0, 'ramp': 0}

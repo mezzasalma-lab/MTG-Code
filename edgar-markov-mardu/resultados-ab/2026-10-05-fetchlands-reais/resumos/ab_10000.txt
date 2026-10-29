@@ -1,0 +1,23 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8279 (82.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3877       6.3421      -0.0456 ±0.0048  
+  *commander_cast_turn__nunca                   0.2198       0.2273      +0.0075 ±0.0030  
+   commander_cast_turn__ate_T3                  0.0074       0.0076      +0.0002 ±0.0006  
+   commander_cast_turn__ate_T4                  0.0686       0.0674      -0.0012 ±0.0012  
+  *commander_cast_turn__ate_T5                  0.1816       0.1878      +0.0062 ±0.0024  
+  *sevinnes_reclamation_returns                 0.0048       0.0513      +0.0465 ±0.0041  
+  *creatures_sacrificed_total                   2.6748       2.7078      +0.0330 ±0.0097  
+  *death_trigger_events                         2.3710       2.4235      +0.0525 ±0.0160  
+  *eminence_tokens_created                      2.9751       3.0059      +0.0308 ±0.0095  
+  *ramp_pieces_cast                             0.6394       0.6434      +0.0040 ±0.0018  
+  *tutors_used_total                            0.3745       0.3795      +0.0050 ±0.0023  
+  *lifegain_total                               3.9704       4.0302      +0.0598 ±0.0283  
+  *welcoming_vampire_draws                      0.3454       0.3530      +0.0076 ±0.0038  
+  *unholy_annex_draws                           0.5696       0.5745      +0.0049 ±0.0027  
+  *elenda_counters                              0.1773       0.1848      +0.0075 ±0.0042  
+  *tapped_land_skipped_for_play_total           0.1206       0.1237      +0.0031 ±0.0019  
+  *urzas_saga_construct_tokens                  0.1578       0.1588      +0.0010 ±0.0006  
+  *voldaren_estate_blood_tokens                 0.3029       0.3072      +0.0043 ±0.0029  
+  *black_market_treasures                       0.4279       0.4319      +0.0040 ±0.0028  

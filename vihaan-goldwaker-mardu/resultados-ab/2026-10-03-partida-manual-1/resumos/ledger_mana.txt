@@ -1,0 +1,9 @@
+turno | fontes liquidas (exceto Treasure) | magias (custo) | sobra | Treasures tapped: sobrevivem (atacante) / somem (sacrificado ou morto)
+T1 | 0 () | - = 0 | +0 | 0 sobrevivem / 0 somem
+T2 | 2 (Dragonskull Summit, Mountain) | Arcane Signet 2 = 2 | +0 | 0 sobrevivem / 0 somem
+T3 | 3 (Arcane Signet, Dragonskull Summit, Mountain) | Vihaan, Goldwaker 3 = 3 | +0 | 0 sobrevivem / 0 somem
+T4 | 4 (Arcane Signet, Battlefield Forge, Mountain, Path of Ancestry) | Prosper, Tome-Bound 4 = 4 | +0 | 0 sobrevivem / 0 somem
+T5 | 9 (Arcane Signet, Battlefield Forge, Desolate Mire, Dragonskull Summit, Mountain, Path of Ancestry, Rakdos Signet, Sol Ring) | Sol Ring 1; Rakdos Signet 2; Zulaport Cutthroat 2; Captain Lannery Storm 3 = 8 | +1 | 1 sobrevivem / 0 somem
+T6 | 9 (Arcane Signet, Battlefield Forge, Desolate Mire, Dragonskull Summit, Mountain, Path of Ancestry, Rakdos Signet, Sol Ring) | Sevinne's Reclamation 3; The Reaver Cleaver 3 = 6 | +3 | 2 sobrevivem / 1 somem
+T7 | 8 (Arcane Signet, Battlefield Forge, Desolate Mire, Dragonskull Summit, Mountain, Rakdos Signet, Sol Ring) | Lotho, Corrupt Shirriff 2; Monologue Tax 3 = 5 | +3 | 3 sobrevivem / 2 somem
+T8 | 10 (Arcane Signet, Battlefield Forge, Desolate Mire, Dragonskull Summit, Mountain, Path of Ancestry, Rakdos Signet, Sol Ring, Swamp) | Sevinne's Reclamation 5; Dictate of Erebos 5 = 10 | +0 | 0 sobrevivem / 0 somem (ultimo turno: sem turno seguinte pra decidir)

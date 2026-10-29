@@ -1,0 +1,1877 @@
+"""
+Goldfish simulator — Captain Storm, Cosmium Raider (Izzet — U/R)
+
+Construido do zero em 2026-09-02, terceiro dos 4 decks sem simulador
+desta sessao (depois de Kutzil e Azula), mesma disciplina de "compile
+TUDO": oraculo real via Scryfall (leitura linha-a-linha das 75 cartas
+unicas + comandante), implementacao completa, varredura automatizada de
+tags orfas no proprio rascunho antes de considerar pronto.
+
+⚠️ Lista incompleta (documentado em `auditoria.md`, nao inventado aqui):
+a lista enviada pelo usuario soma 98 cartas de biblioteca (99 com o
+comandante) -- falta 1 carta pro total padrao de 100. `BASE_LIBRARY`
+reflete a lista real como enviada.
+
+======================================================================
+MOTOR REAL DESTE DECK (verificado via Scryfall, nao decorado)
+======================================================================
+Captain Storm ({U}{R}, 2/2): "Whenever an artifact you control enters,
+put a +1/+1 counter on target Pirate you control." Esse motor central
+tem 3 camadas que se multiplicam entre si:
+
+1. **Denso pacote de Treasure/Clue/Food** (12+ fontes reais, a maioria
+   ETBs de criatura/artefato) -- CADA token de Treasure/Clue/Food criado
+   e' ele mesmo um ARTEFATO entrando, o que retrigger a propria Captain
+   Storm (+1/+1 num Pirata) de novo.
+2. **Academy Manufactor** ("if you would create a Clue, Food, or
+   Treasure token, instead create one of each") -- transforma UMA
+   criacao de Treasure em 3 tokens simultaneos (Treasure+Clue+Food),
+   CADA um retriggerando a Captain Storm separadamente (3x os contadores
+   de uma unica fonte de Treasure, se Academy Manufactor em campo).
+3. **Panharmonicon + Starfield Vocalist** (ambos "if a permanent
+   entering causes a triggered ability of a permanent you control to
+   trigger, that ability triggers an additional time") -- dobram
+   QUALQUER gatilho de ETB, inclusive a propria Captain Storm e os
+   proprios geradores de Treasure. Dois dobradores simultaneos
+   MULTIPLICAM (nao somam) -- mesmo principio ja documentado noutros
+   decks desta sessao (ex.: Roaming Throne + segunda fonte de copia no
+   Beorn/Hei Bai) -- implementado como `etb_trigger_multiplier(state)`.
+
+Arquitetura: **objetos `Permanent`** (nao lista de nomes) -- ao contrario
+do Azula/Megatron, este deck precisa rastrear contadores +1/+1
+PERSISTENTES (a propria habilidade da Captain Storm, ao contrario dos
+pumps ate-fim-de-turno da Azula) e equipamentos anexados (qual criatura
+tem qual Equipment, pra calculo de combate e gatilhos de dano de
+combate). Mesmo padrao arquitetural do Kutzil/Toph.
+
+Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
+- Sem oponente real: todo dano e' `proxy_damage_total` agregado, flat
+  (mesma convencao da maioria dos simuladores desta sessao).
+- **Encore** (Fathom Fleet Swordjack, Impulsive Pilferer) -- "for each
+  OPPONENT, create a token copy that attacks" -- com 0 oponentes reais
+  modelados, 0 copias, nenhum piloto racional ativaria por {3}{R}/{5}{R}
+  pra gerar 0 valor -- nunca ativado neste sim, 📊 estrutural.
+- **Kitesail Larcenist** -- "for each player, choose target artifact or
+  creature THAT PLAYER controls" -- o uso real (transformar permanente de
+  OPONENTE em Treasure) precisa de alvo de oponente -- 📊. Pode escolher
+  0 alvos pra nos mesmos tambem (opcional), sem ganho real de fazer isso
+  ao proprio board.
+- **Fellwar Stone / Chaos Warp / contramagicas (Counterspell/Mana
+  Leak/Ionize/Spell Rupture)** -- precisam de terreno/spell de oponente
+  real -- 📊 `interaction_plays`.
+- **Chain Reaction / Blasphemous Act** -- Regra 1 da sessao: wipe
+  simetrico sem oponente modelado = so' conta como `interaction_plays`,
+  sem destruir as proprias criaturas.
+- **Storm Fleet Negotiator (Parley)** -- "each player reveals top card...
+  each player draws" -- modelado so' pra nos mesmos (1 jogador real
+  neste goldfish solo): olha o topo, cria Map se nao-terreno, compra 1.
+- Combate: "ataca" = sem doenca de invocacao (convencao de todos os
+  simuladores desta biblioteca). Sem bloqueio real modelado.
+"""
+
+import json
+import random
+import statistics
+from dataclasses import dataclass, field
+from typing import Optional
+
+
+# ---------------------------------------------------------------------------
+# Card database
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Card:
+    name: str
+    mv: int
+    ctype: str
+    tags: frozenset = field(default_factory=frozenset)
+    power: int = 0
+    toughness: int = 0
+    pips: dict = field(default_factory=dict)
+    produces: frozenset = field(default_factory=frozenset)
+
+
+CARD_DB: dict[str, Card] = {}
+
+
+def add(name, mv, ctype, tags=(), power=0, toughness=0, pips=None, produces=None):
+    CARD_DB[name] = Card(name=name, mv=mv, ctype=ctype, tags=frozenset(tags), power=power,
+                          toughness=toughness, pips=dict(pips or {}), produces=frozenset(produces or ()))
+
+
+COMMANDER = "Captain Storm, Cosmium Raider"
+add(COMMANDER, 2, "creature", {"commander", "pirate", "storm_counter_engine"}, power=2, toughness=2,
+    pips={"U": 1, "R": 1})
+
+# --- Rampa/mana ------------------------------------------------------------
+add("Arcane Signet", 2, "artifact", {"rock_identity"}, produces={"U", "R"})
+add("Sol Ring", 1, "artifact", {"rock_cc"})
+add("Fellwar Stone", 2, "artifact", {"rock_opponent_dependent"})
+add("Izzet Signet", 2, "artifact", {"rock_filter_ur"}, produces={"U", "R"})
+add("Izzet Locket", 3, "artifact", {"rock_ur", "locket_sac_draw2"}, produces={"U", "R"})
+add("Lotus Petal", 0, "artifact", {"petal_sac"}, produces={"U", "R"})
+add("Decanter of Endless Water", 3, "artifact", {"rock_any", "no_max_hand"}, produces={"U", "R"})
+add("Bender's Waterskin", 3, "artifact", {"rock_any_untap_opp"}, produces={"U", "R"})
+add("Thought Vessel", 2, "artifact", {"rock_c", "no_max_hand"})
+
+# --- Treasure/Clue/Food (motor central, combina com Captain Storm) ---------
+add("Academy Manufactor", 3, "creature", {"pirate_no", "manufactor_triple"}, power=1, toughness=3)
+add("Captain Lannery Storm", 3, "creature", {"pirate", "haste", "attack_treasure", "treasure_sac_pump"},
+    power=2, toughness=2, pips={"R": 1})
+add("Careening Mine Cart", 3, "artifact", {"vehicle", "attack_treasure"}, power=3, toughness=3)
+add("Corsair Captain", 3, "creature", {"pirate", "etb_treasure", "pirate_anthem"}, power=2, toughness=2,
+    pips={"U": 1})
+add("Enterprising Scallywag", 2, "creature", {"pirate", "descended_treasure_endstep"}, power=2, toughness=2,
+    pips={"R": 1})
+add("Impulsive Pilferer", 1, "creature", {"pirate", "death_treasure", "encore"}, power=1, toughness=1, pips={"R": 1})
+add("Plundering Pirate", 3, "creature", {"pirate", "etb_treasure"}, power=3, toughness=2, pips={"R": 1})
+add("Sailor of Means", 3, "creature", {"pirate", "etb_treasure"}, power=1, toughness=4, pips={"U": 1})
+add("Seize the Spoils", 3, "sorcery", {"discard_cost_draw2_treasure1"}, pips={"R": 1})
+add("Brass's Bounty", 7, "sorcery", {"brass_bounty"}, pips={"R": 1})
+add("Storm the Vault // Vault of Catlacan", 4, "enchantment", {"storm_vault"}, pips={"U": 1, "R": 1})
+
+# --- Piratas de valor --------------------------------------------------------
+add("Captain Vargus Wrath", 2, "creature", {"pirate", "vargus_anthem_attack"}, power=1, toughness=1,
+    pips={"U": 1, "R": 1})
+add("Deadeye Quartermaster", 4, "creature", {"pirate", "tutor_equip_vehicle"}, power=2, toughness=2, pips={"U": 1})
+add("Fathom Fleet Swordjack", 4, "creature", {"pirate", "swordjack_attack_artifacts", "encore"}, power=4,
+    toughness=3, pips={"R": 1})
+add("Gleaming Geardrake", 2, "creature", {"artifact_creature", "etb_clue", "sac_artifact_counter"}, power=1,
+    toughness=1, pips={"U": 1, "R": 1})
+add("Jackdaw", 3, "artifact", {"vehicle", "jackdaw_wheel"}, power=4, toughness=4, pips={"U": 1, "R": 1})
+add("Jhoira, Ageless Innovator", 2, "creature", {"jhoira_ingenuity"}, power=2, toughness=3, pips={"U": 1, "R": 1})
+add("Kitesail Larcenist", 3, "creature", {"pirate", "flying", "larcenist_etb"}, power=2, toughness=3, pips={"U": 1})
+add("Malcolm, the Eyes", 2, "creature", {"pirate", "flying", "haste", "malcolm_clue"}, power=2, toughness=2,
+    pips={"U": 1, "R": 1})
+add("Oaken Siren", 2, "creature", {"artifact_creature", "pirate_no", "flying"}, power=1, toughness=2, pips={"U": 1})
+add("Port Razer", 5, "creature", {"pirate_no", "port_razer"}, power=4, toughness=4, pips={"R": 2})
+add("Spyglass Siren", 1, "creature", {"pirate", "flying", "etb_map"}, power=1, toughness=1, pips={"U": 1})
+add("Staunch Crewmate", 2, "creature", {"pirate", "staunch_dig"}, power=2, toughness=1, pips={"U": 1})
+add("Storm Fleet Negotiator", 3, "creature", {"pirate", "flying", "parley_attack"}, power=2, toughness=2,
+    pips={"U": 1})
+add("Starfield Vocalist", 4, "creature", {"etb_doubler", "warp"}, power=3, toughness=4, pips={"U": 1})
+add("Panharmonicon", 4, "artifact", {"etb_doubler"})
+
+# --- Draw/filtragem ------------------------------------------------------------
+add("Brainstorm", 1, "instant", {"brainstorm"}, pips={"U": 1})
+add("Frantic Search", 3, "instant", {"draw2_discard2_untap3"}, pips={"U": 1})
+add("Curious Inquiry", 1, "enchantment", {"aura_pump_investigate"}, pips={"U": 1})
+add("Rune of Flight", 2, "enchantment", {"aura_draw_flying"}, pips={"U": 1})
+add("Mystic Remora", 1, "enchantment", {"remora"}, pips={"U": 1})
+add("Sensei's Divining Top", 1, "artifact", {"top"})
+add("Ghostly Flicker", 3, "instant", {"ghostly_flicker"}, pips={"U": 1})
+add("Dramatic Reversal", 2, "instant", {"dramatic_reversal"}, pips={"U": 1})
+add("Planar Incision", 2, "instant", {"planar_incision"}, pips={"U": 1})
+
+# --- Interacao -------------------------------------------------------------
+add("Counterspell", 2, "instant", {"interaction_counter"}, pips={"U": 2})
+add("Mana Leak", 2, "instant", {"interaction_counter"}, pips={"U": 1})
+add("Ionize", 3, "instant", {"interaction_counter"}, pips={"U": 1, "R": 1})
+add("Spell Rupture", 2, "instant", {"interaction_counter"}, pips={"U": 1})
+add("Chaos Warp", 3, "instant", {"interaction"}, pips={"R": 1})
+add("Blasphemous Act", 9, "sorcery", {"wipe_reduces_creatures"}, pips={"R": 1})
+add("Chain Reaction", 4, "sorcery", {"wipe_scales_creatures"}, pips={"R": 2})
+add("Vapor Snag", 1, "instant", {"interaction_bounce"}, pips={"U": 1})
+add("Magic Damper", 1, "instant", {"pump_untap_11"}, pips={"U": 1})
+
+# --- Equipment (11 pecas) ------------------------------------------------------
+add("Bloodforged Battle-Axe", 1, "artifact", {"equipment", "eq_pump_20", "eq_dmg_token_copy"})
+add("Cloak of the Bat", 2, "artifact", {"equipment", "eq_flying_haste"})
+add("Dragonfire Blade", 1, "artifact", {"equipment", "eq_pump_22_hexproof_mono"})
+add("Embercleave", 6, "artifact", {"equipment", "eq_pump_11_ds_trample", "flash", "embercleave_cost_reduce"},
+    pips={"R": 2})
+add("Goldvein Pick", 2, "artifact", {"equipment", "eq_pump_11", "eq_dmg_treasure"})
+add("Swiftfoot Boots", 2, "artifact", {"equipment", "eq_hexproof_haste"})
+add("Sword of Once and Future", 3, "artifact", {"equipment", "eq_pump_22_protection", "eq_dmg_surveil_gy_cast"})
+add("Tarrian's Soulcleaver", 1, "artifact", {"equipment", "eq_vigilance", "soulcleaver_death_counter"})
+add("Trickster's Talisman", 1, "artifact", {"equipment", "eq_pump_11", "eq_dmg_token_copy_creature"})
+add("Twin Blades", 3, "artifact", {"equipment", "eq_pump_11", "eq_etb_double_strike", "flash"}, pips={"R": 1})
+add("Two-Handed Axe // Sweeping Cleave", 3, "artifact", {"equipment", "eq_attack_double_power"}, pips={"R": 1})
+
+# --- Valor diverso -----------------------------------------------------------
+add("The Ozolith", 1, "artifact", {"ozolith"})
+add("Reliquary Tower", 0, "land", {"no_max_hand"}, produces=set())
+
+# --- Terrenos --------------------------------------------------------------
+add("Command Tower", 0, "land", set(), produces={"U", "R"})
+add("Izzet Boilerworks", 0, "land", {"bounceland_ur"}, produces={"U", "R"})
+add("Seat of the Synod", 0, "land", {"artifact_land"}, produces={"U"})
+add("Silverbluff Bridge", 0, "land", {"artifact_land", "etb_tapped"}, produces={"U", "R"})
+add("Swiftwater Cliffs", 0, "land", {"etb_tapped_gain1"}, produces={"U", "R"})
+add("Temple of Epiphany", 0, "land", {"etb_tapped_scry1"}, produces={"U", "R"})
+add("Island", 0, "land", set(), produces={"U"})
+add("Mountain", 0, "land", set(), produces={"R"})
+
+LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
+
+
+def enters_tapped(name: str) -> bool:
+    # Achado real (varredura de tags orfas): `"etb_tapped" in tags` e' um
+    # match EXATO de string num frozenset -- "etb_tapped_gain1" (Swiftwater
+    # Cliffs) e "etb_tapped_scry1" (Temple of Epiphany) nunca batiam,
+    # entao essas 2 lands entravam destapadas (errado -- oraculo real diz
+    # "enters tapped" nas duas). Corrigido com prefixo.
+    return any(t.startswith("etb_tapped") for t in CARD_DB[name].tags) or name == "Silverbluff Bridge"
+EQUIPMENT_NAMES = {n for n, c in CARD_DB.items() if "equipment" in c.tags}
+ARTIFACT_LAND_NAMES = {n for n, c in CARD_DB.items() if "artifact_land" in c.tags}
+
+
+def is_creature_card(name: str) -> bool:
+    return CARD_DB[name].ctype == "creature" or "vehicle" in CARD_DB[name].tags
+
+
+def is_pirate(name: str) -> bool:
+    return "pirate" in CARD_DB[name].tags
+
+
+def is_artifact_card(name: str) -> bool:
+    return (CARD_DB[name].ctype == "artifact" or "artifact_creature" in CARD_DB[name].tags
+            or name in ARTIFACT_LAND_NAMES)
+
+
+def is_enchantment_card(name: str) -> bool:
+    return CARD_DB[name].ctype == "enchantment"
+
+
+def is_equipment(name: str) -> bool:
+    return name in EQUIPMENT_NAMES
+
+
+# ---------------------------------------------------------------------------
+# Permanent / GameState
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Permanent:
+    card: str
+    uid: int
+    tapped: bool = False
+    counters: int = 0
+    entered_turn: int = 0
+    equipped_to: Optional[int] = None  # uid da criatura, se este for um Equipment anexado
+    is_token: bool = False
+
+
+@dataclass
+class GameState:
+    turn: int = 0
+    hand: list = field(default_factory=list)
+    battlefield: list = field(default_factory=list)  # list[Permanent]
+    graveyard: list = field(default_factory=list)  # list[str]
+    library: list = field(default_factory=list)
+    mulligans: int = 0
+    next_uid: int = 1
+
+    lands_played_this_turn: int = 0
+    tapped_land_this_turn: Optional[int] = None
+    mana_spent_this_turn: int = 0
+    bonus_mana_pool: int = 0
+    hand_size_no_max: bool = False
+
+    commander_in_play: bool = False
+    commander_uid: Optional[int] = None
+    commander_cast_count: int = 0
+    commander_cast_turn: Optional[int] = None
+    commander_damage_dealt: int = 0
+    commander_damage_win: bool = False
+
+    spells_cast_this_turn: int = 0
+    descended_this_turn: bool = False
+    jhoira_ingenuity: int = 0
+    storm_vault_transformed: bool = False
+    temp_pumps: dict = field(default_factory=dict)  # uid -> bonus de poder ate fim de turno
+    double_strike_this_turn: set = field(default_factory=set)  # uids com double strike ate fim de turno
+
+    # metrics -----------------------------------------------------------------
+    proxy_damage_total: int = 0
+    cards_drawn_extra: int = 0
+    treasures_created_total: int = 0
+    clues_created_total: int = 0
+    food_created_total: int = 0
+    counters_placed_total: int = 0
+    equip_activations_total: int = 0
+    etb_doubler_triggers_total: int = 0
+    interaction_plays: int = 0
+    recursion_events_total: int = 0
+    library_emptied: bool = False
+
+    # Achado real 2026-09-21 (mesma classe de bug ja' documentada no
+    # Azula/Bumbleflower nesta sessao): `mulligan()` reembaralhava via
+    # `random.shuffle()` (modulo GLOBAL) em vez de um RNG seedado --
+    # confirmado empiricamente (723/3000 = 24,1% de partidas nao-
+    # deterministicas com a MESMA seed, toda vez que havia pelo menos 1
+    # mulligan). `simulate_one` agora seta este campo com o
+    # `random.Random(seed)` que ja' usava pro shuffle inicial da
+    # library, e `mulligan()` passa a usar `state.rng.shuffle`.
+    rng: Optional[random.Random] = None
+
+    # Achado real durante o porte do modo de resiliencia (2026-09-21): este
+    # arquivo nunca rastreou a propria vida -- mesmo achado ja documentado
+    # no Azula/Beorn/Thranduil/Bumbleflower/Kutzil nesta sessao. Campo
+    # adicionado so' pra suportar a categoria "ataque de oponente" do modo
+    # de resiliencia, mesma convencao (`life: int = 40`) ja' usada nos
+    # outros decks -- nada mais no arquivo le/escreve este campo, entao
+    # adiciona-lo nao muda NENHUM comportamento pre-existente.
+    life: int = 40
+
+    # Modo de resiliencia (interacao de oponente) — 2026-09-21, porte do
+    # design final ja' validado em Megatron/Ur-Dragon/Hei Bai/Edgar Markov/
+    # Ulalek/Toph/Prismatic Bridge/Maralen/Rat King Verminister/Vihaan/
+    # Nekusar/Azula/Beorn/Thranduil/Bumbleflower/Kutzil. `interaction_rng`
+    # None = modo padrao, totalmente inerte (bit-identico ao motor sem
+    # estas categorias). Modo OPCIONAL e completamente separado
+    # (`simulate_one_with_interaction`), nunca chamado por
+    # `simulate_one`/`run_batch` padrao.
+    interaction_rng: Optional[random.Random] = None
+    wiped_this_round: bool = False
+    graveyard_wipe_used: bool = False
+
+    smart_removals_total: int = 0
+    smart_removal_log: list = field(default_factory=list)
+    smart_attacks_taken_total: int = 0
+    smart_attack_log: list = field(default_factory=list)
+    smart_discards_total: int = 0
+    smart_discard_log: list = field(default_factory=list)
+    smart_wipes_total: int = 0
+    smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
+    smart_counters_total: int = 0
+    smart_counter_log: list = field(default_factory=list)
+    smart_graveyard_wipes_total: int = 0
+    smart_graveyard_wipe_log: list = field(default_factory=list)
+    smart_graveyard_snipes_total: int = 0
+    smart_graveyard_snipe_log: list = field(default_factory=list)
+
+
+def draw_cards(state: GameState, n: int):
+    for _ in range(n):
+        if state.library:
+            state.hand.append(state.library.pop(0))
+            state.cards_drawn_extra += 1
+        else:
+            state.library_emptied = True
+
+
+def proxy_burn(state: GameState, n: int):
+    state.proxy_damage_total += n
+
+
+def new_uid(state: GameState) -> int:
+    u = state.next_uid
+    state.next_uid += 1
+    return u
+
+
+def find_perm(state: GameState, uid: int) -> Optional[Permanent]:
+    return next((p for p in state.battlefield if p.uid == uid), None)
+
+
+def creatures_in_play(state: GameState):
+    return [p for p in state.battlefield if is_creature_card(p.card)]
+
+
+def pirates_in_play(state: GameState):
+    return [p for p in state.battlefield if is_pirate(p.card)]
+
+
+EQUIPMENT_STATIC_BONUS = {
+    "Bloodforged Battle-Axe": (2, 0),
+    "Dragonfire Blade": (2, 2),
+    "Embercleave": (1, 1),
+    "Goldvein Pick": (1, 1),
+    "Sword of Once and Future": (2, 2),
+    "Trickster's Talisman": (1, 1),
+    "Twin Blades": (1, 1),
+    "Curious Inquiry": (1, 1),
+}
+
+# Achado real (auditoria oraculo-por-oraculo): `try_equip()` nunca cobrava
+# NENHUM custo de Equip -- toda peca anexava de graca, tanto ao ser
+# conjurada quanto ao ser re-anexada depois. O custo real de Equip varia
+# por carta (0 a 4 mana) e e' uma habilidade ativada SEPARADA do cast.
+# So' Twin Blades e Embercleave tem "When this Equipment enters, attach it
+# to target creature you control" no oraculo real -- essas 2 (e so' essas)
+# realmente anexam de graca na primeira vez (ETB), mas ainda cobram o
+# Equip normal se ficarem desanexadas depois (criatura morreu) e
+# precisarem ser re-equipadas.
+EQUIP_COST = {
+    "Bloodforged Battle-Axe": 2,
+    "Cloak of the Bat": 2,
+    "Dragonfire Blade": 4,  # reduzido em {1} por cor da criatura-alvo, ver try_equip_paid
+    "Embercleave": 3,
+    "Goldvein Pick": 1,
+    "Swiftfoot Boots": 1,
+    "Sword of Once and Future": 2,
+    "Tarrian's Soulcleaver": 2,
+    "Trickster's Talisman": 2,
+    "Twin Blades": 2,
+    "Two-Handed Axe // Sweeping Cleave": 2,  # Equip {1}{R} -- tratado como custo generico total
+}
+FREE_ETB_ATTACH_EQUIPMENT = {"Twin Blades", "Embercleave"}
+
+
+def card_colors(name: str) -> set:
+    colors = set()
+    if name in CARD_DB:
+        for k in CARD_DB[name].pips:
+            colors.update(k.split("/"))
+    return colors
+
+
+def equipment_on(state: GameState, uid: int):
+    return [p for p in state.battlefield if p.equipped_to == uid]
+
+
+def equipment_power_bonus(state: GameState, perm: Permanent) -> int:
+    return sum(EQUIPMENT_STATIC_BONUS.get(eq.card, (0, 0))[0] for eq in equipment_on(state, perm.uid))
+
+
+def creature_power(state: GameState, perm: Permanent) -> int:
+    base = CARD_DB[perm.card].power + perm.counters + equipment_power_bonus(state, perm)
+    base += state.temp_pumps.get(perm.uid, 0)
+    if (is_pirate(perm.card) and perm.card != "Corsair Captain"
+            and any(p.card == "Corsair Captain" for p in state.battlefield)):
+        base += 1  # "Other Pirates you control get +1/+1."
+    return max(0, base)
+
+
+# ---------------------------------------------------------------------------
+# Mana
+# ---------------------------------------------------------------------------
+
+def ready_permanents(state: GameState, filter_fn=None):
+    out = [p for p in state.battlefield if p.entered_turn < state.turn or "haste" in CARD_DB[p.card].tags]
+    if filter_fn:
+        out = [p for p in out if filter_fn(p)]
+    return out
+
+
+def rocks_mana(state: GameState) -> int:
+    names = [p.card for p in state.battlefield]
+    total = 0
+    if "Sol Ring" in names:
+        total += 2
+    if "Arcane Signet" in names:
+        total += 1
+    if "Izzet Signet" in names:
+        total += 1
+    if "Izzet Locket" in names:
+        total += 1
+    if "Decanter of Endless Water" in names:
+        total += 1
+    if "Bender's Waterskin" in names:
+        total += 1
+    if "Thought Vessel" in names:
+        total += 1
+    if state.storm_vault_transformed:
+        total += sum(1 for n in names if is_artifact_card(n))  # Vault of Catlacan: {T}: Add U per artifact
+    oaken = next((p for p in state.battlefield if p.card == "Oaken Siren"), None)
+    if oaken is not None and oaken.entered_turn < state.turn:
+        # Achado real: Oaken Siren ("T: Add U. Spend this mana only to cast
+        # an artifact spell or activate an ability of an artifact source")
+        # nunca contribuia NENHUMA mana neste sim -- e' o unico mana-dork
+        # de CRIATURA da lista (por isso a checagem de doenca de invocacao
+        # dedicada aqui, ausente no resto de `rocks_mana`, que so' tem
+        # artefatos sem sickness). Tratado como mana generica (mesma
+        # convencao de outras restricoes de mana nao rastreadas nesta
+        # sessao, ex.: Tablet of Discovery no Azula) -- aproximacao
+        # razoavel dado quao denso em artefatos este deck e', mas nao conta
+        # como fonte U em `color_sources()` (nao gasta em nao-artefatos).
+        total += 1
+    return total
+
+
+def lands_available(state: GameState) -> int:
+    lands = sum(1 for p in state.battlefield if p.card in LAND_NAMES)
+    if state.tapped_land_this_turn is not None:
+        lands -= 1
+    return lands
+
+
+def total_mana(state: GameState) -> int:
+    return lands_available(state) + rocks_mana(state) + state.bonus_mana_pool
+
+
+def remaining_mana(state: GameState) -> int:
+    return max(0, total_mana(state) - state.mana_spent_this_turn)
+
+
+def color_sources(state: GameState, color: str) -> int:
+    n = 0
+    for p in state.battlefield:
+        if p.uid == state.tapped_land_this_turn:
+            continue
+        c = CARD_DB[p.card]
+        if color in c.produces:
+            n += 1
+    if state.storm_vault_transformed and color == "U":
+        n += 1  # Vault of Catlacan: {T}: Add one mana of any color -- cobre U tambem
+    if state.bonus_mana_pool > 0:
+        n += 1  # Treasure/mana flutuante fixam qualquer cor
+    return n
+
+
+def has_color_sources_for(state: GameState, name: str) -> bool:
+    for color, needed in CARD_DB[name].pips.items():
+        if color_sources(state, color) < needed:
+            return False
+    return True
+
+
+def effective_cost(state: GameState, name: str) -> int:
+    mv = CARD_DB[name].mv
+    if name == "Embercleave":
+        attackers = sum(1 for p in state.battlefield if is_creature_card(p.card) and p.tapped)
+        return max(0, mv - attackers)
+    if name == "Blasphemous Act":
+        return max(0, mv - len(creatures_in_play(state)))
+    if name == "Chain Reaction":
+        return mv  # X e' o dano, nao reduz o custo -- custo fixo
+    if name == COMMANDER:
+        # Achado real 2026-09-21: `commander_cast_count` ja' existia no
+        # GameState e era incrementado em `try_cast_commander` (lido pelo
+        # bonus de ataque de Captain Vargus Wrath), mas CR 903.8 (taxa de
+        # +{2} por cast anterior da zona de comando) NUNCA era somada ao
+        # custo em lugar nenhum -- mesma classe de "contador fantasma" ja
+        # documentada no Bumbleflower/Kutzil nesta sessao. So' comecou a
+        # importar de verdade agora que o modo de resiliencia pode
+        # genuinamente remover o comandante e forcar um recast.
+        return mv + 2 * state.commander_cast_count
+    return mv
+
+
+AURA_NAMES = {"Curious Inquiry", "Rune of Flight"}
+
+
+def can_cast(state: GameState, name: str) -> bool:
+    if name in AURA_NAMES and not creatures_in_play(state):
+        # Achado real: "Enchant creature" exige alvo legal pra sequer ser
+        # conjurada (regra 601.2c) -- sem nenhuma criatura em campo, a
+        # Aura simplesmente nao pode ser conjurada. Sem essa guarda, o
+        # loop guloso podia gastar mana numa Aura que entraria desanexada
+        # e iria pro cemiterio na hora por SBA (704.5n), sem efeito algum.
+        return False
+    return remaining_mana(state) >= effective_cost(state, name) and has_color_sources_for(state, name)
+
+
+def spend_mana(state: GameState, n: int):
+    state.mana_spent_this_turn += n
+
+
+# ---------------------------------------------------------------------------
+# Motor central: Captain Storm + Treasure/Clue/Food + dobradores de ETB
+# ---------------------------------------------------------------------------
+
+def etb_trigger_multiplier(state: GameState) -> int:
+    """Panharmonicon + Starfield Vocalist: cada um diz 'triggers an
+    additional time' -- dois dobradores simultaneos MULTIPLICAM (2 gatilhos
+    cada um dobrando os outros -> 2^n), nao somam. Mesmo principio de
+    'dobradores empilham multiplicativamente' documentado noutros decks
+    desta sessao (Beorn/Hei Bai, Roaming Throne + 2a fonte de copia)."""
+    n = sum(1 for p in state.battlefield if p.card in ("Panharmonicon", "Starfield Vocalist"))
+    return 2 ** n
+
+
+def best_pirate_target(state: GameState) -> Optional[Permanent]:
+    """'put a +1/+1 counter on TARGET Pirate you control' -- heuristica
+    racional: prioriza quem tem Equipment relevante ou maior poder atual
+    (empilha valor no atacante mais forte), cai pra propria Captain Storm
+    se nao houver outro Pirata."""
+    pirates = pirates_in_play(state)
+    if not pirates:
+        return None
+    return max(pirates, key=lambda p: creature_power(state, p))
+
+
+def on_artifact_enters(state: GameState, log: list):
+    """Dispara a habilidade da propria Captain Storm ('whenever an
+    artifact you control enters') -- chamada centralmente sempre que
+    QUALQUER artefato entra em campo (permanentes reais E tokens de
+    Treasure/Clue/Food), multiplicada pelos dobradores de ETB."""
+    if not state.commander_in_play:
+        return
+    mult = etb_trigger_multiplier(state)
+    for _ in range(mult):
+        target = best_pirate_target(state)
+        if target is not None:
+            target.counters += 1
+            state.counters_placed_total += 1
+    if mult > 1:
+        state.etb_doubler_triggers_total += mult - 1
+
+
+def create_tokens(state: GameState, log: list, treasure: int = 0, clue: int = 0, food: int = 0):
+    """Cria os tokens pedidos -- se Academy Manufactor esta em campo,
+    'if you would create a Clue, Food, or Treasure token, instead create
+    one of each' substitui CADA criacao individual por um trio completo
+    (Treasure+Clue+Food), nao so' soma 1 de cada por chamada. Cada token
+    criado e' um artefato entrando -- dispara `on_artifact_enters()`
+    (multiplicado pelos dobradores de ETB) pra CADA token individual."""
+    has_manufactor = any(p.card == "Academy Manufactor" for p in state.battlefield)
+    requests = ["treasure"] * treasure + ["clue"] * clue + ["food"] * food
+    for kind in requests:
+        kinds_to_make = ("treasure", "clue", "food") if has_manufactor else (kind,)
+        for k in kinds_to_make:
+            perm = Permanent(card=f"{k.title()} Token", uid=new_uid(state), entered_turn=state.turn, is_token=True)
+            if f"{k.title()} Token" not in CARD_DB:
+                add(f"{k.title()} Token", 0, "artifact", {"sac_token", k})
+            state.battlefield.append(perm)
+            if k == "treasure":
+                state.treasures_created_total += 1
+            elif k == "clue":
+                state.clues_created_total += 1
+            else:
+                state.food_created_total += 1
+            on_artifact_enters(state, log)
+
+
+def on_sacrifice_artifact(state: GameState, log: list):
+    """Gleaming Geardrake: 'whenever you sacrifice an artifact, put a
+    +1/+1 counter on this creature.' Centralizado porque precisa disparar
+    em TODO ponto do arquivo que sacrifica um artefato de verdade (Treasure,
+    Izzet Locket, Lotus Petal, Trickster's Talisman) -- achado real: so'
+    Treasure tinha essa checagem antes. Tarrian's Soulcleaver ('...put into
+    a graveyard from the battlefield') NAO mora aqui -- ja e' tratada
+    dentro de `leave_battlefield()` pra qualquer permanente (token
+    incluso, regra 111.7), entao todo sacrificio real deve passar por
+    `leave_battlefield()` pra pegar as duas coisas sem duplicar."""
+    geardrake = next((q for q in state.battlefield if q.card == "Gleaming Geardrake"), None)
+    if geardrake is not None:
+        geardrake.counters += 1
+        state.counters_placed_total += 1
+
+
+def sac_treasures(state: GameState, n: int) -> int:
+    """Sacrifica ate `n` Treasures em campo por 1 mana cada (mana de
+    qualquer cor -- ja contado via `bonus_mana_pool`/`color_sources`).
+    Devolve quantos foram sacrificados de verdade."""
+    treasures = [p for p in state.battlefield if p.card == "Treasure Token"]
+    n = min(n, len(treasures))
+    for p in treasures[:n]:
+        leave_battlefield(state, p, [], to_graveyard=True)
+        if "Captain Lannery Storm" in [q.card for q in state.battlefield]:
+            lannery = next(q for q in state.battlefield if q.card == "Captain Lannery Storm")
+            # "Whenever you sacrifice a Treasure, gets +1/+0 until end of
+            # turn" -- aproximado como contador permanente pequeno neste
+            # modelo (sem estado ate-fim-de-turno separado por permanente
+            # aqui); documentado como leve superestimativa de duracao,
+            # zerado no cleanup do turno via `state.temp_pumps`.
+            state.temp_pumps[lannery.uid] = state.temp_pumps.get(lannery.uid, 0) + 1
+        on_sacrifice_artifact(state, [])
+    state.bonus_mana_pool += n
+    return n
+
+
+# ---------------------------------------------------------------------------
+# ETB de permanentes reais (nao-token)
+# ---------------------------------------------------------------------------
+
+def resolve_etb(state: GameState, perm: Permanent, log: list):
+    tags = CARD_DB[perm.card].tags
+    if "etb_treasure" in tags:
+        create_tokens(state, log, treasure=1)
+    if "etb_clue" in tags:
+        create_tokens(state, log, clue=1)
+    if "etb_map" in tags:
+        create_map_tokens(state, log, 1)
+    if "tutor_equip_vehicle" in tags:
+        pool = [c for c in state.library if c in CARD_DB
+                and ("equipment" in CARD_DB[c].tags or "vehicle" in CARD_DB[c].tags)]
+        if pool:
+            best = max(pool, key=lambda n: CARD_DB[n].mv)
+            state.library.remove(best)
+            state.hand.append(best)
+    if "staunch_dig" in tags:
+        top4 = state.library[:4]
+        state.library = state.library[4:]
+        pool = [c for c in top4 if c in CARD_DB and (is_artifact_card(c) or is_pirate(c))]
+        if pool:
+            best = max(pool, key=lambda n: CARD_DB[n].mv)
+            top4.remove(best)
+            state.hand.append(best)
+        state.library = state.library + top4
+    if "bounceland_ur" in tags:
+        other_lands = [p for p in state.battlefield if p.card in LAND_NAMES and p.uid != perm.uid]
+        if other_lands:
+            bounced = other_lands[0]
+            state.battlefield.remove(bounced)
+            state.hand.append(bounced.card)
+
+
+def create_map_tokens(state: GameState, log: list, n: int):
+    for _ in range(n):
+        perm = Permanent(card="Map Token", uid=new_uid(state), entered_turn=state.turn, is_token=True)
+        if "Map Token" not in CARD_DB:
+            add("Map Token", 0, "artifact", {"sac_token", "map"})
+        state.battlefield.append(perm)
+        on_artifact_enters(state, log)
+
+
+def enter_battlefield(state: GameState, name: str, log: list, tapped: bool = False, is_token: bool = False) -> Permanent:
+    perm = Permanent(card=name, uid=new_uid(state), entered_turn=state.turn, tapped=tapped, is_token=is_token)
+    state.battlefield.append(perm)
+    mult = etb_trigger_multiplier(state) if is_artifact_card(name) or is_creature_card(name) else 1
+    for _ in range(mult):
+        resolve_etb(state, perm, log)
+    if is_artifact_card(name):
+        on_artifact_enters(state, log)
+    return perm
+
+
+def leave_battlefield(state: GameState, perm: Permanent, log: list, to_graveyard: bool = True):
+    if perm in state.battlefield:
+        state.battlefield.remove(perm)
+    # devolve equipamentos anexados pro estado "solto" (nao anexados)
+    for eq in state.battlefield:
+        if eq.equipped_to == perm.uid:
+            eq.equipped_to = None
+    # The Ozolith: "whenever a creature you control leaves the battlefield,
+    # if it had counters on it, put those counters on The Ozolith."
+    ozolith = next((p for p in state.battlefield if p.card == "The Ozolith"), None)
+    if ozolith is not None and perm.counters > 0 and is_creature_card(perm.card):
+        ozolith.counters += perm.counters
+        perm.counters = 0
+    if "death_treasure" in CARD_DB[perm.card].tags:
+        create_tokens(state, log, treasure=1)
+    # Tarrian's Soulcleaver: "whenever another artifact or creature is put
+    # into a graveyard from the battlefield, put a +1/+1 counter on
+    # equipped creature."
+    soulcleaver = next((p for p in state.battlefield if p.card == "Tarrian's Soulcleaver"
+                         and p.equipped_to is not None), None)
+    if soulcleaver is not None and to_graveyard and (is_artifact_card(perm.card) or is_creature_card(perm.card)):
+        equipped = find_perm(state, soulcleaver.equipped_to)
+        if equipped is not None:
+            equipped.counters += 1
+            state.counters_placed_total += 1
+    if to_graveyard and not perm.is_token:
+        # Enterprising Scallywag: "you descended if a permanent CARD was
+        # put into your graveyard from ANYWHERE" -- exige CARTA de verdade
+        # (token nao conta, por isso o `not perm.is_token`, igual a
+        # condicao ja usada pro proprio append no cemiterio). Achado real:
+        # antes so' o descarte por limite de mao (fim de `run_turn`) setava
+        # essa flag, ignorando toda sacrificio/morte real de carta (Lotus
+        # Petal, Izzet Locket, Trickster's Talisman, criaturas reais que
+        # morrem, etc.).
+        state.descended_this_turn = True
+        state.graveyard.append(perm.card)
+
+
+def remove_permanent(state: GameState, perm: Permanent, log: list = None, source: str = "opponent"):
+    """Ponto central de remocao de permanente por acao de OPONENTE
+    (wipe/remocao do modo de resiliencia, 2026-09-21 -- porte do design
+    ja' validado em Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/
+    Prismatic Bridge/Maralen/Rat King Verminister/Vihaan/Nekusar/Azula/
+    Beorn/Thranduil/Bumbleflower/Kutzil, ja' incorporando desde o inicio
+    a correcao de CR 903.9a validada nesta sessao).
+
+    Envolve `leave_battlefield()` (ja' existente, trata equipamentos
+    desanexados, Ozolith, 'death_treasure', Tarrian's Soulcleaver e
+    `descended_this_turn` corretamente) e ADICIONA o tratamento do
+    comandante que `leave_battlefield` sozinha nao tem: CR 903.9a
+    (cemiterio/exilio, o caso de MORTE) e' ACAO BASEADA EM ESTADO (CR
+    704), NAO substituicao -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`. Captain Storm vai pro cemiterio
+    DE VERDADE primeiro (CR 700.4, 'dies', via `leave_battlefield`), so'
+    DEPOIS e' removida de la' pra representar a escolha do dono de
+    move-la pra zona de comando -- e CR 903.8 (taxa de comandante, ja'
+    modelada em `effective_cost` via `state.commander_cast_count`) cobra
+    +{2} por cast anterior a partir da proxima vez que ela for
+    recomprada. Identificacao por `uid` (nao so' nome) -- mesmo padrao ja
+    usado em `commander_damage_dealt`/CR 903.10a neste arquivo (ver
+    tambem o fix de `commander_uid` obsoleto apos blink em Ghostly
+    Flicker/Planar Incision, mesma disciplina)."""
+    was_commander = perm.uid == state.commander_uid or perm.card == COMMANDER
+    leave_battlefield(state, perm, log if log is not None else [], to_graveyard=True)
+    if was_commander:
+        if perm.card in state.graveyard:
+            state.graveyard.remove(perm.card)
+        state.commander_in_play = False
+        state.commander_uid = None
+
+
+# ---------------------------------------------------------------------------
+# Conjuracao de permanentes / comandante / equip
+# ---------------------------------------------------------------------------
+
+def cast_permanent(state: GameState, name: str, log: list):
+    spend_mana(state, effective_cost(state, name))
+    state.hand.remove(name)
+    tapped = enters_tapped(name)
+    perm = enter_battlefield(state, name, log, tapped=tapped)
+    tags = CARD_DB[name].tags
+    if "equipment" in tags:
+        if name in FREE_ETB_ATTACH_EQUIPMENT:
+            try_equip_free(state, perm, log)
+        # senao (9 das 11 pecas): fica desanexada ao ser conjurada -- so'
+        # anexa de verdade quando `try_activated_abilities()` pagar o
+        # Equip real depois (mesmo turno, se sobrar mana, ou num futuro).
+    elif "aura_pump_investigate" in tags or "aura_draw_flying" in tags:
+        try_equip_free(state, perm, log)  # Aura nao tem custo de Equip -- anexa ao resolver o cast
+        if "aura_draw_flying" in tags:
+            draw_cards(state, 1)  # Rune of Flight: "when this Aura enters, draw a card"
+    state.spells_cast_this_turn += 1
+    try_malcolm_clue(state, log)
+
+
+def try_cast_commander(state: GameState, log: list):
+    if state.commander_in_play or not can_cast(state, COMMANDER):
+        return
+    spend_mana(state, effective_cost(state, COMMANDER))
+    state.commander_cast_count += 1
+    # Gatilhos de "cast" (CR 601.2i) disparam ja' aqui, independente do
+    # contra-ataque abaixo -- CR 903.10a/608.2b contam "cast", nao
+    # "resolved" (mana/taxa ja' gastos, Malcolm conta o 2o spell do turno
+    # mesmo que a comandante seja depois contra-atacada na pilha).
+    state.spells_cast_this_turn += 1
+    try_malcolm_clue(state, log)
+    # Contra-ataque (`try_smart_opponent_counter`, 7a categoria do modo de
+    # resiliencia -- so' faz sentido no exato momento do cast, mesma
+    # logica dos outros decks ja' portados nesta sessao). `interaction_
+    # rng is None` (modo padrao) faz isso ser sempre False, sem custo
+    # nenhum de bit-identidade.
+    if try_smart_opponent_counter(state):
+        log.append("  [Captain Storm] contra-atacada no cast (contramagica do modo de resiliencia)")
+        return
+    perm = enter_battlefield(state, COMMANDER, log)
+    state.commander_in_play = True
+    state.commander_uid = perm.uid
+    if state.commander_cast_turn is None:
+        state.commander_cast_turn = state.turn
+
+
+def try_malcolm_clue(state: GameState, log: list):
+    # Malcolm, the Eyes: "whenever you cast your SECOND spell each turn,
+    # investigate."
+    if "Malcolm, the Eyes" not in [p.card for p in state.battlefield]:
+        return
+    if state.spells_cast_this_turn == 2:
+        create_tokens(state, log, clue=1)
+
+
+def _best_equip_target(state: GameState) -> Optional[Permanent]:
+    """Heuristica racional: prioriza o comandante (fonte do motor de
+    contadores), senao o Pirata/criatura de maior poder atual."""
+    creatures = creatures_in_play(state)
+    if not creatures:
+        return None
+    return next((p for p in creatures if p.card == COMMANDER), None) or max(
+        creatures, key=lambda p: creature_power(state, p))
+
+
+def try_equip_free(state: GameState, eq_perm: Permanent, log: list):
+    """Anexa de graca -- so' pra Auras (Curious Inquiry/Rune of Flight, que
+    anexam como parte da resolucao do proprio cast, sem custo de Equip
+    separado) e pro ETB REAL de Twin Blades/Embercleave ('When this
+    Equipment enters, attach it to target creature you control'), as
+    UNICAS 2 pecas de Equipment com essa clausula no oraculo real."""
+    target = _best_equip_target(state)
+    if target is None:
+        return
+    eq_perm.equipped_to = target.uid
+    state.equip_activations_total += 1
+    tags = CARD_DB[eq_perm.card].tags
+    if "eq_etb_double_strike" in tags:
+        state.double_strike_this_turn.add(target.uid)
+
+
+def try_equip_paid(state: GameState, eq_perm: Permanent, log: list):
+    """Anexa pagando o custo real de Equip -- achado real (auditoria
+    oraculo-por-oraculo): `try_equip()` nunca cobrava NENHUM custo,
+    fazendo toda peca de Equipment anexar de graca sempre. Dragonfire
+    Blade reduz {1} por cor da criatura-alvo (oraculo real), calculado
+    contra o alvo ja escolhido."""
+    target = _best_equip_target(state)
+    if target is None:
+        return
+    cost = EQUIP_COST.get(eq_perm.card, 0)
+    if eq_perm.card == "Dragonfire Blade":
+        cost = max(0, cost - len(card_colors(target.card)))
+    if remaining_mana(state) < cost:
+        return
+    spend_mana(state, cost)
+    eq_perm.equipped_to = target.uid
+    state.equip_activations_total += 1
+
+
+def cast_instant_sorcery(state: GameState, name: str, log: list):
+    spend_mana(state, effective_cost(state, name))
+    state.hand.remove(name)
+    tags = CARD_DB[name].tags
+    state.spells_cast_this_turn += 1
+
+    if "brainstorm" in tags:
+        draw_cards(state, 3)
+        for _ in range(min(2, len(state.hand))):
+            worst = min(state.hand, key=lambda c: CARD_DB[c].mv if c in CARD_DB else 0)
+            state.hand.remove(worst)
+            state.library.insert(0, worst)
+
+    elif "draw2_discard2_untap3" in tags:
+        for _ in range(2):
+            if state.library:
+                state.hand.append(state.library.pop(0))
+        refund = min(3, lands_available(state))
+        state.mana_spent_this_turn = max(0, state.mana_spent_this_turn - refund)
+        for _ in range(min(2, len(state.hand))):
+            worst = min(state.hand, key=lambda c: CARD_DB[c].mv if c in CARD_DB else 0)
+            state.hand.remove(worst)
+            state.graveyard.append(worst)
+
+    elif "discard_cost_draw2_treasure1" in tags:
+        if state.hand:
+            worst = min(state.hand, key=lambda c: CARD_DB[c].mv if c in CARD_DB else 0)
+            state.hand.remove(worst)
+            state.graveyard.append(worst)
+        draw_cards(state, 2)
+        create_tokens(state, log, treasure=1)
+
+    elif "brass_bounty" in tags:
+        n = sum(1 for p in state.battlefield if p.card in LAND_NAMES)
+        create_tokens(state, log, treasure=n)
+
+    elif "ghostly_flicker" in tags:
+        targets = [p for p in state.battlefield if is_creature_card(p.card) or is_artifact_card(p.card)
+                   or p.card in LAND_NAMES]
+        targets.sort(key=lambda p: -CARD_DB[p.card].mv)
+        for p in targets[:2]:
+            was_commander = p.uid == state.commander_uid
+            leave_battlefield(state, p, log, to_graveyard=False)
+            new_perm = enter_battlefield(state, p.card, log)
+            if was_commander:
+                # Achado real 2026-09-21: blink LEGITIMO (exilio-e-volta na
+                # mesma resolucao, nao morte -- nao e' caso de CR 903.9a),
+                # mas `enter_battlefield` cria um Permanent NOVO com uid
+                # novo -- sem isto, `state.commander_uid` ficava obsoleto
+                # (apontando pra um uid que nao existe mais em
+                # `state.battlefield`), quebrando silenciosamente o
+                # rastreio de CR 903.10a (dano de combate acumulado da
+                # PROPRIA comandante, ver `combat_step`) a partir do
+                # blink.
+                state.commander_uid = new_perm.uid
+
+    elif "dramatic_reversal" in tags:
+        for p in state.battlefield:
+            if p.card not in LAND_NAMES:
+                p.tapped = False
+
+    elif "planar_incision" in tags:
+        candidates = [p for p in state.battlefield if is_creature_card(p.card) or is_artifact_card(p.card)]
+        if candidates:
+            best = max(candidates, key=lambda p: CARD_DB[p.card].mv)
+            was_commander = best.uid == state.commander_uid
+            leave_battlefield(state, best, log, to_graveyard=False)
+            new_perm = enter_battlefield(state, best.card, log)
+            new_perm.counters += 1
+            if was_commander:
+                # Mesmo achado real do Ghostly Flicker acima -- blink
+                # legitimo, mas `commander_uid` precisa acompanhar o uid
+                # NOVO gerado por `enter_battlefield`.
+                state.commander_uid = new_perm.uid
+
+    elif "pump_untap_11" in tags:
+        # Magic Damper: "+1/+1 and hexproof until EOT, untap it." Hexproof
+        # e' 📊 (protecao contra remocao de oponente, sem oponente
+        # modelado), pump e untap sao reais (untap = pode atacar de novo
+        # se ja tinha atacado, ou destravar mana de uma criatura-mana).
+        creatures = creatures_in_play(state)
+        if creatures:
+            target = max(creatures, key=lambda p: creature_power(state, p))
+            state.temp_pumps[target.uid] = state.temp_pumps.get(target.uid, 0) + 1
+            target.tapped = False
+
+    elif "interaction_counter" in tags or "interaction" in tags or "interaction_bounce" in tags:
+        state.interaction_plays += 1
+
+    elif "wipe_reduces_creatures" in tags or "wipe_scales_creatures" in tags:
+        state.interaction_plays += 1  # Regra 1: simetrico sem oponente = so' metrica
+
+    state.graveyard.append(name)
+
+
+# ---------------------------------------------------------------------------
+# Combate
+# ---------------------------------------------------------------------------
+
+def try_cast_embercleave(state: GameState, attackers: list, log: list):
+    if "Embercleave" not in state.hand or not attackers:
+        return
+    if remaining_mana(state) < effective_cost(state, "Embercleave") or not has_color_sources_for(state, "Embercleave"):
+        return
+    spend_mana(state, effective_cost(state, "Embercleave"))
+    state.hand.remove("Embercleave")
+    perm = enter_battlefield(state, "Embercleave", log)
+    best = max(attackers, key=lambda p: creature_power(state, p))
+    perm.equipped_to = best.uid
+    state.equip_activations_total += 1
+    state.spells_cast_this_turn += 1
+
+
+def equipment_combat_damage_triggers(state: GameState, attacker: Permanent, log: list):
+    for eq in equipment_on(state, attacker.uid):
+        tags = CARD_DB[eq.card].tags
+        if "eq_dmg_token_copy" in tags:
+            enter_battlefield(state, eq.card, log, is_token=True)
+        elif "eq_dmg_treasure" in tags:
+            create_tokens(state, log, treasure=1)
+        elif "eq_dmg_surveil_gy_cast" in tags:
+            pool = [c for c in state.graveyard if c in CARD_DB and CARD_DB[c].ctype in ("instant", "sorcery")
+                    and CARD_DB[c].mv <= 2]
+            if pool:
+                pick = max(pool, key=lambda n: CARD_DB[n].mv)
+                state.graveyard.remove(pick)
+                cast_instant_sorcery_free(state, pick, log)
+        elif "eq_dmg_token_copy_creature" in tags:
+            # Trickster's Talisman: "you may sacrifice [it]. If you do,
+            # create a token copy of THIS CREATURE [equipada]." Achado
+            # real: a remocao era um `battlefield.remove()` cru -- nao
+            # passava pelo cemiterio nem contava como sacrificio de
+            # artefato de verdade, entao Tarrian's Soulcleaver ("another
+            # artifact/creature is put into a graveyard") e Gleaming
+            # Geardrake ("whenever you sacrifice an artifact", +1/+1
+            # counter) nunca disparavam por essa sacrificio.
+            new_perm = enter_battlefield(state, attacker.card, log, is_token=True)
+            leave_battlefield(state, eq, log, to_graveyard=True)
+            on_sacrifice_artifact(state, log)
+            state.recursion_events_total += 1
+        elif "aura_pump_investigate" in tags:
+            create_tokens(state, log, clue=1)  # Curious Inquiry: investigate ao causar dano de combate
+
+
+def cast_instant_sorcery_free(state: GameState, name: str, log: list):
+    tags = CARD_DB[name].tags
+    state.spells_cast_this_turn += 1
+    if "brainstorm" in tags:
+        draw_cards(state, 3)
+    elif "draw2_discard2_untap3" in tags:
+        draw_cards(state, 2)
+
+
+def try_ozolith_move(state: GameState):
+    ozolith = next((p for p in state.battlefield if p.card == "The Ozolith"), None)
+    if ozolith is None or ozolith.counters == 0:
+        return
+    creatures = creatures_in_play(state)
+    if not creatures:
+        return
+    target = max(creatures, key=lambda p: creature_power(state, p))
+    target.counters += ozolith.counters
+    state.counters_placed_total += ozolith.counters
+    ozolith.counters = 0
+
+
+def combat_step(state: GameState, log: list, second_phase: bool = False, exclude_uid: Optional[int] = None):
+    if not second_phase:
+        try_ozolith_move(state)
+    haste_equipment = {"Cloak of the Bat", "Swiftfoot Boots"}
+    attackers = [p for p in creatures_in_play(state)
+                 if (p.entered_turn < state.turn or "haste" in CARD_DB[p.card].tags
+                     or any(eq.card in haste_equipment for eq in equipment_on(state, p.uid)))
+                 and p.uid != exclude_uid]
+    if not attackers:
+        return
+    for p in attackers:
+        p.tapped = True
+
+    try_cast_embercleave(state, attackers, log)
+
+    if any(p.card == "Captain Vargus Wrath" for p in attackers) and state.commander_cast_count > 0:
+        for p in pirates_in_play(state):
+            state.temp_pumps[p.uid] = state.temp_pumps.get(p.uid, 0) + state.commander_cast_count
+
+    total_power = 0
+    port_razer_connected = False
+    for p in attackers:
+        power = creature_power(state, p)
+        # Achado real: o CARD_DB desta carta e' registrado com o nome
+        # completo do MDFC ("Two-Handed Axe // Sweeping Cleave"), mas essas
+        # 2 comparacoes usavam so' "Two-Handed Axe" -- NUNCA batiam (p.card
+        # nunca e' esse nome curto), entao "double its power until end of
+        # turn" (a habilidade real da carta ao atacar) nunca disparava.
+        if any(eq.card == "Two-Handed Axe // Sweeping Cleave" for eq in equipment_on(state, p.uid)):
+            power *= 2
+        if p.uid in state.double_strike_this_turn or any(
+                eq.card in ("Twin Blades", "Embercleave") and eq.equipped_to == p.uid for eq in state.battlefield):
+            power *= 2  # double strike ~= dano de combate 2x (mesma agregacao usada nos outros sims da sessao)
+        total_power += power
+        if p.uid == state.commander_uid:
+            # Achado real 2026-09-18 (CR 903.10a): "if a player has been
+            # dealt 21 or more combat damage by the same commander since
+            # the game started, that player loses" -- nunca modelada.
+            # Usa `commander_uid` (nao so' o nome da carta) pra nao contar
+            # eventuais copias/tokens do Captain Storm como o comandante
+            # real -- so' o dano do OBJETO comandante de verdade conta.
+            state.commander_damage_dealt += power
+            if state.commander_damage_dealt >= 21:
+                state.commander_damage_win = True
+        equipment_combat_damage_triggers(state, p, log)
+        if p.card == "Fathom Fleet Swordjack":
+            proxy_burn(state, sum(1 for q in state.battlefield if is_artifact_card(q.card)))
+        if p.card == "Port Razer" and not second_phase:
+            port_razer_connected = True
+        if p.card == "Jackdaw":
+            artifact_count = sum(1 for q in state.battlefield if is_artifact_card(q.card))
+            if artifact_count > len(state.hand):
+                for c in state.hand[:]:
+                    state.graveyard.append(c)
+                state.hand = []
+                draw_cards(state, artifact_count)
+
+    proxy_burn(state, total_power)
+
+    if any(p.card in ("Captain Lannery Storm", "Careening Mine Cart") for p in attackers):
+        create_tokens(state, log, treasure=1)
+    if any(p.card == "Storm Fleet Negotiator" for p in attackers):
+        if state.library and state.library[0] in CARD_DB and CARD_DB[state.library[0]].ctype != "land":
+            create_map_tokens(state, log, 1)
+        draw_cards(state, 1)
+    if total_power > 0 and any(p.card == "Storm the Vault // Vault of Catlacan" for p in state.battlefield):
+        create_tokens(state, log, treasure=1)
+
+    if port_razer_connected:
+        razer = next(p for p in attackers if p.card == "Port Razer")
+        for p in state.battlefield:
+            if is_creature_card(p.card):
+                p.tapped = False
+        combat_step(state, log, second_phase=True, exclude_uid=razer.uid)
+
+
+# ---------------------------------------------------------------------------
+# Ativacoes / gatilhos de fim de turno
+# ---------------------------------------------------------------------------
+
+def try_activated_abilities(state: GameState, log: list):
+    names = [p.card for p in state.battlefield]
+
+    if "Jhoira, Ageless Innovator" in names:
+        jhoira = next(p for p in state.battlefield if p.card == "Jhoira, Ageless Innovator")
+        if jhoira.entered_turn < state.turn and not jhoira.tapped:
+            jhoira.tapped = True
+            state.jhoira_ingenuity += 2
+            pool = [c for c in state.hand if c in CARD_DB and is_artifact_card(c)
+                    and CARD_DB[c].mv <= state.jhoira_ingenuity]
+            if pool:
+                best = max(pool, key=lambda n: CARD_DB[n].mv)
+                state.hand.remove(best)
+                enter_battlefield(state, best, log)
+
+    top = next((p for p in state.battlefield if p.card == "Sensei's Divining Top"), None)
+    if top is not None and not top.tapped:
+        # "{T}: Draw a card, then put this artifact on top of its owner's
+        # library." Mais valioso que o modo "{1}: olha as 3 do topo" --
+        # prioriza a compra real. Sai do campo (vai pro topo da
+        # biblioteca de verdade, sera' comprado nos proximos turnos).
+        state.battlefield.remove(top)
+        state.library.insert(0, "Sensei's Divining Top")
+        draw_cards(state, 1)
+
+    remora = next((p for p in state.battlefield if p.card == "Mystic Remora"), None)
+    if remora is not None and remora.entered_turn < state.turn:
+        # Cumulative upkeep real, mas sem oponente conjurando spells pra
+        # disparar o gatilho de compra -- nenhum valor a ganhar segurando,
+        # so' custo crescente. Sacrificada na 1a oportunidade apos entrar
+        # (achado real, nao decidido por "vale a pena" -- e' a matematica
+        # real: 0 gatilhos possiveis neste modelo solo).
+        state.battlefield.remove(remora)
+        state.graveyard.append(remora.card)
+
+    if "Izzet Locket" in names and remaining_mana(state) >= 4:
+        top = next(p for p in state.battlefield if p.card == "Izzet Locket")
+        spend_mana(state, 4)
+        leave_battlefield(state, top, log, to_graveyard=True)
+        on_sacrifice_artifact(state, log)
+        draw_cards(state, 2)
+
+    if "Lotus Petal" in names:
+        petal = next(p for p in state.battlefield if p.card == "Lotus Petal")
+        leave_battlefield(state, petal, log, to_graveyard=True)
+        on_sacrifice_artifact(state, log)
+        state.bonus_mana_pool += 1
+
+    for eq_name in EQUIP_COST:
+        # Achado real: "Two-Handed Axe // Sweeping Cleave" faltava desta
+        # lista (nao esta' em EQUIPMENT_STATIC_BONUS por nao ter bonus
+        # estatico, so' o dobro-de-poder-ao-atacar) -- se ficasse
+        # desanexada (criatura-alvo morre) nunca seria re-equipada.
+        for perm in [p for p in state.battlefield if p.card == eq_name and p.equipped_to is None]:
+            try_equip_paid(state, perm, log)
+
+
+def try_storm_vault_transform(state: GameState):
+    if state.storm_vault_transformed:
+        return
+    if "Storm the Vault // Vault of Catlacan" not in [p.card for p in state.battlefield]:
+        return
+    artifact_count = sum(1 for p in state.battlefield if is_artifact_card(p.card))
+    if artifact_count >= 5:
+        state.storm_vault_transformed = True
+
+
+def try_end_step(state: GameState, log: list):
+    if state.descended_this_turn and "Enterprising Scallywag" in [p.card for p in state.battlefield]:
+        create_tokens(state, log, treasure=1)
+    try_storm_vault_transform(state)
+
+
+# ---------------------------------------------------------------------------
+# Loop de conjuracao / turno
+# ---------------------------------------------------------------------------
+
+ROCK_NAMES = {"Sol Ring", "Arcane Signet", "Izzet Signet", "Izzet Locket", "Decanter of Endless Water",
+              "Bender's Waterskin", "Thought Vessel", "Lotus Petal"}
+
+
+def try_cast_loop(state: GameState, log: list):
+    changed = True
+    while changed:
+        changed = False
+        candidates = [c for c in state.hand if c in CARD_DB and CARD_DB[c].ctype != "land" and can_cast(state, c)
+                      and c != "Embercleave"]
+        if not candidates:
+            break
+
+        def prio(c):
+            if c in ROCK_NAMES:
+                return 0
+            if CARD_DB[c].ctype == "creature":
+                return 1
+            if CARD_DB[c].ctype in ("artifact", "enchantment"):
+                return 2
+            return 3
+
+        pick = min(candidates, key=lambda c: (prio(c), effective_cost(state, c)))
+        if CARD_DB[pick].ctype in ("creature", "artifact", "enchantment"):
+            cast_permanent(state, pick, log)
+        else:
+            cast_instant_sorcery(state, pick, log)
+        changed = True
+
+
+def play_land(state: GameState, log: list):
+    if state.lands_played_this_turn >= 1:
+        return
+    hand_lands = [c for c in state.hand if c in LAND_NAMES]
+    if not hand_lands:
+        return
+
+    def score(n):
+        return 1 if enters_tapped(n) else 0
+
+    hand_lands.sort(key=score)
+    pick = hand_lands[0]
+    state.hand.remove(pick)
+    state.lands_played_this_turn += 1
+    tapped = enters_tapped(pick)
+    perm = enter_battlefield(state, pick, log, tapped=tapped)
+    if tapped:
+        state.tapped_land_this_turn = perm.uid
+
+
+def convert_treasures_to_mana(state: GameState):
+    """Sacrifica Treasures em campo pra cobrir o deficit de mana desta
+    fase de conjuracao, ate o limite existente -- feito sob demanda antes
+    de cada tentativa de conjurar algo mais caro que a mana de
+    lands/rocks/bonus_mana_pool atual."""
+    treasures = sum(1 for p in state.battlefield if p.card == "Treasure Token")
+    if treasures > 0:
+        sac_treasures(state, treasures)
+
+
+def run_turn(state: GameState, log: list):
+    state.turn += 1
+    state.lands_played_this_turn = 0
+    state.tapped_land_this_turn = None
+    state.mana_spent_this_turn = 0
+    state.bonus_mana_pool = 0
+    state.spells_cast_this_turn = 0
+    state.descended_this_turn = False
+    state.temp_pumps = {}
+    state.double_strike_this_turn = set()
+    for p in state.battlefield:
+        p.tapped = False
+    if "Jhoira, Ageless Innovator" in [p.card for p in state.battlefield]:
+        jhoira = next(p for p in state.battlefield if p.card == "Jhoira, Ageless Innovator")
+        jhoira.tapped = False
+
+    draw_cards(state, 1)
+    play_land(state, log)
+    try_cast_commander(state, log)
+    convert_treasures_to_mana(state)
+    try_cast_loop(state, log)
+    try_activated_abilities(state, log)
+    convert_treasures_to_mana(state)
+    try_cast_loop(state, log)
+    try_cast_commander(state, log)
+
+    combat_step(state, log)
+
+    convert_treasures_to_mana(state)
+    try_cast_loop(state, log)
+
+    while len(state.hand) > (99 if state.hand_size_no_max else 7):
+        worst = min(state.hand, key=lambda c: CARD_DB[c].mv if c in CARD_DB else 0)
+        state.hand.remove(worst)
+        state.graveyard.append(worst)
+        state.descended_this_turn = True
+
+    state.hand_size_no_max = any("no_max_hand" in CARD_DB[p.card].tags for p in state.battlefield)
+    try_end_step(state, log)
+
+
+# ---------------------------------------------------------------------------
+# Decklist
+# ---------------------------------------------------------------------------
+
+DECKLIST_TEXT = """
+1 Academy Manufactor
+1 Arcane Signet
+1 Bender's Waterskin
+1 Blasphemous Act
+1 Bloodforged Battle-Axe
+1 Brainstorm
+1 Brass's Bounty
+1 Captain Lannery Storm
+1 Captain Vargus Wrath
+1 Careening Mine Cart
+1 Chain Reaction
+1 Chaos Warp
+1 Cloak of the Bat
+1 Command Tower
+1 Corsair Captain
+1 Counterspell
+1 Curious Inquiry
+1 Deadeye Quartermaster
+1 Decanter of Endless Water
+1 Dragonfire Blade
+1 Dramatic Reversal
+1 Embercleave
+1 Enterprising Scallywag
+1 Fathom Fleet Swordjack
+1 Fellwar Stone
+1 Frantic Search
+1 Ghostly Flicker
+1 Gleaming Geardrake
+1 Goldvein Pick
+1 Impulsive Pilferer
+1 Ionize
+13 Island
+1 Izzet Boilerworks
+1 Izzet Locket
+1 Izzet Signet
+1 Jackdaw
+1 Jhoira, Ageless Innovator
+1 Kitesail Larcenist
+1 Lotus Petal
+1 Magic Damper
+1 Malcolm, the Eyes
+1 Mana Leak
+13 Mountain
+1 Mystic Remora
+1 Oaken Siren
+1 Panharmonicon
+1 Planar Incision
+1 Plundering Pirate
+1 Port Razer
+1 Reliquary Tower
+1 Rune of Flight
+1 Sailor of Means
+1 Seat of the Synod
+1 Seize the Spoils
+1 Sensei's Divining Top
+1 Silverbluff Bridge
+1 Sol Ring
+1 Spell Rupture
+1 Spyglass Siren
+1 Starfield Vocalist
+1 Staunch Crewmate
+1 Storm Fleet Negotiator
+1 Storm the Vault // Vault of Catlacan
+1 Swiftfoot Boots
+1 Swiftwater Cliffs
+1 Sword of Once and Future
+1 Tarrian's Soulcleaver
+1 Temple of Epiphany
+1 The Ozolith
+1 Thought Vessel
+1 Trickster's Talisman
+1 Twin Blades
+1 Two-Handed Axe // Sweeping Cleave
+1 Vapor Snag
+"""
+
+
+def parse_decklist(text: str) -> list:
+    cards = []
+    for line in text.strip().splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        n, name = line.split(" ", 1)
+        cards.extend([name] * int(n))
+    return cards
+
+
+BASE_LIBRARY = parse_decklist(DECKLIST_TEXT)
+# ⚠️ 98 cartas (nao 99) -- lista enviada pelo usuario ja vem faltando 1
+# carta pro total padrao de 100 (ver `auditoria.md`, secao 1). Nao
+# inventado aqui.
+assert len(BASE_LIBRARY) == 98, f"esperado 98 cartas na biblioteca (lista incompleta, documentado), achei {len(BASE_LIBRARY)}"
+for _card_name in set(BASE_LIBRARY):
+    assert _card_name in CARD_DB, f"carta na decklist sem entrada no CARD_DB: {_card_name}"
+
+
+def should_keep(hand: list, mulligans: int) -> bool:
+    lands = sum(1 for c in hand if c in LAND_NAMES)
+    if mulligans >= 3:
+        return True
+    if lands < 2 or lands > 5:
+        return False
+    return True
+
+
+def bottom_priority(card: str) -> int:
+    if card in LAND_NAMES:
+        return 0
+    return CARD_DB[card].mv if card in CARD_DB else 1
+
+
+# ---------------------------------------------------------------------------
+# MODO DE RESILIENCIA (interacao de oponente) — 2026-09-21
+# ---------------------------------------------------------------------------
+# Porte completo do design FINAL ja' validado nos outros decks desta sessao
+# (Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic Bridge/
+# Maralen/Rat King Verminister/Vihaan/Nekusar/Azula/Beorn/Thranduil/
+# Bumbleflower/Kutzil). 7 categorias padronizadas (removal/attack/discard/
+# wipe/graveyard-wipe/graveyard-snipe/counterspell), 1 rolagem "algum wipe
+# acontece" + escolha ponderada de 1 TIPO so', gate de atencao por
+# oponente, supressao de ataque pos-wipe simetrico.
+#
+# Modo OPCIONAL e completamente separado (`simulate_one_with_
+# interaction`), nunca chamado por `simulate_one`/`run_batch` padrao.
+
+NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), mesma convencao dos outros decks
+
+INTERACTION_SETUP_TURNS = 2
+# Turnos 1-2 sao sempre setup, sem chance de reacao nenhuma -- o oponente
+# ainda nao tem motivo/mana pra reagir.
+
+
+def interaction_chance(state: GameState) -> float:
+    """Formula compartilhada de 'chance do oponente reagir esse turno' --
+    identica aos outros decks: escala com o impacto do meu proprio board
+    (permanentes nao-terreno em campo)."""
+    board_impact = sum(1 for p in state.battlefield if p.card not in LAND_NAMES)
+    return min(0.10 + 0.03 * board_impact, 0.75)
+
+
+OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
+# Gate de "esse oponente esta' de olho em mim esse turno" -- chance BASE
+# de que um turno de oponente qualquer seja sobre MIM, antes de qualquer
+# ajuste por ameaca de board (que ja' fica dentro de `interaction_
+# chance()`). Rolado 1x no INICIO de `try_smart_opponent_turn`, antes de
+# qualquer categoria.
+
+POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
+# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
+# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
+# round`), TODOS os turnos de oponente restantes na mesma rodada tambem
+# ficam sem criaturas de verdade pra atacar -- exceto por haste.
+
+BOARD_WIPE_CHANCE_FACTOR = 0.4
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
+GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
+COUNTERSPELL_CHANCE_FACTOR = 0.5
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+
+INTERACTION_ENGINE_PRIORITY = [
+    "Academy Manufactor",
+    "Panharmonicon",
+    "Starfield Vocalist",
+    "Storm the Vault // Vault of Catlacan",
+    "Malcolm, the Eyes",
+    "The Ozolith",
+    "Corsair Captain",
+    "Captain Lannery Storm",
+    "Tarrian's Soulcleaver",
+    "Gleaming Geardrake",
+]
+# Lista curada por prioridade (a mais critica primeiro) -- so' cartas que
+# sao motor RECORRENTE de valor real, priorizando os MULTIPLICADORES de
+# gatilho de ETB (Academy Manufactor triplica toda criacao de Treasure/
+# Clue/Food; Panharmonicon/Starfield Vocalist dobram QUALQUER gatilho de
+# ETB, inclusive a propria Captain Storm -- ver docstring do topo do
+# arquivo, "motor central com 3 camadas que se multiplicam") sobre corpos
+# grandes isolados ou geradores de Treasure de 1 uso (Sailor of Means/
+# Spyglass Siren ficam de fora de proposito). O proprio comandante fica
+# DE FORA de proposito -- ja' tem categoria dedicada (`try_smart_
+# opponent_counter`, mira o CAST dela especificamente) e remocao pontual
+# nao a mata de verdade mesmo (vai pra zona de comando via `remove_
+# permanent`, recastavel depois pagando a taxa CR 903.8 de novo), entao
+# um oponente esperto prefere gastar a remocao pontual numa peca
+# irrecuperavel.
+
+OPPONENT_ATTACKER_PROFILES = [
+    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
+    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
+    ("Elemental Token", 3),
+]
+# Mesmos perfis genericos ja' validados nos outros decks -- sem
+# toughness, este arquivo nao modela bloqueio de um oponente de verdade.
+# Todo ataque conecta.
+
+
+def try_smart_opponent_removal(state: GameState) -> Optional[str]:
+    """Remocao 'inteligente' -- mira sempre a peca-motor de maior
+    prioridade presente em campo (`INTERACTION_ENGINE_PRIORITY`), nunca
+    aleatorio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    target_name = next((n for n in INTERACTION_ENGINE_PRIORITY
+                         if any(p.card == n for p in state.battlefield)), None)
+    if target_name is None:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target_perm = next(p for p in state.battlefield if p.card == target_name)
+    remove_permanent(state, target_perm, source="opponent_removal")
+    state.smart_removals_total += 1
+    state.smart_removal_log.append((state.turn, target_name))
+    return target_name
+
+
+def try_smart_opponent_attack(state: GameState) -> Optional[str]:
+    """Ataque de oponente -- SEM bloqueio (limitacao estrutural: este
+    arquivo nao modela bloqueio de um oponente de verdade, so' gatilhos
+    de 'EU ataquei'). Sempre conecta em `state.life`.
+
+    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada, de
+    qualquer oponente, incluindo este mesmo turno) a chance cai pra
+    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
+    haste conjurado DEPOIS do wipe."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
+    if state.interaction_rng.random() >= chance:
+        return None
+    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
+    state.life -= power
+    state.smart_attacks_taken_total += 1
+    state.smart_attack_log.append((state.turn, name))
+    return name
+
+
+def try_smart_opponent_discard(state: GameState) -> Optional[str]:
+    """Discard aleatorio -- mesma logica dos outros decks (alvo puramente
+    ao acaso na mao, sem filtro nenhum)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if not state.hand:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = state.interaction_rng.choice(state.hand)
+    state.hand.remove(target)
+    state.graveyard.append(target)
+    state.smart_discards_total += 1
+    state.smart_discard_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
+    """Board wipe ('destroy all creatures'/'destroy all artifacts'/
+    'destroy all enchantments') -- destroi TODOS os meus permanentes do
+    tipo escolhido de uma vez via `remove_permanent` (que ja' trata
+    comandante->zona de comando, CR 903.9a, e equipamentos/Ozolith/
+    Tarrian's Soulcleaver via `leave_battlefield`). Captain Storm e' uma
+    Creature (nunca artefato/encantamento), entao so' e' alvo do wipe de
+    criatura -- exatamente como deveria (ela genuinamente morre nesse
+    caso, so' depois volta pra zona de comando, taxada +{2} na proxima
+    vez).
+
+    Design de 2 passos (nao 3 rolagens independentes): 1) rola 1x se
+    ALGUM wipe acontece esse turno de oponente, chance =
+    `interaction_chance() * TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso
+    disparar, escolhe qual TIPO de sweeper via escolha ponderada
+    (`state.interaction_rng.choices`) restrita aos tipos que tem pelo
+    menos 1 alvo legal em campo."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
+        return None
+    candidates = {
+        "creature": [p for p in state.battlefield if is_creature_card(p.card)],
+        "artifact": [p for p in state.battlefield if is_artifact_card(p.card)],
+        "enchantment": [p for p in state.battlefield if is_enchantment_card(p.card)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if not available:
+        return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = wipe_type == "creature"
+    names = [p.card for p in targets]
+    for p in list(targets):
+        remove_permanent(state, p, source=f"opponent_{wipe_type}_wipe")
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, names))
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, names))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, names))
+    if hit_creature:
+        state.wiped_this_round = True
+    return names
+
+
+def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
+    """Graveyard hate, modelo MASS EXILE (Bojuka Bog/Soul-Guide
+    Lantern-style) -- dispara NO MAXIMO 1x por partida inteira
+    (`state.graveyard_wipe_used`)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.graveyard_wipe_used or not state.graveyard:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
+        return None
+    exiled = state.graveyard[:]
+    state.graveyard.clear()
+    state.graveyard_wipe_used = True
+    state.smart_graveyard_wipes_total += 1
+    state.smart_graveyard_wipe_log.append((state.turn, exiled))
+    return exiled
+
+
+def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
+    """Graveyard hate, modelo EXILIO DE CARTA UNICA (Scavenging
+    Ooze/Cease-style) -- repetivel todo turno. Alvo SMART: maior MV entre
+    criatura no cemiterio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    candidates = [c for c in state.graveyard if c in CARD_DB and is_creature_card(c)]
+    if not candidates:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
+        return None
+    target = max(candidates, key=lambda c: CARD_DB[c].mv)
+    state.graveyard.remove(target)
+    state.smart_graveyard_snipes_total += 1
+    state.smart_graveyard_snipe_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_counter(state: GameState) -> bool:
+    """Counterspell -- so' mira a conjuracao da propria Captain Storm
+    (mesma logica dos outros decks: o motor inteiro do deck depende dela
+    resolver -- gatilho central "artifact entra -> +1/+1 counter em
+    Pirata", a base das 3 camadas de multiplicadores descritas no topo do
+    arquivo). Chamada de dentro de `try_cast_commander()` no exato
+    momento do cast (unica funcao que de fato coloca o comandante em
+    campo, 2 call sites em `run_turn`) -- nao do loop de `simulate_one_
+    with_interaction`, so' faz sentido no exato momento do cast, dentro
+    do MEU turno."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
+        return False
+    state.smart_counters_total += 1
+    state.smart_counter_log.append(state.turn)
+    return True
+
+
+def try_smart_opponent_turn(state: GameState):
+    """Simula O TURNO DE UM oponente dentro da rodada entre os meus turnos
+    (Regra #6 do CLAUDE.md: bug de orquestracao de turno que auditoria
+    carta-a-carta nao pega). Chamada `NUM_OPPONENTS` vezes por rodada -- um
+    wipe de um oponente ANTERIOR na rodada continua afetando corretamente
+    o ataque de um oponente POSTERIOR na MESMA rodada (chamadas em
+    sequencia, mesmo `state`).
+
+    Gate de atencao: antes de rolar QUALQUER categoria, este turno de
+    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE`. Wipe e ataque
+    nao precisam de exclusao mutua manual aqui: `try_smart_opponent_
+    attack` ja' se auto-regula via `state.wiped_this_round` (setado por
+    `try_smart_opponent_wipe`, que roda antes, dentro desta mesma
+    chamada)."""
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
+    try_smart_opponent_wipe(state)
+    try_smart_opponent_attack(state)
+    try_smart_opponent_graveyard_wipe(state)
+    try_smart_opponent_graveyard_snipe(state)
+    try_smart_opponent_removal(state)
+    try_smart_opponent_discard(state)
+
+
+def simulate_one_with_interaction(seed: int, turns: int = 10) -> GameState:
+    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos de
+    oponente de verdade simulados (`try_smart_opponent_turn`) a cada
+    rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
+    neste loop -- ver `try_smart_opponent_counter`, chamada de dentro de
+    `try_cast_commander()` no exato momento do cast do comandante.
+
+    NUNCA chamado por `run_batch`/`simulate_one` padrao (nem o loop aqui,
+    nem o counter dentro de `try_cast_commander` -- ambos ficam inertes
+    sem `interaction_rng`)."""
+    rnd = random.Random(seed)
+    state = GameState(rng=rnd, interaction_rng=random.Random(seed + 999_999))
+    state.library = BASE_LIBRARY[:]
+    rnd.shuffle(state.library)
+    mulligan(state)
+
+    log = []
+    for _ in range(turns):
+        run_turn(state, log)
+        state.wiped_this_round = False
+        for _ in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state)
+    return state
+
+
+def run_batch_with_interaction(n: int = 2000, turns: int = 10, seed_base: int = 6_000_000):
+    """Batch do modo de resiliencia -- reporta so' as metricas relevantes
+    pra 'o motor aguenta perder a peca central?', nao duplica o relatorio
+    inteiro do `run_batch` padrao."""
+    states = [simulate_one_with_interaction(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + graveyard hate + "
+          f"remocao + ataque + discard aleatorio + counterspell de oponente)")
+    print(f"Avg counterspells sofridos (so' mira a conjuracao da Captain Storm): "
+          f"{avg([s.smart_counters_total for s in states]):.2f}")
+    cmd_cast = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    print(f"  -- Turno medio de conjuracao QUE RESOLVEU: {avg(cmd_cast):.2f} | "
+          f"nunca resolveu em {turns} turnos: {100*(n-len(cmd_cast))/n:.1f}%")
+    print(f"Avg commander_cast_count final (recasts pagando taxa CR 903.8): "
+          f"{avg([s.commander_cast_count for s in states]):.2f}")
+    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    print(f"Avg enchantment wipes sofridos: {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
+    gy_wiped = sum(1 for s in states if s.smart_graveyard_wipes_total > 0)
+    print(f"Partidas com graveyard wipe sofrido (no maximo 1x/partida): {100*gy_wiped/n:.1f}%")
+    print(f"Avg graveyard snipes sofridos (sempre a maior MV criatura): "
+          f"{avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
+    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
+    print(f"Avg ataques sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
+    print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
+    print(f"Avg descartes sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
+    return states
+
+
+# ---------------------------------------------------------------------------
+# Mulligan
+# ---------------------------------------------------------------------------
+
+def mulligan(state: GameState):
+    # Achado real 2026-09-18 (mesma convencao dos goldfishes manuais do
+    # usuario no Archidekt): 1o mulligan e' GRATIS -- mao final continua
+    # com 7 cartas. So' a partir do 2o entra a punicao real do London
+    # Mulligan (bottom N-1 cartas).
+    mulls = 0
+    while True:
+        hand = state.library[:7]
+        rest = state.library[7:]
+        if should_keep(hand, mulls) or mulls >= 4:
+            penalty = max(0, mulls - 1)
+            ordered = sorted(hand, key=bottom_priority, reverse=True)
+            bottom = ordered[:penalty]
+            keep = ordered[penalty:]
+            state.hand = keep
+            state.library = rest + bottom
+            state.mulligans = mulls
+            return
+        mulls += 1
+        state.rng.shuffle(state.library)
+
+
+# ---------------------------------------------------------------------------
+# Simulacao
+# ---------------------------------------------------------------------------
+
+def simulate_one(seed: int, turns: int = 10) -> GameState:
+    rnd = random.Random(seed)
+    state = GameState(rng=rnd)
+    state.library = BASE_LIBRARY[:]
+    rnd.shuffle(state.library)
+    mulligan(state)
+
+    log = []
+    for _ in range(turns):
+        run_turn(state, log)
+    return state
+
+
+def run_batch(n: int, seed_base: int = 1_000_000, turns: int = 10, out_path: str = None):
+    results = []
+    exceptions = 0
+    for i in range(n):
+        try:
+            state = simulate_one(seed_base + i, turns=turns)
+            results.append(state)
+        except Exception as e:
+            exceptions += 1
+            if exceptions <= 5:
+                print(f"EXCEPTION seed={seed_base + i}: {e}")
+    print(f"Rodadas: {n}, excecoes: {exceptions}")
+    if not results:
+        return results
+
+    def avg(fn):
+        return statistics.mean(fn(s) for s in results)
+
+    print(f"Dano proxy medio: {avg(lambda s: s.proxy_damage_total):.1f}")
+    print(f"Dano proxy mediano: {statistics.median(s.proxy_damage_total for s in results):.1f}")
+    print(f"Dano proxy max: {max(s.proxy_damage_total for s in results)}")
+    print(f"Cartas compradas extra (media): {avg(lambda s: s.cards_drawn_extra):.1f}")
+    print(f"Treasures criados (media): {avg(lambda s: s.treasures_created_total):.1f}")
+    print(f"Clues criados (media): {avg(lambda s: s.clues_created_total):.1f}")
+    print(f"Food criado (media): {avg(lambda s: s.food_created_total):.1f}")
+    print(f"Contadores colocados pela Captain Storm (media): {avg(lambda s: s.counters_placed_total):.1f}")
+    print(f"Gatilhos extra via dobradores de ETB (media): {avg(lambda s: s.etb_doubler_triggers_total):.1f}")
+    print(f"Equip/attach ativados (media): {avg(lambda s: s.equip_activations_total):.1f}")
+    print(f"Interacao jogada (media): {avg(lambda s: s.interaction_plays):.1f}")
+    print(f"Mulligans (media): {avg(lambda s: s.mulligans):.2f}")
+    cmd_dmg = sum(1 for s in results if s.commander_damage_win)
+    print(f"Auto-win via commander damage (21+ do proprio Captain Storm, CR 903.10a): {100*cmd_dmg/n:.1f}% "
+          f"| Dano de commander acumulado (media): {avg(lambda s: s.commander_damage_dealt):.2f}")
+    print(f"Biblioteca esgotada em: {sum(1 for s in results if s.library_emptied)}/{n}")
+
+    if out_path:
+        with open(out_path, "w") as f:
+            for s in results:
+                row = {
+                    "proxy_damage_total": s.proxy_damage_total,
+                    "cards_drawn_extra": s.cards_drawn_extra,
+                    "treasures_created_total": s.treasures_created_total,
+                    "clues_created_total": s.clues_created_total,
+                    "food_created_total": s.food_created_total,
+                    "counters_placed_total": s.counters_placed_total,
+                    "etb_doubler_triggers_total": s.etb_doubler_triggers_total,
+                    "equip_activations_total": s.equip_activations_total,
+                    "interaction_plays": s.interaction_plays,
+                    "mulligans": s.mulligans,
+                    "library_emptied": s.library_emptied,
+                }
+                f.write(json.dumps(row) + "\n")
+    return results
+
+
+if __name__ == "__main__":
+    import os
+    out = os.path.join(os.path.dirname(__file__), "captainstorm_v1_runs.jsonl")
+    run_batch(3000, seed_base=1_000_000, turns=8, out_path=out)

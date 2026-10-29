@@ -1,0 +1,15 @@
+IGUAL  tabela_w.md (refeita so' dos brutos)
+IGUAL  tabela_v.md (refeita so' dos brutos)
+IGUAL  base_nova.md (refeita so' dos brutos)
+IGUAL  replicacao.txt (refeito so' dos brutos)
+IGUAL  indice_dados.md (refeito so' dos brutos)
+re-simulando base e e1 (1.000 sementes) com o simulador congelado...
+config_w.json  padrao       base                    : 1000/1000 identicas
+config_w.json  padrao       e1_swarmyard_tropical   : 1000/1000 identicas
+config_w.json  resiliencia  base                    : 1000/1000 identicas
+config_w.json  resiliencia  e1_swarmyard_tropical   : 1000/1000 identicas
+config_v.json  resiliencia  base                    : 1000/1000 identicas
+config_v.json  resiliencia  e1_swarmyard_tropical   : 1000/1000 identicas
+6/6 series identicas ao bruto
+IGUAL  amostra re-simulada == bruto (6/6 series)
+6/6 saidas iguais

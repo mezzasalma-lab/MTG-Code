@@ -1,0 +1,419 @@
+{
+ "sim": "resultados-ab/2026-10-07-candidatas-stefano-2/codigo/mothman_goldfish_v1_C2.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "opps_eliminated_total",
+  "fractured_casts",
+  "fractured_cycles",
+  "scorch_attacks",
+  "scorch_token_events",
+  "scorch_tokens",
+  "scorch_skipped",
+  "scorch_rad_self",
+  "tide_triggers",
+  "crystal_activations",
+  "crystal_counters",
+  "warp_casts",
+  "warp_exiled",
+  "warp_recasts",
+  "persist_zero_deaths",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "counters_placed_total",
+  "cards_milled_opp_total",
+  "cards_milled_self_total",
+  "library_min",
+  "draws_total",
+  "tokens_created"
+ ],
+ "compacto": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "scorch_tokens",
+  "tide_triggers",
+  "fractured_casts",
+  "crystal_activations",
+  "warp_casts",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total"
+ ],
+ "variantes": {
+  "base": {},
+  "fractured__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Fractured Sanity"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "fractured__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Fractured Sanity"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "fractured__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Fractured Sanity"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "fractured__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Fractured Sanity"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "fractured__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Fractured Sanity"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "fractured__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Fractured Sanity"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "scorch__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "scorch__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "scorch__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "scorch__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "scorch__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "scorch__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "tide__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Inexorable Tide"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "tide__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Inexorable Tide"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "tide__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Inexorable Tide"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "tide__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Inexorable Tide"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "tide__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Inexorable Tide"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "tide__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Inexorable Tide"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "branching__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "branching__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "branching__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "branching__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "branching__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "branching__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "loading__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Loading Zone"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "loading__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Loading Zone"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "loading__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Loading Zone"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "loading__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Loading Zone"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "loading__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Loading Zone"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "loading__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Loading Zone"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "crystal__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "crystal__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "crystal__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "crystal__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "crystal__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "crystal__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "fractured__an_offer_you_cant_refuse",
+  "fractured__negate",
+  "fractured__arcane_denial",
+  "fractured__toxic_deluge",
+  "fractured__coldeyed_selkie",
+  "fractured__didnt_say_please",
+  "scorch__an_offer_you_cant_refuse",
+  "scorch__negate",
+  "scorch__arcane_denial",
+  "scorch__toxic_deluge",
+  "scorch__coldeyed_selkie",
+  "scorch__didnt_say_please",
+  "tide__an_offer_you_cant_refuse",
+  "tide__negate",
+  "tide__arcane_denial",
+  "tide__toxic_deluge",
+  "tide__coldeyed_selkie",
+  "tide__didnt_say_please",
+  "branching__an_offer_you_cant_refuse",
+  "branching__negate",
+  "branching__arcane_denial",
+  "branching__toxic_deluge",
+  "branching__coldeyed_selkie",
+  "branching__didnt_say_please",
+  "loading__an_offer_you_cant_refuse",
+  "loading__negate",
+  "loading__arcane_denial",
+  "loading__toxic_deluge",
+  "loading__coldeyed_selkie",
+  "loading__didnt_say_please",
+  "crystal__an_offer_you_cant_refuse",
+  "crystal__negate",
+  "crystal__arcane_denial",
+  "crystal__toxic_deluge",
+  "crystal__coldeyed_selkie",
+  "crystal__didnt_say_please"
+ ],
+ "regressao": []
+}

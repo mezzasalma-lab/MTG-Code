@@ -1,0 +1,96 @@
+# Elven Council (Lord of the Rings: Tales of Middle-earth) — Galadriel, Elven-Queen / Gandalf, Westward Voyager
+
+> Correção 2026-09-21 (apontada pelo usuário): numa 1ª passada eu tinha
+> tratado os 4 decks de LOTR como Partners (os 2 comandantes jogando
+> juntos). Confirmado no Scryfall que isso está ERRADO aqui — nem
+> Galadriel, Elven-Queen nem Gandalf, Westward Voyager têm a keyword
+> Partner no oráculo. Os dois têm a MESMA identidade de cor (Simic,
+> G/U), então são **2 comandantes ALTERNATIVOS — escolha só 1**, mesmo
+> padrão já confirmado nos outros 12 precons desta sessão (Warhammer
+> 40k, Final Fantasy, Marvel, etc.). Só "Food and Fellowship" (Frodo +
+> Sam) entre os 4 decks de LOTR é Partner de verdade.
+
+## Comandante
+
+1 Galadriel, Elven-Queen
+1 Gandalf, Westward Voyager
+
+## Deck
+
+1 Raise the Palisade
+1 Trap the Trespassers
+1 Arwen, Weaver of Hope
+1 Galadhrim Ambush
+1 Haldir, Lórien Lieutenant
+1 Legolas Greenleaf
+1 Mirkwood Elk
+1 Travel Through Caradhras
+1 Windswift Slice
+1 Círdan the Shipwright
+1 Elrond of the White Council
+1 Erestor of the Council
+1 Mirkwood Trapper
+1 Radagast, Wizard of Wilds
+1 Sail into the West
+1 Song of Eärendil
+1 Lothlórien Blade
+1 Model of Unity
+1 Colossal Whale
+1 Devastation Tide
+1 Mystic Confluence
+1 Plea for Power
+1 Swan Song
+1 Asceticism
+1 Elvish Archdruid
+1 Elvish Piper
+1 Elvish Warmaster
+1 Genesis Wave
+1 Heroic Intervention
+1 Hornet Queen
+1 Inscription of Abundance
+1 Overwhelming Stampede
+1 Realm Seekers
+1 Seeds of Renewal
+1 Sylvan Offering
+1 Lórien Revealed
+1 Celeborn the Wise
+1 Elven Farsight
+1 Wose Pathfinder
+1 Learn from the Past
+1 Opt
+1 Preordain
+1 Arbor Elf
+1 Beast Within
+1 Cultivate
+1 Elvish Mystic
+1 Elvish Visionary
+1 Farhaven Elf
+1 Mirror of Galadriel
+1 Lignify
+1 Paradise Druid
+1 Rampant Growth
+1 Reclamation Sage
+1 Wood Elves
+1 Growth Spiral
+1 Arcane Signet
+1 Commander's Sphere
+1 Lightning Greaves
+1 Sol Ring
+1 Whispersilk Cloak
+
+## Terrenos
+
+1 Exotic Orchard
+1 Flooded Grove
+1 Hinterland Harbor
+1 Rejuvenating Springs
+1 Vineglimmer Snarl
+1 Ash Barrens
+1 Command Tower
+1 Field of Ruin
+1 Lonely Sandbar
+1 Thornwood Falls
+1 Tranquil Thicket
+1 Woodland Stream
+11 Island
+15 Forest

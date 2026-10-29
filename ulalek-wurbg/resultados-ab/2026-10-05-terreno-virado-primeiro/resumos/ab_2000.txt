@@ -1,0 +1,46 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1680 (84.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0170       0.0180      +0.0010 ±0.0014  
+   commander_cast_turn__ate_T3                  0.2035       0.2020      -0.0015 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.6395       0.6365      -0.0030 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.9090       0.9055      -0.0035 ±0.0026  
+  *tapped_phantom_mana_this_turn                0.0220       0.0340      +0.0120 ±0.0048  
+  *finisher_resolved_total                      0.4560       0.4475      -0.0085 ±0.0058  
+  *ruins_oran_rief_counters_total               0.4760       0.4890      +0.0130 ±0.0094  
+  *len_battlefield                             14.7300      14.7015      -0.0285 ±0.0217  
+  *first_finisher_turn__nunca                   0.7555       0.7590      +0.0035 ±0.0029  
+  *len_library                                 79.9930      80.0145      +0.0215 ±0.0189  
+  *writhing_chrysalis_counters_total            0.7500       0.7395      -0.0105 ±0.0096  
+   manifest_tokens_created_total                0.0960       0.0905      -0.0055 ±0.0056  
+   flash_online_turns                           1.4915       1.4865      -0.0050 ±0.0052  
+   ugin_activations_total                       0.2065       0.2050      -0.0015 ±0.0017  
+   ugin_cards_exiled_stuck_total                0.2065       0.2050      -0.0015 ±0.0017  
+   ugin_minus3_skipped_no_target_total          0.2065       0.2050      -0.0015 ±0.0017  
+   ugin_plus1_total                             0.2065       0.2050      -0.0015 ±0.0017  
+   ugin_spirit_tokens_created_total             0.2065       0.2050      -0.0015 ±0.0017  
+
+[so_tapped_land_first - antes] N=2000 | partidas com resultado IDENTICO ao da base: 2000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+
+[so_land_entry_conditions - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1680 (84.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0170       0.0180      +0.0010 ±0.0014  
+   commander_cast_turn__ate_T3                  0.2035       0.2020      -0.0015 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.6395       0.6340      -0.0055 ±0.0032  
+  *commander_cast_turn__ate_T5                  0.9090       0.9020      -0.0070 ±0.0037  
+  *tapped_phantom_mana_this_turn                0.0220       0.0340      +0.0120 ±0.0048  
+  *len_battlefield                             14.7300      14.6780      -0.0520 ±0.0274  
+  *finisher_resolved_total                      0.4560       0.4430      -0.0130 ±0.0069  
+  *ruins_oran_rief_counters_total               0.4760       0.4640      -0.0120 ±0.0065  
+  *flash_online_turns                           1.4915       1.4790      -0.0125 ±0.0068  
+  *len_library                                 79.9930      80.0390      +0.0460 ±0.0256  
+  *first_finisher_turn__nunca                   0.7555       0.7620      +0.0065 ±0.0038  
+  *spawn_tokens_created_total                   2.1170       2.0935      -0.0235 ±0.0140  
+  *cards_drawn_extra                            2.2475       2.2205      -0.0270 ±0.0198  
+  *ugin_activations_total                       0.2065       0.2030      -0.0035 ±0.0026  
+  *ugin_cards_exiled_stuck_total                0.2065       0.2030      -0.0035 ±0.0026  
+  *ugin_minus3_skipped_no_target_total          0.2065       0.2030      -0.0035 ±0.0026  
+  *ugin_plus1_total                             0.2065       0.2030      -0.0035 ±0.0026  
+  *ugin_spirit_tokens_created_total             0.2065       0.2030      -0.0035 ±0.0026  

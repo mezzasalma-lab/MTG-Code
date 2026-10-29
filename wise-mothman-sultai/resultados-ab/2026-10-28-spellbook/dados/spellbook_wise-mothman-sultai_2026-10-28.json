@@ -1,0 +1,1263 @@
+{
+ "deck": "wise-mothman-sultai",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "The Wise Mothman",
+   "incluidos": {
+    "Bloodchief Ascension + Mindcrank": {
+     "id": "936-1290",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mill",
+      "Near-infinite lifegain",
+      "Near-infinite lifegain triggers",
+      "Near-infinite lifeloss"
+     ],
+     "usa": [
+      "Bloodchief Ascension",
+      "Mindcrank"
+     ],
+     "prerequisitos": ""
+    },
+    "Altar of Dementia + The Great Henge": {
+     "id": "3139-5256--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite self-mill",
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Altar of Dementia",
+      "The Great Henge"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Dakmor Salvage + The Gitrog Monster": {
+     "id": "250-779",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Glacial Chasm + Icetill Explorer": {
+     "id": "3946-6850",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Altar of Dementia + Mikaeus, the Unhallowed": {
+     "id": "628-5256--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Syr Konrad, the Grim + The Mindskinner": {
+     "id": "1819-6003",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite mill"
+     ]
+    },
+    "Duskmantle Guildmage + Mindcrank": {
+     "id": "936-5069",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Infinite mill",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Ashnod's Altar + The Great Henge": {
+     "id": "2034-3139--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite colorless mana"
+     ]
+    },
+    "Phyrexian Altar + The Great Henge": {
+     "id": "3139-4050--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite colored mana"
+     ]
+    },
+    "Herd Baloth + Ivy Lane Denizen": {
+     "id": "2850-3197",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Mikaeus, the Unhallowed + Walking Ballista": {
+     "id": "628-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Fathom Mage + Wizard Class": {
+     "id": "589-1017",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Basalt Monolith + Mesmeric Orb": {
+     "id": "4131-4684",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Freed from the Real + Kami of Whispered Hopes": {
+     "id": "81-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Basking Broodscale + Mazirek, Kraul Death Priest": {
+     "id": "317-5641",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Hardened Scales + Vigor + Walking Ballista": {
+     "id": "2265-3693-4120",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Kami of Whispered Hopes + Staff of Domination": {
+     "id": "81-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Gyre Sage + Staff of Domination": {
+     "id": "1597-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Kami of Whispered Hopes + Vigor + Walking Ballista": {
+     "id": "81-3693-4120",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Kami of Whispered Hopes + Pemmin's Aura": {
+     "id": "81-3525",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Branching Evolution + Vigor + Walking Ballista": {
+     "id": "2445-3693-4120",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Kami of Whispered Hopes + Umbral Mantle": {
+     "id": "81-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "The Great Henge + Viscera Seer": {
+     "id": "2292-3139--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite scry 1",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bloodchief Ascension + The Master of Lake-town": {
+     "id": "1290-7848",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mill",
+      "Near-infinite lifegain",
+      "Near-infinite lifegain triggers"
+     ]
+    },
+    "Altar of Dementia + Thran Vigil": {
+     "id": "2131-5256--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Gyre Sage + Umbral Mantle": {
+     "id": "1597-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Basking Broodscale + Tarrian's Soulcleaver": {
+     "id": "5445-5641",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ouroboroid + Sage of Hours": {
+     "id": "1494-6755",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Peer into the Abyss + Psychic Corrosion": {
+     "id": "1561-4032",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite mill"
+     ]
+    },
+    "Enter the Infinite + Psychic Corrosion": {
+     "id": "953-4032",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite mill"
+     ]
+    },
+    "Carrion Feeder + The Great Henge": {
+     "id": "2438-3139--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Metallic Mimic": {
+     "id": "345-5256--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Fathom Mage + Lyla, Holographic Assistant": {
+     "id": "589-6822",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Kami of Whispered Hopes + Vigean Graftmage": {
+     "id": "81-4019",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite untap of creatures you control that have a +1/+1 counter on them"
+     ]
+    },
+    "Basking Broodscale + Blade of the Bloodchief": {
+     "id": "1988-5641",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colorless mana",
+      "Infinite death triggers"
+     ]
+    },
+    "Mindslaver + Muldrotha, the Gravetide": {
+     "id": "1167-5131",
+     "bracketTag": "S",
+     "produz": [
+      "You control one opponent on each of their turns",
+      "Lock"
+     ]
+    },
+    "Basking Broodscale + Long Feng, Grand Secretariat": {
+     "id": "5641-6872",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Hedge Shredder + Homer, the Hermit": {
+     "id": "5932-8094",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Near-infinite mill",
+      "Near-infinite self-mill"
+     ]
+    },
+    "Blasting Station + The Great Henge": {
+     "id": "413-3139--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite damage"
+     ]
+    },
+    "Altar of Dementia + Melira, Sylvok Outcast": {
+     "id": "522-5256--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Hardened Scales + Strength of Will + Walking Ballista": {
+     "id": "2265-3693-6919",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Aphetto Alchemist + Mesmeric Orb": {
+     "id": "4091-4684",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Altar of Dementia + Jumbo Cactuar": {
+     "id": "5256-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill",
+      "Infinite mill for target opponent"
+     ]
+    },
+    "The Great Henge + Yahenni, Undying Partisan": {
+     "id": "3139-3967--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Basking Broodscale + Sadistic Glee": {
+     "id": "2082-5641",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Kami of Whispered Hopes + Strength of Will + Walking Ballista": {
+     "id": "81-3693-6919",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Basking Broodscale + Donatello, the Brains": {
+     "id": "5641-7363",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Kami of Whispered Hopes + Sword of the Paruns": {
+     "id": "81-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Altar of Dementia + Warden of the Grove": {
+     "id": "5256-6461--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Gorma, the Gullet": {
+     "id": "5256-7430--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Hardened Scales + Rite of Passage + Walking Ballista": {
+     "id": "292-2265-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gyre Sage + Sword of the Paruns": {
+     "id": "1597-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Basking Broodscale + Ghost Lantern // Bind Spirit": {
+     "id": "4455-5641",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colorless mana",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Arwen, Weaver of Hope": {
+     "id": "1453-5256--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Master Chef": {
+     "id": "2486-5256--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Altar of Dementia + Surrak and Goreclaw": {
+     "id": "713-5256--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Vigor + Walking Ballista + Winding Constrictor": {
+     "id": "3693-3921-4120",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Agatha's Soul Cauldron + Walking Ballista + Young Wolf": {
+     "id": "3644-3693-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Basking Broodscale + Necrosynthesis": {
+     "id": "1628-5641",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colorless mana",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Renata, Called to the Hunt": {
+     "id": "4419-5256--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "The Great Henge + Woe Strider": {
+     "id": "997-3139--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite scry 1",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bloodchief Ascension + Zur's Weirding": {
+     "id": "1290-2260",
+     "bracketTag": "S",
+     "produz": [
+      "Your opponents mill cards instead of drawing them",
+      "Lock"
+     ]
+    },
+    "Branching Evolution + Rite of Passage + Walking Ballista": {
+     "id": "292-2445-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Kami of Whispered Hopes + Rite of Passage + Walking Ballista": {
+     "id": "81-292-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Fathom Mage + Iron Man, Armored Avenger": {
+     "id": "589-7811",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Agatha's Soul Cauldron + Strangleroot Geist + Walking Ballista": {
+     "id": "2012-3693-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Altar of Dementia + Railway Brawler": {
+     "id": "5256-5508--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Mesmeric Orb + Seeker of Skybreak": {
+     "id": "3457-4684",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Altar of Dementia + Bloodspore Thrinax": {
+     "id": "2646-5256--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Urban Daggertooth + Walking Ballista": {
+     "id": "3693-5017",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite proliferate"
+     ]
+    },
+    "Altar of Dementia + Young Necromancer": {
+     "id": "2731-5256",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite death triggers",
+      "Near-infinite creature ETB"
+     ]
+    },
+    "Altar of Dementia + Master Biomancer": {
+     "id": "4802-5256--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Generous Patron + Lyla, Holographic Assistant": {
+     "id": "6822-7600",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature an opponent controls"
+     ]
+    },
+    "Altar of Dementia + Herd Baloth + Mazirek, Kraul Death Priest": {
+     "id": "317-3197-5256",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Heroic Feast + Walking Ballista": {
+     "id": "3693-7743",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Kozilek, Butcher of Truth + Morality Shift + Syr Konrad, the Grim": {
+     "id": "1209-1819-3244",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Altar of Dementia + Tromell, Seymour's Butler": {
+     "id": "5256-6602--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Darksteel Angel": {
+     "id": "5256-7841--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Crab Umbra + Kami of Whispered Hopes": {
+     "id": "81-1268",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Agatha's Soul Cauldron + Gilder Bairn + Kami of Whispered Hopes": {
+     "id": "81-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite proliferate"
+     ]
+    },
+    "Muldrotha, the Gravetide + Second Chance": {
+     "id": "1530-5131",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Agatha's Soul Cauldron + Walking Ballista + Yahenni, Undying Partisan": {
+     "id": "3693-3967-4613",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy all creatures opponents control",
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Lock"
+     ]
+    },
+    "Altar of Dementia + Moritte of the Frost": {
+     "id": "3388-5256--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Agatha's Soul Cauldron + Gilder Bairn + Gyre Sage": {
+     "id": "1597-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite proliferate"
+     ]
+    },
+    "Evolution Witness + Rocksteady, Mutant Marauder + Walking Ballista": {
+     "id": "3693-5660-7388",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Evolution Witness + Long Feng, Grand Secretariat + Walking Ballista": {
+     "id": "3693-5660-6872",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Rocksteady, Mutant Marauder": {
+     "id": "5256-7388--5",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Altar of Dementia + Thunderous Velocipede": {
+     "id": "5256-6258--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Bioengineered Future": {
+     "id": "5256-7096--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Agatha's Soul Cauldron + Butcher Ghoul + Walking Ballista": {
+     "id": "3693-4350-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Generous Patron + Iron Man, Armored Avenger": {
+     "id": "7600-7811",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature an opponent controls"
+     ]
+    },
+    "Rite of Passage + Walking Ballista + Winding Constrictor": {
+     "id": "292-3693-3921",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Altar of Dementia + Stalwart Successor": {
+     "id": "5256-6982--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Sway of the Stars + Syr Konrad, the Grim": {
+     "id": "1819-6527",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite lifeloss for all players",
+      "Shuffle all hands, graveyards and permanents on the battlefield into their owner's library"
+     ]
+    },
+    "Strength of Will + Walking Ballista + Winding Constrictor": {
+     "id": "3693-3921-6919",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Altar of Dementia + Herd Baloth + Long Feng, Grand Secretariat": {
+     "id": "3197-5256-6872",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Kami of Whispered Hopes + Ringing Strike Mastery": {
+     "id": "81-7500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Vraska, Swarm's Eminence + Walking Ballista": {
+     "id": "2190-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Mephidross Vampire + Walking Ballista": {
+     "id": "3005-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Destroy any number of creatures opponents control",
+      "Infinite damage to creatures"
+     ]
+    },
+    "Agatha's Soul Cauldron + Strong, the Brutish Thespian + Walking Ballista": {
+     "id": "3693-4613-5616",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage",
+      "Infinite self-mill on your next turn"
+     ]
+    },
+    "Bloodflow Connoisseur + The Great Henge": {
+     "id": "2511-3139--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Altar of Dementia + Body of Research": {
+     "id": "648-5256",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite mill for target opponent"
+     ]
+    },
+    "Agatha's Soul Cauldron + Blech, Loafing Pest + Walking Ballista": {
+     "id": "3693-4613-7451",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures",
+      "Infinite damage",
+      "Infinite lifegain"
+     ]
+    },
+    "Agatha's Soul Cauldron + Evolution Witness + Psychic Frog": {
+     "id": "4613-5636-5660",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite self-discard triggers"
+     ]
+    },
+    "Fathom Mage + Stark's Ingenuity": {
+     "id": "589-7737",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Altar of Dementia + Zameck Guildmage": {
+     "id": "2169-5256--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Mesmeric Orb + Tidewater Minion": {
+     "id": "4644-4684",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Altar of Dementia + Herd Baloth + Tarrian's Soulcleaver": {
+     "id": "3197-5256-5445",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Agatha's Soul Cauldron + Kami of Whispered Hopes + Sleep-Cursed Faerie": {
+     "id": "81-3076-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Altar of Dementia + Herd Baloth + Necrosynthesis": {
+     "id": "1628-3197-5256",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Altar of Dementia + Blade of the Bloodchief + Herd Baloth": {
+     "id": "1988-3197-5256",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Altar of Dementia + Herd Baloth + Sadistic Glee": {
+     "id": "2082-3197-5256",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Hedge Shredder + Icetill Explorer + Scouting Trek": {
+     "id": "1250-5932-6850",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite landfall triggers",
+      "Put all basic lands from your library onto the battlefield tapped"
+     ]
+    },
+    "Altar of Dementia + Captain Kathryn Janeway": {
+     "id": "5256-7804--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Gyre Sage + Ringing Strike Mastery": {
+     "id": "1597-7500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Altar of Dementia + Death's Presence + Herd Baloth": {
+     "id": "2249-3197-5256",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Kami of Whispered Hopes + Singing Bell Strike": {
+     "id": "81-5090",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Altar of Dementia + Muldrotha, the Gravetide + Ultimecia, Time Sorceress // Ultimecia, Omnipotent": {
+     "id": "5131-5256-6587",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite turns",
+      "Lock"
+     ]
+    },
+    "Agatha's Soul Cauldron + Pest Mascot + Walking Ballista": {
+     "id": "3693-4613-7436",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Altar of Dementia + Combine Guildmage": {
+     "id": "2595-5256--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Altar of Dementia + Herd Baloth + Moss-Pit Skeleton + The Wise Mothman": {
+     "id": "3197-5256-5630-5646",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Agatha's Soul Cauldron + Evernight Shade + Walking Ballista": {
+     "id": "3185-3693-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Agatha's Soul Cauldron + Bloodthirsty Aerialist + Walking Ballista": {
+     "id": "3693-4205-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Agatha's Soul Cauldron + Kraven the Hunter + Walking Ballista": {
+     "id": "3693-4613-6897",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy all creatures opponents control",
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Lock"
+     ]
+    },
+    "Altar of Dementia + Dominion Saboteur": {
+     "id": "5256-7936--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Agatha's Soul Cauldron + Titanbones, Towering Heart + Walking Ballista": {
+     "id": "3693-4613-7816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Agatha's Soul Cauldron + The Thing, Ben Grimm + Walking Ballista": {
+     "id": "3693-4613-7691",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Agatha's Soul Cauldron + Tigra, Feline Fury + Walking Ballista": {
+     "id": "3693-4613-7684",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Agatha's Soul Cauldron + Sengir, the Dark Baron + Walking Ballista": {
+     "id": "3693-3818-4613",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Destroy all creatures opponents control",
+      "Lock"
+     ]
+    },
+    "Agatha's Soul Cauldron + Massacre Girl, Most Wanted + Walking Ballista": {
+     "id": "3693-4613-8292",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Altar of Dementia + Support Mission": {
+     "id": "5256-7940--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Agatha's Soul Cauldron + Walking Ballista + Wall of Limbs": {
+     "id": "3693-3708-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Agatha's Soul Cauldron + Blood Researcher + Walking Ballista": {
+     "id": "3226-3693-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Agatha's Soul Cauldron + Vampire Scrivener + Walking Ballista": {
+     "id": "3693-4613-5877",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Agatha's Soul Cauldron + Bloodbond Vampire + Walking Ballista": {
+     "id": "545-3693-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Agatha's Soul Cauldron + Scion of the Swarm + Walking Ballista": {
+     "id": "2161-3693-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Shifting Woodland + Time Vault": {
+     "id": "1261-5720",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Agatha's Soul Cauldron + Christine Chapel, Combat Medic + Walking Ballista": {
+     "id": "3693-4613-8036",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage",
+      "Infinite lifegain"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [
+     "Fierce Guardianship"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Altar of Dementia + The Great Henge",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Bloodchief Ascension + Mindcrank",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

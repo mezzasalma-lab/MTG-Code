@@ -1,0 +1,31 @@
+## 1. Identidade de cor e legalidade
+total 100 cartas (comandante + deck); fora da identidade BGU ou nao-legal: nenhuma
+duplicadas nao-basicas: nenhuma
+
+## 2. Terrenos
+terrenos contados por type_line (INCLUI o MDFC ["Agadeem's Awakening // Agadeem, the Undercrypt"], que tem a face Land): 36 = 35 de face unica + 1 MDFC (basicos 12, nao-basicos incl. MDFC 24)
+lista: 1x Agadeem's Awakening // Agadeem, the Undercrypt, 1x Bojuka Bog, 1x Boseiju, Who Endures, 1x Breeding Pool, 1x Command Tower, 1x Fabled Passage, 5x Forest, 4x Island, 1x Minamo, School at Water's Edge, 1x Misty Rainforest, 1x Morphic Pool, 1x Overgrown Tomb, 1x Plaza of Heroes, 1x Polluted Delta, 1x Rejuvenating Springs, 1x Shifting Woodland, 1x Strip Mine, 3x Swamp, 1x Swarmyard, 1x Takenuma, Abandoned Mire, 1x Undergrowth Stadium, 1x Urza's Saga, 1x Verdant Catacombs, 1x Waterlogged Grove, 1x Watery Grave, 1x Yavimaya Hollow, 1x Zagoth Triome
+producao por terreno: Agadeem's Awakening // Agadeem, the Undercrypt=B; Bojuka Bog=B; Boseiju, Who Endures=G; Breeding Pool=GU; Command Tower=BGU; Fabled Passage=fetch basico->UBG (precisa de basico de cada cor na biblioteca); Forest=G; Island=U; Minamo, School at Water's Edge=U; Misty Rainforest=fetch->BGU; Morphic Pool=BU; Overgrown Tomb=BG; Plaza of Heroes=condicional: so' magia lendaria / cor entre permanentes lendarios; Polluted Delta=fetch->BGU; Rejuvenating Springs=GU; Shifting Woodland=G; Strip Mine=C; Swamp=B; Swarmyard=C; Takenuma, Abandoned Mire=B; Undergrowth Stadium=BG; Urza's Saga=C; Verdant Catacombs=fetch->BGU; Waterlogged Grove=GU; Watery Grave=BU; Yavimaya Hollow=C; Zagoth Triome=BGU
+fontes DIRETAS: U=12 B=12 G=14
+fontes por BUSCA (fetch/Passage), contadas como a uniao dos tipos alcancaveis na lista: U=4 B=4 G=4
+condicional (Plaza of Heroes, so' pra lendarias): U=1 B=1 G=1
+  total incondicional U: 16
+  total incondicional B: 16
+  total incondicional G: 18
+
+## 3. Curva de mana (nao-terrenos, comandante fora)
+cmc: {0: 1, 1: 8, 2: 20, 3: 17, 4: 9, 5: 5, 6: 1, 9: 1, 10: 1} | total nao-terrenos: 63 | cmc medio: 2.94
+(X-spells contam cmc com X=0: Walking Ballista, Nuclear Fallout, Repulsive Mutation, Agadeem's Awakening)
+
+## 3b. Pips de cor (TRIAGEM agregada — nao e' necessidade turno-a-turno, Regra 8; so' sinaliza desequilibrio grosseiro)
+pips mono: {'U': 22, 'B': 14, 'G': 33} | hibridos: {'U/B': 2, 'G/U': 2}
+cartas nao-terreno que exigem a cor (hibrido conta nas duas): {'U': 21, 'B': 11, 'G': 29} | dessas, com cmc<=2: {'U': 6, 'G': 13, 'B': 4}
+
+## 4. Categorias por oraculo (heuristica por regex; lista completa para conferencia)
+- remocao_pontual (7): Agatha's Soul Cauldron, Cankerbloom, Nuclear Fallout, Soul-Guide Lantern, Tear Asunder, Toxic Deluge, Walking Ballista
+- ramp (12): Agadeem's Awakening // Agadeem, the Undercrypt, An Offer You Can't Refuse, Basking Broodscale, Bramble Familiar // Fetch Quest, Freestrider Lookout, Gyre Sage, Kami of Whispered Hopes, Kodama of the West Tree, Nature's Lore, Sol Ring, The Great Henge, Three Visits
+- contramagica (6): An Offer You Can't Refuse, Arcane Denial, Didn't Say Please, Fierce Guardianship, Glen Elendra Archmage, Negate
+- compra (14): Arcane Denial, Cold-Eyed Selkie, Danny Pink, Fathom Mage, Generous Patron, Hollowmurk Siege, Kozilek, Butcher of Truth, Mirelurk Queen, Palantír of Orthanc, Pollywog Prodigy, Psychic Corrosion, Soul-Guide Lantern, The Gitrog Monster, The Great Henge
+- recursao (5): Agadeem's Awakening // Agadeem, the Undercrypt, Evolution Witness, Icetill Explorer, Muldrotha, the Gravetide, Six
+- protecao (3): Heroic Intervention, Smuggler's Surprise, Swiftfoot Boots
+- board_wipe (3): Nuclear Fallout, Toxic Deluge, Wave Goodbye

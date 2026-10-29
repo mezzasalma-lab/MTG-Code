@@ -1,0 +1,41 @@
+Criaturas (inclui comandante): 45 | Elfos: 44 | não-Elfos: 1
+Não-Elfos: ['Roaming Throne']
+Elfos lendários: 21
+Terrenos na lista: 37 | não-terrenos: 62
+Toughness impresso das criaturas: média 2.67, mediana 3, >=5: ['Champions of the Perfect', 'Deathbloom Ritualist', 'Maralen, Fae Ascendant', 'Thranduil, the Elvenking']
+-- Cartas que se importam com toughness/defender no texto (varredura 1): ['Allosaurus Shepherd', 'Arwen, Weaver of Hope', 'Iron-Shield Elf']
+-- Anthems/pumps de +X/+X (varredura 2, efeito):
+    Agatha's Soul Cauldron | You may spend mana as though it were mana of any color to activate abilities of creatures you control. Creatures you control with +1/+1 counters on th
+    Arwen, Weaver of Hope | Each other creature you control enters with a number of additional +1/+1 counters on it equal to Arwen's toughness.
+    Dionus, Elvish Archdruid | Elves you control have "Whenever this creature becomes tapped during your turn, untap it and put a +1/+1 counter on it. This ability triggers only onc
+    Elvish Archdruid | Other Elf creatures you control get +1/+1. {T}: Add {G} for each Elf you control.
+    Elvish Warmaster | Whenever one or more other Elves you control enter, create a 1/1 green Elf Warrior creature token. This ability triggers only once each turn. {5}{G}{G
+    Ezuri, Renegade Leader | {G}: Regenerate another target Elf. {2}{G}{G}{G}: Elf creatures you control get +3/+3 and gain trample until end of turn.
+    Finale of Devastation | Search your library and/or graveyard for a creature card with mana value X or less and put it onto the battlefield. If you search your library this wa
+    Gwenna, Eyes of Gaea | {T}: Add two mana in any combination of colors. Spend this mana only to cast creature spells or activate abilities of creature sources. Whenever you c
+    Immaculate Magistrate | {T}: Put a +1/+1 counter on target creature for each Elf you control.
+    Imperious Perfect | Other Elves you control get +1/+1. {G}, {T}: Create a 1/1 green Elf Warrior creature token.
+    Incubation Druid | {T}: Add one mana of any type that a land you control could produce. If this creature has a +1/+1 counter on it, add three mana of that type instead. 
+    Jarad, Golgari Lich Lord | Jarad gets +1/+1 for each creature card in your graveyard. {1}{B}{G}, Sacrifice another creature: Each opponent loses life equal to the sacrificed cre
+    Marwyn, the Nurturer | Whenever another Elf you control enters, put a +1/+1 counter on Marwyn. {T}: Add an amount of {G} equal to Marwyn's power.
+    Thranduil's Company | As long as you control another Elf, you may play an additional land on each of your turns. Landfall — Whenever a land you control enters, put two +1/+
+    Thranduil, Sindarin Liege // Silvan Rally | Other Elves you control get +1/+1. Landfall — Whenever a land you control enters, create a 1/1 green Elf creature token. // Mill four cards, then put 
+    Trystan's Command | Choose two — • Create a token that's a copy of target Elf you control. • Return one or two target permanent cards from your graveyard to your hand. • 
+    Tyvar the Bellicose | Whenever one or more Elves you control attack, they gain deathtouch until end of turn. Each creature you control has "Whenever a mana ability of this 
+    Tyvar, the Pummeler | Tap another untapped creature you control: Tyvar gains indestructible until end of turn. Tap it. {3}{G}{G}: Creatures you control get +X/+X until end 
+-- Fontes de compra (draw):
+    Beast Whisperer | Whenever you cast a creature spell, draw a card.
+    Champions of the Perfect | As an additional cost to cast this spell, behold an Elf and exile it. (Exile an Elf you control or an Elf card from your hand.) Wh
+    Edric, Spymaster of Trest | Whenever a creature deals combat damage to one of your opponents, its controller may draw a card.
+    Elrond, Moon-Reader | Whenever you activate an ability of a creature, draw a card. This ability triggers only once each turn. {5}{U}{U}: Exile up to two
+    Glissa Sunslayer | First strike, deathtouch Whenever Glissa Sunslayer deals combat damage to a player, choose one — • You draw a card and lose 1 life
+    Rhystic Study | Whenever an opponent casts a spell, you may draw a card unless that player pays {1}.
+    Selvala, Heart of the Wilds | Whenever another creature enters, its controller may draw a card if its power is greater than each other creature's power. {G}, {T
+    Thranduil, the Elvenking | Thranduil has all activated abilities of all Elf cards in your graveyard. Whenever another legendary Elf you control enters, draw 
+    Underrealm Lich | If you would draw a card, instead look at the top three cards of your library, then put one into your hand and the rest into your 
+-- Efeitos que SACRIFICAM/DESTROEM criatura não-Elfo ou todas as não-do-tipo (anti-sinergia com um Pride não-Elfo):
+    Kindred Dominance | Choose a creature type. Destroy all creatures that aren't of the chosen type.
+    Raise the Palisade | Choose a creature type. Return all creatures that aren't of the chosen type to their owners' hands.
+    Ruthless Winnower | At the beginning of each player's upkeep, that player sacrifices a non-Elf creature of their choice.
+-- Fontes de U (terrenos): 15
+-- Tutores/revelações de criatura (candidatos: pelo oráculo só Fauna Shaman busca QUALQUER criatura; Vannifar exige sacrificar MV 10; Kindred Summons só traz o tipo escolhido): ['Fauna Shaman', 'Kindred Summons', 'Prime Speaker Vannifar']

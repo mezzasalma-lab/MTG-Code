@@ -1,0 +1,10 @@
+R6-5: desvirares do Staff apos wipe meu em 20.000 partidas: {'atual_ligada': 0, 'atual_desligada': 0, 'sempre_ligada': 0, 'sempre_desligada': 0}
+OK     R6-1 Staff apos wipe meu: Swarmyard mata o Zulaport e poupa o Rat Colony (Rat = protegido) -> o holder virado desvira; chave desligada: continua virado; contador de desvirar = 1 / 0
+OK     R6-1b holder = ficha de Mercenary (changeling, protegida no Swarmyard): staff_tapped True -> False apos o wipe que mata o Zulaport
+OK     R6-1c holder que MORRE no mesmo wipe (Damnation): sem excecao, holder descartado, nenhum desvirar contado; wipe que nao mata nada: nada muda
+OK     R6-2 choose_bottom: 2 terrenos + MDFC (3 'terrenos' para should_keep): a MDFC NAO e' devolvida (chave ligada); desligada: e' a carta de maior MV e vai; a mao devolvida continua passando should_keep
+OK     R6-2b com 3 terrenos reais a MDFC e' so' uma magia de MV 4: pode ser devolvida (chave ligada = desligada); sem a contagem na mao (FELL_MIRE_COUNTS_FOR_KEEP desligado) a protecao nao age
+OK     R6-3 ensaio do terreno virado: semente 1000008 (Bojuka Bog x Swamp; Dark Ritual + Rat Colony) e 1000307 (Castle Locthwain x Swamp; Dark Ritual + Ripples of Undeath): com a chave o T1 joga o Swamp e a magia sai; sem ela joga o virado
+OK     R6-4 guarda de importacao: sem uma criatura em CREATURE_TYPES (ou em CREATURE_TOUGHNESS) o simulador nao importa (AssertionError); o arquivo vivo importa
+OK     R6-5 partidas inteiras (20.000, sementes 5_000_000+i, limite 0 e limite None): 0 excecoes; chave desligada: contador 0; o desvirar do Staff apos wipe meu e' LATENTE (0 disparos medidos: o holder nunca esta virado quando o wipe resolve, ver resumos/staff_apos_wipe_20000.txt)
+8 passaram, 0 falharam, 8 testes

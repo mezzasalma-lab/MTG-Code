@@ -1,0 +1,65 @@
+cartas na lista (distintas): 70 | sem oraculo no cache: []
+
+(a) criaturas e PODER impresso (campo power do cache):
+   Ghalta, Primal Hunger                         power=12  Legendary Creature — Elder Dinosaur
+   Gigantic Big Bear                             power=10  Creature — Bear
+   Beorn the Fierce                              power=6   Legendary Creature — Bear Shapeshifter Warrior
+   Defiler of Vigor                              power=6   Creature — Phyrexian Wurm
+   Beorn, Reluctant Host // Till and Tend        power=5   Legendary Creature — Human Bear Shapeshifter // Sorcery — Adventure
+   Craterhoof Behemoth                           power=5   Creature — Beast
+   Chameleon Colossus                            power=4   Creature — Shapeshifter
+   Goreclaw, Terror of Qal Sisma                 power=4   Legendary Creature — Bear
+   Roaming Throne                                power=4   Artifact Creature — Golem
+   Little Bear                                   power=3   Creature — Bear
+   Tireless Provisioner                          power=3   Creature — Elf Scout
+   Tireless Tracker                              power=3   Creature — Human Scout
+   Ambush Viper                                  power=2   Creature — Snake
+   Ayula, Queen Among Bears                      power=2   Legendary Creature — Bear
+   Beast Whisperer                               power=2   Creature — Elf Druid
+   Eternal Witness                               power=2   Creature — Human Shaman
+   Lotus Cobra                                   power=2   Creature — Snake
+   Ohran Frostfang                               power=2   Snow Creature — Snake
+   Radagast of Rhosgobel                         power=2   Legendary Creature — Avatar Wizard
+   Selvala, Heart of the Wilds                   power=2   Legendary Creature — Elf Scout
+   Solemn Simulacrum                             power=2   Artifact Creature — Golem
+   Allosaurus Shepherd                           power=1   Creature — Elf Shaman
+   Haywire Mite                                  power=1   Artifact Creature — Insect
+   Llanowar Elves                                power=1   Creature — Elf Druid
+   Managorger Hydra                              power=1   Creature — Hydra
+   Toski, Bearer of Secrets                      power=1   Legendary Creature — Squirrel
+   Birds of Paradise                             power=0   Creature — Bird
+   Forgotten Ancient                             power=0   Creature — Elemental
+   Lumra, Bellow of the Woods                    power=*   Legendary Creature — Elemental Bear
+   -> power >= 4 (numerico): ['Beorn the Fierce', 'Beorn, Reluctant Host // Till and Tend', 'Chameleon Colossus', 'Craterhoof Behemoth', 'Defiler of Vigor', 'Ghalta, Primal Hunger', 'Gigantic Big Bear', 'Goreclaw, Terror of Qal Sisma', 'Roaming Throne']
+   -> power nao-numerico (CDA, conferir a mao): ['Lumra, Bellow of the Woods']
+
+(b) Bear no type_line OU Changeling OU 'every creature type' (Maskwood Nexus afeta todas as suas criaturas):
+    ['Ayula, Queen Among Bears', 'Beorn the Fierce', 'Beorn, Reluctant Host // Till and Tend', 'Chameleon Colossus', 'Firdoch Core', 'Gigantic Big Bear', 'Goreclaw, Terror of Qal Sisma', 'Little Bear', 'Lumra, Bellow of the Woods', 'Maskwood Nexus', 'Springleaf Parade']
+
+(c) magias de criatura (as unicas que o mana da habilidade 1 paga): 29
+    nao-criatura e nao-terreno (nunca usam o mana restrito): 33
+
+(d) oraculo cita trample / 'combat damage to a player' / 'deals combat damage':
+   Beorn the Fierce                              | Trample / Other Bears you control get +2/+2. / At the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear 
+   Beorn, Reluctant Host // Till and Tend        | Beorn, Reluctant Host ({4}{G}): Trample /  //  / Till and Tend ({1}{G}): You may play an additional land this turn. (Then exile this card. You may cast the creature later
+   Chronicle of Victory                          | As Chronicle of Victory enters, choose a creature type. / Creatures you control of the chosen type get +2/+2 and have first strike and trample. / Whenever you cast a spel
+   Craterhoof Behemoth                           | Haste / When this creature enters, creatures you control gain trample and get +X/+X until end of turn, where X is the number of creatures you control. 
+   Defiler of Vigor                              | Trample / As an additional cost to cast green permanent spells, you may pay 2 life. Those spells cost {G} less to cast if you paid life this way. This effect reduces only
+   Garruk's Uprising                             | When this enchantment enters, if you control a creature with power 4 or greater, draw a card. / Creatures you control have trample. (Each of those creatures can deal exce
+   Ghalta, Primal Hunger                         | This spell costs {X} less to cast, where X is the total power of creatures you control. / Trample (This creature can deal excess combat damage to the player or planeswalk
+   Goreclaw, Terror of Qal Sisma                 | Creature spells you cast with power 4 or greater cost {2} less to cast. / Whenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gain
+   Herd Heirloom                                 | {T}: Add one mana of any color. Spend this mana only to cast a creature spell. / {T}: Until end of turn, target creature you control with power 4 or greater gains trample
+   Managorger Hydra                              | Trample / Whenever a player casts a spell, put a +1/+1 counter on this creature. 
+   Ohran Frostfang                               | Attacking creatures you control have deathtouch. / Whenever a creature you control deals combat damage to a player, draw a card. 
+   Toski, Bearer of Secrets                      | This spell can't be countered. / Indestructible / Toski attacks each combat if able. / Whenever a creature you control deals combat damage to a player, draw a card. 
+
+(e) oraculo cita 'artifact' (alem de ser artefato):
+   Archdruid's Charm                             [Instant] | Choose one — / • Search your library for a creature or land card and reveal it. Put it onto the battlefield tapped if it's a land card. Otherwise, put it into your hand. 
+   Boseiju, Who Endures                          [Legendary Land] | {T}: Add {G}. / Channel — {1}{G}, Discard this card: Destroy target artifact, enchantment, or nonbasic land an opponent controls. That player may search their library for
+   Firdoch Core                                  [Kindred Artifact — Shapeshifter] | Changeling (This card is every creature type.) / {T}: Add one mana of any color. / {4}: This artifact becomes a 4/4 artifact creature until end of turn. 
+   Haywire Mite                                  [Artifact Creature — Insect] | When this creature dies, you gain 2 life. / {G}, Sacrifice this creature: Exile target noncreature artifact or noncreature enchantment. 
+   Patchwork Banner                              [Artifact] | As this artifact enters, choose a creature type. / Creatures you control of the chosen type get +1/+1. / {T}: Add one mana of any color. 
+   Tireless Provisioner                          [Creature — Elf Scout] | Landfall — Whenever a land you control enters, create a Food token or a Treasure token. (Food is an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life." Treas
+   Tireless Tracker                              [Creature — Human Scout] | Landfall — Whenever a land you control enters, investigate. (Create a Clue token. It's an artifact with "{2}, Sacrifice this token: Draw a card.") / Whenever you sacrific
+
+(f) artefatos na lista: ['Chronicle of Victory', 'Emerald Medallion', 'Firdoch Core', 'Genji Glove', 'Haywire Mite', 'Herd Heirloom', 'Lightning Greaves', 'Maskwood Nexus', 'Necklace of Girion', 'Patchwork Banner', 'Roaming Throne', 'Sol Ring', 'Solemn Simulacrum', 'The Great Henge', 'Thought Vessel']

@@ -1,0 +1,61 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1487 (74.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.4980       6.5065      +0.0085 ±0.0190  
+   commander_cast_turn__nunca                   0.0750       0.0765      +0.0015 ±0.0045  
+   commander_cast_turn__ate_T3                  0.0560       0.0575      +0.0015 ±0.0040  
+   commander_cast_turn__ate_T4                  0.2780       0.2790      +0.0010 ±0.0081  
+   commander_cast_turn__ate_T5                  0.5150       0.5195      +0.0045 ±0.0099  
+  *finisher_turn__ate_T5                        0.0360       0.0400      +0.0040 ±0.0031  
+  *len_smart_wipe_log                           0.7755       0.7910      +0.0155 ±0.0129  
+  *smart_wipes_total                            0.7755       0.7910      +0.0155 ±0.0129  
+  *len_hand                                     2.6180       2.5710      -0.0470 ±0.0392  
+  *fauna_shaman_tutors                          0.1255       0.1400      +0.0145 ±0.0122  
+  *graveyard_wipe_used                          0.3580       0.3470      -0.0110 ±0.0093  
+  *len_smart_graveyard_wipe_log                 0.3580       0.3470      -0.0110 ±0.0093  
+  *smart_graveyard_wipes_total                  0.3580       0.3470      -0.0110 ±0.0093  
+  *thranduil_legendary_elf_triggers             1.7760       1.7360      -0.0400 ±0.0341  
+  *edric_death_turn__nunca                      0.8635       0.8685      +0.0050 ±0.0044  
+  *oversold_cemetery_returns                    0.0655       0.0720      +0.0065 ±0.0058  
+  *combat_damage_draws                          1.5785       1.4595      -0.1190 ±0.1086  
+   extra_draws                                  6.8005       6.6565      -0.1440 ±0.1523  
+   commander_in_play                            0.6515       0.6420      -0.0095 ±0.0103  
+
+[so_terreno - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1511 (75.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.4980       6.5060      +0.0080 ±0.0190  
+   commander_cast_turn__nunca                   0.0750       0.0765      +0.0015 ±0.0045  
+   commander_cast_turn__ate_T3                  0.0560       0.0575      +0.0015 ±0.0040  
+   commander_cast_turn__ate_T4                  0.2780       0.2790      +0.0010 ±0.0081  
+   commander_cast_turn__ate_T5                  0.5150       0.5195      +0.0045 ±0.0099  
+  *finisher_turn__ate_T5                        0.0360       0.0400      +0.0040 ±0.0031  
+  *len_smart_wipe_log                           0.7755       0.7910      +0.0155 ±0.0129  
+  *smart_wipes_total                            0.7755       0.7910      +0.0155 ±0.0129  
+  *fauna_shaman_tutors                          0.1255       0.1400      +0.0145 ±0.0122  
+  *len_hand                                     2.6180       2.5715      -0.0465 ±0.0392  
+  *graveyard_wipe_used                          0.3580       0.3470      -0.0110 ±0.0093  
+  *len_smart_graveyard_wipe_log                 0.3580       0.3470      -0.0110 ±0.0093  
+  *smart_graveyard_wipes_total                  0.3580       0.3470      -0.0110 ±0.0093  
+  *thranduil_legendary_elf_triggers             1.7760       1.7360      -0.0400 ±0.0341  
+  *edric_death_turn__nunca                      0.8635       0.8685      +0.0050 ±0.0044  
+  *oversold_cemetery_returns                    0.0655       0.0720      +0.0065 ±0.0058  
+  *combat_damage_draws                          1.5785       1.4595      -0.1190 ±0.1086  
+   extra_draws                                  6.8005       6.6565      -0.1440 ±0.1523  
+   commander_in_play                            0.6515       0.6420      -0.0095 ±0.0103  
+
+[so_ordem_set - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1973 (98.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.4980       6.4985      +0.0005 ±0.0010  
+   mana_spent_this_turn                         7.3295       7.3315      +0.0020 ±0.0034  
+   imperious_perfect_tokens                     0.1825       0.1820      -0.0005 ±0.0010  
+   land_played                                  0.6685       0.6690      +0.0005 ±0.0010  
+   lands_played_this_turn                       0.6955       0.6960      +0.0005 ±0.0010  
+   len_hand                                     2.6180       2.6175      -0.0005 ±0.0010  
+   trystan_lifegain_events                      0.0775       0.0770      -0.0005 ±0.0010  
+   trystan_transformed                          0.0810       0.0815      +0.0005 ±0.0010  
+   trystan_transforms_total                     0.2610       0.2605      -0.0005 ±0.0010  
+   cards_milled_total                           4.7275       4.7260      -0.0015 ±0.0029  
+   len_graveyard                                9.7760       9.7745      -0.0015 ±0.0029  
+   len_library                                 72.0900      72.0915      +0.0015 ±0.0029  
+   len_battlefield                             11.7525      11.7525      +0.0000 ±0.0014  

@@ -1,0 +1,46 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8274 (82.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0169       0.0172      +0.0003 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.2047       0.2025      -0.0022 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.6318       0.6282      -0.0036 ±0.0013  
+  *commander_cast_turn__ate_T5                  0.9089       0.9065      -0.0024 ±0.0010  
+  *tapped_phantom_mana_this_turn                0.0198       0.0345      +0.0147 ±0.0024  
+  *len_battlefield                             14.6606      14.6299      -0.0307 ±0.0073  
+  *spell_token_copies_total                     1.7268       1.7146      -0.0122 ±0.0041  
+  *len_library                                 80.1159      80.1429      +0.0270 ±0.0092  
+  *finisher_resolved_total                      0.4482       0.4415      -0.0067 ±0.0023  
+  *first_finisher_turn__nunca                   0.7643       0.7677      +0.0034 ±0.0012  
+  *ulalek_copies_total                          1.5441       1.5340      -0.0101 ±0.0036  
+  *ulalek_cc_payments_safe                      1.4963       1.4865      -0.0098 ±0.0035  
+  *flash_online_turns                           1.5072       1.5021      -0.0051 ±0.0021  
+  *cards_drawn_extra                            2.1673       2.1491      -0.0182 ±0.0075  
+  *one_ring_burden                              0.3773       0.3736      -0.0037 ±0.0017  
+  *interaction_spells_cast_total                2.1217       2.1170      -0.0047 ±0.0022  
+  *len_graveyard                                3.1074       3.0983      -0.0091 ±0.0044  
+  *ramp_pieces_resolved_total                   2.1125       2.1071      -0.0054 ±0.0027  
+
+[so_tapped_land_first - antes] N=10000 | partidas com resultado IDENTICO ao da base: 10000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+
+[so_land_entry_conditions - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8276 (82.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0169       0.0172      +0.0003 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.2047       0.2021      -0.0026 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.6318       0.6239      -0.0079 ±0.0018  
+  *commander_cast_turn__ate_T5                  0.9089       0.9047      -0.0042 ±0.0014  
+  *tapped_phantom_mana_this_turn                0.0198       0.0343      +0.0145 ±0.0024  
+  *len_battlefield                             14.6606      14.6159      -0.0447 ±0.0081  
+  *ruins_oran_rief_counters_total               0.4832       0.4667      -0.0165 ±0.0030  
+  *len_library                                 80.1159      80.1625      +0.0466 ±0.0113  
+  *spell_token_copies_total                     1.7268       1.7081      -0.0187 ±0.0046  
+  *flash_online_turns                           1.5072       1.4954      -0.0118 ±0.0032  
+  *ulalek_copies_total                          1.5441       1.5288      -0.0153 ±0.0042  
+  *ulalek_cc_payments_safe                      1.4963       1.4812      -0.0151 ±0.0042  
+  *cards_drawn_extra                            2.1673       2.1324      -0.0349 ±0.0099  
+  *finisher_resolved_total                      0.4482       0.4395      -0.0087 ±0.0026  
+  *first_finisher_turn__nunca                   0.7643       0.7689      +0.0046 ±0.0014  
+  *interaction_spells_cast_total                2.1217       2.1145      -0.0072 ±0.0025  
+  *one_ring_burden                              0.3773       0.3714      -0.0059 ±0.0021  
+  *len_graveyard                                3.1074       3.0888      -0.0186 ±0.0068  

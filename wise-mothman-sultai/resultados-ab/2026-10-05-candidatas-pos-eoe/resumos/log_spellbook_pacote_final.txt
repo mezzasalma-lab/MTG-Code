@@ -1,0 +1,3 @@
+base                                         main= 99 incluidos=  2 quase= 134 id=BGU
+PACOTE FINAL (6 trocas)                      main= 99 incluidos=  3 quase= 142 id=BGU
+PACOTE FINAL + Mutational Advantage <- Negate (7 trocas) main= 99 incluidos=  3 quase= 142 id=BGU

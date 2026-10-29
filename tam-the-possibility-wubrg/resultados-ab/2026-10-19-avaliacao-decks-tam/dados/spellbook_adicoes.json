@@ -1,0 +1,599 @@
+{
+ "reconhece": {
+  "Ajani Unrelenting": "Ajani Unrelenting",
+  "All Will Be One": "All Will Be One",
+  "Aminatou, the Fateshifter": "Aminatou, the Fateshifter",
+  "Arcane Signet": "Arcane Signet",
+  "Atraxa, Praetors' Voice": "Atraxa, Praetors' Voice",
+  "Baxter Building": "Baxter Building",
+  "Birds of Paradise": "Birds of Paradise",
+  "Blasphemous Act": "Blasphemous Act",
+  "Bloom Tender": "Bloom Tender",
+  "Boseiju, Who Endures": "Boseiju, Who Endures",
+  "Bountiful Promenade": "Bountiful Promenade",
+  "Breeding Pool": "Breeding Pool",
+  "Brokers Ascendancy": "Brokers Ascendancy",
+  "Carth the Lion": "Carth the Lion",
+  "Chandra, Chill of Compliance": "Chandra, Chill of Compliance",
+  "Chandra, Legacy of Fire": "Chandra, Legacy of Fire",
+  "Chandra, Torch of Defiance": "Chandra, Torch of Defiance",
+  "Chromatic Lantern": "Chromatic Lantern",
+  "Chromatic Orrery": "Chromatic Orrery",
+  "City of Brass": "City of Brass",
+  "Command Tower": "Command Tower",
+  "Commodore Guff": "Commodore Guff",
+  "Dack Fayden": "Dack Fayden",
+  "Deepglow Skate": "Deepglow Skate",
+  "Delighted Halfling": "Delighted Halfling",
+  "Demonic Consultation": "Demonic Consultation",
+  "Dihada, Binder of Wills": "Dihada, Binder of Wills",
+  "Displacer Kitten": "Displacer Kitten",
+  "Domri, Chaos Bringer": "Domri, Chaos Bringer",
+  "Doubling Season": "Doubling Season",
+  "Dreamtide Whale": "Dreamtide Whale",
+  "Elspeth, Sun's Champion": "Elspeth, Sun's Champion",
+  "Entrust the Spark": "Entrust the Spark",
+  "Evolution Sage": "Evolution Sage",
+  "Exotic Orchard": "Exotic Orchard",
+  "Faeburrow Elder": "Faeburrow Elder",
+  "Farseek": "Farseek",
+  "Fellwar Stone": "Fellwar Stone",
+  "Fire-Lit Thicket": "Fire-Lit Thicket",
+  "Flooded Grove": "Flooded Grove",
+  "Flux Channeler": "Flux Channeler",
+  "Garruk Wildspeaker": "Garruk Wildspeaker",
+  "Garruk, Curse Breaker": "Garruk, Curse Breaker",
+  "Garruk, Veiled Butcher": "Garruk, Veiled Butcher",
+  "Gideon's Memorial": "Gideon's Memorial",
+  "Godless Shrine": "Godless Shrine",
+  "Great Hall of the Citadel": "Great Hall of the Citadel",
+  "Hallowed Fountain": "Hallowed Fountain",
+  "Ichormoon Gauntlet": "Ichormoon Gauntlet",
+  "Ignoble Hierarch": "Ignoble Hierarch",
+  "Indatha Triome": "Indatha Triome",
+  "Interplanar Beacon": "Interplanar Beacon",
+  "Jace, Multiverse Architect": "Jace, Multiverse Architect",
+  "Jetmir's Garden": "Jetmir's Garden",
+  "Karn's Bastion": "Karn's Bastion",
+  "Kasmina, Enigma Sage": "Kasmina, Enigma Sage",
+  "Ketria Triome": "Ketria Triome",
+  "Kiora of Salt and Sand": "Kiora of Salt and Sand",
+  "Lae'zel, Vlaakith's Champion": "Lae'zel, Vlaakith's Champion",
+  "Leyline Immersion": "Leyline Immersion",
+  "Liliana's Talent": "Liliana's Talent",
+  "Liliana, Dreadhorde General": "Liliana, Dreadhorde General",
+  "Loyal Tutor": "Loyal Tutor",
+  "Mind Stone": "Mind Stone",
+  "Minsc & Boo, Timeless Heroes": "Minsc & Boo, Timeless Heroes",
+  "Misty Rainforest": "Misty Rainforest",
+  "Mossfire Valley": "Mossfire Valley",
+  "Mutational Advantage": "Mutational Advantage",
+  "Narset Transcendent": "Narset Transcendent",
+  "Narset, Parter of Veils": "Narset, Parter of Veils",
+  "Nature's Lore": "Nature's Lore",
+  "Nicol Bolas, Dragon-God": "Nicol Bolas, Dragon-God",
+  "Nissa, Ascended Animist": "Nissa, Ascended Animist",
+  "Noble Hierarch": "Noble Hierarch",
+  "Oath of Ajani": "Oath of Ajani",
+  "Oath of Nissa": "Oath of Nissa",
+  "Oath of Teferi": "Oath of Teferi",
+  "Oko, Thief of Crowns": "Oko, Thief of Crowns",
+  "Onakke Oathkeeper": "Onakke Oathkeeper",
+  "Overflowing Basin": "Overflowing Basin",
+  "Overgrown Tomb": "Overgrown Tomb",
+  "Overwrite the Multiverse": "Overwrite the Multiverse",
+  "Path to Exile": "Path to Exile",
+  "Patrolling Peacemaker": "Patrolling Peacemaker",
+  "Plaza of Heroes": "Plaza of Heroes",
+  "Professor Dellian Fel": "Professor Dellian Fel",
+  "Promise of Loyalty": "Promise of Loyalty",
+  "Reflecting Pool": "Reflecting Pool",
+  "Rejuvenating Springs": "Rejuvenating Springs",
+  "Ripples of Potential": "Ripples of Potential",
+  "Saheeli, Sublime Artificer": "Saheeli, Sublime Artificer",
+  "Sanctum Lurker": "Sanctum Lurker",
+  "Sol Ring": "Sol Ring",
+  "Spara's Headquarters": "Spara's Headquarters",
+  "Spark Double": "Spark Double",
+  "Spire Garden": "Spire Garden",
+  "Staff of Compleation": "Staff of Compleation",
+  "Starting Town": "Starting Town",
+  "Steam Vents": "Steam Vents",
+  "Stomping Ground": "Stomping Ground",
+  "Swords to Plowshares": "Swords to Plowshares",
+  "Tam, the Possibility": "Tam, the Possibility",
+  "Tamiyo, Field Researcher": "Tamiyo, Field Researcher",
+  "Teferi's Talent": "Teferi's Talent",
+  "Teferi, Hero of Dominaria": "Teferi, Hero of Dominaria",
+  "Teferi, Master of Time": "Teferi, Master of Time",
+  "Teferi, Temporal Archmage": "Teferi, Temporal Archmage",
+  "Teferi, Time Raveler": "Teferi, Time Raveler",
+  "Tekuthal, Inquiry Dominus": "Tekuthal, Inquiry Dominus",
+  "Temple Garden": "Temple Garden",
+  "Tezzeret the Seeker": "Tezzeret the Seeker",
+  "Thassa's Oracle": "Thassa's Oracle",
+  "The Chain Veil": "The Chain Veil",
+  "The Eternal Wanderer": "The Eternal Wanderer",
+  "The Theorist, Jace Beleren": "The Theorist, Jace Beleren",
+  "The World Tree": "The World Tree",
+  "Three Visits": "Three Visits",
+  "Tomik, Orzhov Lawmage": "Tomik, Orzhov Lawmage",
+  "Twilight Mire": "Twilight Mire",
+  "Ugin, the Spirit Dragon": "Ugin, the Spirit Dragon",
+  "Undergrowth Stadium": "Undergrowth Stadium",
+  "Verdant Catacombs": "Verdant Catacombs",
+  "Vorinclex, Monstrous Raider": "Vorinclex, Monstrous Raider",
+  "Vraska, Betrayal's Sting": "Vraska, Betrayal's Sting",
+  "Vronos, Masked Inquisitor": "Vronos, Masked Inquisitor",
+  "Watery Grave": "Watery Grave",
+  "Way of the Deathbringer": "Way of the Deathbringer",
+  "Way of the Healer": "Way of the Healer",
+  "Way of the Mind Sculptor": "Way of the Mind Sculptor",
+  "Way of the Necromancer": "Way of the Necromancer",
+  "Way of the Paradox": "Way of the Paradox",
+  "Way of the Pyromancer": "Way of the Pyromancer",
+  "Way of the Warlord": "Way of the Warlord",
+  "Way of the Wildspeaker": "Way of the Wildspeaker",
+  "Windswept Heath": "Windswept Heath",
+  "Wooded Bastion": "Wooded Bastion",
+  "Wooded Foothills": "Wooded Foothills",
+  "Wrenn and Realmbreaker": "Wrenn and Realmbreaker",
+  "Yavimaya, Cradle of Growth": "Yavimaya, Cradle of Growth",
+  "Zagoth Triome": "Zagoth Triome"
+ },
+ "nao_reconhecidos": [],
+ "base": {
+  "incluidos": {
+   "Teferi, Temporal Archmage + The Chain Veil": {
+    "produz": [
+     "Infinite card draw",
+     "Infinite colored mana",
+     "Infinite colorless mana",
+     "Infinite planeswalker activations"
+    ],
+    "id": "787-1124",
+    "bracket": "S",
+    "popularidade": 25221,
+    "descricao": "Activate The Chain Veil by paying {4} and tapping it, allowing all planeswalkers you control to activate their loyalty abilities and additional time this turn.\nActivate Teferi's second loyalty ability by removing a loyalty counter from it, untapping the Chain Veil and the three mana-producing permanents.\nRepeat from step 1 until Teferi dies due to having zero loyalty.\nCast Teferi from your command"
+   },
+   "Chromatic Orrery + Tezzeret the Seeker + The Chain Veil": {
+    "produz": [
+     "Infinite card draw",
+     "Infinite colored mana",
+     "Infinite colorless mana",
+     "Infinite planeswalker activations"
+    ],
+    "id": "1124-1283-2495",
+    "bracket": "E",
+    "popularidade": 894,
+    "descricao": "Tap Chromatic Orrery for {5}.\nPay {4} and tap The Chain Veil to allow you to activate Tezzeret's ability.\n+1 Tezzeret to untap Chromatic Orrery and The Chain Veil.\nRepeat."
+   }
+  },
+  "quase_n": 92
+ },
+ "adicoes": {
+  "Loyal Tutor": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Nicol Bolas, Dragon-God": {
+   "n_combos": 4,
+   "novos": {
+    "Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + Oath of Teferi": {
+     "produz": [
+      "Exile all of your opponents' permanents and hands",
+      "Infinite card draw",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ],
+     "id": "193-1180-2369",
+     "bracket": "R",
+     "popularidade": 9098,
+     "descricao": "Activate Aminatou's second loyalty ability by removing a loyalty counter from it, blinking target land you control.\nActivate that land by tapping it, adding mana that land could produce.\nActivate Aminatou's second loyalty ability by removing a loyalty counter from it, blinking Nicol Bolas.\nActivate Nicol Bolas's first loyalty ability by putting a loyalty counter on it, drawing a card and causing e"
+    },
+    "Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + The Chain Veil": {
+     "produz": [
+      "Exile all permanents opponents control",
+      "Infinite planeswalker activations",
+      "Infinite card draw",
+      "Infinite draw triggers"
+     ],
+     "id": "193-1124-1180",
+     "bracket": "R",
+     "popularidade": 3517,
+     "descricao": "Activate The Chain Veil by paying {4} and tapping it, allowing an extra activation of your planeswalkers' abilities this turn.\nActivate Aminatou's first loyalty ability by putting a loyalty counter on it, causing you to draw a card and then put a card on top of your library from your hand.\nActivate Aminatou's second loyalty ability by removing a loyalty counter from it, blinking Nicol Bolas.\nActiv"
+    }
+   },
+   "quase_viraram_combo": [
+    "Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + Oath of Teferi",
+    "Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + The Chain Veil"
+   ],
+   "quase_novos_com_a_peca": [
+    "Ichormoon Gauntlet + Jace, Cunning Castaway + Nicol Bolas, Dragon-God",
+    "Jace, Cunning Castaway + Nicol Bolas, Dragon-God + Oath of Teferi",
+    "Jace, Cunning Castaway + Nicol Bolas, Dragon-God + The Chain Veil"
+   ]
+  },
+  "Carth the Lion": {
+   "n_combos": 3,
+   "novos": {
+    "Carth the Lion + Teferi, Temporal Archmage + The Chain Veil": {
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite colorless mana",
+      "Infinite mana permanents you control can produce"
+     ],
+     "id": "787-1124-4450",
+     "bracket": "E",
+     "popularidade": 9393,
+     "descricao": "Activate The Chain Veil by paying {4} and tapping it, allowing an extra activation of all your planeswalkers' abilities until end of turn.\nActivate Teferi's second loyalty ability by removing zero loyalty counters from it, untapping The Chain Veil and up to three permanents that can tap to produce at least {5}.\nActivate up to three permanents by tapping them, adding at least {5}.\nRepeat."
+    }
+   },
+   "quase_viraram_combo": [
+    "Carth the Lion + Teferi, Temporal Archmage + The Chain Veil"
+   ],
+   "quase_novos_com_a_peca": [
+    "Carth the Lion + Lotus Petal + Oath of Teferi + Wrenn and Realmbreaker",
+    "Carth the Lion + Lotus Petal + The Chain Veil + Wrenn and Realmbreaker"
+   ]
+  },
+  "Commodore Guff": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Doubling Season": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Aminatou, the Fateshifter + Doubling Season + Ichormoon Gauntlet + Kiora, Behemoth Beckoner",
+    "Aminatou, the Fateshifter + Doubling Season + Ichormoon Gauntlet + Liliana, Dreadhorde General",
+    "Aminatou, the Fateshifter + Doubling Season + Ichormoon Gauntlet + Ugin, the Spirit Dragon",
+    "Chandra Ablaze + Displacer Kitten + Doubling Season",
+    "Chromatic Orrery + Doubling Season + Jetfire, Ingenious Scientist // Jetfire, Air Guardian",
+    "Doubling Season + Jace, Cunning Castaway",
+    "Doubling Season + Lotus Petal + Wrenn and Realmbreaker",
+    "Doubling Season + Replication Technique",
+    "Doubling Season + Spawnsire of Ulamog",
+    "Doubling Season + Springheart Nantuko + Wrenn and Realmbreaker",
+    "Doubling Season + Tooth and Claw"
+   ]
+  },
+  "The Theorist, Jace Beleren": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Interplanar Beacon": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Chromatic Lantern": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Farseek": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Deepglow Skate": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Deepglow Skate + Myojin of Cryptic Dreams",
+    "Deepglow Skate + Teferi, Master of Time + The Eternal Wanderer"
+   ]
+  },
+  "Swords to Plowshares": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Jumbo Cactuar + Swords to Plowshares"
+   ]
+  },
+  "Karn's Bastion": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Atraxa, Praetors' Voice": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Jace, Multiverse Architect": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Tekuthal, Inquiry Dominus": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Ichormoon Gauntlet + Jace, Cunning Castaway + Tekuthal, Inquiry Dominus"
+   ]
+  },
+  "Teferi, Master of Time": {
+   "n_combos": 5,
+   "novos": {
+    "Ichormoon Gauntlet + Teferi, Master of Time + The Chain Veil": {
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ],
+     "id": "1124-1543-2247",
+     "bracket": "R",
+     "popularidade": 18940,
+     "descricao": "Activate The Chain Veil by paying {4} and tapping it, allowing an extra activation of your planeswalkers' abilities this turn.\nActivate Teferi by putting zero loyalty counters on it, putting a loyalty counter on itself.\nRepeat step 2 twice for each other planeswalker you control.\nActivate Teferi's third loyalty ability by removing ten loyalty counters from it, causing you to take two extra turns a"
+    },
+    "Ichormoon Gauntlet + Oath of Teferi + Teferi, Master of Time": {
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ],
+     "id": "1543-2247-2369",
+     "bracket": "R",
+     "popularidade": 18106,
+     "descricao": "Activate Teferi by putting zero loyalty counters on it, putting a loyalty counter on itself.\nRepeat step 1 twice for each other planeswalker you control.\nActivate Teferi's third loyalty ability by removing ten loyalty counters from it, causing you to take two extra turns after this one.\nMove to your first extra turn.\nRepeat steps 1 and 2.\nMove to your second extra turn.\nRepeat."
+    },
+    "Aminatou, the Fateshifter + Ichormoon Gauntlet + Teferi, Master of Time": {
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ],
+     "id": "193-1543-2247",
+     "bracket": "R",
+     "popularidade": 2888,
+     "descricao": "Activate a planeswalker you control by putting zero loyalty counters on it, putting a loyalty counter on each planeswalker you control.\nRepeat step 1 two additional times.\nActivate Teferi's third loyalty ability by removing ten loyalty counters from it, causing you to take two extra turns after this one.\nActivate Aminatou's second loyalty ability by removing a loyalty counter from it, blinking Tef"
+    }
+   },
+   "quase_viraram_combo": [
+    "Ichormoon Gauntlet + Teferi, Master of Time + The Chain Veil",
+    "Ichormoon Gauntlet + Oath of Teferi + Teferi, Master of Time",
+    "Aminatou, the Fateshifter + Ichormoon Gauntlet + Teferi, Master of Time"
+   ],
+   "quase_novos_com_a_peca": [
+    "Aetheric Amplifier + Teferi, Master of Time",
+    "Deepglow Skate + Teferi, Master of Time + The Eternal Wanderer",
+    "Ichormoon Gauntlet + Rowan's Talent + Teferi, Master of Time"
+   ]
+  },
+  "Narset, Parter of Veils": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Narset, Parter of Veils + Teferi's Puzzle Box"
+   ]
+  },
+  "Ugin, the Spirit Dragon": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Aminatou, the Fateshifter + Doubling Season + Ichormoon Gauntlet + Ugin, the Spirit Dragon",
+    "Aminatou, the Fateshifter + Ichormoon Gauntlet + Ugin, the Spirit Dragon + Vorinclex, Monstrous Raider"
+   ]
+  },
+  "Liliana, Dreadhorde General": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Aminatou, the Fateshifter + Doubling Season + Ichormoon Gauntlet + Liliana, Dreadhorde General",
+    "Aminatou, the Fateshifter + Ichormoon Gauntlet + Liliana, Dreadhorde General + Vorinclex, Monstrous Raider"
+   ]
+  },
+  "Nature's Lore": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Lae'zel, Vlaakith's Champion": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Chromatic Orrery + Jetfire, Ingenious Scientist // Jetfire, Air Guardian + Lae'zel, Vlaakith's Champion",
+    "Ichormoon Gauntlet + Jace, Cunning Castaway + Lae'zel, Vlaakith's Champion",
+    "Jace, Cunning Castaway + Lae'zel, Vlaakith's Champion + Oath of Teferi",
+    "Jace, Cunning Castaway + Lae'zel, Vlaakith's Champion + The Chain Veil"
+   ]
+  },
+  "Evolution Sage": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Spark Double": {
+   "n_combos": 3,
+   "novos": {
+    "Aminatou, the Fateshifter + Oath of Teferi + Spark Double": {
+     "produz": [
+      "Infinite blinking of permanents",
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana lands you control can produce"
+     ],
+     "id": "193-2369-3908",
+     "bracket": "S",
+     "popularidade": 6387,
+     "descricao": "Activate Aminatou's second loyalty ability by removing a loyalty counter from them, blinking a permanent you own.\nActivate Aminatou's second loyalty ability by removing a loyalty counter from them, blinking Spark Double and choosing to have it enter as a non-legendary copy of Aminatou.\nActivate Spark Double's second loyalty ability by removing a loyalty counter from it, blinking a permanent you ow"
+    }
+   },
+   "quase_viraram_combo": [
+    "Aminatou, the Fateshifter + Oath of Teferi + Spark Double"
+   ],
+   "quase_novos_com_a_peca": [
+    "Altar of the Brood + Aminatou, the Fateshifter + Spark Double",
+    "Aminatou, the Fateshifter + Rings of Brighthearth + Spark Double + Teferi, Temporal Archmage",
+    "Enduring Scalelord + Spark Double",
+    "Felidar Guardian + Spark Double",
+    "Garruk Relentless // Garruk, the Veil-Cursed + Spark Double",
+    "Kiki-Jiki, Mirror Breaker + Spark Double",
+    "Mirror-Mad Phantasm + Spark Double",
+    "Omarthis, Ghostfire Initiate + Spark Double",
+    "Pramikon, Sky Rampart + Spark Double",
+    "Spark Double + Terra, Magical Adept // Esper Terra",
+    "Spark Double + Wispweaver Angel"
+   ]
+  },
+  "Three Visits": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Oath of Ajani": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Teferi, Time Raveler": {
+   "n_combos": 3,
+   "novos": {
+    "Displacer Kitten + Sol Ring + Teferi, Time Raveler": {
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite colorless mana",
+      "Near-infinite storm count"
+     ],
+     "id": "1170-4761-5034",
+     "bracket": "E",
+     "popularidade": 45867,
+     "descricao": "Cast Sol Ring by paying {1}.\nDisplacer Kitten triggers, blinking Teferi.\nActivate Sol Ring by tapping it, adding {C}{C}.\nActivate Teferi's second loyalty ability by removing three loyalty counters from it, returning Sol Ring from the battlefield to your hand and drawing a card.\nRepeat."
+    }
+   },
+   "quase_viraram_combo": [
+    "Displacer Kitten + Sol Ring + Teferi, Time Raveler"
+   ],
+   "quase_novos_com_a_peca": [
+    "Basalt Monolith + Displacer Kitten + Teferi, Time Raveler",
+    "Displacer Kitten + Grim Monolith + Teferi, Time Raveler",
+    "Displacer Kitten + Mana Crypt + Teferi, Time Raveler",
+    "Displacer Kitten + Mana Vault + Teferi, Time Raveler",
+    "Displacer Kitten + Mox Amber + Teferi, Time Raveler",
+    "Displacer Kitten + Mox Opal + Teferi, Time Raveler",
+    "Displacer Kitten + Pentad Prism + Teferi, Time Raveler",
+    "Displacer Kitten + Teferi, Time Raveler + The Great Henge",
+    "Displacer Kitten + Teferi, Time Raveler + The One Ring",
+    "Knowledge Pool + Teferi, Time Raveler",
+    "Omen Machine + Teferi, Time Raveler",
+    "Possibility Storm + Teferi, Time Raveler"
+   ]
+  },
+  "Brokers Ascendancy": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Delighted Halfling": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Path to Exile": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Vorinclex, Monstrous Raider": {
+   "n_combos": 3,
+   "novos": {
+    "Vorinclex, Monstrous Raider + Vraska, Betrayal's Sting": {
+     "produz": [
+      "Target opponent loses the game"
+     ],
+     "id": "1529-1887",
+     "bracket": "S",
+     "popularidade": 30433,
+     "descricao": "Cast Vraska by paying {4}{B}{B}, causing it to enter with at least ten loyalty counters due to Vorinclex.\nActivate Vraska's third loyalty ability by removing nine loyalty counters from it, causing target opponent to get enough poison counters such that they will have at least ten poison counters.\nThe opponent loses the game due to having ten or more poison counters."
+    }
+   },
+   "quase_viraram_combo": [
+    "Vorinclex, Monstrous Raider + Vraska, Betrayal's Sting"
+   ],
+   "quase_novos_com_a_peca": [
+    "Aminatou, the Fateshifter + Ichormoon Gauntlet + Kiora, Behemoth Beckoner + Vorinclex, Monstrous Raider",
+    "Aminatou, the Fateshifter + Ichormoon Gauntlet + Liliana, Dreadhorde General + Vorinclex, Monstrous Raider",
+    "Aminatou, the Fateshifter + Ichormoon Gauntlet + Ugin, the Spirit Dragon + Vorinclex, Monstrous Raider",
+    "Chandra Ablaze + Displacer Kitten + Vorinclex, Monstrous Raider",
+    "Chromatic Orrery + Jetfire, Ingenious Scientist // Jetfire, Air Guardian + Vorinclex, Monstrous Raider",
+    "Jace, Cunning Castaway + Vorinclex, Monstrous Raider",
+    "Lotus Petal + Vorinclex, Monstrous Raider + Wrenn and Realmbreaker"
+   ]
+  },
+  "Mutational Advantage": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Tomik, Orzhov Lawmage": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Gideon's Memorial": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Reflecting Pool": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Godless Shrine": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  },
+  "Chandra, Torch of Defiance": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": [
+    "Chandra, Bold Pyromancer + Chandra, Torch of Defiance + Tezzeret the Seeker + The Chain Veil",
+    "Chandra, Hope's Beacon + Chandra, Torch of Defiance + Tezzeret the Seeker + The Chain Veil"
+   ]
+  },
+  "Chandra, Chill of Compliance": {
+   "n_combos": 2,
+   "novos": {},
+   "quase_viraram_combo": [],
+   "quase_novos_com_a_peca": []
+  }
+ },
+ "controle_positivo": true,
+ "controle_de_corte": true
+}

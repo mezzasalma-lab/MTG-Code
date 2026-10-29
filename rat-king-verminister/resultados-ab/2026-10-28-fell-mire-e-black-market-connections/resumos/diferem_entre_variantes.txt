@@ -1,0 +1,28 @@
+Fração de partidas com resultado IDÊNTICO entre pares de variantes (N=10.000, sementes 3.000.000+i), só dos brutos arquivados.
+Serve de controle (Regra #10 item 4): variante que não difere da outra é vácua; aqui se vê quais diferem.
+
+[padrao] N=10000
+  depois                     x fell_piso_vida_4                   idênticas= 10000 (100.00%)
+  depois                     x fell_max_terrenos_99               idênticas=  9904 ( 99.04%)
+  depois                     x fell_max_terrenos_4                idênticas=  9497 ( 94.97%)
+  depois                     x fell_nunca_paga_vida               idênticas=  9489 ( 94.89%)
+  depois                     x so_bmc                             idênticas=  7862 ( 78.62%)
+  depois                     x so_tapped_first_mana               idênticas=  8041 ( 80.41%)
+  depois                     x so_fell_terreno_e_keep             idênticas=  8071 ( 80.71%)
+  so_fell_terreno            x so_fell_terreno_e_keep             idênticas=  9759 ( 97.59%)
+  antes                      x ref_sem_terreno_virado_primeiro    idênticas=  6437 ( 64.37%)
+  so_bmc                     x so_tapped_first_mana               idênticas=  8061 ( 80.61%)
+  antes                      x depois                             idênticas=  7132 ( 71.32%)
+
+[resiliencia] N=10000
+  depois                     x fell_piso_vida_4                   idênticas= 10000 (100.00%)
+  depois                     x fell_max_terrenos_99               idênticas=  9898 ( 98.98%)
+  depois                     x fell_max_terrenos_4                idênticas=  9488 ( 94.88%)
+  depois                     x fell_nunca_paga_vida               idênticas=  9540 ( 95.40%)
+  depois                     x so_bmc                             idênticas=  7837 ( 78.37%)
+  depois                     x so_tapped_first_mana               idênticas=  8061 ( 80.61%)
+  depois                     x so_fell_terreno_e_keep             idênticas=  8119 ( 81.19%)
+  so_fell_terreno            x so_fell_terreno_e_keep             idênticas=  9759 ( 97.59%)
+  antes                      x ref_sem_terreno_virado_primeiro    idênticas=  6437 ( 64.37%)
+  so_bmc                     x so_tapped_first_mana               idênticas=  8106 ( 81.06%)
+  antes                      x depois                             idênticas=  7144 ( 71.44%)

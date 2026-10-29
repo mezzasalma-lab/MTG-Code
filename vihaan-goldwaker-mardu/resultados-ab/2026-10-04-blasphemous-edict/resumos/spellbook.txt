@@ -1,0 +1,29 @@
+base (lista atual, com Blasphemous Act)            n=99 incluidos=4 quase=98 id=RWB
++Blasphemous Edict (sem cortar nada)               n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act (sem entrar nada)                 n=98 incluidos=4 quase=94 id=RWB
+-Blasphemous Act +Blasphemous Edict (a troca)      n=99 incluidos=4 quase=94 id=RWB
+CONTROLE -Smothering Tithe                         n=98 incluidos=1 quase=96 id=RWB
+CONTROLE -Ashnod's Altar                           n=98 incluidos=3 quase=67 id=RWB
+CONTROLE -Mayhem Devil                             n=98 incluidos=4 quase=95 id=RWB
+
+[+Blasphemous Edict (sem cortar nada)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act (sem entrar nada)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[-Blasphemous Act +Blasphemous Edict (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[CONTROLE -Smothering Tithe] combos que SUMIRAM: ['Anointed Procession + Gleaming Splendor + Smothering Tithe', 'Gleaming Splendor + Goldspan Dragon + Smothering Tithe', 'Gleaming Splendor + Smothering Tithe + Xorn'] | NOVOS: []
+   'quase' que sumiram: 5 | 'quase' novos: 3
+      quase novo + Anointed Procession + Gleaming Splendor + Smothering Tithe
+      quase novo + Gleaming Splendor + Goldspan Dragon + Smothering Tithe
+      quase novo + Gleaming Splendor + Smothering Tithe + Xorn
+
+[CONTROLE -Ashnod's Altar] combos que SUMIRAM: ["Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches"] | NOVOS: []
+   'quase' que sumiram: 32 | 'quase' novos: 1
+      quase novo + Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches
+
+[CONTROLE -Mayhem Devil] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 3 | 'quase' novos: 0

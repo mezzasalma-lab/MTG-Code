@@ -1,0 +1,129 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "opps_eliminated_total",
+  "fractured_casts",
+  "fractured_cycles",
+  "scorch_attacks",
+  "scorch_token_events",
+  "scorch_tokens",
+  "scorch_skipped",
+  "scorch_rad_self",
+  "tide_triggers",
+  "crystal_activations",
+  "crystal_counters",
+  "warp_casts",
+  "warp_exiled",
+  "warp_recasts",
+  "persist_zero_deaths",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "counters_placed_total",
+  "cards_milled_opp_total",
+  "cards_milled_self_total",
+  "library_min",
+  "draws_total",
+  "tokens_created"
+ ],
+ "compacto": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "scorch_tokens",
+  "tide_triggers",
+  "fractured_casts",
+  "crystal_activations",
+  "warp_casts",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total"
+ ],
+ "variantes": {
+  "base": {},
+  "seis_no_lugar": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Fractured Sanity"
+    ],
+    [
+     "Negate",
+     "Screeching Scorchbeast"
+    ],
+    [
+     "Arcane Denial",
+     "Inexorable Tide"
+    ],
+    [
+     "Toxic Deluge",
+     "Branching Evolution"
+    ],
+    [
+     "Cold-Eyed Selkie",
+     "Loading Zone"
+    ],
+    [
+     "Didn't Say Please",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "seis_remove_append_scorch1": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Fractured Sanity"
+    ],
+    [
+     "Negate",
+     "Screeching Scorchbeast"
+    ],
+    [
+     "Arcane Denial",
+     "Inexorable Tide"
+    ],
+    [
+     "Toxic Deluge",
+     "Branching Evolution"
+    ],
+    [
+     "Cold-Eyed Selkie",
+     "Loading Zone"
+    ],
+    [
+     "Didn't Say Please",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": false,
+   "SCORCH_MIN_X": 1
+  },
+  "base_persist_antigo": {
+   "PERSIST_ZERO_TOUGHNESS_DIES": false
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "seis_no_lugar",
+  "seis_remove_append_scorch1",
+  "base_persist_antigo"
+ ],
+ "regressao": [
+  "base",
+  "seis_no_lugar",
+  "seis_remove_append_scorch1",
+  "base_persist_antigo"
+ ]
+}

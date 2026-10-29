@@ -1,0 +1,35 @@
+== fim do T1 (* = virado)
+  battlefield     (1): Zagoth Triome*
+  hand            (6): Basking Broodscale, Gyre Sage, Island, Kami of Whispered Hopes, Takenuma, Abandoned Mire, The Great Henge
+  graveyard       (0): 
+  opponentsCards  (0): 
+== fim do T2 (* = virado)
+  battlefield     (3): Gyre Sage, Island*, Zagoth Triome*
+  hand            (5): Basking Broodscale, Kami of Whispered Hopes, Takenuma, Abandoned Mire, The Great Henge, Winding Constrictor
+  graveyard       (0): 
+  opponentsCards  (0): 
+== fim do T3 (* = virado)
+  battlefield     (5): Gyre Sage*, Island*, Swarmyard*, The Wise Mothman, Zagoth Triome*
+  hand            (5): Basking Broodscale, Kami of Whispered Hopes, Takenuma, Abandoned Mire, The Great Henge, Winding Constrictor
+  graveyard       (0): 
+  opponentsCards  (0): 
+== fim do T4 (* = virado)
+  battlefield     (8): Basking Broodscale[+1 / +1x1], Eldrazi Spawn, Gyre Sage*[+1 / +1x1], Island*, Swarmyard*, The Great Henge*, The Wise Mothman*[+1 / +1x1], Zagoth Triome*
+  hand            (4): Kami of Whispered Hopes, Soul-Guide Lantern, Takenuma, Abandoned Mire, Winding Constrictor
+  graveyard       (1): Cankerbloom
+  opponentsCards  (0): 
+== fim do T5 (* = virado)
+  battlefield     (11): Basking Broodscale[+1 / +1x1], Eldrazi Spawn, Gyre Sage[+1 / +1x3], Island, Kami of Whispered Hopes[+1 / +1x2], Strip Mine*, Swarmyard*, The Great Henge*, The Wise Mothman*[+1 / +1x4], Winding Constrictor[+1 / +1x1], Zagoth Triome*
+  hand            (4): Overgrown Tomb, Soul-Guide Lantern, Takenuma, Abandoned Mire, Undergrowth Stadium
+  graveyard       (2): Cankerbloom, Mindcrank
+  opponentsCards  (0): 
+== fim do T6 (* = virado)
+  battlefield     (15): Basking Broodscale[+1 / +1x6], Eldrazi Spawn, Eldrazi Spawn, Gyre Sage[+1 / +1x9], Island*, Kami of Whispered Hopes[+1 / +1x8], Ouroboroid[+1 / +1x10], Soul-Guide Lantern, Strip Mine*, Swarmyard*, The Great Henge*, The Wise Mothman*[+1 / +1x10], Undergrowth Stadium, Winding Constrictor[+1 / +1x7], Zagoth Triome
+  hand            (3): Overgrown Tomb, Takenuma, Abandoned Mire, Watery Grave
+  graveyard       (3): Cankerbloom, Fierce Guardianship, Mindcrank
+  opponentsCards  (0): 
+== fim do T7 (* = virado)
+  battlefield     (16): Basking Broodscale[+1 / +1x6], Eldrazi Spawn, Eldrazi Spawn, Forest, Gyre Sage[+1 / +1x9], Island, Kami of Whispered Hopes[+1 / +1x8], Ouroboroid[+1 / +1x23], Soul-Guide Lantern, Strip Mine, Swarmyard, The Great Henge, The Wise Mothman[+1 / +1x10], Undergrowth Stadium, Winding Constrictor[+1 / +1x7], Zagoth Triome
+  hand            (3): Overgrown Tomb, Takenuma, Abandoned Mire, Watery Grave
+  graveyard       (4): Cankerbloom, Fierce Guardianship, Mindcrank, Misty Rainforest
+  opponentsCards  (0): 

@@ -1,0 +1,190 @@
+{
+ "sim": "resultados-ab/2026-10-09-terrenos-proxy/codigo/mothman_goldfish_v1_DEPOIS.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "commander_cast_turn__nunca",
+  "casualties_casts",
+  "atomize_casts",
+  "trophy_casts",
+  "regenerations_used",
+  "protection_used_total",
+  "smart_removals_total",
+  "smart_wipes_total",
+  "commander_countered_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "mana_spent_total",
+  "life_min",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total",
+  "rad_counters_given_opp_total",
+  "fetches_cracked_total"
+ ],
+ "compacto": [
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "regenerations_used",
+  "smart_removals_total",
+  "protection_used_total"
+ ],
+ "variantes": {
+  "base": {},
+  "a1_hollow_sea": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "a2_hollow_bayou": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Bayou"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "a3_swarmyard_sea": {
+   "SWAPS": [
+    [
+     "Swarmyard",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s1_bog_swamp": {
+   "SWAPS": [
+    [
+     "Bojuka Bog",
+     "Swamp"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s2_woodland_forest": {
+   "SWAPS": [
+    [
+     "Shifting Woodland",
+     "Forest"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s3_grove_island": {
+   "SWAPS": [
+    [
+     "Waterlogged Grove",
+     "Island"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "s4_minamo_island": {
+   "SWAPS": [
+    [
+     "Minamo, School at Water's Edge",
+     "Island"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "v1_passage_vista": {
+   "SWAPS": [
+    [
+     "Fabled Passage",
+     "Prismatic Vista"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "c1_hollow_sea_bog_bayou": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Underground Sea"
+    ],
+    [
+     "Bojuka Bog",
+     "Bayou"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "c2_hollow_sea_woodland_bayou": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Underground Sea"
+    ],
+    [
+     "Shifting Woodland",
+     "Bayou"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "c3_hollow_sea_grove_bayou": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Underground Sea"
+    ],
+    [
+     "Waterlogged Grove",
+     "Bayou"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "c4_hollow_sea_minamo_bayou": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Underground Sea"
+    ],
+    [
+     "Minamo, School at Water's Edge",
+     "Bayou"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "a1_hollow_sea",
+  "a2_hollow_bayou",
+  "a3_swarmyard_sea",
+  "s1_bog_swamp",
+  "s2_woodland_forest",
+  "s3_grove_island",
+  "s4_minamo_island",
+  "v1_passage_vista",
+  "c1_hollow_sea_bog_bayou",
+  "c2_hollow_sea_woodland_bayou",
+  "c3_hollow_sea_grove_bayou",
+  "c4_hollow_sea_minamo_bayou"
+ ],
+ "regressao": [
+  "c1_hollow_sea_bog_bayou",
+  "v1_passage_vista"
+ ]
+}

@@ -1,0 +1,95 @@
+base                               cartas=99 distintas=91 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+w1_vista_fabled                    cartas=99 distintas=91 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+feito 10000 padrao base
+feito 10000 padrao w1_vista_fabled
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
+
+[w1_vista_fabled - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1922       0.1874      -0.0048 ±0.0023  
+  *cleared_T8                                   0.6031       0.5995      -0.0036 ±0.0028  
+  *cleared_T10                                  0.8925       0.8908      -0.0017 ±0.0016  
+  *first_elim_T6                                0.4593       0.4542      -0.0051 ±0.0027  
+   self_lost                                    0.0262       0.0269      +0.0007 ±0.0010  
+   decked                                       0.0262       0.0269      +0.0007 ±0.0010  
+  *commander_cast_turn__ate_T3                  0.1573       0.1529      -0.0044 ±0.0018  
+  *commander_cast_turn__ate_T4                  0.6617       0.6596      -0.0021 ±0.0020  
+   commander_cast_turn__ate_T5                  0.7898       0.7883      -0.0015 ±0.0018  
+   commander_cast_turn__ate_T6                  0.8665       0.8655      -0.0010 ±0.0015  
+   commander_cast_turn__nunca                   0.0106       0.0108      +0.0002 ±0.0004  
+   commander_cast_count                         0.9968       0.9972      +0.0004 ±0.0015  
+   interaction_plays                            0.5794       0.5761      -0.0033 ±0.0047  
+   lands_entered_total                         11.4653      11.4767      +0.0114 ±0.0271  
+   mana_spent_total                             3.8748       3.8601      -0.0147 ±0.0393  
+  *life_min                                    32.6307      32.9555      +0.3248 ±0.0233  
+   mothman_counters_placed_total               81.6416      81.7397      +0.0981 ±0.4275  
+   cards_milled_opp_total                      81.2769      81.2856      +0.0087 ±0.3783  
+   rad_counters_given_opp_total                13.7279      13.7193      -0.0086 ±0.0253  
+   fetches_cracked_total                        1.2323       1.2327      +0.0004 ±0.0079  
+  *tapped_land_first_plays_total                0.1979       0.2556      +0.0577 ±0.0049  
+  *tapped_land_skipped_for_play_total           0.0873       0.1227      +0.0354 ±0.0041  
+  *life                                        36.9732      37.3335      +0.3603 ±0.0728  
+  *len_cards_in_hand_by_turn                    7.5410       7.5539      +0.0129 ±0.0063  
+  *len_counters_on_board_by_turn                7.5410       7.5539      +0.0129 ±0.0063  
+  *len_creature_count_by_turn                   7.5410       7.5539      +0.0129 ±0.0063  
+  *len_lands_in_play_by_turn                    7.5410       7.5539      +0.0129 ±0.0063  
+  *len_library_by_turn                          7.5410       7.5539      +0.0129 ±0.0063  
+  *len_mothman_power_turn                       7.5410       7.5539      +0.0129 ±0.0063  
+  *turn_id                                     28.8278      28.8741      +0.0463 ±0.0235  
+  *turn                                         8.4467       8.4587      +0.0120 ±0.0061  
+  *opp_turns_total                             20.3811      20.4154      +0.0343 ±0.0179  
+  *opp_spells_total                            18.1086      18.1436      +0.0350 ±0.0183  
+  *opp_noncreature_spells_total                 9.9488       9.9687      +0.0199 ±0.0104  
+feito 10000 resiliencia base
+feito 10000 resiliencia w1_vista_fabled
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[w1_vista_fabled - base] N=10000 | partidas com resultado IDENTICO ao da base: 103 (1.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T7                                   0.0747       0.0731      -0.0016 ±0.0017  
+   cleared_T8                                   0.2819       0.2812      -0.0007 ±0.0027  
+   cleared_T10                                  0.6289       0.6270      -0.0019 ±0.0028  
+  *first_elim_T6                                0.2793       0.2755      -0.0038 ±0.0025  
+   self_lost                                    0.0144       0.0138      -0.0006 ±0.0009  
+   decked                                       0.0144       0.0138      -0.0006 ±0.0009  
+  *commander_cast_turn__ate_T3                  0.1465       0.1424      -0.0041 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.6087       0.6061      -0.0026 ±0.0021  
+  *commander_cast_turn__ate_T5                  0.7324       0.7298      -0.0026 ±0.0020  
+  *commander_cast_turn__ate_T6                  0.8221       0.8202      -0.0019 ±0.0019  
+   commander_cast_turn__nunca                   0.0169       0.0174      +0.0005 ±0.0007  
+   protection_used_total                        0.1070       0.1069      -0.0001 ±0.0019  
+   smart_removals_total                         0.8703       0.8731      +0.0028 ±0.0052  
+   smart_wipes_total                            0.6309       0.6296      -0.0013 ±0.0044  
+   commander_countered_total                    0.1186       0.1202      +0.0016 ±0.0021  
+   commander_cast_count                         1.4877       1.4868      -0.0009 ±0.0043  
+  *interaction_plays                            0.6609       0.6540      -0.0069 ±0.0050  
+   lands_entered_total                         11.5611      11.5545      -0.0066 ±0.0273  
+   mana_spent_total                             4.3985       4.3759      -0.0226 ±0.0397  
+  *life_min                                    30.4076      30.7334      +0.3258 ±0.0275  
+   mothman_counters_placed_total               58.4308      58.3585      -0.0723 ±0.4043  
+   cards_milled_opp_total                      68.5742      68.6226      +0.0484 ±0.3727  
+   rad_counters_given_opp_total                15.2237      15.2011      -0.0226 ±0.0308  
+   fetches_cracked_total                        1.1997       1.1972      -0.0025 ±0.0081  
+  *tapped_land_first_plays_total                0.1979       0.2556      +0.0577 ±0.0049  
+  *tapped_land_skipped_for_play_total           0.0873       0.1227      +0.0354 ±0.0041  
+  *life                                        33.7285      34.0871      +0.3586 ±0.0721  
+  *len_opp_cards_milled_by_turn                 6.1472       6.1314      -0.0158 ±0.0097  
+  *len_milled_opp_creatures                     2.8133       2.8091      -0.0042 ±0.0027  
+  *horrigan_enter_turn__ate_T5                  0.0063       0.0054      -0.0009 ±0.0006  
+  *altar_brood_mills                            4.0070       4.1137      +0.1067 ±0.0699  
+  *first_opp_elim_turn__ate_T6                  0.2793       0.2755      -0.0038 ±0.0025  
+  *channel_total                                0.0594       0.0565      -0.0029 ±0.0019  
+  *hollowmurk_triggered_this_turn               0.1834       0.1867      +0.0033 ±0.0025  
+  *cauldron_exiles_total                        0.5459       0.5365      -0.0094 ±0.0075  
+  *cauldron_exiles_opp                          0.4862       0.4778      -0.0084 ±0.0068  
+  *first_finisher_turn__ate_T4                  0.1499       0.1480      -0.0019 ±0.0016  
+  *cauldron_counters_total                      0.5300       0.5215      -0.0085 ±0.0072  
+COMPACTO N=10000 modo padrao: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T8            cleared_T10          first_elim_T6              self_lost commander_cast_turn__ate_T3 commander_cast_turn__ate_T4 commander_cast_turn__ate_T5               life_min  fetches_cracked_total
+base (media)                                                         0.6031                 0.8925                 0.4593                 0.0262                 0.1573                 0.6617                 0.7898                32.6307                 1.2323
+w1_vista_fabled                                           -0.0036±0.0028  *      -0.0017±0.0016  *      -0.0051±0.0027  *      +0.0007±0.0010         -0.0044±0.0018  *      -0.0021±0.0020  *      -0.0015±0.0018         +0.3248±0.0233  *      +0.0004±0.0079   
+COMPACTO N=10000 modo resiliencia: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T8            cleared_T10          first_elim_T6              self_lost commander_cast_turn__ate_T3 commander_cast_turn__ate_T4 commander_cast_turn__ate_T5               life_min  fetches_cracked_total
+base (media)                                                         0.2819                 0.6289                 0.2793                 0.0144                 0.1465                 0.6087                 0.7324                30.4076                 1.1997
+w1_vista_fabled                                           -0.0007±0.0027         -0.0019±0.0028         -0.0038±0.0025  *      -0.0006±0.0009         -0.0041±0.0017  *      -0.0026±0.0021  *      -0.0026±0.0020  *      +0.3258±0.0275  *      -0.0025±0.0081   
+w rc=0 08:13:40

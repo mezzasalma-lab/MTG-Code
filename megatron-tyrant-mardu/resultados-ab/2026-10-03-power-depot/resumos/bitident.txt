@@ -1,0 +1,3 @@
+Megatron (PD_POLICY=core): 300/300 partidas idênticas em 123 campos do GameState (original sem patch x base do harness); divergências por campo: nenhuma
+Megatron (PD_POLICY=early): 300/300 partidas idênticas em 123 campos do GameState (original sem patch x base do harness); divergências por campo: nenhuma
+Megatron (PD_POLICY=fodder7): 300/300 partidas idênticas em 123 campos do GameState (original sem patch x base do harness); divergências por campo: nenhuma

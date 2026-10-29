@@ -1,0 +1,30 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8385 (83.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.1536       6.1692      +0.0156 ±0.0070  
+  *landfall_elf_tokens_total                    0.2501       0.3562      +0.1061 ±0.0094  
+  *landfall_counters_total                      0.3292       0.4500      +0.1208 ±0.0104  
+   tokens_created_total                      1002.8867    1030.9947     +28.1080 ±42.2181 
+   elf_tokens                                1001.4788    1029.5888     +28.1100 ±42.2172 
+   ramp_pieces_cast_total                       5.0055       5.0103      +0.0048 ±0.0171  
+   staff_infinite_draws                         2.1122       2.1231      +0.0109 ±0.0698  
+   commander_cast_turn__ate_T4                  0.4937       0.4938      +0.0001 ±0.0002  
+   infinite_combo_turn__nunca                   0.8396       0.8397      +0.0001 ±0.0024  
+  *infinite_combo_turn__ate_T4                  0.0031       0.0036      +0.0005 ±0.0004  
+   infinite_combo_turn__ate_T5                  0.0198       0.0201      +0.0003 ±0.0006  
+   infinite_combo_turn__ate_T6                  0.0490       0.0494      +0.0004 ±0.0009  
+  *cards_exiled_total                          23.2003      23.3726      +0.1723 ±0.0597  
+  *maralen_triggers_total                      12.8792      13.0164      +0.1372 ±0.0476  
+  *marwyn_power                                 2.6000       2.6741      +0.0741 ±0.0268  
+  *len_library                                 52.0717      51.8431      -0.2286 ±0.1049  
+  *itlimoc_transform_turn__ate_T5               0.0684       0.0696      +0.0012 ±0.0008  
+  *library_emptied                              0.1048       0.1077      +0.0029 ±0.0020  
+  *itlimoc_transform_turn__ate_T6               0.1310       0.1328      +0.0018 ±0.0013  
+  *len_battlefield                             21.3383      21.3980      +0.0597 ±0.0435  
+  *black_market_mercenaries_total               0.4686       0.4727      +0.0041 ±0.0030  
+  *black_market_treasures_total                 0.4686       0.4727      +0.0041 ±0.0030  
+  *interaction_spells_cast_total                2.4983       2.5116      +0.0133 ±0.0104  
+  *life                                        35.7805      35.7579      -0.0226 ±0.0190  
+  *len_graveyard                                3.0668       3.0799      +0.0131 ±0.0112  
+  *warmaster_used_this_turn                     0.1961       0.1990      +0.0029 ±0.0026  

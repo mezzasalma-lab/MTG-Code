@@ -1,0 +1,3 @@
+det_check.sh (3 PYTHONHASHSEED x 1500 sementes x 2 modos, campo a campo), simulador com LANDFALL_PAYOFF_FIRST=True (padrao):
+wise-mothman-sultai padrao       N=1500 sementes divergentes entre 3 hash seeds: 0
+wise-mothman-sultai resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0

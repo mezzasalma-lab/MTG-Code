@@ -1,0 +1,8 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia (oponente esperto, simulate_one_with_interaction)
+ANTES: win<=T8 3.8% | Treasures criados 7.84 (estoque no fim 1.84) | dano mesa 9.32 combate 33.84 drain 4.22 | mortes de criatura 4.89 | mana bonus 1.00 | recursoes 0.22 | mana T5 5.017 T6 5.920
+variante  win<=8 pp      Treasures criados estoque no fim dano mesa      combate        drain          mortes cria.   mana bonus     mana T5        mana T6       
+bats       -0.100±0.139   +0.000±0.000   +0.000±0.000   -0.120±0.080   +0.000±0.000   -0.040±0.027   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+
+variante  jogos iguais dreno atribuivel ao Bats       saidas de ficha c/ Bats (sem Nadier) Blood Money        Blasphemous Act    pool expirado 
+antes     100.0%       0.2180                         0.1275                             0.0000             0.0000             0.7335        
+bats       99.2%       0.1800                         0.1275                             0.0000             0.0000             0.7335        

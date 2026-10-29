@@ -1,0 +1,22 @@
+{
+ "flags_off": {
+  "LAND_ENTER_TRIGGERS_ALL_ENABLED": false
+ },
+ "ignora_campos": [
+  "returned_land_landfall_total",
+  "evolution_sage_proliferates"
+ ],
+ "sensibilidade": {},
+ "turns": 8,
+ "extra": [
+  false
+ ],
+ "destaque": [
+  "returned_land_landfall_total",
+  "evolution_sage_proliferates",
+  "lands_played_total"
+ ],
+ "deck": "prismatic-bridge-wurbg",
+ "sim": "prismatic_bridge_goldfish_v1.py",
+ "snapshot": "codigo/prismatic_bridge_goldfish_v1_ANTES_2c2da70.py"
+}

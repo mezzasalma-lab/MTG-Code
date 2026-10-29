@@ -1,0 +1,1375 @@
+{
+ "deck": "ur-dragon-wurbg",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "The Ur-Dragon",
+   "incluidos": {
+    "Ancient Gold Dragon + Dragon Tempest": {
+     "id": "2855-5982",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage"
+     ],
+     "usa": [
+      "Dragon Tempest",
+      "Ancient Gold Dragon"
+     ],
+     "prerequisitos": ""
+    },
+    "Hellkite Charger + Old Gnawbone": {
+     "id": "1800-3398",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers",
+      "Infinite artifact tokens"
+     ],
+     "usa": [
+      "Old Gnawbone",
+      "Hellkite Charger"
+     ],
+     "prerequisitos": ""
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Terror of the Peaks": {
+     "id": "380-1110-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers",
+      "Infinite damage"
+     ],
+     "usa": [
+      "Miirym, Sentinel Wyrm",
+      "Bladewing the Risen",
+      "Terror of the Peaks"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Aggravated Assault + Ancient Copper Dragon": {
+     "id": "778-3750",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite colored mana",
+      "Near-infinite combat damage",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Aggravated Assault + Old Gnawbone": {
+     "id": "1800-3750",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Aggravated Assault + Savage Ventmaw": {
+     "id": "62-3750",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite green mana"
+     ]
+    },
+    "Orthion, Hero of Lavabrink + Terror of the Peaks": {
+     "id": "1110-2136",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Jumbo Cactuar + Swords to Plowshares": {
+     "id": "3779-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain"
+     ]
+    },
+    "Heartless Hidetsugu + Twinflame Tyrant": {
+     "id": "3011-6093",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage",
+      "Each opponent with an even life total loses the game"
+     ]
+    },
+    "Aggravated Assault + Magda, Brazen Outlaw": {
+     "id": "1486-3750",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases"
+     ]
+    },
+    "Clock of Omens + Magda, Brazen Outlaw + Roaming Throne": {
+     "id": "1486-1651-5334",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Hellkite Charger + Sozin's Comet": {
+     "id": "3398-6999",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite red mana",
+      "Infinite combat damage"
+     ]
+    },
+    "Old Gnawbone + Revel in Riches": {
+     "id": "1800-2429",
+     "bracketTag": "S",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Rionya, Fire Dancer + Terror of the Peaks": {
+     "id": "1110-1908",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Smothering Tithe + Stasis": {
+     "id": "1025-4682",
+     "bracketTag": "R",
+     "produz": [
+      "Mass Land Denial",
+      "Players skip their untap steps",
+      "Lock"
+     ]
+    },
+    "Ad Nauseam + Teferi's Protection": {
+     "id": "335-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw"
+     ]
+    },
+    "Devastating Onslaught + Terror of the Peaks": {
+     "id": "1110-6785",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Firebending Student + Hellkite Charger": {
+     "id": "3398-7016",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite red mana",
+      "Infinite combat damage"
+     ]
+    },
+    "Hellkite Charger + The Reaver Cleaver": {
+     "id": "3398-5039",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Fire Nation Turret + Hellkite Charger": {
+     "id": "3398-7067",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite damage",
+      "Infinite red mana"
+     ]
+    },
+    "Hellkite Charger + Iroh, Dragon of the West": {
+     "id": "3398-7389",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite red mana"
+     ]
+    },
+    "Rite of Replication + Terror of the Peaks": {
+     "id": "1110-1744",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Fire Lord Zuko + Hellkite Charger": {
+     "id": "3398-6866",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases"
+     ]
+    },
+    "Hellkite Charger + Zuko, Firebending Master": {
+     "id": "3398-7017",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite red mana"
+     ]
+    },
+    "Hellkite Charger + Sword of Feast and Famine": {
+     "id": "900-3398",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite damage"
+     ]
+    },
+    "Grand Warlord Radha + Hellkite Charger": {
+     "id": "1059-3398",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite green mana",
+      "Infinite red mana"
+     ]
+    },
+    "Gleaming Splendor + Goldspan Dragon + Smothering Tithe": {
+     "id": "3809-4682-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Bear Umbra + Hellkite Charger": {
+     "id": "3398-4228",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases"
+     ]
+    },
+    "Clock of Omens + Firdoch Core + Magda, Brazen Outlaw": {
+     "id": "1486-1651-7298",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact tokens",
+      "Infinite tapped Treasure tokens"
+     ]
+    },
+    "Murderous Redcap + Rhythm of the Wild": {
+     "id": "1657-2376",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Molten Echoes": {
+     "id": "2506-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Rite of Replication + Scourge of Valkas": {
+     "id": "1744-2676",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Scourge of Valkas + Vrondiss, Rage of Ancients": {
+     "id": "2676-4245",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Dragon Tempest + Vrondiss, Rage of Ancients": {
+     "id": "2855-4245",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bladewing the Risen + Saw in Half": {
+     "id": "500-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Obliterate + Teferi's Protection": {
+     "id": "2548-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Mass Land Denial",
+      "Destroy all lands, creatures, and artifacts your opponents control"
+     ]
+    },
+    "Bladewing the Risen + Cursed Mirror": {
+     "id": "3362-5291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Miirym, Sentinel Wyrm + Worldgorger Dragon": {
+     "id": "380-4846",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite blinking of permanents",
+      "Infinite blinking",
+      "Infinite creature ETB"
+     ]
+    },
+    "Teferi's Protection + Zethi, Arcane Blademaster": {
+     "id": "249-5141",
+     "bracketTag": "S",
+     "produz": [
+      "Permanents you control phase out during your opponents' turns",
+      "Your life total can't change during your opponents' turns",
+      "Lock"
+     ]
+    },
+    "Polyraptor + Terror of the Peaks": {
+     "id": "1110-3356",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Hellkite Charger + Nature's Will": {
+     "id": "3398-3732",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Teferi's Protection + Worldfire": {
+     "id": "3765-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent's life total becomes 1",
+      "Exile all cards in hands and graveyards",
+      "Exile all permanents opponents control"
+     ]
+    },
+    "Terror of the Peaks + Vrondiss, Rage of Ancients": {
+     "id": "1110-4245",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Faerie Mastermind + Goldspan Dragon + Smothering Tithe": {
+     "id": "184-3809-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for all players",
+      "Infinite draw triggers for all players",
+      "Near-infinite colored mana"
+     ]
+    },
+    "Grand Warlord Radha + Hellkite Charger + Savage Ventmaw": {
+     "id": "62-1059-3398",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite green mana",
+      "Infinite red mana"
+     ]
+    },
+    "Goldspan Dragon + Hellkite Charger + Jolene, the Plunder Queen": {
+     "id": "2097-3398-3809",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases"
+     ]
+    },
+    "Hellkite Charger + Sun Warriors": {
+     "id": "3398-7015",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite red mana"
+     ]
+    },
+    "Bladewing the Risen + Deceptive Frostkite": {
+     "id": "3362-6472",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Orthion, Hero of Lavabrink + Scourge of Valkas": {
+     "id": "2136-2676",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Spellbinder + Teferi's Protection": {
+     "id": "1328-5141",
+     "bracketTag": "S",
+     "produz": [
+      "Permanents you control phase out during your opponents' turns",
+      "You have protection from everything during your opponents' turns",
+      "Your life total can't change during your opponents' turns"
+     ]
+    },
+    "Bladewing the Risen + Moritte of the Frost": {
+     "id": "3362-3388",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Mechanized Production + Old Gnawbone": {
+     "id": "1800-2047",
+     "bracketTag": "S",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Warstorm Surge": {
+     "id": "380-2773-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Devastating Onslaught + Scourge of Valkas": {
+     "id": "2676-6785",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Druids' Repository + Hellkite Charger": {
+     "id": "767-3398",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases"
+     ]
+    },
+    "Hellkite Charger + Radha, Heir to Keld + Savage Ventmaw": {
+     "id": "62-3398-5608",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite green mana",
+      "Infinite red mana"
+     ]
+    },
+    "Bladewing the Risen + Reflections of Littjara": {
+     "id": "2726-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Old Gnawbone + Time Sieve": {
+     "id": "1558-1800",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Najeela, the Blade-Blossom + Old Gnawbone": {
+     "id": "1800-2011",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Fire Nation Palace + Hellkite Charger + Roaming Throne": {
+     "id": "3398-5334-7121",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite red mana"
+     ]
+    },
+    "Aerie Ouphes + Rhythm of the Wild": {
+     "id": "2376-3575",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Crown of Flames + Goldspan Dragon": {
+     "id": "1645-3809",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Hellkite Charger + Shriekwood Devourer": {
+     "id": "3398-5956",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite combat phases",
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Balancing Act + Teferi's Protection": {
+     "id": "70-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent sacrifices all permanents they control",
+      "Mass Land Denial"
+     ]
+    },
+    "Murderous Redcap + The Great Henge": {
+     "id": "1657-3139",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Near-infinite creature ETB",
+      "Infinite draw triggers"
+     ]
+    },
+    "Hellkite Charger + Hoard Hauler": {
+     "id": "451-3398",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Avatar Roku, Firebender + Hellkite Charger + Roaming Throne": {
+     "id": "3398-5334-7025",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite red mana",
+      "Infinitely powerful creatures you control until end of turn"
+     ]
+    },
+    "Druids' Repository + Hellkite Charger + Savage Ventmaw": {
+     "id": "62-767-3398",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite charge counters on a permanent",
+      "Infinite colored mana",
+      "Infinite combat phases"
+     ]
+    },
+    "Apocalypse + Teferi's Protection": {
+     "id": "4274-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Discard your hand",
+      "Exile all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Hellkite Charger + Tesak, Judith's Hellhound": {
+     "id": "3398-5398",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases"
+     ]
+    },
+    "Bladewing the Risen + Twinflame": {
+     "id": "1235-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Hornet Nest + Terror of the Peaks": {
+     "id": "1110-3748",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Hellkite Charger + Luxurious Locomotive": {
+     "id": "3398-6307",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Phyrexian Metamorph": {
+     "id": "3362-3734",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Changeling Berserker + Terror of the Peaks": {
+     "id": "248-1110-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Hellkite Charger + Preston Garvey, Minuteman": {
+     "id": "3398-5453",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite untap of enchanted permanents you control"
+     ]
+    },
+    "Austere Command + Biorhythm": {
+     "id": "3778-7299",
+     "bracketTag": "P",
+     "produz": [
+      "Draw the game",
+      "Each opponent loses the game"
+     ]
+    },
+    "Storm Herd + Terror of the Peaks": {
+     "id": "1110-2067",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite damage"
+     ]
+    },
+    "Goldspan Dragon + Whip Silk": {
+     "id": "3809-4124",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Changeling Titan + Miirym, Sentinel Wyrm": {
+     "id": "380-1916",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Flickering Ward + Goldspan Dragon": {
+     "id": "3389-3809",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Bladewing the Risen + Phantasmal Image": {
+     "id": "624-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bladewing the Risen + Glasspool Mimic // Glasspool Shore": {
+     "id": "3362-4089",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Hellkite Charger + Thorin, Company's Leader": {
+     "id": "3398-7903",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite Treasure tokens",
+      "Infinite colored mana",
+      "Infinite combat damage"
+     ]
+    },
+    "Grinning Ignus + Morophon, the Boundless": {
+     "id": "411-877",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Bladewing the Risen + Omni-Changeling": {
+     "id": "3362-7193",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashnod's Altar + Bladewing the Risen + Miirym, Sentinel Wyrm": {
+     "id": "380-2034-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Heat Shimmer": {
+     "id": "2959-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Changeling Hero + Miirym, Sentinel Wyrm": {
+     "id": "380-3839",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Rafiq of the Many + The Ur-Dragon": {
+     "id": "297-3223",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Phyrexian Altar": {
+     "id": "380-3362-4050",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Horned Kavu + Morophon, the Boundless": {
+     "id": "877-3977",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Morophon, the Boundless + Shrieking Drake": {
+     "id": "751-877",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Goldspan Dragon + Shimmering Wings": {
+     "id": "2733-3809",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Sekki, Seasons' Guide + Terror of the Peaks": {
+     "id": "1110-1724",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite damage",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Sporeweb Weaver + Terror of the Peaks": {
+     "id": "487-1110",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite lifegain"
+     ]
+    },
+    "Broodhatch Nantuko + Terror of the Peaks": {
+     "id": "1110-3760",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Activated Sleeper + Bladewing the Risen": {
+     "id": "3362-4881",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Altar of Dementia + Bladewing the Risen + Miirym, Sentinel Wyrm": {
+     "id": "380-3362-5256",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Burakos, Party Leader + Goldspan Dragon + Hellkite Charger": {
+     "id": "3398-3809-4076",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite lifeloss"
+     ]
+    },
+    "Bladewing the Risen + Clone": {
+     "id": "3362-4284",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Cavern Harpy + Morophon, the Boundless": {
+     "id": "877-3859",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite storm count",
+      "Infinite creature ETB"
+     ]
+    },
+    "Goldspan Dragon + View from Above": {
+     "id": "1858-3809",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Bladewing the Risen + Clever Impersonator": {
+     "id": "3362-4753",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Overgrown Armasaur + Terror of the Peaks": {
+     "id": "1110-3046",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Saber Ants + Terror of the Peaks": {
+     "id": "1110-5199",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bladewing the Risen + Naga Fleshcrafter": {
+     "id": "3362-6558",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Dack's Duplicate": {
+     "id": "3362-4890",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Mirror Image": {
+     "id": "1430-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bladewing the Risen + Progenitor Mimic": {
+     "id": "2665-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Flesh Duplicate": {
+     "id": "3362-3668",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Acererak the Archlich + Morophon, the Boundless + Urza's Incubator": {
+     "id": "877-1824-3168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters"
+     ]
+    },
+    "Altered Ego + Bladewing the Risen": {
+     "id": "3362-4264",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Viscera Seer": {
+     "id": "380-2292-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Evil Twin": {
+     "id": "1603-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Goblin Bombardment + Miirym, Sentinel Wyrm": {
+     "id": "380-3362-5147",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite damage",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Necroduality": {
+     "id": "1303-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bladewing the Risen + Stunt Double": {
+     "id": "3362-3680",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Mirrorhall Mimic // Ghastly Mimicry": {
+     "id": "745-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Goldspan Dragon + Smothering Tithe + Super-Skrull": {
+     "id": "3809-4682-7132",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite artifact ETB",
+      "Near-infinite artifact LTB",
+      "Near-infinite artifact sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Vesuvan Doppelganger": {
+     "id": "3362-4661",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Vizier of Many Faces": {
+     "id": "3362-3455",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Dual Nature": {
+     "id": "1082-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bladewing the Risen + Sakashima's Student": {
+     "id": "3362-5241",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Pandemonium": {
+     "id": "380-2584-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Undercover Operative": {
+     "id": "3122-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Hulking Metamorph": {
+     "id": "390-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Ancient Gold Dragon + Breath of Fury + Temur Ascendancy": {
+     "id": "2079-3259-5982",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite combat damage"
+     ]
+    },
+    "Bladewing the Risen + Gigantoplasm": {
+     "id": "2897-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Changeling Titan + Terror of the Peaks": {
+     "id": "1110-1916-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Nested Ghoul + Terror of the Peaks": {
+     "id": "1110-1344",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bladewing the Risen + Quicksilver Gargantuan": {
+     "id": "1974-3362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Mercurial Pretender": {
+     "id": "3362-3504",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Changeling Hero + Terror of the Peaks": {
+     "id": "1110-3362-3839",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Carrion Feeder + Miirym, Sentinel Wyrm": {
+     "id": "380-2438-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Vesuvan Shapeshifter": {
+     "id": "3362-4865",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Pirated Copy": {
+     "id": "3362-5399",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Synth Infiltrator": {
+     "id": "3362-5400",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Yahenni, Undying Partisan": {
+     "id": "380-3362-3967",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Woe Strider": {
+     "id": "380-997-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Bloodflow Connoisseur + Miirym, Sentinel Wyrm": {
+     "id": "380-2511-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Shilgengar, Sire of Famine": {
+     "id": "380-3362-5686",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite artifact tokens",
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Spawning Pit": {
+     "id": "380-3362-3899",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite charge counters on a permanent",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bladewing the Risen + Bloodthrone Vampire + Miirym, Sentinel Wyrm": {
+     "id": "380-3362-4247",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Blasting Station + Miirym, Sentinel Wyrm": {
+     "id": "380-413-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bartolomé del Presidio + Bladewing the Risen + Miirym, Sentinel Wyrm": {
+     "id": "380-2921-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bladewing the Risen + Grimgrin, Corpse-Born + Miirym, Sentinel Wyrm": {
+     "id": "380-728-3362",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bladewing the Risen + Hammerhead, Maggia Boss + Miirym, Sentinel Wyrm": {
+     "id": "380-3362-8095",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bladewing the Risen + Miirym, Sentinel Wyrm + Thermopod": {
+     "id": "380-3362-5231",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [
+     "Smothering Tithe",
+     "Teferi's Protection",
+     "Ancient Tomb"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Bladewing the Risen + Miirym, Sentinel Wyrm + Terror of the Peaks",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 3,
+      "lock": false,
+      "tag": "O"
+     },
+     {
+      "combo": "Ancient Gold Dragon + Dragon Tempest",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Hellkite Charger + Old Gnawbone",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 3,
+      "lock": false,
+      "tag": "O"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "2",
+  "3",
+  "4"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

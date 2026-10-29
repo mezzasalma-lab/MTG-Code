@@ -1,0 +1,15 @@
+PASS M1 com 5 terrenos na mao devolve um TERRENO (sobram mais de 4)
+PASS M2 com 3 terrenos devolve a carta nao-terreno de MAIOR custo que nao e' protegida
+PASS M3 com 4 terrenos (nao 'mais de 4') ainda devolve nao-terreno, nunca o 4o terreno
+PASS M4 se so' ha' cartas protegidas como nao-terreno, devolve a de maior custo entre elas (nao trava)
+PASS M5 n=2: duas cartas distintas da mao, na ordem de decisao, sem mutar a mao original
+PASS M6 mulligan(): mao final = 7 - penalidade, as devolvidas vao pro FUNDO e nada some nem aparece (conservacao)
+PASS M7 politica real: nas maos com penalidade, a escolha devolve carta de custo >= a media das nao-protegidas devolviveis (nao um Sol Ring/Signet)
+PASS M8 com a chave desligada o caminho antigo (sorteio) volta e a conservacao continua valendo
+PASS T1 imposto: o custo efetivo do comandante cresce {2} por cast anterior (CR 903.8)
+PASS T2 imposto: can_cast respeita a taxa (mana que paga o 1o cast nao paga o recast)
+PASS T3 imposto: cast_card conta o cast (e so' o do comandante) e o proximo custa mais
+PASS T4 imposto: cast ANULADO tambem conta (CR 903.8: each previous time it was cast) -- contramagica forcada
+PASS T5 imposto: no modo de resiliencia a taxa aparece (algum jogo recasta o comandante pagando mais que o custo base)
+
+13/13 testes passaram

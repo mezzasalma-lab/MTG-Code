@@ -1,0 +1,847 @@
+{
+ "deck": "tam-the-possibility-wubrg",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Tam, the Possibility",
+   "incluidos": {
+    "Teferi, Temporal Archmage + The Chain Veil": {
+     "id": "787-1124",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite colorless mana",
+      "Infinite planeswalker activations"
+     ],
+     "usa": [
+      "Teferi, Temporal Archmage",
+      "The Chain Veil"
+     ],
+     "prerequisitos": ""
+    },
+    "Chromatic Orrery + Tezzeret the Seeker + The Chain Veil": {
+     "id": "1124-1283-2495",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite colorless mana",
+      "Infinite planeswalker activations"
+     ],
+     "usa": [
+      "Tezzeret the Seeker",
+      "Chromatic Orrery",
+      "The Chain Veil"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Displacer Kitten + Sol Ring + Teferi, Time Raveler": {
+     "id": "1170-4761-5034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite colorless mana"
+     ]
+    },
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Vorinclex, Monstrous Raider + Vraska, Betrayal's Sting": {
+     "id": "1529-1887",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game"
+     ]
+    },
+    "Bloom Tender + Freed from the Real": {
+     "id": "4222-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Maskwood Nexus + The World Tree": {
+     "id": "643-4218",
+     "bracketTag": "C",
+     "produz": [
+      "Put all creature cards from your library onto the battlefield"
+     ]
+    },
+    "Ichormoon Gauntlet + Teferi, Master of Time + The Chain Veil": {
+     "id": "1124-1543-2247",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Ichormoon Gauntlet + Oath of Teferi + Teferi, Master of Time": {
+     "id": "1543-2247-2369",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Innkeeper's Talent + Vraska, Betrayal's Sting": {
+     "id": "1529-5902",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game"
+     ]
+    },
+    "Bloom Tender + Staff of Domination": {
+     "id": "2645-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Bloom Tender + Pemmin's Aura": {
+     "id": "3525-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Teferi, Who Slows the Sunset + The Chain Veil": {
+     "id": "1124-2696",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite activations of most planeswalkers",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Faeburrow Elder + Freed from the Real": {
+     "id": "570-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "All Will Be One + The Red Terror": {
+     "id": "2390-4369",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Carth the Lion + Teferi, Temporal Archmage + The Chain Veil": {
+     "id": "787-1124-4450",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + Oath of Teferi": {
+     "id": "193-1180-2369",
+     "bracketTag": "R",
+     "produz": [
+      "Exile all of your opponents' permanents and hands",
+      "Infinite card draw",
+      "Infinite creature ETB"
+     ]
+    },
+    "All Will Be One + Everlasting Torment": {
+     "id": "691-2390",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy any number of creatures opponents control",
+      "Destroy any number of creatures opponents control whenever you put a counter on a permanent or player",
+      "Infinite -1/-1 counters on creatures opponents control"
+     ]
+    },
+    "Faeburrow Elder + Najeela, the Blade-Blossom": {
+     "id": "570-2011",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite combat phases",
+      "Infinite creature ETB"
+     ]
+    },
+    "All Will Be One + Ob Nixilis, Captive Kingpin": {
+     "id": "2390-4166",
+     "bracketTag": "S",
+     "produz": [
+      "Exile your library",
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Purphoros, God of the Forge + The World Tree": {
+     "id": "366-4218",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Aminatou, the Fateshifter + Oath of Teferi + Spark Double": {
+     "id": "193-2369-3908",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking of permanents",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Aminatou, the Fateshifter + Felidar Guardian": {
+     "id": "193-2781",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Arcane Adaptation + The World Tree": {
+     "id": "803-4218",
+     "bracketTag": "C",
+     "produz": [
+      "Put all creature cards from your library onto the battlefield"
+     ]
+    },
+    "Rukarumel, Biologist + The World Tree": {
+     "id": "4218-4452",
+     "bracketTag": "C",
+     "produz": [
+      "Put all creature cards from your library onto the battlefield"
+     ]
+    },
+    "Faeburrow Elder + Pemmin's Aura": {
+     "id": "570-3525",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Leyline of Transformation + The World Tree": {
+     "id": "4218-5929",
+     "bracketTag": "C",
+     "produz": [
+      "Put all creature cards from your library onto the battlefield"
+     ]
+    },
+    "Blazing Firesinger // Seething Song + Displacer Kitten": {
+     "id": "1170-7494",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Faeburrow Elder + Staff of Domination": {
+     "id": "570-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Ichormoon Gauntlet + Jace, Cunning Castaway + The Chain Veil": {
+     "id": "600-1124-1543",
+     "bracketTag": "C",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite copies of a specific planeswalker"
+     ]
+    },
+    "Chromatic Orrery + Filigree Sages": {
+     "id": "1283-2544",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + The Chain Veil": {
+     "id": "193-1124-1180",
+     "bracketTag": "R",
+     "produz": [
+      "Exile all permanents opponents control",
+      "Infinite planeswalker activations",
+      "Infinite card draw"
+     ]
+    },
+    "Exquisite Blood + Professor Dellian Fel": {
+     "id": "3966-7416",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain",
+      "Infinite lifegain triggers",
+      "Infinite lifeloss"
+     ]
+    },
+    "Ichormoon Gauntlet + Magistrate's Scepter": {
+     "id": "1543-3609",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Ichormoon Gauntlet + Jace, Cunning Castaway + Oath of Teferi": {
+     "id": "600-1543-2369",
+     "bracketTag": "C",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite copies of a specific planeswalker"
+     ]
+    },
+    "Aminatou, the Fateshifter + Ichormoon Gauntlet + Teferi, Master of Time": {
+     "id": "193-1543-2247",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "All Will Be One + War Elemental": {
+     "id": "2390-3310",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Displacer Kitten + Neera, Wild Mage": {
+     "id": "1170-4987",
+     "bracketTag": "O",
+     "produz": [
+      "Cast any spell of your choice from your library",
+      "Infinite cast triggers for all spells in your library",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Chromatic Orrery + Mind Over Matter": {
+     "id": "1283-4067",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-discard triggers",
+      "Infinite draw triggers",
+      "Infinite looting"
+     ]
+    },
+    "Bloodthirsty Conqueror + Professor Dellian Fel": {
+     "id": "6191-7416",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain",
+      "Infinite lifegain triggers",
+      "Infinite lifeloss"
+     ]
+    },
+    "Blasphemous Act + Soulfire Grand Master": {
+     "id": "2484-4560",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Conspiracy + The World Tree": {
+     "id": "4218-4875",
+     "bracketTag": "C",
+     "produz": [
+      "Put all creature cards from your library onto the battlefield"
+     ]
+    },
+    "Lithoform Engine + Teferi, Temporal Archmage": {
+     "id": "787-3094",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite untap of permanents you control",
+      "Infinite mana permanents you control can produce"
+     ]
+    },
+    "Estrid, the Masked + The Chain Veil": {
+     "id": "1124-1176",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite colorless mana",
+      "Infinite mana enchanted permanents you control can produce"
+     ]
+    },
+    "Displacer Kitten + Goblin Glasswright // Craft with Pride": {
+     "id": "1170-7520",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bloom Tender + Sword of the Paruns": {
+     "id": "5168-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "All Will Be One + Quest for Pure Flame": {
+     "id": "2390-4522",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Bloom Tender + Vigean Graftmage": {
+     "id": "4019-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Bloom Tender + High Alert": {
+     "id": "4896-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite red mana",
+      "Infinite green mana",
+      "Infinite black mana"
+     ]
+    },
+    "Faeburrow Elder + High Alert": {
+     "id": "570-4896",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite red mana",
+      "Infinite green mana",
+      "Infinite black mana"
+     ]
+    },
+    "All Will Be One + Soul-Scar Mage": {
+     "id": "663-2390",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy any number of creatures opponents control",
+      "Destroy any number of creatures opponents control whenever you put a counter on a permanent or player",
+      "Infinite -1/-1 counters on creatures opponents control"
+     ]
+    },
+    "All Will Be One + Eternity Vessel": {
+     "id": "1870-2390",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage to one opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Sol Ring + Tezzeret the Seeker + The Peregrine Dynamo": {
+     "id": "2341-2495-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite mana artifacts you control can produce",
+      "Infinite untap of artifacts you control"
+     ]
+    },
+    "Faeburrow Elder + Vigean Graftmage": {
+     "id": "570-4019",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Displacer Kitten + Tasha, the Witch Queen + The Chain Veil": {
+     "id": "1124-1170-4012",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite casts of instants and sorceries in your opponents' graveyards"
+     ]
+    },
+    "Chromatic Orrery + Lithoform Engine + Tezzeret the Seeker": {
+     "id": "1283-2495-3094",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite untap of artifacts you control",
+      "Infinite colored mana"
+     ]
+    },
+    "Bloom Tender + Chain Stasis": {
+     "id": "195-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Faeburrow Elder + Sword of the Paruns": {
+     "id": "570-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Chain Stasis + Faeburrow Elder": {
+     "id": "195-570",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Faeburrow Elder + Gauntlets of Light": {
+     "id": "570-1995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-white mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Chancellor of the Spires + Displacer Kitten": {
+     "id": "1170-6513",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite magecraft triggers",
+      "Near-infinite creature ETB",
+      "Near-infinite creature LTB"
+     ]
+    },
+    "All Will Be One + Talon of Pain": {
+     "id": "426-2390",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Displacer Kitten + Oath of Teferi + Sensei's Divining Top + Teferi, Temporal Archmage": {
+     "id": "787-1170-2369-5078",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite mana permanents you control can produce"
+     ]
+    },
+    "Huatli, Radiant Champion + Ichormoon Gauntlet + Oath of Teferi": {
+     "id": "1543-2311-2369",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Bloom Tender + Gauntlets of Light": {
+     "id": "1995-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-white mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Huatli, Radiant Champion + Ichormoon Gauntlet + The Chain Veil": {
+     "id": "1124-1543-2311",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Aminatou, the Fateshifter + Cadric, Soul Kindler + Sol Ring": {
+     "id": "193-3604-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colorless mana"
+     ]
+    },
+    "All Will Be One + Phyrexian Devourer": {
+     "id": "2390-4899",
+     "bracketTag": "R",
+     "produz": [
+      "Exile your library",
+      "Near-infinite damage"
+     ]
+    },
+    "Chromatic Orrery + Tezzeret the Seeker + The Peregrine Dynamo": {
+     "id": "1283-2341-2495",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite colorless mana",
+      "Infinite card draw"
+     ]
+    },
+    "All Will Be One + Night Dealings": {
+     "id": "2390-3922",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Aminatou, the Fateshifter + Cadric, Soul Kindler + Oath of Teferi": {
+     "id": "193-2369-3604",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "All Will Be One + Body of Research": {
+     "id": "648-2390",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage to one opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Aminatou, the Fateshifter + Azor, the Lawbringer + Oath of Teferi": {
+     "id": "193-205-2369",
+     "bracketTag": "S",
+     "produz": [
+      "Opponents can't cast instant spells during their turns",
+      "Opponents can't cast sorcery spells",
+      "Lock"
+     ]
+    },
+    "Tezzeret the Seeker + The Chain Veil + Xenagos, the Reveler": {
+     "id": "1124-2495-2937",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite red mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Appa, Steadfast Guardian + Chromatic Orrery + Displacer Kitten": {
+     "id": "1170-1283-6867",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Clockspinning + Displacer Kitten + Teferi, Temporal Archmage": {
+     "id": "112-787-1170",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite untap of permanents you control",
+      "Infinite card draw",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Chromatic Orrery + Displacer Kitten + Whim of Volrath": {
+     "id": "1170-1283-2450",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Aminatou, the Fateshifter + Cadric, Soul Kindler + The Chain Veil": {
+     "id": "193-1124-3604",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Displacer Kitten + Mystic Speculation + Teferi, Temporal Archmage": {
+     "id": "787-1170-3923",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite untap of permanents you control",
+      "Infinite card draw",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Chromatic Orrery + Displacer Kitten + Mystic Speculation": {
+     "id": "1170-1283-3923",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Chromatic Orrery + Displacer Kitten + Mind Games": {
+     "id": "1170-1283-2909",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Aminatou, the Fateshifter + Cadric, Soul Kindler + Chromatic Orrery": {
+     "id": "193-1283-3604",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Minsc & Boo, Timeless Heroes + Serra Avatar": {
+     "id": "1738-2037",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage to one opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Minsc & Boo, Timeless Heroes + Soul of Eternity": {
+     "id": "2037-4658",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage to one opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Enduring Angel // Angelic Enforcer + Professor Dellian Fel": {
+     "id": "1162-7416",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Displacer Kitten + Teferi, Temporal Archmage + Whim of Volrath": {
+     "id": "787-1170-2450",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite untap of permanents you control",
+      "Infinite card draw",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Aminatou, the Fateshifter + Azor, the Lawbringer + The Chain Veil": {
+     "id": "193-205-1124",
+     "bracketTag": "S",
+     "produz": [
+      "Opponents can't cast instant spells during their turns",
+      "Opponents can't cast sorcery spells",
+      "Lock"
+     ]
+    },
+    "Enduring Angel // Angelic Enforcer + Minsc & Boo, Timeless Heroes": {
+     "id": "1162-2037",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage to one opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Tezzeret the Seeker + Time Vault": {
+     "id": "1261-2495",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [
+     "Ichormoon Gauntlet"
+    ],
+    "combos": [
+     {
+      "combo": "Chromatic Orrery + Tezzeret the Seeker + The Chain Veil",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Teferi, Temporal Archmage + The Chain Veil",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

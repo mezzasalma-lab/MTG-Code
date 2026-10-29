@@ -1,0 +1,21 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1737 (86.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1475       0.1315      -0.0160 ±0.0062  
+   commander_cast_turn__ate_T4                  0.0145       0.0145      +0.0000 ±0.0014  
+  *commander_cast_turn__ate_T5                  0.1325       0.1380      +0.0055 ±0.0035  
+  *commander_cast_count                         0.8525       0.8685      +0.0160 ±0.0062  
+  *commander_in_play                            0.8525       0.8685      +0.0160 ±0.0062  
+  *own_interaction_used                         0.8025       0.8175      +0.0150 ±0.0062  
+  *urdragon_free_permanents_total               2.3355       2.3835      +0.0480 ±0.0204  
+  *len_battlefield                             28.0320      28.3535      +0.3215 ±0.2123  
+  *len_life_paid                                2.3070       2.3200      +0.0130 ±0.0087  
+  *color_screw_turns                            0.8860       0.8365      -0.0495 ±0.0335  
+  *lands_played_this_turn                       0.6280       0.6400      +0.0120 ±0.0083  
+  *first_color_screw_turn__nunca                0.7625       0.7710      +0.0085 ±0.0061  
+  *fetches_cracked_total                        1.3070       1.3180      +0.0110 ±0.0079  
+  *first_color_screw_turn__ate_T6               0.2320       0.2235      -0.0085 ±0.0063  
+  *sarkhan_loyalty                              1.8085       1.8545      +0.0460 ±0.0345  
+  *arcane_denial_draws_total                    0.1200       0.1240      +0.0040 ±0.0031  
+  *firdoch_entered_turn__ate_T6                 0.6775       0.6690      -0.0085 ±0.0067  

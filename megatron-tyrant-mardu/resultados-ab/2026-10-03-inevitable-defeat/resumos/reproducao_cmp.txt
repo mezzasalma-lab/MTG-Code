@@ -1,0 +1,6 @@
+IGUAL  ablacao_megatron.txt
+IGUAL  ab_megatron_10000.txt
+IGUAL  defeat_alimenta_megatron.txt
+IGUAL  castabilidade_cor_megatron.txt
+IGUAL  enumeracao.txt
+5/5 tabelas byte a byte iguais

@@ -1,0 +1,19 @@
+=== Mythos of Snapdax | {2}{W}{W} (cmc 4.0) | Sorcery | cores ['W'] | identidade ['B', 'R', 'W'] | commander: legal | flavor_name: None
+   oraculo: Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.
+   ruling 2020-04-17: If you control a permanent with more than one type, you may choose it for each of those types. For example, you could choose an artifact creature as the artifact you keep and also as the creature you keep.
+   ruling 2020-04-17: If you’re choosing the permanents for each player, your choices must still be legal. For example, you can’t decline to choose a creature a player will keep if that player controls a creature.
+   ruling 2020-04-17: As Mythos of Snapdax resolves, first you choose which permanents you control won’t be sacrificed, then each other player in turn order does the same, knowing the choices made before them. Then each nonland permanent not chosen is sacrificed at the same time.
+   ruling 2020-04-17: Lands with another permanent type can’t be chosen and won’t be sacrificed.
+   ruling 2020-04-17: The abilities of the Mythos check what colors of mana were spent to cast the spell. It’s not an alternative cost to cast the spell.
+   ruling 2020-04-17: If an effect copies the Mythos spell, no mana was spent to cast the copy, so the copy won’t receive the bonus.
+   ruling 2020-04-17: The ability checks what mana was actually spent to cast a spell. If an effect allows you to spend mana “as though it were mana” of any color or type, that allows you to spend mana you couldn’t otherwise spend, but it doesn’t change what mana you spent to cast the spell.
+   ruling 2020-04-17: If an effect allows you to cast a spell without paying its mana cost, you can’t choose to cast it and pay unless another rule or effect allows you to cast that spell for a cost. Similarly, you can’t waive a cost reduction unless that effect says you may.
+=== Blood Money | {5}{B}{B} (cmc 7.0) | Sorcery | cores ['B'] | identidade ['B'] | commander: legal | flavor_name: None
+   oraculo: Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.
+   ruling 2022-06-10: If a creature isn't destroyed this way for some reason, such as having indestructible or being regenerated, Blood Money's controller will not create a Treasure token for it.
+
+ANTES (Blood Money): cartas=99 | terrenos=35 | nao-terrenos=64 | CMC medio dos nao-terrenos = 3.4688 (soma 222)
+
+DEPOIS (Mythos): cartas=99 | terrenos=35 | nao-terrenos=64 | CMC medio dos nao-terrenos = 3.4219 (soma 219)
+
+Cartas da lista cujo oraculo cria Treasure (varredura literal por 'Treasure' em create/token): ANTES 31 | DEPOIS 30 | saiu: ['Blood Money'] | entrou: []

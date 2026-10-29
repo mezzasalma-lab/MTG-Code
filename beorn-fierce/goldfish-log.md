@@ -1,6 +1,114 @@
 # Goldfish Compilado — Beorn the Fierce
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Rodada 2026-10-23 (Ram Through → Herd Heirloom, pedido do usuário; e o gatilho da Beorn no início do combate) — dados brutos e reprodução:** [`resultados-ab/2026-10-23-herd-heirloom/LEIAME.md`](resultados-ab/2026-10-23-herd-heirloom/LEIAME.md)
+
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (varredura de classes de erro; nenhuma correção de código aqui):** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
 Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado turno a turno a partir dos logs reais (imagens de opening hand + JSON de jogadas), com as correções apontadas ao longo do processo já aplicadas.
+
+---
+
+## Troca Ram Through → Herd Heirloom e gatilho da Beorn no início do combate — 2026-10-23
+
+Pedido do usuário: *"troquei o Ram Through por Herd Heirloom para dar Trample e compra de cartas"*. **`lista.md` atualizada** (mesma posição; 100 cartas). Detalhe, rulings, tabelas e como refazer: [`resultados-ab/2026-10-23-herd-heirloom/LEIAME.md`](resultados-ab/2026-10-23-herd-heirloom/LEIAME.md). N = 10.000 pareado, 8 turnos.
+
+- **Spellbook:** 0 combos antes e depois; 21 "quase" iguais; controles passaram. Nenhum combo some nem aparece; Bracket 3 não muda.
+- **Herd Heirloom** `{1}{G}`, 2 habilidades que dividem o mesmo `{T}`: (1) 1 mana de qualquer cor **só para magia de criatura**; (2) criatura com poder ≥ 4 ganha trample e "compra 1 quando causa dano de combate a um jogador" (a Roaming Throne dobra o gatilho concedido a outro Urso). As duas estão implementadas; o trample é 📊 (sem bloqueio modelado) e redundante com Beorn, Garruk's Uprising, Chronicle of Victory e outras.
+- **Efeito da troca no simulador** (padrão, `depois` − `só gatilho corrigido`): Beorn até T4 **62,0% → 66,5%** (+4,5 ± 0,4 pts), cartas extras **22,78 → 23,91** (+1,13 ± 0,12), magias +0,32, finisher dentro do ruído. **Remoção própria conjurada (proxy) 0,71 → 0,57**: o custo da troca. Parte do ganho de tempo (+1,1 pt até T4) é convenção do simulador (a remoção própria é conjurada nos turnos 3 e 6 antes da fase principal).
+- **Achado fora da troca (leitura de cláusula):** o gatilho da Beorn é **"At the beginning of combat on your turn"** e o código o exigia ligado a `can_attack(Beorn)`; corrigido (`BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT`). Efeito isolado: **+1,64 ± 0,15 carta extra por partida**, +0,43 compras de 2 da Beorn, +0,38 conversões em Urso. **Os números das rodadas anteriores deste log subestimam o deck** nessas métricas; nenhum deles foi refeito aqui.
+- **Validação:** 22/22 testes (14 novos); bit-identidade 20.000 × 2 modos sem divergência; regressão 20.000 × 2 com 0 exceções; determinismo (3 `PYTHONHASHSEED` × 1.500 × 2) sem divergência; varreduras da Regra #10 (`audit_landfall_ordem` 0 candidatos, `audit_compra_t1` 20/20, `ast_sets` 0 hits).
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O payoff entra antes do terreno em **57,4%** das partidas (0,87 por partida; 45,9% e 0,62 na resiliência). Efeito claro: **+0,26 magias (+2,0%)**, **+0,39 Ursos**, **+2,3 contadores em campo** (+13,8%), **+0,71 compras extras**; o comandante **não muda** (T3 +0,0, T4 +0,1 ponto) e a fração sem finisher até o T8 cai 1,2 ponto (56,6% → 55,4%).
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `lands_played_total` | 6.963 -> 6.982 (+0.019 ± 0.004) * | 6.572 -> 6.593 (+0.021 ± 0.004) * |
+| `spells_cast` | 13.144 -> 13.401 (+0.257 ± 0.019) * | 11.065 -> 11.213 (+0.148 ± 0.017) * |
+| `bear_count_final` | 8.430 -> 8.816 (+0.387 ± 0.045) * | - |
+| `counters_on_board_final` | 16.567 -> 18.854 (+2.288 ± 0.326) * | - |
+| `counters_on_board` | - | 8.097 -> 9.144 (+1.048 ± 0.171) * |
+| `extra_draws` | 20.429 -> 21.142 (+0.713 ± 0.095) * | 10.698 -> 11.052 (+0.354 ± 0.076) * |
+| `battlefield_count` | 21.493 -> 22.055 (+0.562 ± 0.056) * | - |
+| `finishers_resolved` | 0.572 -> 0.595 (+0.024 ± 0.005) * | - |
+| `commander_cast_turn__ate_T3` | 0.174 -> 0.174 (+0.000 ± 0.000) | 0.085 -> 0.084 (-0.001 ± 0.001) * |
+| `commander_cast_turn__ate_T4` | 0.619 -> 0.620 (+0.001 ± 0.001) * | 0.337 -> 0.336 (-0.001 ± 0.002) |
+| `commander_cast_turn__ate_T5` | 0.896 -> 0.896 (+0.000 ± 0.000) | 0.557 -> 0.557 (-0.000 ± 0.003) |
+| `finisher_turn__ate_T6` | 0.175 -> 0.181 (+0.005 ± 0.002) * | 0.134 -> 0.136 (+0.003 ± 0.002) * |
+| `finisher_turn__nunca` | 0.566 -> 0.554 (-0.012 ± 0.004) * | 0.667 -> 0.662 (-0.005 ± 0.003) * |
+| `clues` | - | 0.108 -> 0.166 (+0.058 ± 0.007) * |
+| partidas com resultado idêntico ao da base | 54.0% | 56.9% |
+
+**Validação:** testes dirigidos 8/8; bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
+
+---
+
+## Varredura de 2026-10-05: nenhuma correção de código neste deck — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Evidência: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`, `resumos/terrenos_que_entram_virados.txt`) e `varredura-2026-10-05/`.
+
+**Veredito:** nenhuma das classes varridas aplica a este simulador; **nada foi alterado em `beorn_goldfish_v1.py`**.
+
+- **Terreno virado primeiro em T1/T2:** sem domínio. O único terreno da lista que o oráculo manda entrar virado é **Bala Ged Recovery // Bala Ged Sanctuary**, um MDFC cuja face de terreno custa a magia (decisão à parte, já tratada em `try_bala_ged_recovery`). Sem um segundo terreno virado que não seja MDFC, o dilema "virado × desvirado" não existe. (Varredura por script do oráculo em cache: `resumos/terrenos_que_entram_virados.txt`.)
+- **Mulligan:** já escolhe as cartas do fundo (`choose_bottom`/`bottom_priority`, correção de 2026-09-24).
+- **Entrada de terrenos contra o oráculo:** `audit_entrada_ANTES.txt` (7 terrenos checados, 0 divergências).
+- **Determinismo entre processos:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, 0 divergências (`varredura-2026-10-05/resumos/determinismo_1500_sementes_estado_final.txt`).
+- **Jogar terreno ≠ conjurar magia:** nenhum contador de magia muda (`audit_terreno_nao_e_magia_ANTES.txt`). **Fetchlands:** a lista não tem.
+
+**Escopo — NÃO verificado:** o resto da taxonomia da Regra #1 (conjuração fora da mão, sacrifício × destroy, cascade, `_sick` agregados, fórmulas achatadas) por `grep`/leitura pontual, sem leitura integral nem instrumentação em runtime nesta rodada; oponente real (convenção do repositório).
+
+---
+
+## London mulligan sem embaralhar o fundo — 2026-09-24
+
+Detalhes em `checklist-oraculo.md`. Efeito só nas partidas com 2+ mulligans
+(244 de 2.000, mesmas seeds). Médias nessas partidas, antes → depois:
+
+| métrica | antes | depois |
+|---|---|---|
+| combat_damage_draws | 5,811 | 4,533 |
+| counters_on_board_final | 13,18 | 10,50 |
+| finishers_resolved | 0,385 | 0,459 |
+
+Regressão 20.000 + 20.000 partidas: 0 exceções.
+
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "E depois dele faça o Beorn" — seguindo o porte concluído
+no Vihaan, Nekusar e Azula. Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 4º deck a nascer com CR 903.9a correta desde o início. Sem
+efeito numérico do CR 903.9a em si (0 cartas "creature dies"). Auditoria
+dos pontos de sacrifício pré-existentes (disciplina obrigatória, não
+opcional) achou 2 bugs reais: (1) taxa de comandante (CR 903.8) nunca
+modelada — só importava agora que ela pode sair de campo; (2) Natural
+Order podia sacrificar o próprio comandante sem preferência, e ela
+ficava presa fora do jogo pra sempre depois (confirmado ao vivo, seed
+91052, acontecendo em partida real).
+
+**Resultado:** modo padrão diverge em 1,14% das seeds (227/20000) —
+mudança real e intencional do fix do Natural Order. A/B (10k seeds):
+métricas principais dentro de margem pequena, "comandante nunca
+conjurada" idêntico nos 2 lados.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 7 testes dirigidos.
 
 ---
 

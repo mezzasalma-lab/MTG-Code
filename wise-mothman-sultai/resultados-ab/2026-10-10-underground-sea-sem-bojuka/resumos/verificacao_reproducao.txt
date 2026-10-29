@@ -1,0 +1,18 @@
+IGUAL  tabela_u.md (refeita so' dos brutos)
+IGUAL  tabela_u2.md (refeita so' dos brutos)
+IGUAL  pares_diretos.md (refeito so' dos brutos)
+IGUAL  fontes_por_cor.md (refeito do simulador congelado)
+IGUAL  replicacao.txt (refeito so' dos brutos)
+IGUAL  indice_dados.md (refeito so' dos brutos)
+re-simulando base, u1, u3 e u8 (1.000 sementes x 2 modos) com o simulador congelado...
+padrao       base              : 1000/1000 identicas
+padrao       u1_watery_grave   : 1000/1000 identicas
+padrao       u3_swamp          : 1000/1000 identicas
+padrao       u8_strip_mine     : 1000/1000 identicas
+resiliencia  base              : 1000/1000 identicas
+resiliencia  u1_watery_grave   : 1000/1000 identicas
+resiliencia  u3_swamp          : 1000/1000 identicas
+resiliencia  u8_strip_mine     : 1000/1000 identicas
+8/8 series identicas ao bruto
+IGUAL  amostra re-simulada == bruto (8/8 series)
+7/7 saidas iguais

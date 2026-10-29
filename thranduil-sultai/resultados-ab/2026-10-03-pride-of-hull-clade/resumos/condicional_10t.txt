@@ -1,0 +1,14 @@
+N sementes com Pride conjurada, por candidata/modo; diferença pareada na MESMA semente (variante - base), 10 turnos
+sai                    modo              n | fin<=8 (pp)    fin<=10 (pp)   xdraws        spells        ativ.     compras Pride
+Oversold Cemetery      off            1198 |   +2.4±1.7     +1.4±1.5    -0.21±0.64  -0.55±0.19  0.00      0.00     
+Oversold Cemetery      trample_line   1198 |   +2.4±1.7     +1.4±1.5    +3.15±0.78  -0.56±0.19  0.46      7.00     
+Oversold Cemetery      ceiling        1198 |   +3.8±2.0     +1.6±1.8   +15.19±1.18  -0.66±0.21  1.37      20.58    
+Deathbloom Ritualist   off            1400 |   -1.1±1.8     -1.4±1.5    +0.56±0.58  +0.37±0.16  0.00      0.00     
+Deathbloom Ritualist   trample_line   1400 |   -1.1±1.8     -1.4±1.5    +3.33±0.70  +0.35±0.16  0.40      6.63     
+Deathbloom Ritualist   ceiling        1400 |   -1.1±1.9     -0.5±1.6   +13.05±1.07  +0.21±0.18  1.16      17.36    
+Underrealm Lich        off            1394 |   -0.3±1.6     -1.1±1.4    +2.13±0.59  +0.42±0.16  0.00      0.00     
+Underrealm Lich        trample_line   1394 |   -0.3±1.6     -1.1±1.4    +5.45±0.75  +0.41±0.16  0.43      6.44     
+Underrealm Lich        ceiling        1394 |   +0.0±1.7     -0.7±1.6   +17.17±1.10  +0.30±0.17  1.27      19.00    
+Trystan's Command      off            1406 |   +2.3±1.6     +0.7±1.3    -0.96±0.62  -0.07±0.17  0.00      0.00     
+Trystan's Command      trample_line   1406 |   +2.3±1.6     +0.7±1.3    +2.13±0.73  -0.04±0.17  0.46      6.86     
+Trystan's Command      ceiling        1406 |   +3.2±1.8     +2.1±1.5   +12.77±1.04  -0.26±0.18  1.28      19.18    

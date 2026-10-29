@@ -1,0 +1,69 @@
+{
+ "Doombot (ficha)": [
+  {
+   "name": "Doombot",
+   "type_line": "Token Artifact Creature — Robot Villain",
+   "oracle_text": "",
+   "power": "3",
+   "toughness": "3",
+   "set": "tmsh",
+   "layout": "token"
+  }
+ ],
+ "Golem (fichas, amostra)": [
+  {
+   "name": "Golem",
+   "type_line": "Token Enchantment Artifact Creature — Golem",
+   "oracle_text": "",
+   "power": "3",
+   "toughness": "3",
+   "set": "teoc",
+   "layout": "token"
+  },
+  {
+   "name": "Golem",
+   "type_line": "Token Artifact Creature — Golem",
+   "oracle_text": "",
+   "power": "*",
+   "toughness": "*",
+   "set": "tbro",
+   "layout": "token"
+  },
+  {
+   "name": "Golem",
+   "type_line": "Token Artifact Creature — Golem",
+   "oracle_text": "",
+   "power": "3",
+   "toughness": "3",
+   "set": "teoc",
+   "layout": "token"
+  },
+  {
+   "name": "Golem",
+   "type_line": "Token Artifact Creature — Golem",
+   "oracle_text": "Flying",
+   "power": "3",
+   "toughness": "3",
+   "set": "tc21",
+   "layout": "token"
+  },
+  {
+   "name": "Golem",
+   "type_line": "Token Artifact Creature — Golem",
+   "oracle_text": "Trample",
+   "power": "3",
+   "toughness": "3",
+   "set": "tc21",
+   "layout": "token"
+  },
+  {
+   "name": "Golem",
+   "type_line": "Token Artifact Creature — Golem",
+   "oracle_text": "Vigilance",
+   "power": "3",
+   "toughness": "3",
+   "set": "tc21",
+   "layout": "token"
+  }
+ ]
+}

@@ -1,0 +1,202 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: TAPPED_LAND_FIRST_ENABLED=True, LAND_ENTRY_CONDITIONS_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False, 'LAND_ENTRY_CONDITIONS_ENABLED': False} == snapshot codigo/ulalek_goldfish_v1_ANTES_7918e0b.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+Ghost: arquivo vivo com {'TAPPED_LAND_FIRST_ENABLED': True, 'TAPPED_LAND_FIRST_GHOST': True} (o ensaio roda, o resultado e' ignorado) == arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False, 'LAND_ENTRY_CONDITIONS_ENABLED': False}; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+resiliencia: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1680 (84.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0170       0.0180      +0.0010 ±0.0014  
+   commander_cast_turn__ate_T3                  0.2035       0.2020      -0.0015 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.6395       0.6365      -0.0030 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.9090       0.9055      -0.0035 ±0.0026  
+  *tapped_phantom_mana_this_turn                0.0220       0.0340      +0.0120 ±0.0048  
+  *finisher_resolved_total                      0.4560       0.4475      -0.0085 ±0.0058  
+  *ruins_oran_rief_counters_total               0.4760       0.4890      +0.0130 ±0.0094  
+  *len_battlefield                             14.7300      14.7015      -0.0285 ±0.0217  
+  *first_finisher_turn__nunca                   0.7555       0.7590      +0.0035 ±0.0029  
+  *len_library                                 79.9930      80.0145      +0.0215 ±0.0189  
+  *writhing_chrysalis_counters_total            0.7500       0.7395      -0.0105 ±0.0096  
+   manifest_tokens_created_total                0.0960       0.0905      -0.0055 ±0.0056  
+   flash_online_turns                           1.4915       1.4865      -0.0050 ±0.0052  
+   ugin_activations_total                       0.2065       0.2050      -0.0015 ±0.0017  
+   ugin_cards_exiled_stuck_total                0.2065       0.2050      -0.0015 ±0.0017  
+   ugin_minus3_skipped_no_target_total          0.2065       0.2050      -0.0015 ±0.0017  
+   ugin_plus1_total                             0.2065       0.2050      -0.0015 ±0.0017  
+   ugin_spirit_tokens_created_total             0.2065       0.2050      -0.0015 ±0.0017  
+
+[so_tapped_land_first - antes] N=2000 | partidas com resultado IDENTICO ao da base: 2000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+
+[so_land_entry_conditions - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1680 (84.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0170       0.0180      +0.0010 ±0.0014  
+   commander_cast_turn__ate_T3                  0.2035       0.2020      -0.0015 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.6395       0.6340      -0.0055 ±0.0032  
+  *commander_cast_turn__ate_T5                  0.9090       0.9020      -0.0070 ±0.0037  
+  *tapped_phantom_mana_this_turn                0.0220       0.0340      +0.0120 ±0.0048  
+  *len_battlefield                             14.7300      14.6780      -0.0520 ±0.0274  
+  *finisher_resolved_total                      0.4560       0.4430      -0.0130 ±0.0069  
+  *ruins_oran_rief_counters_total               0.4760       0.4640      -0.0120 ±0.0065  
+  *flash_online_turns                           1.4915       1.4790      -0.0125 ±0.0068  
+  *len_library                                 79.9930      80.0390      +0.0460 ±0.0256  
+  *first_finisher_turn__nunca                   0.7555       0.7620      +0.0065 ±0.0038  
+  *spawn_tokens_created_total                   2.1170       2.0935      -0.0235 ±0.0140  
+  *cards_drawn_extra                            2.2475       2.2205      -0.0270 ±0.0198  
+  *ugin_activations_total                       0.2065       0.2030      -0.0035 ±0.0026  
+  *ugin_cards_exiled_stuck_total                0.2065       0.2030      -0.0035 ±0.0026  
+  *ugin_minus3_skipped_no_target_total          0.2065       0.2030      -0.0035 ±0.0026  
+  *ugin_plus1_total                             0.2065       0.2030      -0.0035 ±0.0026  
+  *ugin_spirit_tokens_created_total             0.2065       0.2030      -0.0035 ±0.0026  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1685 (84.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0305       0.0310      +0.0005 ±0.0017  
+  *commander_cast_turn__ate_T3                  0.1900       0.1880      -0.0020 ±0.0020  
+  *commander_cast_turn__ate_T4                  0.5825       0.5800      -0.0025 ±0.0022  
+   commander_cast_turn__ate_T5                  0.8540       0.8515      -0.0025 ±0.0029  
+  *tapped_phantom_mana_this_turn                0.0175       0.0300      +0.0125 ±0.0049  
+  *ruins_oran_rief_counters_total               0.4480       0.4615      +0.0135 ±0.0103  
+  *len_smart_artifact_wipe_log                  0.2550       0.2505      -0.0045 ±0.0035  
+  *smart_artifact_wipes_total                   0.2550       0.2505      -0.0045 ±0.0035  
+   first_finisher_turn__nunca                   0.8535       0.8560      +0.0025 ±0.0026  
+   finisher_resolved_total                      0.2390       0.2345      -0.0045 ±0.0047  
+   len_smart_removal_log                        0.3415       0.3380      -0.0035 ±0.0038  
+   smart_removals_total                         0.3415       0.3380      -0.0035 ±0.0038  
+   len_library                                 81.2505      81.2665      +0.0160 ±0.0176  
+   graveyard_wipe_used                          0.3595       0.3570      -0.0025 ±0.0029  
+   len_smart_graveyard_wipe_log                 0.3595       0.3570      -0.0025 ±0.0029  
+   smart_graveyard_wipes_total                  0.3595       0.3570      -0.0025 ±0.0029  
+   interaction_spells_cast_total                1.9435       1.9400      -0.0035 ±0.0047  
+   cascade_hits_total                           0.0430       0.0410      -0.0020 ±0.0028  
+
+[so_tapped_land_first - antes] N=2000 | partidas com resultado IDENTICO ao da base: 2000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+
+[so_land_entry_conditions - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1685 (84.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0305       0.0310      +0.0005 ±0.0017  
+  *commander_cast_turn__ate_T3                  0.1900       0.1880      -0.0020 ±0.0020  
+  *commander_cast_turn__ate_T4                  0.5825       0.5790      -0.0035 ±0.0029  
+  *commander_cast_turn__ate_T5                  0.8540       0.8490      -0.0050 ±0.0042  
+  *tapped_phantom_mana_this_turn                0.0175       0.0300      +0.0125 ±0.0049  
+  *len_smart_artifact_wipe_log                  0.2550       0.2495      -0.0055 ±0.0038  
+  *smart_artifact_wipes_total                   0.2550       0.2495      -0.0055 ±0.0038  
+  *len_library                                 81.2505      81.2840      +0.0335 ±0.0248  
+  *ruins_oran_rief_counters_total               0.4480       0.4380      -0.0100 ±0.0075  
+  *len_smart_removal_log                        0.3415       0.3350      -0.0065 ±0.0049  
+  *smart_removals_total                         0.3415       0.3350      -0.0065 ±0.0049  
+  *len_smart_attack_log                         1.0270       1.0185      -0.0085 ±0.0076  
+  *smart_attacks_taken_total                    1.0270       1.0185      -0.0085 ±0.0076  
+  *first_finisher_turn__nunca                   0.8535       0.8570      +0.0035 ±0.0032  
+  *cascade_hits_total                           0.0430       0.0390      -0.0040 ±0.0039  
+  *cascades_total                               0.0430       0.0390      -0.0040 ±0.0039  
+  *len_loyalty                                  0.0775       0.0755      -0.0020 ±0.0020  
+   life                                        38.3740      38.3875      +0.0135 ±0.0135  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8274 (82.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0169       0.0172      +0.0003 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.2047       0.2025      -0.0022 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.6318       0.6282      -0.0036 ±0.0013  
+  *commander_cast_turn__ate_T5                  0.9089       0.9065      -0.0024 ±0.0010  
+  *tapped_phantom_mana_this_turn                0.0198       0.0345      +0.0147 ±0.0024  
+  *len_battlefield                             14.6606      14.6299      -0.0307 ±0.0073  
+  *spell_token_copies_total                     1.7268       1.7146      -0.0122 ±0.0041  
+  *len_library                                 80.1159      80.1429      +0.0270 ±0.0092  
+  *finisher_resolved_total                      0.4482       0.4415      -0.0067 ±0.0023  
+  *first_finisher_turn__nunca                   0.7643       0.7677      +0.0034 ±0.0012  
+  *ulalek_copies_total                          1.5441       1.5340      -0.0101 ±0.0036  
+  *ulalek_cc_payments_safe                      1.4963       1.4865      -0.0098 ±0.0035  
+  *flash_online_turns                           1.5072       1.5021      -0.0051 ±0.0021  
+  *cards_drawn_extra                            2.1673       2.1491      -0.0182 ±0.0075  
+  *one_ring_burden                              0.3773       0.3736      -0.0037 ±0.0017  
+  *interaction_spells_cast_total                2.1217       2.1170      -0.0047 ±0.0022  
+  *len_graveyard                                3.1074       3.0983      -0.0091 ±0.0044  
+  *ramp_pieces_resolved_total                   2.1125       2.1071      -0.0054 ±0.0027  
+
+[so_tapped_land_first - antes] N=10000 | partidas com resultado IDENTICO ao da base: 10000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+
+[so_land_entry_conditions - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8276 (82.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0169       0.0172      +0.0003 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.2047       0.2021      -0.0026 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.6318       0.6239      -0.0079 ±0.0018  
+  *commander_cast_turn__ate_T5                  0.9089       0.9047      -0.0042 ±0.0014  
+  *tapped_phantom_mana_this_turn                0.0198       0.0343      +0.0145 ±0.0024  
+  *len_battlefield                             14.6606      14.6159      -0.0447 ±0.0081  
+  *ruins_oran_rief_counters_total               0.4832       0.4667      -0.0165 ±0.0030  
+  *len_library                                 80.1159      80.1625      +0.0466 ±0.0113  
+  *spell_token_copies_total                     1.7268       1.7081      -0.0187 ±0.0046  
+  *flash_online_turns                           1.5072       1.4954      -0.0118 ±0.0032  
+  *ulalek_copies_total                          1.5441       1.5288      -0.0153 ±0.0042  
+  *ulalek_cc_payments_safe                      1.4963       1.4812      -0.0151 ±0.0042  
+  *cards_drawn_extra                            2.1673       2.1324      -0.0349 ±0.0099  
+  *finisher_resolved_total                      0.4482       0.4395      -0.0087 ±0.0026  
+  *first_finisher_turn__nunca                   0.7643       0.7689      +0.0046 ±0.0014  
+  *interaction_spells_cast_total                2.1217       2.1145      -0.0072 ±0.0025  
+  *one_ring_burden                              0.3773       0.3714      -0.0059 ±0.0021  
+  *len_graveyard                                3.1074       3.0888      -0.0186 ±0.0068  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8314 (83.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0353       0.0357      +0.0004 ±0.0007  
+  *commander_cast_turn__ate_T3                  0.1943       0.1920      -0.0023 ±0.0009  
+  *commander_cast_turn__ate_T4                  0.5741       0.5699      -0.0042 ±0.0014  
+  *commander_cast_turn__ate_T5                  0.8529       0.8505      -0.0024 ±0.0013  
+  *tapped_phantom_mana_this_turn                0.0151       0.0282      +0.0131 ±0.0022  
+  *spell_token_copies_total                     1.1679       1.1580      -0.0099 ±0.0035  
+  *ulalek_copies_total                          1.0874       1.0783      -0.0091 ±0.0034  
+  *ulalek_cc_payments_safe                      1.0469       1.0383      -0.0086 ±0.0033  
+  *ruins_oran_rief_counters_total               0.4585       0.4681      +0.0096 ±0.0050  
+  *writhing_chrysalis_counters_total            0.5049       0.4996      -0.0053 ±0.0029  
+  *graveyard_wipe_used                          0.3364       0.3336      -0.0028 ±0.0016  
+  *len_smart_graveyard_wipe_log                 0.3364       0.3336      -0.0028 ±0.0016  
+  *smart_graveyard_wipes_total                  0.3364       0.3336      -0.0028 ±0.0016  
+  *len_battlefield                             11.1092      11.0927      -0.0165 ±0.0099  
+  *interaction_spells_cast_total                1.9054       1.9019      -0.0035 ±0.0022  
+  *len_hand                                     2.3599       2.3690      +0.0091 ±0.0057  
+  *spawn_tokens_created_total                   1.4216       1.4145      -0.0071 ±0.0045  
+  *ramp_pieces_resolved_total                   1.9594       1.9556      -0.0038 ±0.0025  
+
+[so_tapped_land_first - antes] N=10000 | partidas com resultado IDENTICO ao da base: 10000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+
+[so_land_entry_conditions - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8330 (83.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0353       0.0357      +0.0004 ±0.0008  
+  *commander_cast_turn__ate_T3                  0.1943       0.1919      -0.0024 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.5741       0.5665      -0.0076 ±0.0018  
+  *commander_cast_turn__ate_T5                  0.8529       0.8484      -0.0045 ±0.0016  
+  *tapped_phantom_mana_this_turn                0.0151       0.0282      +0.0131 ±0.0023  
+  *ruins_oran_rief_counters_total               0.4585       0.4438      -0.0147 ±0.0039  
+  *spell_token_copies_total                     1.1679       1.1550      -0.0129 ±0.0045  
+  *ulalek_copies_total                          1.0874       1.0759      -0.0115 ±0.0042  
+  *ulalek_cc_payments_safe                      1.0469       1.0361      -0.0108 ±0.0042  
+  *len_library                                 81.2153      81.2419      +0.0266 ±0.0114  
+  *interaction_spells_cast_total                1.9054       1.8991      -0.0063 ±0.0028  
+  *one_ring_burden                              0.2619       0.2564      -0.0055 ±0.0025  
+  *spawn_tokens_created_total                   1.4216       1.4088      -0.0128 ±0.0059  
+  *flash_online_turns                           1.1921       1.1828      -0.0093 ±0.0045  
+  *one_ring_cards_drawn_total                   0.5160       0.5027      -0.0133 ±0.0066  
+  *len_battlefield                             11.1092      11.0854      -0.0238 ±0.0118  
+  *ramp_pieces_resolved_total                   1.9594       1.9536      -0.0058 ±0.0029  
+  *cast_trigger_extra_resolutions_total         0.3475       0.3423      -0.0052 ±0.0026  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=14165 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=10781 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=14218 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=10822 | campos negativos={}

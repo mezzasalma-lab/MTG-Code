@@ -1,0 +1,131 @@
+{
+ "deck": "final-fantasy-limit-break",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Cloud, Ex-SOLDIER",
+   "incluidos": {},
+   "quase": {
+    "Mycosynth Lattice + Vandalblast": {
+     "id": "2552-3263",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Hellkite Tyrant + Mycosynth Lattice": {
+     "id": "523-3263",
+     "bracketTag": "S",
+     "produz": [
+      "Gain control of all permanents an opponent controls during each of your turns",
+      "Lock",
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Apex Altisaur + Darksteel Plate": {
+     "id": "2488-4884",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage to most creatures"
+     ]
+    },
+    "Crackdown Construct + Puresteel Paladin": {
+     "id": "1069-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Austere Command + Biorhythm": {
+     "id": "3778-7299",
+     "bracketTag": "P",
+     "produz": [
+      "Draw the game",
+      "Each opponent loses the game"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Tifa, Martial Artist",
+   "incluidos": {},
+   "quase": {
+    "Mycosynth Lattice + Vandalblast": {
+     "id": "2552-3263",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Hellkite Tyrant + Mycosynth Lattice": {
+     "id": "523-3263",
+     "bracketTag": "S",
+     "produz": [
+      "Gain control of all permanents an opponent controls during each of your turns",
+      "Lock",
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Apex Altisaur + Darksteel Plate": {
+     "id": "2488-4884",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage to most creatures"
+     ]
+    },
+    "Crackdown Construct + Puresteel Paladin": {
+     "id": "1069-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Austere Command + Biorhythm": {
+     "id": "3778-7299",
+     "bracketTag": "P",
+     "produz": [
+      "Draw the game",
+      "Each opponent loses the game"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

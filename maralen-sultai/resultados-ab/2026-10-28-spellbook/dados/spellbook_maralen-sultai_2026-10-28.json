@@ -1,0 +1,1079 @@
+{
+ "deck": "maralen-sultai",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Maralen, Fae Ascendant",
+   "incluidos": {
+    "Priest of Titania + Staff of Domination": {
+     "id": "1376-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ],
+     "usa": [
+      "Staff of Domination",
+      "Priest of Titania"
+     ],
+     "prerequisitos": ""
+    },
+    "Elvish Archdruid + Staff of Domination": {
+     "id": "2645-3151",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ],
+     "usa": [
+      "Staff of Domination",
+      "Elvish Archdruid"
+     ],
+     "prerequisitos": ""
+    },
+    "Marwyn, the Nurturer + Staff of Domination": {
+     "id": "2436-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ],
+     "usa": [
+      "Staff of Domination",
+      "Marwyn, the Nurturer"
+     ],
+     "prerequisitos": ""
+    },
+    "Circle of Dreams Druid + Staff of Domination": {
+     "id": "1526-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ],
+     "usa": [
+      "Staff of Domination",
+      "Circle of Dreams Druid"
+     ],
+     "prerequisitos": ""
+    },
+    "Priest of Titania + Umbral Mantle": {
+     "id": "1376-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ],
+     "usa": [
+      "Umbral Mantle",
+      "Priest of Titania"
+     ],
+     "prerequisitos": "Umbral Mantle attached to Priest of Titania."
+    },
+    "Elvish Archdruid + Umbral Mantle": {
+     "id": "2816-3151",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ],
+     "usa": [
+      "Umbral Mantle",
+      "Elvish Archdruid"
+     ],
+     "prerequisitos": "Umbral Mantle attached to Elvish Archdruid."
+    },
+    "Marwyn, the Nurturer + Umbral Mantle": {
+     "id": "2436-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ],
+     "usa": [
+      "Umbral Mantle",
+      "Marwyn, the Nurturer"
+     ],
+     "prerequisitos": "Umbral Mantle attached to Marwyn."
+    },
+    "Circle of Dreams Druid + Umbral Mantle": {
+     "id": "1526-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ],
+     "usa": [
+      "Umbral Mantle",
+      "Circle of Dreams Druid"
+     ],
+     "prerequisitos": "Umbral Mantle attached to Circle of Dreams Druid."
+    },
+    "Bloom Tender + Staff of Domination": {
+     "id": "2645-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw",
+      "Infinite untap of creatures you control"
+     ],
+     "usa": [
+      "Staff of Domination",
+      "Bloom Tender"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Staff of Domination": {
+     "id": "527-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Bloom Tender + Freed from the Real": {
+     "id": "4222-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Umbral Mantle": {
+     "id": "527-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Staff of Domination + Wirewood Channeler": {
+     "id": "1902-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Bloom Tender + Pemmin's Aura": {
+     "id": "3525-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Metalworker + Staff of Domination": {
+     "id": "578-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colorless mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Umbral Mantle + Wirewood Channeler": {
+     "id": "1902-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Karametra's Acolyte + Staff of Domination": {
+     "id": "2645-3291",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Fanatic of Rhonas + Umbral Mantle": {
+     "id": "2816-5711",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Kami of Whispered Hopes + Staff of Domination": {
+     "id": "81-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Gyre Sage + Staff of Domination": {
+     "id": "1597-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Incubation Druid + Umbral Mantle": {
+     "id": "2816-3990",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Priest of Titania + Scryb Ranger": {
+     "id": "460-539-1376",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite green mana",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Llanowar Tribe + Umbral Mantle": {
+     "id": "305-2816",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Circle of Dreams Druid + Llanowar Elves + Temur Sabertooth + Wirewood Symbiote": {
+     "id": "215-1526-1627-1909",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite blinking of some creatures",
+      "Infinite green mana"
+     ]
+    },
+    "Circle of Dreams Druid + Elvish Mystic + Temur Sabertooth + Wirewood Symbiote": {
+     "id": "215-1526-1909-4852",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite blinking of some creatures",
+      "Infinite green mana"
+     ]
+    },
+    "Karametra's Acolyte + Umbral Mantle": {
+     "id": "2816-3291",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Kami of Whispered Hopes + Umbral Mantle": {
+     "id": "81-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Priest of Titania + Sword of the Paruns": {
+     "id": "1376-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Circle of Dreams Druid + Scryb Ranger": {
+     "id": "460-539-1526",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite storm count"
+     ]
+    },
+    "Myr Welder + Sol Ring + Staff of Domination": {
+     "id": "132-2645-5034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Elvish Archdruid + Sword of the Paruns": {
+     "id": "3151-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Cryptcaller Chariot + Kindred Discovery": {
+     "id": "4052-6264",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-discard triggers",
+      "Near-infinite creature ETB",
+      "Infinite draw triggers"
+     ]
+    },
+    "Marwyn, the Nurturer + Sword of the Paruns": {
+     "id": "2436-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Gyre Sage + Umbral Mantle": {
+     "id": "1597-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Allosaurus Shepherd + Circle of Dreams Druid + Temur Sabertooth + Wirewood Symbiote": {
+     "id": "215-563-1526-1909",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite blinking of some creatures",
+      "Infinite green mana"
+     ]
+    },
+    "Staff of Domination + Viridian Joiner": {
+     "id": "2645-3717",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Imperious Perfect + Intruder Alarm": {
+     "id": "1636-2205",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Circle of Dreams Druid + Sword of the Paruns": {
+     "id": "1526-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Elvish Archdruid + Scryb Ranger": {
+     "id": "460-539-3151",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite landfall triggers",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Staff of Domination + Trazyn the Infinite": {
+     "id": "2645-3918-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colorless mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Umbral Mantle + Viridian Joiner": {
+     "id": "2816-3717",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Sanctum Weaver + Staff of Domination": {
+     "id": "1355-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Marwyn, the Nurturer + Scryb Ranger": {
+     "id": "460-539-2436",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite green mana",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Arbor Adherent + Staff of Domination": {
+     "id": "2645-6478",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Maskwood Nexus + Wirewood Symbiote": {
+     "id": "643-1909",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Bighorner Rancher + Staff of Domination": {
+     "id": "2645-5614",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Kindred Discovery + The Watcher in the Water": {
+     "id": "2351-4052",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Overgrown Battlement + Staff of Domination": {
+     "id": "850-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Axebane Guardian + Staff of Domination": {
+     "id": "2645-3043",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Deathbloom Ritualist + Staff of Domination": {
+     "id": "2645-3443",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Heronblade Elite + Staff of Domination": {
+     "id": "1336-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Kydele, Chosen of Kruphix + Staff of Domination": {
+     "id": "427-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Bloom Tender + Sword of the Paruns": {
+     "id": "5168-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Staff of Domination + Topiary Lecturer": {
+     "id": "2645-7488",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite green mana"
+     ]
+    },
+    "Metalworker + Umbral Mantle": {
+     "id": "578-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Joraga Treespeaker + Scryb Ranger": {
+     "id": "460-539-5832",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite storm count"
+     ]
+    },
+    "Heronblade Elite + Umbral Mantle": {
+     "id": "1336-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Argothian Elder + Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun + Wirewood Lodge": {
+     "id": "1399-3814-4915",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite mana lands you control can produce",
+      "Infinite untap of lands you control"
+     ]
+    },
+    "Cradle Clearcutter + Staff of Domination": {
+     "id": "2645-4734",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Topiary Lecturer + Umbral Mantle": {
+     "id": "2816-7488",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Sanctum Weaver + Umbral Mantle": {
+     "id": "1355-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Cradle Clearcutter + Umbral Mantle": {
+     "id": "2816-4734",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Magus of the Coffers + Staff of Domination": {
+     "id": "2479-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite black mana",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Bloom Tender + Vigean Graftmage": {
+     "id": "4019-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Staff of Domination + Vhal, Candlekeep Researcher": {
+     "id": "2645-3784",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colorless mana that can't be spent to cast spells from your hand",
+      "Infinite draw triggers"
+     ]
+    },
+    "Deathbloom Ritualist + Umbral Mantle": {
+     "id": "2816-3443",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Umbral Mantle + Vhal, Candlekeep Researcher": {
+     "id": "2816-3784",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana that can't be spent to cast spells from your hand",
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Mona Lisa, Science Geek + Staff of Domination": {
+     "id": "2645-7308",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Mona Lisa, Science Geek + Umbral Mantle": {
+     "id": "2816-7308",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Staff of Domination + The Notary Hobbits": {
+     "id": "2645-7908",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colorless mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Accomplished Alchemist + Staff of Domination": {
+     "id": "2645-4188",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Ashaya, Soul of the Wild + Bloom Tender + Scryb Ranger": {
+     "id": "460-539-5168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite storm count"
+     ]
+    },
+    "Overgrown Battlement + Umbral Mantle": {
+     "id": "850-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Axebane Guardian + Umbral Mantle": {
+     "id": "2816-3043",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Bloom Tender + Chain Stasis": {
+     "id": "195-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "The Notary Hobbits + Umbral Mantle": {
+     "id": "2816-7908",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun + Silvanus's Invoker": {
+     "id": "4915-4954",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinite mana lands you control can produce",
+      "Infinite untap of lands you control"
+     ]
+    },
+    "Rainveil Rejuvenator + Staff of Domination": {
+     "id": "2645-6479",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Accomplished Alchemist + Umbral Mantle": {
+     "id": "2816-4188",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Crackdown Construct + Umbral Mantle": {
+     "id": "2816-4944",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Elvish Aberration + Umbral Mantle": {
+     "id": "2816-4667",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Harabaz Druid + Staff of Domination": {
+     "id": "1129-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun + Wakeroot Elemental": {
+     "id": "192-4915",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Leyline of Transformation + Wirewood Symbiote": {
+     "id": "1909-5929",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite storm count"
+     ]
+    },
+    "Doc Samson, Super Psychiatrist + Staff of Domination": {
+     "id": "2645-7704",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Arcane Adaptation + Wirewood Symbiote": {
+     "id": "803-1909",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Doc Samson, Super Psychiatrist + Umbral Mantle": {
+     "id": "2816-7704",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Loot, the Nexus + Staff of Domination": {
+     "id": "2645-8190",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Staff of Domination + Undermountain Adventurer": {
+     "id": "1008-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Harabaz Druid + Umbral Mantle": {
+     "id": "1129-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Conspiracy + Wirewood Symbiote": {
+     "id": "1909-4875",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Elvish Archdruid + Ringing Strike Mastery": {
+     "id": "3151-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Loot, the Nexus + Umbral Mantle": {
+     "id": "2816-8190",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Priest of Titania + Ringing Strike Mastery": {
+     "id": "1376-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Marwyn, the Nurturer + Ringing Strike Mastery": {
+     "id": "2436-7500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Circle of Dreams Druid + Ringing Strike Mastery": {
+     "id": "1526-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Wirewood Symbiote + Xenograft": {
+     "id": "719-1909",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Marwyn, the Nurturer + Singing Bell Strike": {
+     "id": "2436-5090",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Gumato + Umbral Mantle": {
+     "id": "2816-7935",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Circle of Dreams Druid + Singing Bell Strike": {
+     "id": "1526-5090",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Rofellos, Llanowar Emissary + Umbral Mantle": {
+     "id": "2816-5709",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Rofellos, Llanowar Emissary + Staff of Domination": {
+     "id": "2645-5709",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [
+     "Seedborn Muse",
+     "Cyclonic Rift",
+     "Rhystic Study"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Bloom Tender + Staff of Domination",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Priest of Titania + Staff of Domination",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Elvish Archdruid + Staff of Domination",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Marwyn, the Nurturer + Staff of Domination",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Marwyn, the Nurturer + Umbral Mantle",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Circle of Dreams Druid + Umbral Mantle",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Circle of Dreams Druid + Staff of Domination",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Priest of Titania + Umbral Mantle",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Elvish Archdruid + Umbral Mantle",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3",
+  "4"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

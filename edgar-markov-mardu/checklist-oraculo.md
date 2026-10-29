@@ -1,5 +1,295 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Fetchland: sacrifício + 1 de vida + busca por subtipo + thinning | 🐛 corrigido: `crack_fetch`, atrás de `FETCH_LANDS_ENABLED` |
+| "then shuffle" da fetch | 📊 não modelado (a biblioteca já é uma permutação aleatória e nada põe carta no topo antes do terreno) |
+| Sevinne's Reclamation devolve uma fetch do cemitério | 🐛 corrigido: a fetch devolvida também busca |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`.
+
+---
+
+## Terreno virado primeiro em T1/T2 + ordem dos payoffs determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Determinismo entre processos (`set` de str iterado em ordem de hash) | 🐛 corrigido: `DETERMINISTIC_SET_ORDER_ENABLED` (ordem dos payoffs de morte) |
+| Fetchlands (Arid Mesa/Bloodstained Mire/Marsh Flats) | 🐛 corrigido na onda 4 (mesma data, seção "Fetchlands reais" acima): sacrifício, 1 de vida, busca por subtipo, thinning |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
+## Planeswalkers: ativação no turno em que entram + 2 bugs do Sorin — 2026-09-25
+
+**Gatilho:** o mesmo bug de orquestração achado no Prismatic Bridge (rodada
+Reality Fracture) foi sinalizado aqui. Pedido do usuário: "Corrige o
+simulador do Markov pfv".
+Fontes:
+- oráculo do cache: Sorin, Imperious Bloodlord e Elspeth, Storm Slayer;
+- CR 606.3 em `rules-cache/` (versão de 2026-09-25).
+
+| # | Achado | Oráculo / regra | Correção |
+|---|---|---|---|
+| 1 | 🐛 **PW conjurado só ativava no turno seguinte** (Regra #6, orquestração). A única passada (`activate_planeswalkers`) rodava ANTES de `cast_available_spells`. Sorin/Elspeth conjurados da mão, ou Sorin devolvido pela Sevinne's Reclamation, esperavam um turno. | CR 606.3: "any time they have priority and the stack is empty during a main phase of their turn, but only if no player has previously activated a loyalty ability of that permanent that turn". Não há doença de invocação pra lealdade. | `pw_activated_this_turn` (zera em `play_turn`) + `activate_unactivated_planeswalkers`, chamado depois de cada conjuração e no fim das 2 passadas de `cast_available_spells` (as 2 são main phase 1, antes do combate). |
+| 2 | 🐛 **Sorin +1 sacrificava qualquer ficha** (`state.tokens.pop()`): Human Soldier da Elspeth/Bastion, Snake da Ophiomancer, Demon da Ritual Chamber. | "+1: You may sacrifice **a Vampire**. When you do, Sorin deals 3 damage to any target and you gain 3 life." | Só ficha de Vampiro do pool descartável (Vampire Token, Shapeshifter changeling). O Vampire Demon 4/3 do Vito continua fora do pool, de propósito (já documentado). Sem Vampiro, cai pro −3 / +1 de contador como antes. |
+| 3 | 🐛 **Remoção de oponente no Sorin não era morte de PW** (Regra #3, gatilho compartilhado). O Sorin está na `INTERACTION_ENGINE_PRIORITY`, mas `remove_permanent` só tratava criatura. Ele ia pro cemitério sem a cláusula de PW da Cruel Celebrant e deixava a lealdade velha em `state.loyalty`. | Cruel Celebrant: "Whenever this creature or another creature **or planeswalker** you control dies..." | Nova cascata única `_planeswalker_dies`, usada pela lealdade a 0 e pela remoção. |
+
+**Validação:**
+- **Testes dirigidos:** 6/6 no novo `test_edgar_markov_goldfish.py`. No código antigo, 4 falham: são exatamente os 4 que testam as correções. Os outros 2 garantem "só 1 ativação por turno".
+- **Regressão:** 20.000 partidas no modo padrão + 20.000 na resiliência, com 0 exceções e 0 travamentos.
+- **Números antes/depois:** em `goldfish-log.md`.
+- **London mulligan:** `test_london_mulligan.py` continua 8/8.
+
+## London mulligan: as cartas do fundo eram embaralhadas de volta — 2026-09-24
+
+**Achado:** o mesmo bug encontrado no Prismatic Bridge (rodada de gaps de
+2026-09-24) estava copiado aqui, nos 2 pontos (`simulate_one` e
+`simulate_one_with_interaction`): depois de pôr as cartas do 2º mulligan
+no fundo do grimório, o código fazia `rng.shuffle(state.library)` — a carta
+que ia pro fundo voltava pra uma posição aleatória (dava pra comprá-la de
+novo). CR 103.5: "puts a number of those cards ... on the bottom of their
+library in any order" — sem embaralhar depois. Corrigido: removido o
+`shuffle` nos 2 pontos (o `shuffle` de devolver a mão antes de comprar a
+nova continua, esse é real).
+
+**Validação:** 2.000 partidas antes/depois (mesmas seeds): só mudam as
+partidas com 2+ mulligans (380 de 2.000 no modo padrão; 392 no modo
+resiliência) — nenhuma outra. Teste dirigido `test_london_mulligan.py` (raiz
+do repo): passa no código corrigido e falha no antigo, nos 2 modos.
+Regressão de 20.000 partidas (padrão) + 20.000 (resiliência): 0 exceções.
+
+## CR 903.9a: comandante DISPARA gatilhos de morte de verdade antes de ir pra zona de comando — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Achado real NUMÉRICO deste deck (diferente de Ur-Dragon/Hei Bai, que
+não têm payoff de morte algum):** este é um deck de aristocrats de
+verdade — Pitiless Plunderer ("whenever another creature you control
+dies, create a Treasure"), Blood Artist/Zulaport Cutthroat/Vindictive
+Vampire/Bastion of Remembrance/Funeral Room/Vein Ripper/Meathook
+Massacre/Cordial Vampire (`DEATH_PAYOFF_FORMULAS`, "CARDNAME or another
+creature you control dies") e Elenda, the Dusk Rose (contador). A
+versão anterior de `remove_permanent()` pulava o cemitério inteiramente
+pro comandante, então **nenhum desses payoffs disparava quando Edgar
+morria pra remoção/wipe de oponente** — Treasures e drain de vida reais
+sendo perdidos silenciosamente toda vez que o motor central do deck
+(uma criatura de verdade, "Legendary Creature — Vampire Knight",
+morrendo) era exatamente o cenário em que esses payoffs deveriam
+disparar.
+
+**Corrigido em `remove_permanent()`:** o comandante agora entra no
+cemitério de verdade primeiro (CR 700.4, "dies"), dispara
+`_apply_creature_death_payoffs` (Pitiless Plunderer + todos os death
+payoffs, já que ele é `is_creature(COMMANDER) == True`), e só DEPOIS é
+removido do cemitério pra representar a escolha do dono de movê-lo pra
+zona de comando. **`_vito_fanatic_sacrifice_trigger` fica de fora de
+propósito** — seu oráculo real é "whenever YOU SACRIFICE another
+permanent" (confirmado Scryfall), e destruição/wipe de oponente nunca é
+sacrifício — mesma lógica de exclusão do Pia's Revolution/emblema do
+Daretti no Megatron, mas por motivo diferente (aqui é a condição do
+próprio oráculo, "sacrifice" ≠ "dies", não timing de CR 704.3).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão
+(replicando o path completo de `simulate_one`, 3000 seeds, seed_base
+6000000) contra o commit anterior: **0/3000 mismatches** (os 2 call
+sites reais de `remove_permanent` — `try_smart_opponent_removal`/
+`try_smart_opponent_wipe` — só disparam com `interaction_rng` ativo;
+Edgar nunca é sacrificado pelo próprio motor, está excluído de
+`sac_candidates` de propósito). Regressão de 20.000 partidas em modo
+de resiliência (seed_base 9800000): 0 exceções, 0 comandantes presos
+no cemitério. **Comparação A/B agregada (5000 seeds, mesma seed_base,
+modo de resiliência) confirmando que a correção move as métricas
+certas na direção esperada:** `pitiless_plunderer_treasures` médio
+0,1066→0,1128; `death_trigger_events` médio 2,2822→2,3724;
+`creatures_destroyed_by_opponent_total` médio 2,2722→2,4876 — enquanto
+`smart_wipes_total`/`smart_removals_total` (eventos de RNG, não
+deveriam mudar) ficaram EXATAMENTE iguais (0,614/0,4916 nos dois),
+confirmando que a divergência é isolada à correção, não um efeito
+colateral de RNG ripple. 4 testes dirigidos: (1) Pitiless Plunderer
+dispara com a morte do comandante, ele não fica preso no cemitério;
+(2) Blood Artist (death payoff genérico) dispara; (3) Vito Fanatic
+(sacrifice-only) NÃO dispara por destruição; (4) permanente comum
+continua indo pro cemitério normalmente.
+
+**Resultado:** primeira correção desta rodada (depois do Megatron) com
+impacto numérico real e mensurável — este deck tem motor de
+aristocrats de verdade que estava perdendo valor genuíno toda vez que
+o comandante, sua própria maior ameaça, morria pra remoção de
+oponente.
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" — até esta rodada, a
+única categoria de "board wipe" do modo de resiliência era "destroy all
+creatures". Raciocínio completo (e a correção de design que se seguiu
+no mesmo dia) em `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (este deck recebeu a extensão
+DEPOIS da correção de design nos outros 3, então nunca passou pela
+versão com rolagens independentes): `try_smart_opponent_wipe()` único —
+1 rolagem "algum wipe acontece" (`chance = interaction_chance() *
+TOTAL_WIPE_CHANCE_FACTOR`, soma dos 3 pesos = 0.75) seguida de escolha
+ponderada de 1 TIPO só (`WIPE_TYPE_WEIGHTS = {"creature": 0.4,
+"artifact": 0.2, "enchantment": 0.15}`), restrita aos tipos com alvo
+legal em campo. Delega pro mesmo `remove_permanent(state, log, n,
+source=...)` já usado por todas as outras categorias (nota: assinatura
+com `log` na 2ª posição, diferente da maioria dos outros decks). Edgar
+Markov nunca é artefato nem encantamento (Legendary Creature — Vampire
+Knight, confirmado via Scryfall), então nunca é alvo direto. Vários
+encantamentos reais e motores de valor de verdade neste deck
+(Caretaker's Talent, Black Market Connections, Anointed Procession,
+Smothering Tithe, The Meathook Massacre) agora alcançáveis por wipe de
+encantamento. `state.wiped_this_round` setado se o tipo escolhido não
+for criatura mas algum permanente destruído também for criatura de
+verdade (nenhuma carta desta lista é híbrida hoje — `is_creature`/
+`is_artifact`/`is_enchantment` mutuamente exclusivas, `Card.type` é uma
+string única sem híbrido — checagem mantida por robustez).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8faa943` (2.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+testes dirigidos (no máximo 1 tipo por chamada, 0 violações; distribuição
+ponderada bate com os pesos relativos dentro de 3pp).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 40,8% pra 65,5% (antes = commit
+`8faa943`, só wipe de criatura). Avg wipes totais por jogo: 0,477 →
+0,949. 15,7% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+17,4% pelo menos 1 enchantment wipe.
+
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** usuário pediu direto, depois de já ter validado o modo em
+Megatron/Ur-Dragon/Hei Bai (incluindo 3 rodadas de correção de
+orquestração de turno nesta mesma sessão): *"Agora implementa essas
+mudanças no Markov."* Este deck nunca tinha NENHUMA extensão de
+resiliência antes — porte completo do zero, já incorporando o design
+FINAL já validado nos outros 3 (não precisou repetir as 3 rodadas de
+correção histórica).
+
+**Diferenças estruturais reais deste deck vs. os outros 3** (levadas em
+conta no design, não simplificações por preguiça):
+1. **Nenhuma criatura NOMEADA jamais morria neste motor antes desta
+   rodada** — só sacrifício de TOKEN via `sac_loop` (decisão de escopo
+   documentada desde a reconstrução original: nenhum outlet de
+   sacrifício do deck alcança criatura nomeada). `remove_permanent()`
+   (novo) é o 1º ponto real de destroy/wipe verdadeiro do arquivo.
+2. **Combate real (bloqueadores) não é modelado** — mesma convenção já
+   documentada no topo do arquivo desde a reconstrução original ("Edgar
+   ataca todo turno... sem resposta do oponente"). Ataque de oponente
+   também conecta sem bloqueio, mesmo padrão do Ur-Dragon/Hei Bai.
+3. **Vida própria nunca foi rastreada** — só contadores agregados de
+   drain/lifegain do oponente. `state.life` é NOVO, existe só como alvo
+   do ataque de oponente.
+
+**Achados reais que exigiram corrigir código COMPARTILHADO (Regra #3 do
+CLAUDE.md — não bastava auditar carta por carta, o conceito central
+"criatura pode morrer"/"comandante pode sair de campo" nunca tinha
+existido neste arquivo):**
+
+1. **`eminence_trigger()` tinha um bug dormant que só ficou alcançável
+   com o novo `remove_permanent()`.** A condição `state.commander_in_play
+   or state.commander_cast_count == 0` só cobria 2 dos 3 estados reais
+   de Edgar (em campo; nunca conjurado ainda = literalmente na zona de
+   comando). Antes desta rodada Edgar nunca DEIXAVA o campo depois de
+   conjurado (nenhum removal existia), então o 3º estado real —
+   destruído por um oponente e voltando pra zona de comando via CR
+   903.9 — nunca acontecia e o bug ficava adormecido. Corrigido:
+   Eminence está disponível incondicionalmente neste motor (Edgar
+   sempre está em campo OU na zona de comando, nunca em nenhum outro
+   lugar — nenhuma substituição de zona tipo exile/shuffle-into-library
+   se aplica a ele). Comportamento em modo padrão continua 100%
+   idêntico (verificado — a fórmula antiga já dava a mesma resposta nos
+   2 estados que o modo padrão de fato alcançava).
+2. **`main_phase()` só permitia conjurar Edgar 1x pra sempre**
+   (`state.commander_cast_count == 0` na condição de cast) — nunca era
+   um problema em modo padrão, mas bloquearia recast de verdade depois
+   de `remove_permanent` mandar Edgar de volta pra zona de comando.
+   Removido — `not state.commander_in_play` sozinho já é a condição
+   real (100% idêntico em modo padrão, confirmado por regressão).
+3. **`_creature_sacrificed()` bundlava 2 gatilhos com escopo real
+   diferente** — Pitiless Plunderer ("whenever ANOTHER creature you
+   control dies", verificado via Scryfall: NÃO é sacrifice-restricted)
+   + death payoffs (Blood Artist/Zulaport/etc, "dies" geral) por um
+   lado, Vito Fanatic ("whenever YOU sacrifice another permanent",
+   sacrifice-restricted de verdade) por outro. Extraído
+   `_apply_creature_death_payoffs()` (só a parte 1, geral) pra ser
+   reusada tanto por sacrifício de verdade quanto por
+   `remove_permanent` — Vito Fanatic fica de fora da remoção de
+   oponente, corretamente (destruição de oponente não é algo que EU
+   sacrifiquei). Refatoração confirmada bit-a-bit idêntica em modo
+   padrão pros 5 call sites reais já existentes.
+4. **CR 903.9 aplicado corretamente em `remove_permanent`**: comandante
+   destruído vai pra zona de comando (efeito de SUBSTITUIÇÃO), nunca
+   chega a ser "put into a graveyard" de verdade — gatilhos de "dies"
+   (Pitiless Plunderer, death payoffs) NÃO disparam pra ele. Testado
+   diretamente.
+
+**Implementado:** as mesmas 7 categorias já validadas no Megatron/
+Ur-Dragon/Hei Bai (ataque sem bloqueio, remoção curada por
+`INTERACTION_ENGINE_PRIORITY`, discard aleatório, board wipe via
+`remove_permanent`, graveyard hate em 2 modelos — mass exile 1x/partida
+e exílio de carta única repetível, alvo = maior MV entre criatura no
+cemitério, mesmo critério que Agadeem's Awakening/Sevinne's
+Reclamation/Bloodline Bidding usam pra recursão real —, e counterspell
+mirando só o cast do comandante), já incorporando direto o design final
+das 3 rodadas de correção de orquestração de turno: `try_smart_
+opponent_turn()` simula `NUM_OPPONENTS = 3` turnos de oponente reais
+por rodada; `state.wiped_this_round` + `POST_WIPE_ATTACK_HASTE_FACTOR =
+0.15` garantem que um wipe simétrico suprime ataque na rodada inteira
+(não só o turno do wiper), reduzido nunca zerado (haste); `OPPONENT_
+ATTENTION_CHANCE = 1/NUM_OPPONENTS` garante que nem todo turno de todo
+oponente mira em mim.
+
+**`INTERACTION_ENGINE_PRIORITY` curada** (motor recorrente de valor, não
+corpo isolado): Roaming Throne, Pitiless Plunderer, Ashnod's Altar,
+Sanctum Seeker, Skullclamp, Black Market Connections, Caretaker's
+Talent, Zulaport Cutthroat, Sorin Imperious Bloodlord, Vito Fanatic of
+Aclazotz. Edgar Markov fica de fora de propósito — já tem categoria
+dedicada (counterspell no cast) e remoção não o mata de verdade mesmo
+(vai pra zona de comando).
+
+**Validação:**
+- Modo padrão confirmado **100% bit-idêntico** ao HEAD anterior — 5.000
+  seeds comparadas campo a campo no dict COMPLETO retornado por
+  `simulate_one` (não só um subconjunto), 0 divergências.
+- Regressão de 20.000 partidas em modo resiliência, 0 exceções.
+- Testes dirigidos: comandante removido vai pra zona de comando (nunca
+  cemitério) e fica recastável (tax correta); remoção de criatura
+  nomeada dispara Pitiless Plunderer + death payoffs mas NÃO o gatilho
+  de sacrifício do Vito Fanatic; token removido sai de `battlefield` E
+  `tokens` sem ir pro cemitério; Eminence continua disponível com Edgar
+  na zona de comando após remoção (bug dormant confirmado e corrigido);
+  taxa de ataque pós-wipe cai pra ~13,5% da taxa base (~ fator 0,15
+  esperado).
+- `run_batch_with_interaction` (2000 jogos): avg ataques sofridos 1,22,
+  avg board wipes 0,51 (43,3% das partidas sofrem ao menos 1), avg
+  counterspells 0,09, avg vida final 38,11, Edgar recastado após
+  remoção em 8,6% das partidas — magnitudes na mesma faixa dos outros 3
+  decks já validados. "Nunca conjurado em 8 turnos" sobe de 23,2%
+  (padrão) pra 26,5% (resiliência) — direção esperada (counterspell
+  atrapalhando o 1º cast), não um bug.
+
 ## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece)
 
 Depois de achar e corrigir uma classe de bug no Beorn (Roaming Throne

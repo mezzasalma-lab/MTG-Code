@@ -1,0 +1,1 @@
+N std = 300 | res = 400 | divergencias: 0

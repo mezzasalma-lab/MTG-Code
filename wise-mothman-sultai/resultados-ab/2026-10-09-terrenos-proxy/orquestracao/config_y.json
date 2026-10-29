@@ -1,0 +1,118 @@
+{
+ "sim": "resultados-ab/2026-10-09-terrenos-proxy/codigo/mothman_goldfish_v1_DEPOIS.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "commander_cast_turn__nunca",
+  "casualties_casts",
+  "atomize_casts",
+  "trophy_casts",
+  "regenerations_used",
+  "protection_used_total",
+  "smart_removals_total",
+  "smart_wipes_total",
+  "commander_countered_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "mana_spent_total",
+  "life_min",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total",
+  "rad_counters_given_opp_total",
+  "fetches_cracked_total"
+ ],
+ "compacto": [
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "regenerations_used",
+  "smart_removals_total",
+  "protection_used_total"
+ ],
+ "variantes": {
+  "base": {
+   "COMMANDER_REMOVAL_SHARE": 0.5
+  },
+  "a1_hollow_sea": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "COMMANDER_REMOVAL_SHARE": 0.5
+  },
+  "a2_hollow_bayou": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Bayou"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "COMMANDER_REMOVAL_SHARE": 0.5
+  },
+  "a3_swarmyard_sea": {
+   "SWAPS": [
+    [
+     "Swarmyard",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "COMMANDER_REMOVAL_SHARE": 0.5
+  },
+  "c1_hollow_sea_bog_bayou": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Underground Sea"
+    ],
+    [
+     "Bojuka Bog",
+     "Bayou"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "COMMANDER_REMOVAL_SHARE": 0.5
+  },
+  "c2_hollow_sea_woodland_bayou": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Underground Sea"
+    ],
+    [
+     "Shifting Woodland",
+     "Bayou"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "COMMANDER_REMOVAL_SHARE": 0.5
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "a1_hollow_sea",
+  "a2_hollow_bayou",
+  "a3_swarmyard_sea",
+  "c1_hollow_sea_bog_bayou",
+  "c2_hollow_sea_woodland_bayou"
+ ],
+ "regressao": [
+  "a3_swarmyard_sea"
+ ]
+}

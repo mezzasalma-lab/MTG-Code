@@ -1,0 +1,6 @@
+ANTES (ba74496), modo resiliencia, N=10000 sementes 3000000..3009999: jogos com o Sephiroth virado = 231 (2.31%)
+  virou em wipe (try_smart_opponent_wipe), Sephiroth MORREU junto          162 jogos(eventos)
+  virou em wipe (try_smart_opponent_wipe), Sephiroth sobreviveu              6 jogos(eventos)
+  virou em wipe proprio (Blasphemous Act), Sephiroth MORREU junto            2 jogos(eventos)
+  virou em wipe proprio (Blood Money), Sephiroth MORREU junto                3 jogos(eventos)
+  virou fora de wipe                                                        58 jogos(eventos)

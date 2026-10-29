@@ -1,0 +1,513 @@
+{
+ "deck": "lotr-riders-of-rohan",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Éowyn, Shieldmaiden",
+   "incluidos": {
+    "Gilraen, Dúnedain Protector + Village Bell-Ringer": {
+     "id": "847-2059",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ],
+     "usa": [
+      "Gilraen, Dúnedain Protector",
+      "Village Bell-Ringer"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Zealous Conscripts": {
+     "id": "618-1537",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Combat Celebrant + Helm of the Host": {
+     "id": "1692-2105",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature ETB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Combat Celebrant + Kiki-Jiki, Mirror Breaker": {
+     "id": "618-2105",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Combat Celebrant + Rionya, Fire Dancer": {
+     "id": "1908-2105",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "The Jolly Balloon Man + Village Bell-Ringer": {
+     "id": "2059-5917",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Village Bell-Ringer": {
+     "id": "618-2059",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Splinter Twin + Zealous Conscripts": {
+     "id": "1537-4702",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Combat Celebrant + Splinter Twin": {
+     "id": "2105-4702",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Combat Celebrant + Mirage Phalanx": {
+     "id": "1378-2105",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Splinter Twin + Village Bell-Ringer": {
+     "id": "2059-4702",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Fable of the Mirror-Breaker // Reflection of Kiki-Jiki + Village Bell-Ringer": {
+     "id": "2059-3337",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Breath of Fury + Éowyn, Shieldmaiden": {
+     "id": "355-3259",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite combat damage"
+     ]
+    },
+    "Combat Celebrant + Saheeli, the Sun's Brilliance": {
+     "id": "2105-4183",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite combat phases"
+     ]
+    },
+    "Orthion, Hero of Lavabrink + Village Bell-Ringer": {
+     "id": "2059-2136",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens with haste",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Combat Celebrant + Sandstorm Crasher": {
+     "id": "2105-6426",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Aurelia, the Warleader + Gilraen, Dúnedain Protector": {
+     "id": "847-4364",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite combat phases"
+     ]
+    },
+    "Eldrazi Displacer + Village Bell-Ringer": {
+     "id": "2059-4013",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Deadeye Navigator + Village Bell-Ringer": {
+     "id": "1409-2059",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Livio, Oathsworn Sentinel + Village Bell-Ringer": {
+     "id": "1952-2059",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking",
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Selfless Squire + Wheel of Misfortune": {
+     "id": "8-24",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Cayth, Famed Mechanist + Village Bell-Ringer": {
+     "id": "2059-5663--108",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Stella Lee, Wild Card": {
+     "id": "5534--28",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite copies of one instant or sorcery",
+      "Infinite magecraft triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Gilraen, Dúnedain Protector + Village Bell-Ringer",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  },
+  {
+   "comandante": "Aragorn, King of Gondor",
+   "incluidos": {
+    "Gilraen, Dúnedain Protector + Village Bell-Ringer": {
+     "id": "847-2059",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ],
+     "usa": [
+      "Gilraen, Dúnedain Protector",
+      "Village Bell-Ringer"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Zealous Conscripts": {
+     "id": "618-1537",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Combat Celebrant + Helm of the Host": {
+     "id": "1692-2105",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature ETB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Combat Celebrant + Kiki-Jiki, Mirror Breaker": {
+     "id": "618-2105",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Combat Celebrant + Rionya, Fire Dancer": {
+     "id": "1908-2105",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "The Jolly Balloon Man + Village Bell-Ringer": {
+     "id": "2059-5917",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Village Bell-Ringer": {
+     "id": "618-2059",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Splinter Twin + Zealous Conscripts": {
+     "id": "1537-4702",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Combat Celebrant + Splinter Twin": {
+     "id": "2105-4702",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Combat Celebrant + Mirage Phalanx": {
+     "id": "1378-2105",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB"
+     ]
+    },
+    "Splinter Twin + Village Bell-Ringer": {
+     "id": "2059-4702",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Fable of the Mirror-Breaker // Reflection of Kiki-Jiki + Village Bell-Ringer": {
+     "id": "2059-3337",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite creature ETB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Breath of Fury + Éowyn, Shieldmaiden": {
+     "id": "355-3259",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite combat damage"
+     ]
+    },
+    "Combat Celebrant + Saheeli, the Sun's Brilliance": {
+     "id": "2105-4183",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite combat phases"
+     ]
+    },
+    "Orthion, Hero of Lavabrink + Village Bell-Ringer": {
+     "id": "2059-2136",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens with haste",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Combat Celebrant + Sandstorm Crasher": {
+     "id": "2105-6426",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Aurelia, the Warleader + Gilraen, Dúnedain Protector": {
+     "id": "847-4364",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite combat phases"
+     ]
+    },
+    "Eldrazi Displacer + Village Bell-Ringer": {
+     "id": "2059-4013",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Deadeye Navigator + Village Bell-Ringer": {
+     "id": "1409-2059",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Livio, Oathsworn Sentinel + Village Bell-Ringer": {
+     "id": "1952-2059",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking",
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Selfless Squire + Wheel of Misfortune": {
+     "id": "8-24",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Cayth, Famed Mechanist + Village Bell-Ringer": {
+     "id": "2059-5663--108",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Stella Lee, Wild Card": {
+     "id": "5534--28",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite copies of one instant or sorcery",
+      "Infinite magecraft triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Gilraen, Dúnedain Protector + Village Bell-Ringer",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

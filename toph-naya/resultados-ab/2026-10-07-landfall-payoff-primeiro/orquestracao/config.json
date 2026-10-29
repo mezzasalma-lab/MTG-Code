@@ -1,0 +1,28 @@
+{
+ "flags_off": {
+  "LANDFALL_PAYOFF_FIRST": false
+ },
+ "ignora_campos": [
+  "payoff_first_casts"
+ ],
+ "sensibilidade": {},
+ "turns": 8,
+ "extra": null,
+ "destaque": [
+  "payoff_first_casts",
+  "landfall_triggers_fired",
+  "lands_played_total",
+  "spells_cast_total",
+  "table_damage_total",
+  "lethal_turn__nunca",
+  "lethal_turn__ate_T5",
+  "lethal_turn__ate_T6",
+  "lethal_turn__ate_T7",
+  "commander_cast_turn__nunca",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4"
+ ],
+ "deck": "toph-naya",
+ "sim": "toph_goldfish_v1.py",
+ "snapshot": "codigo/toph_goldfish_v1_ANTES_0030b8b.py"
+}

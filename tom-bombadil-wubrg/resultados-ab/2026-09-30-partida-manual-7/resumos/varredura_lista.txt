@@ -1,0 +1,50 @@
+lista.md: 100 nomes; sem oráculo no cache: []
+
+## jogadas de terreno extra / jogar terreno de fora da mão  (regex: additional land|play (two|an additional|lands?)|lands? from (your )?(graveyard|library|top)|put a land card from your hand)
+=> 0 carta(s)
+
+## copiar Saga / permanente / encantamento (fonte possível das 6 cópias da Bath Song)  (regex: copy of|create a token that.s a copy|becomes? a copy|copy target)
+- Estrid's Invocation: You may have this enchantment enter as a copy of an enchantment you control, except it has "At the beginning of your upkeep, you may exile this enchantment. If you do, return it to the battlefield und
+- Fable of the Mirror-Breaker // Reflection of Kiki-Jiki: Reflection of Kiki-Jiki (): {1}, {T}: Create a token that's a copy of another target nonlegendary creature you control, except it has haste. Sacrifice it at the beginning of the next end step.
+- Strionic Resonator: {2}, {T}: Copy target triggered ability you control. You may choose new targets for the copy. (A triggered ability uses the words "when," "whenever," or "at.")
+- Weaver of Harmony: {G}, {T}: Copy target activated or triggered ability you control from an enchantment source. You may choose new targets for the copy. (Mana abilities can't be targeted.)
+=> 4 carta(s)
+
+## terreno produz "qualquer cor"/"pode produzir" de oponente (Exotic Orchard-like)  (regex: an opponent controls could produce|could produce)
+- Exotic Orchard: {T}: Add one mana of any color that a land an opponent controls could produce.
+- Reflecting Pool: {T}: Add one mana of any type that a land you control could produce.
+=> 2 carta(s)
+
+## proliferate / adiciona marcador de saber  (regex: proliferate|lore counter)
+- Awaken the Honored Dead: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Barbara Wright: History Teacher — Sagas you control have read ahead. (As a Saga enters, choose a chapter and start with that many lore counters. Skipped chapters don't trigger.)
+- Battle at the Helvault: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Binding the Old Gods: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Birth of the Imperium: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Elspeth Conquers Death: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Fable of the Mirror-Breaker // Reflection of Kiki-Jiki: Fable of the Mirror-Breaker ({2}{R}): (As this Saga enters and after your draw step, add a lore counter.)
+- Flux Channeler: Whenever you cast a noncreature spell, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)
+- In the Darkness Bind Them: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)
+- Jugan Defends the Temple // Remnant of the Rising Star: Jugan Defends the Temple ({2}{G}): (As this Saga enters and after your draw step, add a lore counter.)
+- Karn's Bastion: {4}, {T}: Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)
+- Kiora Bests the Sea God: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Ripples of Potential: Proliferate, then choose any number of permanents you control that had a counter put on them this way. Those permanents phase out. (To proliferate, choose any number of permanents and/or players, then
+- Satsuki, the Living Lore: {T}: Put a lore counter on each Saga you control. Activate only as a sorcery.
+- Song of Eärendil: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Summon: Bahamut: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)
+- Summon: Fenrir: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Summon: Knights of Round: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after V.)
+- Summon: Primal Odin: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Summon: Yojimbo: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)
+- The Bath Song: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- The Coming of Galactus: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)
+- The Creation of Avacyn: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- The Cruelty of Gix: Read ahead (Choose a chapter and start with that many lore counters. Add one after your draw step. Skipped chapters don't trigger. Sacrifice after III.)
+- The Eldest Reborn: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- The First Iroan Games: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)
+- The Kami War // O-Kagachi Made Manifest: The Kami War ({1}{W}{U}{B}{R}{G}): (As this Saga enters and after your draw step, add a lore counter.)
+- There and Back Again: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- Tom Bombadil: As long as there are four or more lore counters among Sagas you control, Tom Bombadil has hexproof and indestructible.
+- Urza's Saga: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+- War of the Last Alliance: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+=> 31 carta(s)

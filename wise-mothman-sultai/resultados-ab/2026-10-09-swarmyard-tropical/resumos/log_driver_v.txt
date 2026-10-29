@@ -1,0 +1,94 @@
+feito 10000 resiliencia base
+feito 10000 resiliencia e1_swarmyard_tropical
+feito 10000 resiliencia e2_e1_mais_bog_sea
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[e1_swarmyard_tropical - base] N=10000 | partidas com resultado IDENTICO ao da base: 103 (1.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T7                                   0.0663       0.0669      +0.0006 ±0.0022  
+  *cleared_T8                                   0.2382       0.2433      +0.0051 ±0.0036  
+  *cleared_T10                                  0.5574       0.5664      +0.0090 ±0.0043  
+  *first_elim_T6                                0.2293       0.2363      +0.0070 ±0.0027  
+   self_lost                                    0.0173       0.0181      +0.0008 ±0.0019  
+   decked                                       0.0173       0.0181      +0.0008 ±0.0019  
+  *commander_cast_turn__ate_T3                  0.1400       0.1450      +0.0050 ±0.0018  
+  *commander_cast_turn__ate_T4                  0.5843       0.6012      +0.0169 ±0.0030  
+  *commander_cast_turn__ate_T5                  0.7088       0.7257      +0.0169 ±0.0030  
+  *commander_cast_turn__ate_T6                  0.8036       0.8165      +0.0129 ±0.0027  
+  *commander_cast_turn__nunca                   0.0216       0.0179      -0.0037 ±0.0014  
+  *regenerations_used                           0.0066       0.0000      -0.0066 ±0.0017  
+  *protection_used_total                        0.1271       0.1198      -0.0073 ±0.0038  
+   smart_removals_total                         0.9985       1.0021      +0.0036 ±0.0079  
+   smart_wipes_total                            0.6721       0.6693      -0.0028 ±0.0058  
+   commander_countered_total                    0.1579       0.1582      +0.0003 ±0.0039  
+  *commander_cast_count                         1.7935       1.8068      +0.0133 ±0.0080  
+   interaction_plays                            0.6559       0.6619      +0.0060 ±0.0086  
+   lands_entered_total                         11.8383      11.8453      +0.0070 ±0.0441  
+  *mana_spent_total                             4.3610       4.2670      -0.0940 ±0.0728  
+  *life_min                                    29.7309      30.0382      +0.3073 ±0.0409  
+   mothman_counters_placed_total               59.2316      59.7240      +0.4924 ±0.6995  
+   cards_milled_opp_total                      71.3728      71.6929      +0.3201 ±0.5499  
+  *rad_counters_given_opp_total                15.0240      15.1311      +0.1071 ±0.0502  
+  *fetches_cracked_total                        1.2817       1.2594      -0.0223 ±0.0135  
+  *opp_turns_total                             25.2183      25.0687      -0.1496 ±0.0394  
+  *turn_id                                     35.2289      35.0438      -0.1851 ±0.0503  
+  *life                                        33.3298      33.6884      +0.3586 ±0.0986  
+  *opp_spells_total                            22.5924      22.4618      -0.1306 ±0.0371  
+  *first_elim_T8                                0.6253       0.6371      +0.0118 ±0.0034  
+  *opp_noncreature_spells_total                12.4190      12.3476      -0.0714 ±0.0216  
+  *rad_triggers_self                            4.3787       4.4223      +0.0436 ±0.0136  
+  *len_cards_in_hand_by_turn                    9.3030       9.2586      -0.0444 ±0.0142  
+  *len_counters_on_board_by_turn                9.3030       9.2586      -0.0444 ±0.0142  
+  *len_creature_count_by_turn                   9.3030       9.2586      -0.0444 ±0.0142  
+  *len_lands_in_play_by_turn                    9.3030       9.2586      -0.0444 ±0.0142  
+  *len_library_by_turn                          9.3030       9.2586      -0.0444 ±0.0142  
+  *len_mothman_power_turn                       9.3030       9.2586      -0.0444 ±0.0142  
+  *turn                                        10.0106       9.9751      -0.0355 ±0.0122  
+
+[e2_e1_mais_bog_sea - base] N=10000 | partidas com resultado IDENTICO ao da base: 14 (0.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0663       0.0708      +0.0045 ±0.0027  
+  *cleared_T8                                   0.2382       0.2489      +0.0107 ±0.0043  
+  *cleared_T10                                  0.5574       0.5721      +0.0147 ±0.0053  
+  *first_elim_T6                                0.2293       0.2443      +0.0150 ±0.0034  
+   self_lost                                    0.0173       0.0185      +0.0012 ±0.0024  
+   decked                                       0.0173       0.0185      +0.0012 ±0.0024  
+  *commander_cast_turn__ate_T3                  0.1400       0.1507      +0.0107 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.5843       0.6137      +0.0294 ±0.0037  
+  *commander_cast_turn__ate_T5                  0.7088       0.7331      +0.0243 ±0.0036  
+  *commander_cast_turn__ate_T6                  0.8036       0.8224      +0.0188 ±0.0032  
+  *commander_cast_turn__nunca                   0.0216       0.0175      -0.0041 ±0.0015  
+  *regenerations_used                           0.0066       0.0000      -0.0066 ±0.0017  
+  *protection_used_total                        0.1271       0.1190      -0.0081 ±0.0046  
+   smart_removals_total                         0.9985       1.0012      +0.0027 ±0.0097  
+  *smart_wipes_total                            0.6721       0.6625      -0.0096 ±0.0072  
+   commander_countered_total                    0.1579       0.1552      -0.0027 ±0.0048  
+  *commander_cast_count                         1.7935       1.8051      +0.0116 ±0.0098  
+  *interaction_plays                            0.6559       0.4490      -0.2069 ±0.0125  
+   lands_entered_total                         11.8383      11.8215      -0.0168 ±0.0523  
+  *mana_spent_total                             4.3610       4.2536      -0.1074 ±0.0891  
+  *life_min                                    29.7309      30.2859      +0.5550 ±0.0490  
+   mothman_counters_placed_total               59.2316      59.7012      +0.4696 ±0.8449  
+   cards_milled_opp_total                      71.3728      71.4864      +0.1136 ±0.6515  
+  *rad_counters_given_opp_total                15.0240      15.1860      +0.1620 ±0.0613  
+  *fetches_cracked_total                        1.2817       1.2319      -0.0498 ±0.0159  
+  *tapped_land_first_plays_total                0.2011       0.1322      -0.0689 ±0.0051  
+  *tapped_land_skipped_for_play_total           0.0834       0.0510      -0.0324 ±0.0046  
+  *opp_turns_total                             25.2183      24.9331      -0.2852 ±0.0485  
+  *turn_id                                     35.2289      34.8775      -0.3514 ±0.0619  
+  *opp_spells_total                            22.5924      22.3386      -0.2538 ±0.0453  
+  *opp_noncreature_spells_total                12.4190      12.2794      -0.1396 ±0.0264  
+  *life                                        33.3298      33.9956      +0.6658 ±0.1274  
+  *len_cards_in_hand_by_turn                    9.3030       9.2225      -0.0805 ±0.0174  
+  *len_counters_on_board_by_turn                9.3030       9.2225      -0.0805 ±0.0174  
+  *len_creature_count_by_turn                   9.3030       9.2225      -0.0805 ±0.0174  
+  *len_lands_in_play_by_turn                    9.3030       9.2225      -0.0805 ±0.0174  
+  *len_library_by_turn                          9.3030       9.2225      -0.0805 ±0.0174  
+  *len_mothman_power_turn                       9.3030       9.2225      -0.0805 ±0.0174  
+  *first_elim_T8                                0.6253       0.6448      +0.0195 ±0.0042  
+COMPACTO N=10000 modo resiliencia: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T8            cleared_T10          first_elim_T6              self_lost commander_cast_turn__ate_T4 commander_cast_turn__ate_T5     regenerations_used   smart_removals_total  protection_used_total
+base (media)                                                         0.2382                 0.5574                 0.2293                 0.0173                 0.5843                 0.7088                 0.0066                 0.9985                 0.1271
+e1_swarmyard_tropical                                     +0.0051±0.0036  *      +0.0090±0.0043  *      +0.0070±0.0027  *      +0.0008±0.0019         +0.0169±0.0030  *      +0.0169±0.0030  *      -0.0066±0.0017  *      +0.0036±0.0079         -0.0073±0.0038  *
+e2_e1_mais_bog_sea                                        +0.0107±0.0043  *      +0.0147±0.0053  *      +0.0150±0.0034  *      +0.0012±0.0024         +0.0294±0.0037  *      +0.0243±0.0036  *      -0.0066±0.0017  *      +0.0027±0.0097         -0.0081±0.0046  *
+v rc=0 20:00:29

@@ -1,0 +1,21 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1596 (79.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.1315       0.1295      -0.0020 ±0.0034  
+   commander_cast_turn__ate_T4                  0.0145       0.0160      +0.0015 ±0.0022  
+   commander_cast_turn__ate_T5                  0.1380       0.1430      +0.0050 ±0.0052  
+  *smothering_tithe_treasures                   0.4110       0.4250      +0.0140 ±0.0066  
+  *len_graveyard                               18.2815      18.6965      +0.4150 ±0.2407  
+  *len_library                                 44.3785      43.7820      -0.5965 ±0.3782  
+  *cards_drawn_extra                           34.4365      34.9875      +0.5510 ±0.3625  
+  *scourge_self_pumps                           0.3230       0.3345      +0.0115 ±0.0076  
+  *commander_damage_win                         0.4265       0.4360      +0.0095 ±0.0064  
+  *lethal_proxy_turn__nunca                     0.4610       0.4525      -0.0085 ±0.0063  
+  *len_creature_cast_turn                      11.9700      12.1050      +0.1350 ±0.0999  
+  *balefire_hits_total                          0.1610       0.1710      +0.0100 ±0.0075  
+  *len_life_gained                              0.5825       0.5920      +0.0095 ±0.0073  
+  *dragons_free_entry_total                     2.2520       2.3045      +0.0525 ±0.0404  
+  *len_battlefield                             28.3535      28.5740      +0.2205 ±0.1737  
+  *first_color_screw_turn__ate_T3               0.1700       0.1775      +0.0075 ±0.0061  
+  *lethal_proxy_turn__ate_T6                    0.0490       0.0545      +0.0055 ±0.0045  

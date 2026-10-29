@@ -1,0 +1,3904 @@
+{
+ "reconhece": {
+  "Agadeem's Awakening // Agadeem, the Undercrypt": "Agadeem's Awakening // Agadeem, the Undercrypt",
+  "Agatha's Soul Cauldron": "Agatha's Soul Cauldron",
+  "Altar of Dementia": "Altar of Dementia",
+  "Altar of the Brood": "Altar of the Brood",
+  "An Offer You Can't Refuse": "An Offer You Can't Refuse",
+  "Angel of Suffering": "Angel of Suffering",
+  "Arcane Denial": "Arcane Denial",
+  "Ashiok, Dream Render": "Ashiok, Dream Render",
+  "Basking Broodscale": "Basking Broodscale",
+  "Bloodchief Ascension": "Bloodchief Ascension",
+  "Bojuka Bog": "Bojuka Bog",
+  "Boseiju, Who Endures": "Boseiju, Who Endures",
+  "Bramble Familiar // Fetch Quest": "Bramble Familiar // Fetch Quest",
+  "Breeding Pool": "Breeding Pool",
+  "Cankerbloom": "Cankerbloom",
+  "Cold-Eyed Selkie": "Cold-Eyed Selkie",
+  "Command Tower": "Command Tower",
+  "Danny Pink": "Danny Pink",
+  "Deepmuck Desperado": "Deepmuck Desperado",
+  "Didn't Say Please": "Didn't Say Please",
+  "Evolution Witness": "Evolution Witness",
+  "Fabled Passage": "Fabled Passage",
+  "Fathom Mage": "Fathom Mage",
+  "Fierce Guardianship": "Fierce Guardianship",
+  "Freestrider Lookout": "Freestrider Lookout",
+  "Generous Patron": "Generous Patron",
+  "Glen Elendra Archmage": "Glen Elendra Archmage",
+  "Gyre Sage": "Gyre Sage",
+  "Hardened Scales": "Hardened Scales",
+  "Hedge Shredder": "Hedge Shredder",
+  "Herd Baloth": "Herd Baloth",
+  "Heroic Intervention": "Heroic Intervention",
+  "Hollowmurk Siege": "Hollowmurk Siege",
+  "Icetill Explorer": "Icetill Explorer",
+  "Kami of Whispered Hopes": "Kami of Whispered Hopes",
+  "Kodama of the West Tree": "Kodama of the West Tree",
+  "Kozilek, Butcher of Truth": "Kozilek, Butcher of Truth",
+  "Memory Erosion": "Memory Erosion",
+  "Mesmeric Orb": "Mesmeric Orb",
+  "Minamo, School at Water's Edge": "Minamo, School at Water's Edge",
+  "Mindcrank": "Mindcrank",
+  "Mirelurk Queen": "Mirelurk Queen",
+  "Misty Rainforest": "Misty Rainforest",
+  "Morphic Pool": "Morphic Pool",
+  "Muldrotha, the Gravetide": "Muldrotha, the Gravetide",
+  "Nature's Lore": "Nature's Lore",
+  "Negate": "Negate",
+  "Nuclear Fallout": "Nuclear Fallout",
+  "Ouroboroid": "Ouroboroid",
+  "Overgrown Tomb": "Overgrown Tomb",
+  "Palantír of Orthanc": "Palantír of Orthanc",
+  "Plaza of Heroes": "Plaza of Heroes",
+  "Polluted Delta": "Polluted Delta",
+  "Pollywog Prodigy": "Pollywog Prodigy",
+  "Psychic Corrosion": "Psychic Corrosion",
+  "Rampant Frogantua": "Rampant Frogantua",
+  "Rejuvenating Springs": "Rejuvenating Springs",
+  "Repulsive Mutation": "Repulsive Mutation",
+  "Ruin Crab": "Ruin Crab",
+  "Shifting Woodland": "Shifting Woodland",
+  "Six": "Six",
+  "Smuggler's Surprise": "Smuggler's Surprise",
+  "Sol Ring": "Sol Ring",
+  "Soul-Guide Lantern": "Soul-Guide Lantern",
+  "Strip Mine": "Strip Mine",
+  "Swarmyard": "Swarmyard",
+  "Swiftfoot Boots": "Swiftfoot Boots",
+  "Syr Konrad, the Grim": "Syr Konrad, the Grim",
+  "Takenuma, Abandoned Mire": "Takenuma, Abandoned Mire",
+  "Tear Asunder": "Tear Asunder",
+  "The Gitrog Monster": "The Gitrog Monster",
+  "The Great Henge": "The Great Henge",
+  "Three Visits": "Three Visits",
+  "Toxic Deluge": "Toxic Deluge",
+  "Undead Alchemist": "Undead Alchemist",
+  "Undergrowth Stadium": "Undergrowth Stadium",
+  "Urza's Saga": "Urza's Saga",
+  "V.A.T.S.": "V.A.T.S.",
+  "Verdant Catacombs": "Verdant Catacombs",
+  "Walking Ballista": "Walking Ballista",
+  "Waterlogged Grove": "Waterlogged Grove",
+  "Watery Grave": "Watery Grave",
+  "Wave Goodbye": "Wave Goodbye",
+  "Winding Constrictor": "Winding Constrictor",
+  "Yavimaya Hollow": "Yavimaya Hollow",
+  "Zagoth Triome": "Zagoth Triome",
+  "Zellix, Sanity Flayer": "Zellix, Sanity Flayer",
+  "Jace, Wielder of Mysteries": "Jace, Wielder of Mysteries",
+  "The Wise Mothman": "The Wise Mothman",
+  "Thassa's Oracle": "Thassa's Oracle",
+  "Demonic Consultation": "Demonic Consultation"
+ },
+ "nao_reconhecidos": [],
+ "base": {
+  "incluidos": {
+   "Bloodchief Ascension + Mindcrank": {
+    "produz": [
+     "Infinite mill",
+     "Near-infinite lifegain",
+     "Near-infinite lifegain triggers",
+     "Near-infinite lifeloss"
+    ],
+    "id": "936-1290",
+    "bracket": "S",
+    "popularidade": 62853
+   },
+   "Altar of Dementia + The Great Henge": {
+    "produz": [
+     "Infinite self-mill",
+     "Infinite creature ETB",
+     "Infinite creature LTB",
+     "Infinite death triggers"
+    ],
+    "id": "3139-5256--5",
+    "bracket": "E",
+    "popularidade": 8855
+   }
+  },
+  "quase_n": 134
+ },
+ "monument_por_corte": {
+  "Agadeem's Awakening // Agadeem, the Undercrypt": {
+   "n_main": 99,
+   "sai": [
+    "Agadeem's Awakening // Agadeem, the Undercrypt"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Agatha's Soul Cauldron": {
+   "n_main": 99,
+   "sai": [
+    "Agatha's Soul Cauldron"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Agatha's Soul Cauldron + Blech, Loafing Pest + Walking Ballista",
+    "Agatha's Soul Cauldron + Blood Researcher + Walking Ballista",
+    "Agatha's Soul Cauldron + Bloodbond Vampire + Walking Ballista",
+    "Agatha's Soul Cauldron + Bloodthirsty Aerialist + Walking Ballista",
+    "Agatha's Soul Cauldron + Butcher Ghoul + Walking Ballista",
+    "Agatha's Soul Cauldron + Christine Chapel, Combat Medic + Walking Ballista",
+    "Agatha's Soul Cauldron + Evernight Shade + Walking Ballista",
+    "Agatha's Soul Cauldron + Evolution Witness + Psychic Frog",
+    "Agatha's Soul Cauldron + Gilder Bairn + Gyre Sage",
+    "Agatha's Soul Cauldron + Gilder Bairn + Kami of Whispered Hopes",
+    "Agatha's Soul Cauldron + Kami of Whispered Hopes + Sleep-Cursed Faerie",
+    "Agatha's Soul Cauldron + Kraven the Hunter + Walking Ballista",
+    "Agatha's Soul Cauldron + Pest Mascot + Walking Ballista",
+    "Agatha's Soul Cauldron + Scion of the Swarm + Walking Ballista",
+    "Agatha's Soul Cauldron + Sengir, the Dark Baron + Walking Ballista",
+    "Agatha's Soul Cauldron + Strangleroot Geist + Walking Ballista",
+    "Agatha's Soul Cauldron + Strong, the Brutish Thespian + Walking Ballista",
+    "Agatha's Soul Cauldron + The Thing, Ben Grimm + Walking Ballista",
+    "Agatha's Soul Cauldron + Tigra, Feline Fury + Walking Ballista",
+    "Agatha's Soul Cauldron + Titanbones, Towering Heart + Walking Ballista",
+    "Agatha's Soul Cauldron + Vampire Scrivener + Walking Ballista",
+    "Agatha's Soul Cauldron + Walking Ballista + Wall of Limbs",
+    "Agatha's Soul Cauldron + Walking Ballista + Yahenni, Undying Partisan",
+    "Agatha's Soul Cauldron + Walking Ballista + Young Wolf"
+   ]
+  },
+  "Altar of Dementia": {
+   "n_main": 99,
+   "sai": [
+    "Altar of Dementia"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [
+    "Altar of Dementia + The Great Henge"
+   ],
+   "quase_novos": [
+    "Altar of Dementia + The Great Henge",
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Altar of Dementia + Arwen, Weaver of Hope",
+    "Altar of Dementia + Bioengineered Future",
+    "Altar of Dementia + Blade of the Bloodchief + Herd Baloth",
+    "Altar of Dementia + Bloodspore Thrinax",
+    "Altar of Dementia + Body of Research",
+    "Altar of Dementia + Captain Kathryn Janeway",
+    "Altar of Dementia + Combine Guildmage",
+    "Altar of Dementia + Death's Presence + Herd Baloth",
+    "Altar of Dementia + Dominion Saboteur",
+    "Altar of Dementia + Gorma, the Gullet",
+    "Altar of Dementia + Herd Baloth + Long Feng, Grand Secretariat",
+    "Altar of Dementia + Herd Baloth + Mazirek, Kraul Death Priest",
+    "Altar of Dementia + Herd Baloth + Moss-Pit Skeleton + The Wise Mothman",
+    "Altar of Dementia + Herd Baloth + Necrosynthesis",
+    "Altar of Dementia + Herd Baloth + Sadistic Glee",
+    "Altar of Dementia + Herd Baloth + Tarrian's Soulcleaver",
+    "Altar of Dementia + Jumbo Cactuar",
+    "Altar of Dementia + Master Biomancer",
+    "Altar of Dementia + Master Chef",
+    "Altar of Dementia + Melira, Sylvok Outcast",
+    "Altar of Dementia + Metallic Mimic",
+    "Altar of Dementia + Mikaeus, the Unhallowed",
+    "Altar of Dementia + Moritte of the Frost",
+    "Altar of Dementia + Muldrotha, the Gravetide + Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+    "Altar of Dementia + Railway Brawler",
+    "Altar of Dementia + Renata, Called to the Hunt",
+    "Altar of Dementia + Rocksteady, Mutant Marauder",
+    "Altar of Dementia + Stalwart Successor",
+    "Altar of Dementia + Support Mission",
+    "Altar of Dementia + Surrak and Goreclaw",
+    "Altar of Dementia + Thran Vigil",
+    "Altar of Dementia + Thunderous Velocipede",
+    "Altar of Dementia + Tromell, Seymour's Butler",
+    "Altar of Dementia + Warden of the Grove",
+    "Altar of Dementia + Young Necromancer",
+    "Altar of Dementia + Zameck Guildmage"
+   ]
+  },
+  "Altar of the Brood": {
+   "n_main": 99,
+   "sai": [
+    "Altar of the Brood"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "An Offer You Can't Refuse": {
+   "n_main": 99,
+   "sai": [
+    "An Offer You Can't Refuse"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Angel of Suffering": {
+   "n_main": 99,
+   "sai": [
+    "Angel of Suffering"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Arcane Denial": {
+   "n_main": 99,
+   "sai": [
+    "Arcane Denial"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Ashiok, Dream Render": {
+   "n_main": 99,
+   "sai": [
+    "Ashiok, Dream Render"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Basking Broodscale": {
+   "n_main": 99,
+   "sai": [
+    "Basking Broodscale"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Basking Broodscale + Blade of the Bloodchief",
+    "Basking Broodscale + Donatello, the Brains",
+    "Basking Broodscale + Ghost Lantern // Bind Spirit",
+    "Basking Broodscale + Long Feng, Grand Secretariat",
+    "Basking Broodscale + Mazirek, Kraul Death Priest",
+    "Basking Broodscale + Necrosynthesis",
+    "Basking Broodscale + Sadistic Glee",
+    "Basking Broodscale + Tarrian's Soulcleaver"
+   ]
+  },
+  "Bloodchief Ascension": {
+   "n_main": 99,
+   "sai": [
+    "Bloodchief Ascension"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [
+    "Bloodchief Ascension + Mindcrank"
+   ],
+   "quase_novos": [
+    "Bloodchief Ascension + Mindcrank",
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Bloodchief Ascension + The Master of Lake-town",
+    "Bloodchief Ascension + Zur's Weirding"
+   ]
+  },
+  "Bojuka Bog": {
+   "n_main": 99,
+   "sai": [
+    "Bojuka Bog"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Boseiju, Who Endures": {
+   "n_main": 99,
+   "sai": [
+    "Boseiju, Who Endures"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Bramble Familiar // Fetch Quest": {
+   "n_main": 99,
+   "sai": [
+    "Bramble Familiar // Fetch Quest"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Breeding Pool": {
+   "n_main": 99,
+   "sai": [
+    "Breeding Pool"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Cankerbloom": {
+   "n_main": 99,
+   "sai": [
+    "Cankerbloom"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Cold-Eyed Selkie": {
+   "n_main": 99,
+   "sai": [
+    "Cold-Eyed Selkie"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Command Tower": {
+   "n_main": 99,
+   "sai": [
+    "Command Tower"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Danny Pink": {
+   "n_main": 99,
+   "sai": [
+    "Danny Pink"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Deepmuck Desperado": {
+   "n_main": 99,
+   "sai": [
+    "Deepmuck Desperado"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Didn't Say Please": {
+   "n_main": 99,
+   "sai": [
+    "Didn't Say Please"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Evolution Witness": {
+   "n_main": 99,
+   "sai": [
+    "Evolution Witness"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Agatha's Soul Cauldron + Evolution Witness + Psychic Frog",
+    "Evolution Witness + Long Feng, Grand Secretariat + Walking Ballista",
+    "Evolution Witness + Rocksteady, Mutant Marauder + Walking Ballista"
+   ]
+  },
+  "Fabled Passage": {
+   "n_main": 99,
+   "sai": [
+    "Fabled Passage"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Fathom Mage": {
+   "n_main": 99,
+   "sai": [
+    "Fathom Mage"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Fathom Mage + Iron Man, Armored Avenger",
+    "Fathom Mage + Lyla, Holographic Assistant",
+    "Fathom Mage + Stark's Ingenuity",
+    "Fathom Mage + Wizard Class"
+   ]
+  },
+  "Fierce Guardianship": {
+   "n_main": 99,
+   "sai": [
+    "Fierce Guardianship"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Freestrider Lookout": {
+   "n_main": 99,
+   "sai": [
+    "Freestrider Lookout"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Generous Patron": {
+   "n_main": 99,
+   "sai": [
+    "Generous Patron"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Generous Patron + Iron Man, Armored Avenger",
+    "Generous Patron + Lyla, Holographic Assistant"
+   ]
+  },
+  "Glen Elendra Archmage": {
+   "n_main": 99,
+   "sai": [
+    "Glen Elendra Archmage"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [
+    "Altar of Dementia + The Great Henge"
+   ],
+   "quase_novos": [
+    "Altar of Dementia + The Great Henge",
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Altar of Dementia + Arwen, Weaver of Hope",
+    "Altar of Dementia + Bioengineered Future",
+    "Altar of Dementia + Bloodspore Thrinax",
+    "Altar of Dementia + Captain Kathryn Janeway",
+    "Altar of Dementia + Combine Guildmage",
+    "Altar of Dementia + Dominion Saboteur",
+    "Altar of Dementia + Gorma, the Gullet",
+    "Altar of Dementia + Master Biomancer",
+    "Altar of Dementia + Master Chef",
+    "Altar of Dementia + Melira, Sylvok Outcast",
+    "Altar of Dementia + Metallic Mimic",
+    "Altar of Dementia + Mikaeus, the Unhallowed",
+    "Altar of Dementia + Moritte of the Frost",
+    "Altar of Dementia + Railway Brawler",
+    "Altar of Dementia + Renata, Called to the Hunt",
+    "Altar of Dementia + Rocksteady, Mutant Marauder",
+    "Altar of Dementia + Stalwart Successor",
+    "Altar of Dementia + Support Mission",
+    "Altar of Dementia + Surrak and Goreclaw",
+    "Altar of Dementia + Thran Vigil",
+    "Altar of Dementia + Thunderous Velocipede",
+    "Altar of Dementia + Tromell, Seymour's Butler",
+    "Altar of Dementia + Warden of the Grove",
+    "Altar of Dementia + Zameck Guildmage",
+    "Ashnod's Altar + The Great Henge",
+    "Blasting Station + The Great Henge",
+    "Bloodflow Connoisseur + The Great Henge",
+    "Carrion Feeder + The Great Henge",
+    "Phyrexian Altar + The Great Henge",
+    "The Great Henge + Viscera Seer",
+    "The Great Henge + Woe Strider",
+    "The Great Henge + Yahenni, Undying Partisan"
+   ]
+  },
+  "Gyre Sage": {
+   "n_main": 99,
+   "sai": [
+    "Gyre Sage"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Agatha's Soul Cauldron + Gilder Bairn + Gyre Sage",
+    "Gyre Sage + Ringing Strike Mastery",
+    "Gyre Sage + Staff of Domination",
+    "Gyre Sage + Sword of the Paruns",
+    "Gyre Sage + Umbral Mantle"
+   ]
+  },
+  "Hardened Scales": {
+   "n_main": 99,
+   "sai": [
+    "Hardened Scales"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Hardened Scales + Rite of Passage + Walking Ballista",
+    "Hardened Scales + Strength of Will + Walking Ballista",
+    "Hardened Scales + Vigor + Walking Ballista"
+   ]
+  },
+  "Hedge Shredder": {
+   "n_main": 99,
+   "sai": [
+    "Hedge Shredder"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Hedge Shredder + Homer, the Hermit",
+    "Hedge Shredder + Icetill Explorer + Scouting Trek"
+   ]
+  },
+  "Herd Baloth": {
+   "n_main": 99,
+   "sai": [
+    "Herd Baloth"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Altar of Dementia + Blade of the Bloodchief + Herd Baloth",
+    "Altar of Dementia + Death's Presence + Herd Baloth",
+    "Altar of Dementia + Herd Baloth + Long Feng, Grand Secretariat",
+    "Altar of Dementia + Herd Baloth + Mazirek, Kraul Death Priest",
+    "Altar of Dementia + Herd Baloth + Moss-Pit Skeleton + The Wise Mothman",
+    "Altar of Dementia + Herd Baloth + Necrosynthesis",
+    "Altar of Dementia + Herd Baloth + Sadistic Glee",
+    "Altar of Dementia + Herd Baloth + Tarrian's Soulcleaver",
+    "Herd Baloth + Ivy Lane Denizen"
+   ]
+  },
+  "Heroic Intervention": {
+   "n_main": 99,
+   "sai": [
+    "Heroic Intervention"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Hollowmurk Siege": {
+   "n_main": 99,
+   "sai": [
+    "Hollowmurk Siege"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Icetill Explorer": {
+   "n_main": 99,
+   "sai": [
+    "Icetill Explorer"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Glacial Chasm + Icetill Explorer",
+    "Hedge Shredder + Icetill Explorer + Scouting Trek"
+   ]
+  },
+  "Kami of Whispered Hopes": {
+   "n_main": 99,
+   "sai": [
+    "Kami of Whispered Hopes"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Agatha's Soul Cauldron + Gilder Bairn + Kami of Whispered Hopes",
+    "Agatha's Soul Cauldron + Kami of Whispered Hopes + Sleep-Cursed Faerie",
+    "Crab Umbra + Kami of Whispered Hopes",
+    "Freed from the Real + Kami of Whispered Hopes",
+    "Kami of Whispered Hopes + Pemmin's Aura",
+    "Kami of Whispered Hopes + Ringing Strike Mastery",
+    "Kami of Whispered Hopes + Rite of Passage + Walking Ballista",
+    "Kami of Whispered Hopes + Singing Bell Strike",
+    "Kami of Whispered Hopes + Staff of Domination",
+    "Kami of Whispered Hopes + Strength of Will + Walking Ballista",
+    "Kami of Whispered Hopes + Sword of the Paruns",
+    "Kami of Whispered Hopes + Umbral Mantle",
+    "Kami of Whispered Hopes + Vigean Graftmage",
+    "Kami of Whispered Hopes + Vigor + Walking Ballista"
+   ]
+  },
+  "Kodama of the West Tree": {
+   "n_main": 99,
+   "sai": [
+    "Kodama of the West Tree"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Kozilek, Butcher of Truth": {
+   "n_main": 99,
+   "sai": [
+    "Kozilek, Butcher of Truth"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Kozilek, Butcher of Truth + Morality Shift + Syr Konrad, the Grim"
+   ]
+  },
+  "Memory Erosion": {
+   "n_main": 99,
+   "sai": [
+    "Memory Erosion"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Mesmeric Orb": {
+   "n_main": 99,
+   "sai": [
+    "Mesmeric Orb"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Aphetto Alchemist + Mesmeric Orb",
+    "Basalt Monolith + Mesmeric Orb",
+    "Mesmeric Orb + Seeker of Skybreak",
+    "Mesmeric Orb + Tidewater Minion"
+   ]
+  },
+  "Minamo, School at Water's Edge": {
+   "n_main": 99,
+   "sai": [
+    "Minamo, School at Water's Edge"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Mindcrank": {
+   "n_main": 99,
+   "sai": [
+    "Mindcrank"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [
+    "Bloodchief Ascension + Mindcrank"
+   ],
+   "quase_novos": [
+    "Bloodchief Ascension + Mindcrank",
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Duskmantle Guildmage + Mindcrank"
+   ]
+  },
+  "Mirelurk Queen": {
+   "n_main": 99,
+   "sai": [
+    "Mirelurk Queen"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Misty Rainforest": {
+   "n_main": 99,
+   "sai": [
+    "Misty Rainforest"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Morphic Pool": {
+   "n_main": 99,
+   "sai": [
+    "Morphic Pool"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Muldrotha, the Gravetide": {
+   "n_main": 99,
+   "sai": [
+    "Muldrotha, the Gravetide"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Altar of Dementia + Muldrotha, the Gravetide + Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+    "Mindslaver + Muldrotha, the Gravetide",
+    "Muldrotha, the Gravetide + Second Chance"
+   ]
+  },
+  "Nature's Lore": {
+   "n_main": 99,
+   "sai": [
+    "Nature's Lore"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Negate": {
+   "n_main": 99,
+   "sai": [
+    "Negate"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Nuclear Fallout": {
+   "n_main": 99,
+   "sai": [
+    "Nuclear Fallout"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Ouroboroid": {
+   "n_main": 99,
+   "sai": [
+    "Ouroboroid"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Ouroboroid + Sage of Hours"
+   ]
+  },
+  "Overgrown Tomb": {
+   "n_main": 99,
+   "sai": [
+    "Overgrown Tomb"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Palantír of Orthanc": {
+   "n_main": 99,
+   "sai": [
+    "Palantír of Orthanc"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Plaza of Heroes": {
+   "n_main": 99,
+   "sai": [
+    "Plaza of Heroes"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Polluted Delta": {
+   "n_main": 99,
+   "sai": [
+    "Polluted Delta"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Pollywog Prodigy": {
+   "n_main": 99,
+   "sai": [
+    "Pollywog Prodigy"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Psychic Corrosion": {
+   "n_main": 99,
+   "sai": [
+    "Psychic Corrosion"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Enter the Infinite + Psychic Corrosion",
+    "Peer into the Abyss + Psychic Corrosion"
+   ]
+  },
+  "Rampant Frogantua": {
+   "n_main": 99,
+   "sai": [
+    "Rampant Frogantua"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Rejuvenating Springs": {
+   "n_main": 99,
+   "sai": [
+    "Rejuvenating Springs"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Repulsive Mutation": {
+   "n_main": 99,
+   "sai": [
+    "Repulsive Mutation"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Ruin Crab": {
+   "n_main": 99,
+   "sai": [
+    "Ruin Crab"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Shifting Woodland": {
+   "n_main": 99,
+   "sai": [
+    "Shifting Woodland"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Shifting Woodland + Time Vault"
+   ]
+  },
+  "Six": {
+   "n_main": 99,
+   "sai": [
+    "Six"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Smuggler's Surprise": {
+   "n_main": 99,
+   "sai": [
+    "Smuggler's Surprise"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Sol Ring": {
+   "n_main": 99,
+   "sai": [
+    "Sol Ring"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Hullbreaker Horror + Sol Ring",
+    "Sol Ring + Tidespout Tyrant"
+   ]
+  },
+  "Soul-Guide Lantern": {
+   "n_main": 99,
+   "sai": [
+    "Soul-Guide Lantern"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Strip Mine": {
+   "n_main": 99,
+   "sai": [
+    "Strip Mine"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Swarmyard": {
+   "n_main": 99,
+   "sai": [
+    "Swarmyard"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Swiftfoot Boots": {
+   "n_main": 99,
+   "sai": [
+    "Swiftfoot Boots"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Syr Konrad, the Grim": {
+   "n_main": 99,
+   "sai": [
+    "Syr Konrad, the Grim"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Kozilek, Butcher of Truth + Morality Shift + Syr Konrad, the Grim",
+    "Sway of the Stars + Syr Konrad, the Grim",
+    "Syr Konrad, the Grim + The Mindskinner"
+   ]
+  },
+  "Takenuma, Abandoned Mire": {
+   "n_main": 99,
+   "sai": [
+    "Takenuma, Abandoned Mire"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Tear Asunder": {
+   "n_main": 99,
+   "sai": [
+    "Tear Asunder"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "The Gitrog Monster": {
+   "n_main": 99,
+   "sai": [
+    "The Gitrog Monster"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Dakmor Salvage + The Gitrog Monster"
+   ]
+  },
+  "The Great Henge": {
+   "n_main": 99,
+   "sai": [
+    "The Great Henge"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [
+    "Altar of Dementia + The Great Henge"
+   ],
+   "quase_novos": [
+    "Altar of Dementia + The Great Henge",
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Ashnod's Altar + The Great Henge",
+    "Blasting Station + The Great Henge",
+    "Bloodflow Connoisseur + The Great Henge",
+    "Carrion Feeder + The Great Henge",
+    "Phyrexian Altar + The Great Henge",
+    "The Great Henge + Viscera Seer",
+    "The Great Henge + Woe Strider",
+    "The Great Henge + Yahenni, Undying Partisan"
+   ]
+  },
+  "Three Visits": {
+   "n_main": 99,
+   "sai": [
+    "Three Visits"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Toxic Deluge": {
+   "n_main": 99,
+   "sai": [
+    "Toxic Deluge"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Undead Alchemist": {
+   "n_main": 99,
+   "sai": [
+    "Undead Alchemist"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Undergrowth Stadium": {
+   "n_main": 99,
+   "sai": [
+    "Undergrowth Stadium"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Urza's Saga": {
+   "n_main": 99,
+   "sai": [
+    "Urza's Saga"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "V.A.T.S.": {
+   "n_main": 99,
+   "sai": [
+    "V.A.T.S."
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Verdant Catacombs": {
+   "n_main": 99,
+   "sai": [
+    "Verdant Catacombs"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Walking Ballista": {
+   "n_main": 99,
+   "sai": [
+    "Walking Ballista"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Agatha's Soul Cauldron + Blech, Loafing Pest + Walking Ballista",
+    "Agatha's Soul Cauldron + Blood Researcher + Walking Ballista",
+    "Agatha's Soul Cauldron + Bloodbond Vampire + Walking Ballista",
+    "Agatha's Soul Cauldron + Bloodthirsty Aerialist + Walking Ballista",
+    "Agatha's Soul Cauldron + Butcher Ghoul + Walking Ballista",
+    "Agatha's Soul Cauldron + Christine Chapel, Combat Medic + Walking Ballista",
+    "Agatha's Soul Cauldron + Evernight Shade + Walking Ballista",
+    "Agatha's Soul Cauldron + Kraven the Hunter + Walking Ballista",
+    "Agatha's Soul Cauldron + Pest Mascot + Walking Ballista",
+    "Agatha's Soul Cauldron + Scion of the Swarm + Walking Ballista",
+    "Agatha's Soul Cauldron + Sengir, the Dark Baron + Walking Ballista",
+    "Agatha's Soul Cauldron + Strangleroot Geist + Walking Ballista",
+    "Agatha's Soul Cauldron + Strong, the Brutish Thespian + Walking Ballista",
+    "Agatha's Soul Cauldron + The Thing, Ben Grimm + Walking Ballista",
+    "Agatha's Soul Cauldron + Tigra, Feline Fury + Walking Ballista",
+    "Agatha's Soul Cauldron + Titanbones, Towering Heart + Walking Ballista",
+    "Agatha's Soul Cauldron + Vampire Scrivener + Walking Ballista",
+    "Agatha's Soul Cauldron + Walking Ballista + Wall of Limbs",
+    "Agatha's Soul Cauldron + Walking Ballista + Yahenni, Undying Partisan",
+    "Agatha's Soul Cauldron + Walking Ballista + Young Wolf",
+    "Evolution Witness + Long Feng, Grand Secretariat + Walking Ballista",
+    "Evolution Witness + Rocksteady, Mutant Marauder + Walking Ballista",
+    "Hardened Scales + Rite of Passage + Walking Ballista",
+    "Hardened Scales + Strength of Will + Walking Ballista",
+    "Hardened Scales + Vigor + Walking Ballista",
+    "Heroic Feast + Walking Ballista",
+    "Kami of Whispered Hopes + Rite of Passage + Walking Ballista",
+    "Kami of Whispered Hopes + Strength of Will + Walking Ballista",
+    "Kami of Whispered Hopes + Vigor + Walking Ballista",
+    "Mephidross Vampire + Walking Ballista",
+    "Mikaeus, the Unhallowed + Walking Ballista",
+    "Rite of Passage + Walking Ballista + Winding Constrictor",
+    "Strength of Will + Walking Ballista + Winding Constrictor",
+    "Urban Daggertooth + Walking Ballista",
+    "Vigor + Walking Ballista + Winding Constrictor",
+    "Vraska, Swarm's Eminence + Walking Ballista"
+   ]
+  },
+  "Waterlogged Grove": {
+   "n_main": 99,
+   "sai": [
+    "Waterlogged Grove"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Watery Grave": {
+   "n_main": 99,
+   "sai": [
+    "Watery Grave"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Wave Goodbye": {
+   "n_main": 99,
+   "sai": [
+    "Wave Goodbye"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Winding Constrictor": {
+   "n_main": 99,
+   "sai": [
+    "Winding Constrictor"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": [
+    "Rite of Passage + Walking Ballista + Winding Constrictor",
+    "Strength of Will + Walking Ballista + Winding Constrictor",
+    "Vigor + Walking Ballista + Winding Constrictor"
+   ]
+  },
+  "Yavimaya Hollow": {
+   "n_main": 99,
+   "sai": [
+    "Yavimaya Hollow"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Zagoth Triome": {
+   "n_main": 99,
+   "sai": [
+    "Zagoth Triome"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  },
+  "Zellix, Sanity Flayer": {
+   "n_main": 99,
+   "sai": [
+    "Zellix, Sanity Flayer"
+   ],
+   "entra": [
+    "Jace, Wielder of Mysteries"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_novos_com_monument": [
+    "Demonic Consultation + Jace, Wielder of Mysteries",
+    "Divining Witch + Jace, Wielder of Mysteries",
+    "Enter the Infinite + Jace, Wielder of Mysteries",
+    "Griselbrand + Jace, Wielder of Mysteries",
+    "Hermit Druid + Jace, Wielder of Mysteries",
+    "Jace, Wielder of Mysteries + Leveler",
+    "Jace, Wielder of Mysteries + Mirror of Fate",
+    "Jace, Wielder of Mysteries + Oath of Druids",
+    "Jace, Wielder of Mysteries + Paradigm Shift",
+    "Jace, Wielder of Mysteries + Phyrexian Devourer",
+    "Jace, Wielder of Mysteries + Tainted Pact",
+    "Jace, Wielder of Mysteries + Thought Lash"
+   ],
+   "quase_sumiram": []
+  }
+ },
+ "monument_sem_cortar": {
+  "n_main": 100,
+  "sai": [],
+  "entra": [
+   "Jace, Wielder of Mysteries"
+  ],
+  "novos": {},
+  "quase_com_monument": [
+   "Demonic Consultation + Jace, Wielder of Mysteries",
+   "Divining Witch + Jace, Wielder of Mysteries",
+   "Enter the Infinite + Jace, Wielder of Mysteries",
+   "Griselbrand + Jace, Wielder of Mysteries",
+   "Hermit Druid + Jace, Wielder of Mysteries",
+   "Jace, Wielder of Mysteries + Leveler",
+   "Jace, Wielder of Mysteries + Mirror of Fate",
+   "Jace, Wielder of Mysteries + Oath of Druids",
+   "Jace, Wielder of Mysteries + Paradigm Shift",
+   "Jace, Wielder of Mysteries + Phyrexian Devourer",
+   "Jace, Wielder of Mysteries + Tainted Pact",
+   "Jace, Wielder of Mysteries + Thought Lash"
+  ]
+ },
+ "controle_positivo": {
+  "n_main": 99,
+  "sai": [
+   "Negate",
+   "Swiftfoot Boots"
+  ],
+  "entra": [
+   "Thassa's Oracle",
+   "Demonic Consultation"
+  ],
+  "achou_thassa_consultation": true
+ },
+ "controle_corte": {
+  "n_main": 99,
+  "sai": [
+   "Mindcrank"
+  ],
+  "entra": [
+   "Evolution Sage"
+  ],
+  "combo_ascension_mindcrank_sumiu": true,
+  "base_tem_ascension_mindcrank": true
+ }
+}

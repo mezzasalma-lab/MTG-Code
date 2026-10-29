@@ -1,0 +1,8 @@
+N = 5000 x 2 modos (sementes 8000000..8004999): (1) SWAPS=() identico ao snapshot ANTES (1b9a865) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) Horrigan e Master no baralho: 3839 partidas em que nenhuma das duas foi vista (mao/campo/cemiterio/exilio), identicas com as chaves nos 2 extremos (divergencias 0); 6161 partidas em que alguma apareceu (podem diferir)
+rc=0
+N = 5000 x 2 modos (sementes 8005000..8009999): (1) SWAPS=() identico ao snapshot ANTES (1b9a865) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) Horrigan e Master no baralho: 3725 partidas em que nenhuma das duas foi vista (mao/campo/cemiterio/exilio), identicas com as chaves nos 2 extremos (divergencias 0); 6275 partidas em que alguma apareceu (podem diferir)
+rc=0
+N = 5000 x 2 modos (sementes 8010000..8014999): (1) SWAPS=() identico ao snapshot ANTES (1b9a865) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) Horrigan e Master no baralho: 3869 partidas em que nenhuma das duas foi vista (mao/campo/cemiterio/exilio), identicas com as chaves nos 2 extremos (divergencias 0); 6131 partidas em que alguma apareceu (podem diferir)
+rc=0
+N = 5000 x 2 modos (sementes 8015000..8019999): (1) SWAPS=() identico ao snapshot ANTES (1b9a865) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) Horrigan e Master no baralho: 3713 partidas em que nenhuma das duas foi vista (mao/campo/cemiterio/exilio), identicas com as chaves nos 2 extremos (divergencias 0); 6287 partidas em que alguma apareceu (podem diferir)
+rc=0

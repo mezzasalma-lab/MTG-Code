@@ -1,0 +1,276 @@
+{
+ "Binding the Old Gods": {
+  "scryfall_uri": "https://scryfall.com/card/ecc/120/binding-the-old-gods?utm_source=api",
+  "oracle_id": "4050e5b3-07c2-461c-9852-a2c081c0198d",
+  "rulings": [
+   {
+    "date": "2021-02-05",
+    "text": "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   },
+   {
+    "date": "2021-02-05",
+    "text": "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   },
+   {
+    "date": "2021-02-05",
+    "text": "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the chapter III ability to trigger, but chapters I and II won't trigger again."
+   },
+   {
+    "date": "2021-02-05",
+    "text": "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   },
+   {
+    "date": "2021-02-05",
+    "text": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   },
+   {
+    "date": "2021-02-05",
+    "text": "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives more lore counters."
+   },
+   {
+    "date": "2021-02-05",
+    "text": "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   }
+  ]
+ },
+ "Power Conduit": {
+  "scryfall_uri": "https://scryfall.com/card/ncc/376/power-conduit?utm_source=api",
+  "oracle_id": "2e358f7e-c282-4b92-8255-1436c99cda49",
+  "rulings": []
+ },
+ "Replenish": {
+  "scryfall_uri": "https://scryfall.com/card/uds/15/replenish?utm_source=api",
+  "oracle_id": "523ae937-5535-490d-96ea-07f331b5e5ad",
+  "rulings": [
+   {
+    "date": "2005-08-01",
+    "text": "You must return Auras if possible, even if this means enchanting an opponent's permanent with a good enchantment."
+   },
+   {
+    "date": "2005-08-01",
+    "text": "Auras can only be placed on permanents that were on the battlefield before this effect started to resolve. You can't put an enchantment onto the battlefield with Replenish and put an Aura that is also entering onto one of those enchantments."
+   },
+   {
+    "date": "2004-10-04",
+    "text": "It determines what enchantments to return when its resolution starts. If more enchantments go to the graveyard during the resolution, those additional enchantments are ignored."
+   }
+  ]
+ },
+ "Battle at the Helvault": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/719/battle-at-the-helvault?utm_source=api",
+  "oracle_id": "076584c8-ec58-4711-8f59-4839a4fa88ad",
+  "rulings": [
+   {
+    "date": "2023-07-28",
+    "text": "If Battle at the Helvault leaves the battlefield before its first or second chapter ability resolves, the target permanents won't be exiled."
+   },
+   {
+    "date": "2023-07-28",
+    "text": "Auras attached to the exiled permanents will be put into their owners' graveyards. Any Equipment will become unattached and remain on the battlefield. Any counters on the exiled permanents will cease to exist. When the cards return to the battlefield, they will be new objects with no connection to the cards that were exiled."
+   },
+   {
+    "date": "2023-07-28",
+    "text": "If a token is exiled this way, it will cease to exist and won't return to the battlefield."
+   }
+  ]
+ },
+ "Amazing Acrobatics": {
+  "scryfall_uri": "https://scryfall.com/card/spm/25/amazing-acrobatics?utm_source=api",
+  "oracle_id": "0466f23c-d07c-4015-82d5-eab4b226f1ff",
+  "rulings": []
+ },
+ "The Eldest Reborn": {
+  "scryfall_uri": "https://scryfall.com/card/dsc/139/the-eldest-reborn?utm_source=api",
+  "oracle_id": "44ed4c0c-a012-4895-a547-b04150553bba",
+  "rulings": [
+   {
+    "date": "2018-04-27",
+    "text": "When the first chapter ability of The Eldest Reborn resolves, the next opponent in turn order (or, if it's an opponent's turn, that opponent) chooses a creature or planeswalker they control, then each other opponent in turn order (if any) does the same. All chosen permanents are then sacrificed at the same time. Players will know the choices made by earlier players when making their choices."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "When the second chapter ability of The Eldest Reborn resolves, the next opponent in turn order (or, if it's an opponent's turn, that opponent) chooses a card in hand without revealing it, then each other opponent in turn order (if any) does the same. All chosen cards are then discarded at the same time."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "In a multiplayer game, if a player leaves the game, all cards that player owns leave as well. If you leave the game, the permanent you control from The Eldest Reborn's final chapter ability is exiled."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the III chapter ability to trigger, but I and II won't trigger again."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "If counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives lore counters. Removing lore counters won't cause a previous chapter ability to trigger."
+   },
+   {
+    "date": "2018-04-27",
+    "text": "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities—in the Dominaria set, this is always three—the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   }
+  ]
+ },
+ "Rankle, Master of Pranks": {
+  "scryfall_uri": "https://scryfall.com/card/otc/148/rankle-master-of-pranks?utm_source=api",
+  "oracle_id": "b8619990-9dc2-4fcc-bc7e-457b77cd2a8e",
+  "rulings": [
+   {
+    "date": "2019-10-04",
+    "text": "If you really want, you can choose zero modes for Rankle's triggered ability, but carefully consider the hidden costs in not entertaining someone titled Master of Pranks."
+   },
+   {
+    "date": "2019-10-04",
+    "text": "You can't choose a mode more than once."
+   },
+   {
+    "date": "2019-10-04",
+    "text": "You can choose a mode even if some or all players will be unaffected."
+   },
+   {
+    "date": "2019-10-04",
+    "text": "For each chosen mode, perform that mode in its entirety before continuing on to the next chosen mode in the order printed."
+   },
+   {
+    "date": "2019-10-04",
+    "text": "As the first mode is performed, first the player whose turn it is chooses a card in hand without revealing it, then each other player in turn order does the same. Then all the chosen cards are discarded at the same time."
+   },
+   {
+    "date": "2019-10-04",
+    "text": "As the third mode is performed, first the player whose turn it chooses a creature they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time."
+   },
+   {
+    "date": "2019-10-04",
+    "text": "In a Two-Headed Giant game, Rankle's second mode causes each team to lose 1 life twice."
+   }
+  ]
+ },
+ "Summon: Fenrir": {
+  "scryfall_uri": "https://scryfall.com/card/fin/203/summon:-fenrir?utm_source=api",
+  "oracle_id": "3509171e-8d7d-4e9e-97a1-58e6c7d225ed",
+  "rulings": [
+   {
+    "date": "2025-06-06",
+    "text": "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the chapter III ability to trigger, but chapters I and II won't trigger again."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Saga creatures have two sections to their text boxes. The first section, above the type line, contains their chapter abilities, and the second section, below the type line, contains any other abilities (or italicized flavor text). Any abilities in the latter section aren't chapter abilities and apply no matter how many lore counters are on the creature."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "As a Saga enters, its controller puts a lore counter on it. As your first main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Due to a rules change that takes effect with this release (see below for details), a Saga that somehow loses all of its chapter abilities will not be sacrificed as a state-based action. It will also not gain a lore counter at the beginning of each of its controller's first main phases."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives more lore counters."
+   }
+  ]
+ },
+ "In the Darkness Bind Them": {
+  "scryfall_uri": "https://scryfall.com/card/ltc/58/in-the-darkness-bind-them?utm_source=api",
+  "oracle_id": "c8689a83-cefa-4ef3-8ec1-58b4c64e332b",
+  "rulings": [
+   {
+    "date": "2023-06-16",
+    "text": "While resolving In the Darkness Bind Them's first three chapter abilities, you can choose the Wraith token you just created to be your Ring-bearer as the Ring tempts you."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "If a creature targeted by In the Darkness Bind Them's final chapter ability changes controllers before the ability resolves, that creature is no longer a legal target."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "When In the Darkness Bind Them's final chapter ability triggers, you can choose to target no creatures just so that the Ring tempts you. However, if you do choose at least one target, and all of those targets are illegal at the time the ability tries to resolve, the ability won't resolve and none of its effects will happen. The Ring won't tempt you."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "As the Ring tempts you, you get an emblem named The Ring if you don't have one. Then your emblem gains its next ability and you choose a creature you control to become (or remain) your Ring-bearer."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "The Ring can tempt you even if you don't control a creature. In this case, abilities that trigger \"whenever the Ring tempts you\" will still trigger."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "If the creature you choose as your Ring-bearer was already your Ring-bearer, that still counts as choosing that creature as your Ring-bearer for the purpose of abilities that trigger \"whenever you choose a creature as your Ring-bearer\" or abilities that care about which creature was chosen as your Ring-bearer."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "The Ring gains its abilities in order from top to bottom. Once it gains an ability, it has that ability for the rest of the game."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "Each time the Ring tempts you, you must choose a creature if you control one."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "Each player can have only one emblem named The Ring and only one Ring-bearer at a time."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "Some spells and abilities that cause the Ring to tempt you may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. The Ring won't tempt you."
+   }
+  ]
+ },
+ "Urza's Saga": {
+  "scryfall_uri": "https://scryfall.com/card/mh2/259/urzas-saga?utm_source=api",
+  "oracle_id": "4c6a0c30-b547-4eff-8ff4-0ca25803c076",
+  "rulings": [
+   {
+    "date": "2021-06-18",
+    "text": "Urza's Saga is a land, so it can only be played as a land. It cannot be cast as a spell."
+   },
+   {
+    "date": "2021-06-18",
+    "text": "Urza's Saga gains an ability from its first and second chapters. It keeps those abilities for as long as it's on the battlefield."
+   },
+   {
+    "date": "2021-06-18",
+    "text": "While resolving the chapter III ability, you can find only a card with actual mana cost {0} or {1}, not mana value 0 or 1. For example, you couldn't find a card with mana cost {U} or one with mana cost {X}."
+   },
+   {
+    "date": "2021-06-18",
+    "text": "Even though Urza's Saga is a land, it is also still a Saga, and it will be sacrificed after its last chapter ability resolves."
+   },
+   {
+    "date": "2021-06-18",
+    "text": "Although Urza's Saga has the Urza's land type, it doesn't interact with Urza's Tower, Urza's Mine, or Urza's Power Plant."
+   }
+  ]
+ }
+}

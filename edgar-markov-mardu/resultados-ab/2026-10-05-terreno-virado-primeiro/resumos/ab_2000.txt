@@ -1,0 +1,46 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1878 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.4695       6.4735      +0.0040 ±0.0034  
+   commander_cast_turn__nunca                   0.2140       0.2145      +0.0005 ±0.0017  
+   commander_cast_turn__ate_T4                  0.0600       0.0615      +0.0015 ±0.0022  
+  *commander_cast_turn__ate_T5                  0.1690       0.1725      +0.0035 ±0.0029  
+  *edgar_attack_counters_total                  7.1135       7.2295      +0.1160 ±0.0425  
+  *eminence_tokens_created                      2.9190       2.9490      +0.0300 ±0.0126  
+  *drain_total                                  5.9675       6.0940      +0.1265 ±0.0603  
+  *edgar_attack_turns                           1.4425       1.4520      +0.0095 ±0.0049  
+  *pw_activations_total                         0.6170       0.6290      +0.0120 ±0.0068  
+  *creatures_sacrificed_total                   2.6405       2.6615      +0.0210 ±0.0122  
+  *lifegain_total                               3.9200       4.0010      +0.0810 ±0.0482  
+  *token_doubler_events                         0.4255       0.4415      +0.0160 ±0.0104  
+  *caretakers_talent_draws                      0.2055       0.2140      +0.0085 ±0.0058  
+  *unholy_annex_draws                           0.5220       0.5290      +0.0070 ±0.0048  
+  *welcoming_vampire_draws                      0.3435       0.3490      +0.0055 ±0.0038  
+  *black_market_treasures                       0.3965       0.4060      +0.0095 ±0.0066  
+  *purphoros_damage_total                       0.4660       0.4940      +0.0280 ±0.0198  
+  *death_trigger_events                         2.3130       2.3420      +0.0290 ±0.0213  
+
+[so_terreno - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1878 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.4695       6.4735      +0.0040 ±0.0034  
+   commander_cast_turn__nunca                   0.2140       0.2145      +0.0005 ±0.0017  
+   commander_cast_turn__ate_T4                  0.0600       0.0615      +0.0015 ±0.0022  
+  *commander_cast_turn__ate_T5                  0.1690       0.1725      +0.0035 ±0.0029  
+  *edgar_attack_counters_total                  7.1135       7.2295      +0.1160 ±0.0425  
+  *eminence_tokens_created                      2.9190       2.9490      +0.0300 ±0.0126  
+  *drain_total                                  5.9675       6.0940      +0.1265 ±0.0603  
+  *edgar_attack_turns                           1.4425       1.4520      +0.0095 ±0.0049  
+  *pw_activations_total                         0.6170       0.6290      +0.0120 ±0.0068  
+  *creatures_sacrificed_total                   2.6405       2.6615      +0.0210 ±0.0122  
+  *lifegain_total                               3.9200       4.0010      +0.0810 ±0.0482  
+  *token_doubler_events                         0.4255       0.4415      +0.0160 ±0.0104  
+  *caretakers_talent_draws                      0.2055       0.2140      +0.0085 ±0.0058  
+  *unholy_annex_draws                           0.5220       0.5290      +0.0070 ±0.0048  
+  *welcoming_vampire_draws                      0.3435       0.3490      +0.0055 ±0.0038  
+  *black_market_treasures                       0.3965       0.4060      +0.0095 ±0.0066  
+  *purphoros_damage_total                       0.4660       0.4940      +0.0280 ±0.0198  
+  *death_trigger_events                         2.3130       2.3420      +0.0290 ±0.0213  
+
+[so_ordem_set - antes] N=2000 | partidas com resultado IDENTICO ao da base: 2000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)

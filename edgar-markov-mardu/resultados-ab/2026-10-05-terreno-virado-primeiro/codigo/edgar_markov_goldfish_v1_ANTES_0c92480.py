@@ -1,0 +1,3280 @@
+"""
+Goldfish simulator - Edgar Markov (Mardu - R/W/B, tribal Vampiro/aristocratas)
+Escrito e executado por Claude.
+
+Metodologia:
+- Tags e CARD_DB derivados de oracle_text real (Scryfall,
+  /tmp/scryfall_cache/edgar_markov_full.json), nao inventados.
+- Passo 0 (regra de Roaming Throne, references/goldfish-sim-card-rules.md):
+  varredura mecanica de oracle_text de toda criatura Vampiro (regex por
+  "Whenever"/"At the beginning of"/"When") encontrou 16 vampiros com
+  gatilho proprio (de 20 + o proprio Edgar). Implementados todos abaixo,
+  cada um como mecanica real, nao so tag.
+- Roaming Throne (tipo escolhido: Vampire) dobra CADA gatilho real desses
+  16 vampiros + o gatilho de ataque/Eminence do proprio Edgar, seguindo a
+  mesma regra ja aplicada no Thranduil/Beorn.
+- NAO modelado / simplificacoes documentadas:
+  - Combate real (bloqueadores, dano de combate contra criaturas do
+    oponente). Assume-se que Edgar (e outros vampiros relevantes) ataca
+    todo turno depois de perder o summoning sickness, sem resposta do
+    oponente - goldfish solo.
+  - Clavileno, First of the Blessed: efeito de escolher 1 vampiro
+    atacante especifico pra virar Demon e ganhar gatilho de morte e
+    modelado so como um contador de "disparou X vezes", sem efeito
+    numerico adicional (a escolha de QUAL vampiro e um detalhe tatico
+    que nao muda a metrica agregada que este simulador mede).
+  - Perda de vida do oponente e ganho de vida proprio sao rastreados como
+    CONTADORES agregados (drain_total, lifegain_total), nao como life
+    totals reais de um oponente concreto - e um goldfish solo.
+  - Ashnod's Altar/Phyrexian Altar: a mana que produzem exige sacrificar
+    uma criatura (nao e {T}: Add livre) - NAO contam pro total_mana()
+    automatico. So geram mana quando efetivamente usados no "loop de
+    sacrificio" (ver sac_loop), consumindo 1 token disponivel por uso.
+  - Loop de sacrificio: no maximo 2 sacrificios por turno (Ashnod's
+    Altar/Phyrexian Altar/Viscera Seer/Goblin Bombardment, o que estiver
+    em campo), limitado a tokens de Vampiro disponiveis (criados pela
+    Eminence) - simplificacao deliberada pra nao superestimar o volume
+    de gatilhos de morte por turno.
+  - Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the
+    Dusk Rose: quando UM dos 2 habilitadores + Vito Thorn estao em
+    campo, gain_life()/lose_life_opponent() detectam o loop e marcam
+    combo_active (metrica: primeiro turno em que monta E tem um
+    gatilho real pra ligar). Achado real 2026-08-27: Bloodthirsty
+    Conqueror ("whenever an opponent loses life, you gain that much")
+    forma o MESMO loop infinito com Vito Thorn que Exquisite Blood -
+    so o segundo era detectado antes.
+
+Revisao carta-a-carta completa - 2026-08-27 (usuario: "faca a carta por
+carta do Markov", mesmo rigor ja aplicado no Ur-Dragon/Hei Bai):
+conferido oracle_text de TODAS as 99 cartas + comandante contra o
+codigo. Achados reais documentados em detalhe no goldfish-log.md
+(Correcao #1) - resumo: Funeral Room/Unholy Annex tinham mv errado
+(soma dos 2 lados do Room em vez do custo real de cada porta - ficavam
+praticamente incastaveis); Purphoros, Warleader's Call, Skullclamp,
+Ophiomancer, Pitiless Plunderer (tageado 'ramp' errado - nao tem
+habilidade de mana propria), Anointed Procession/Mondrak (dobradores de
+TOKEN, mecanica diferente do Roaming Throne que dobra o GATILHO),
+Zulaport Cutthroat, e a propria Vito, Thorn of the Dusk Rose (so' usada
+como string-match do combo, nunca com efeito proprio) estavam 100%
+ausentes apesar de tageados/citados na auditoria.md. Corrigidos com
+implementacao real, testados (25k+15k jogos de robustez, 0 erros) e
+logados com impacto quantificado.
+
+Correcao #13 - varredura exaustiva de MDFC/transform/Room/prepared
+(2026-08-28, usuario perguntou direto "e Agadeem's Awakening? Bloodline
+Bidding?" depois de checar a lista completa via API do Scryfall pro campo
+`layout` de cada carta com "//" no nome): achado real GRAVE - Ojer Taq,
+Deepest Foundation // Temple of Civilization e Legion's Landing // Adanto,
+the First Fort tem layout real "transform" (nao "modal_dfc" como Agadeem's
+Awakening/Fell the Profane) - so a FRENTE (Ojer Taq criatura {4}{W}{W};
+Legion's Landing encantamento {W}) pode ser conjurada da mao, o verso Land
+so e' alcancavel via o gatilho de transformacao real do jogo. A versao
+anterior registrava as 2 DIRETO como Land, jogando um verso ilegal sem
+nunca ter conjurado a frente - nao era so "falta de valor", era uma acao
+ilegal simulada toda vez que essas cartas apareciam. Corrigidas: Ojer Taq
+agora e' Creature de verdade (estatico de triplicar token de criatura via
+`token_multiplier`, gatilho de morte-e-retorno-transformado via
+`_pay_diabolic_intent_cost`); Legion's Landing agora e' Enchantment de
+verdade (ETB cria Vampire Token, transforma em Adanto no combate se 3+
+criaturas em campo). **Agadeem's Awakening // Agadeem, the Undercrypt**
+(MDFC verdadeiro) tambem estava so land-primary - a frente ({X}{B}{B}{B},
+reanima criaturas de MV distinto do cemiterio) 100% ausente, agora
+implementada (`try_agadeems_awakening`, so vale a pena com 2+ alvos de MV
+distinto disponiveis). **Fell the Profane // Fell Mire** (MDFC verdadeiro,
+verificado tambem) permanece land-primary DE PROPOSITO - a frente e' um
+spell de remocao sem alvo legal neste goldfish solo (mesma convencao de
+EXCLUDE_BLIND_CAST), land-only e' o resultado CORRETO, nao uma lacuna.
+Westvale Abbey // Ormendahl e' land-primary DE VERDADE tambem (layout
+transform, mas a FRENTE real e' o land) - nenhuma mudanca necessaria ali.
+Achado lateral ao mexer em `_pay_diabolic_intent_cost`: a funcao nunca
+chamava `_apply_death_payoffs` - sacrificio pro Diabolic Intent e' morte
+de criatura de verdade (Zulaport/Blood Artist deveriam reagir), corrigido
+junto. Ver goldfish-log.md, Correcao #13, pro antes/depois quantificado.
+  - Cordial Vampire (+1/+1 counters em cada Vampiro) e o gatilho de
+    MORTE da propria Elenda (X tokens = poder dela): sem payoff
+    numerico modelavel - nenhuma criatura NOMEADA morre neste
+    simulador (so tokens, decisao ja documentada acima), entao Elenda
+    nunca teria chance real de morrer e os contadores de Cordial
+    Vampire nunca teriam combate pra importar. O passivo de Elenda
+    ("+1/+1 quando OUTRA criatura morre") em si E' rastreado agora
+    (state.elenda_counters, so' por transparencia de dado).
+  - Loyalty abilities de Elspeth Storm Slayer/Sorin: IMPLEMENTADAS na
+    Correcao #15 (regra nova, categoria 12). Niveis 2/3 do Caretaker's
+    Talent: IMPLEMENTADOS na Correcao #16 (regra nova, categoria 13 -
+    "cartas com niveis"). Ainda deferido: ativada do Mondrak
+    (indestructible counter), Cavern of Souls (escolha de tipo) -
+    nenhuma engine de "1 ativada por turno" existe neste simulador pra
+    essas 2 especificamente (mv fixo, sem custo de ativacao paga
+    associado a valor claro o bastante pra justificar agora).
+  - Fetch lands (Arid Mesa/Bloodstained Mire/Marsh Flats): modeladas
+    como duais estaticas de 2 cores (produces={cor1,cor2}), sem
+    sacrificio/busca real - decisao consistente com o resto do
+    simulador (nenhum land search existe aqui, diferente do Hei
+    Bai/Ur-Dragon), sem efeito na CONTAGEM de mana (1 fetch = 1 land =
+    1 mana, igual a already-fetched).
+
+Auditoria do resto do deck - 2026-08-27 (usuario: "Audite o resto do
+deck"): conferido oracle_text de TODAS as cartas ainda nao tocadas
+diretamente pelo usuario nas rodadas anteriores. Achados reais
+documentados em detalhe no goldfish-log.md (Correcao #6) - resumo:
+removal/protecao (Anguished Unmaking, Get Lost, Path to Exile, Swords
+to Plowshares, Vindicate, Rite of Oblivion, Call the Coppercoats,
+Clever Concealment, Teferi's Protection) NUNCA era excluida do loop
+generico de conjuracao, mesma classe de bug ja corrigida no Hei
+Bai/Ur-Dragon mas nunca aplicada aqui - EXCLUDE_BLIND_CAST. Plumb the
+Forbidden/Sevinne's Reclamation/Bloodline Bidding tinham 0% de efeito
+(conjuradas as cegas). Bloodletter of Aclazotz (dobra TODO drain do
+motor durante seu turno - e este simulador SO simula seus turnos, entao
+e' um multiplicador universal) e Elspeth Storm Slayer (dobrador de
+token, mesmo texto do Anointed Procession/Mondrak, nunca incluida na
+tupla) estavam 100% ausentes. Smothering Tithe tinha a MESMA classe de
+bug do Pitiless Plunderer (tag 'ramp' inventada - o unico gatilho real
+dela exige o OPONENTE comprar carta, que nunca acontece neste
+simulador so-do-proprio-turno). Bartolome del Presidio e Phyrexian
+Tower sao sac outlets reais nunca incluidos em SAC_OUTLETS. Urza's Saga
+(capitulo III - tutor de artefato <=1 mana) 100% ausente, tratada so
+como terreno incolor fixo pro resto do jogo. Terrenos condicionalmente
+tapados (Savai Triome sempre, Blackcleave Cliffs/Haunted Ridge
+condicional a quantidade de OUTROS terrenos) nunca tinham NENHUM
+rastreio de tapado neste simulador - novo tapped_lands_this_turn.
+
+Deferido/documentado nesta rodada (nao implementado, motivo real):
+  - Charismatic Conqueror: seu gatilho ("whenever an artifact or
+    creature an OPPONENT controls enters untapped") nunca teria janela
+    real pra disparar aqui - este simulador nao modela NENHUM
+    permanente de oponente entrando, mesma classe de limitacao do
+    Seedborn Muse/Smothering Tithe. Corpo 2/2 vigilance vanilla e' o
+    resultado correto.
+  - Nullpriest of Oblivion (kicker {3}{B}, reanima criatura da
+    graveyard se kicked): baixo valor esperado pela mesma razao do
+    Agadeem's Awakening/Sevinne's Reclamation - poucas criaturas
+    NOMEADAS morrem neste simulador (so via custo do Diabolic Intent
+    sem token disponivel), entao o pool de reanimacao geralmente esta
+    vazio - nao vale pagar 6 mana por um efeito quase sempre nulo, o
+    corpo base (2 mana, lifelink, menace) ja e' castado normalmente.
+  - Voldaren Estate ({5},{T}: Blood token, custo reduzido por Vampiro)
+    e Fountainport ({2}/{3}/{4} + tap: draw/token/Treasure): terrenos
+    utilitarios com habilidades ativadas caras (mana ADICIONAL alem do
+    proprio tap) - mesma classe de simplificacao ja aplicada a Mondrak
+    (indestructible counter) e Westvale Abbey (sac 5 criaturas).
+  - Urza's Saga capitulo II (Construct token, {2}+tap por ativacao):
+    exigiria uma engine de "usar a terra pra isso EM VEZ de mana" que
+    nao existe neste simulador - so o capitulo III (tutor, maior valor
+    e mais simples de modelar corretamente) foi implementado.
+
+Correcao #10 - checklist ampliada (2026-08-28, ver goldfish-log.md): 2
+categorias novas na checklist obrigatoria (habilidades estaticas; metricas
+basicas ramp/draw/interaction/finisher no relatorio). Achado real: Enduring
+Tenacity tem o MESMO texto de Vito, Thorn of the Dusk Rose ("whenever you
+gain life, target opponent loses that much life") - estava tageada
+'drain_aristocrats' e tratada como death payoff (nao e', 100% ausente).
+Corrigida junto com o anthem estatico do Warleader's Call (nunca aplicado a
+nenhum calculo de poder) e um bloco novo de metricas basicas agregadas no
+run_batch().
+"""
+
+import random
+from dataclasses import dataclass, field
+from typing import Set, List, Dict, Optional
+
+COMMANDER = "Edgar Markov"
+
+# Politica de "cacar o combo": False (default) = joga generico, so conjura
+# Exquisite Blood/Vito Thorn/os tutores quando calham na mao no ritmo
+# normal do resto do jogo. True = prioriza os 2 tutores rapidos (Vampiric
+# Tutor, Diabolic Intent) especificamente pra buscar a peca do combo que
+# ainda falta, e prioriza conjurar as pecas do combo assim que estao na
+# mao, acima de qualquer outra jogada - pra medir o piso real (nao so o
+# melhor caso teorico) de quando o combo monta se o jogador estiver
+# mirando nisso de proposito. Pedido do usuario pra comprovar a
+# classificacao de Bracket (criterio oficial e "antes do turno 6").
+COMBO_HUNTING_POLICY = False
+COMBO_PIECES = ("Exquisite Blood", "Vito, Thorn of the Dusk Rose")
+
+DECKLIST_TEXT = """
+1 Bartolomé del Presidio
+1 Blood Artist
+1 Bloodletter of Aclazotz
+1 Bloodthirsty Conqueror
+1 Champion of Dusk
+1 Charismatic Conqueror
+1 Clavileño, First of the Blessed
+1 Cordial Vampire
+1 Cruel Celebrant
+1 Elenda, the Dusk Rose
+1 Emeritus of Woe // Demonic Tutor
+1 Enduring Tenacity
+1 Indulgent Aristocrat
+1 Mondrak, Glory Dominus
+1 Nullpriest of Oblivion
+1 Ojer Taq, Deepest Foundation // Temple of Civilization
+1 Ophiomancer
+1 Pitiless Plunderer
+1 Purphoros, God of the Forge
+1 Roaming Throne
+1 Sanctum Seeker
+1 Stensian Sanguinist // Exsanguinate
+1 Vein Ripper
+1 Vindictive Vampire
+1 Viscera Seer
+1 Vito, Fanatic of Aclazotz
+1 Vito, Thorn of the Dusk Rose
+1 Welcoming Vampire
+1 Zulaport Cutthroat
+1 Arcane Signet
+1 Ashnod's Altar
+1 Phyrexian Altar
+1 Skullclamp
+1 Sol Ring
+1 Anointed Procession
+1 Bastion of Remembrance
+1 Black Market Connections
+1 Caretaker's Talent
+1 Exquisite Blood
+1 Funeral Room // Awakening Hall
+1 Goblin Bombardment
+1 Legion's Landing // Adanto, the First Fort
+1 Smothering Tithe
+1 The Meathook Massacre
+1 Unholy Annex // Ritual Chamber
+1 Warleader's Call
+1 Elspeth, Storm Slayer
+1 Sorin, Imperious Bloodlord
+1 Anguished Unmaking
+1 Call the Coppercoats
+1 Clever Concealment
+1 Fell the Profane // Fell Mire
+1 Get Lost
+1 Path to Exile
+1 Plumb the Forbidden
+1 Swords to Plowshares
+1 Teferi's Protection
+1 Vampiric Tutor
+1 Agadeem's Awakening // Agadeem, the Undercrypt
+1 Bloodline Bidding
+1 Diabolic Intent
+1 Rite of Oblivion
+1 Sevinne's Reclamation
+1 Vindicate
+1 Arid Mesa
+1 Battlefield Forge
+1 Blackcleave Cliffs
+1 Blazemire Verge
+1 Blood Crypt
+1 Bloodstained Mire
+1 Cabal Coffers
+1 Cavern of Souls
+1 City of Brass
+1 Command Tower
+1 Fetid Heath
+1 Fountainport
+1 Godless Shrine
+1 Haunted Ridge
+1 Luxury Suite
+1 Mana Confluence
+1 Marsh Flats
+1 Minas Tirith
+4 Plains
+1 Phyrexian Tower
+1 Rugged Prairie
+1 Savai Triome
+1 Spectator Seating
+4 Swamp
+1 Takenuma, Abandoned Mire
+1 Urborg, Tomb of Yawgmoth
+1 Urza's Saga
+1 Voldaren Estate
+1 Westvale Abbey // Ormendahl, Profane Prince
+"""
+
+@dataclass
+class Card:
+    name: str
+    mv: int
+    type: str
+    colors: Set[str] = field(default_factory=set)
+    produces: Set[str] = field(default_factory=set)
+    tags: Set[str] = field(default_factory=set)
+
+CARD_DB: Dict[str, Card] = {}
+
+def add(name, mv, type_, colors=None, produces=None, tags=None):
+    CARD_DB[name] = Card(name=name, mv=mv, type=type_,
+                          colors=set(colors or []), produces=set(produces or []),
+                          tags=set(tags or []))
+
+# -------- Comandante --------
+add("Edgar Markov", 6, "Creature", colors={"B", "R", "W"}, tags={"vampire_type"})
+
+# -------- Deck (99 cartas, geradas via Scryfall cards/collection) --------
+add("Bartolomé del Presidio", 2, "Creature", colors={"B", "W"}, produces=set(), tags={"vampire_type"})
+add("Blood Artist", 2, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
+add("Bloodletter of Aclazotz", 4, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Bloodthirsty Conqueror", 5, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Champion of Dusk", 5, "Creature", colors={"B"}, produces=set(), tags={"draw", "vampire_type"})
+add("Charismatic Conqueror", 2, "Creature", colors={"W"}, produces=set(), tags={"token_maker", "vampire_type"})
+add("Clavileño, First of the Blessed", 3, "Creature", colors={"B", "W"}, produces=set(), tags={"draw", "token_maker", "vampire_type"})
+add("Cordial Vampire", 2, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Cruel Celebrant", 2, "Creature", colors={"B", "W"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
+add("Elenda, the Dusk Rose", 4, "Creature", colors={"B", "W"}, produces=set(), tags={"token_maker", "vampire_type"})
+add("Emeritus of Woe // Demonic Tutor", 4, "Creature", colors={"B"}, produces=set(), tags={"tutor", "vampire_type"})
+add("Enduring Tenacity", 4, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats"})
+add("Indulgent Aristocrat", 1, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Mondrak, Glory Dominus", 4, "Creature", colors={"W"}, produces=set(), tags=set())
+add("Nullpriest of Oblivion", 2, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+# Achado real 2026-08-28 (varredura exaustiva de MDFC/transform/Room/prepared
+# pedida pelo usuario apos o achado do Agadeem's Awakening): layout real
+# (Scryfall) e' "transform", NAO "modal_dfc" - so o lado Ojer Taq (frente,
+# criatura) pode ser conjurado da mao; Temple of Civilization (verso, land)
+# so e' alcancavel via o gatilho de transformacao na morte. A versao
+# anterior registrava a carta como Land direto - jogava ilegalmente o
+# VERSO sem nunca ter conjurado a frente. Corrigido: registrada como
+# Creature de verdade (custo/cor real {4}{W}{W}).
+add("Ojer Taq, Deepest Foundation // Temple of Civilization", 6, "Creature", colors={"W"}, produces=set(), tags=set())
+add("Ophiomancer", 3, "Creature", colors={"B"}, produces=set(), tags={"token_maker"})
+add("Pitiless Plunderer", 4, "Creature", colors={"B"}, produces=set(), tags={"token_maker"})
+add("Purphoros, God of the Forge", 4, "Creature", colors={"R"}, produces=set(), tags=set())
+add("Roaming Throne", 4, "Creature", colors=set(), produces=set(), tags=set())
+add("Sanctum Seeker", 4, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
+add("Stensian Sanguinist // Exsanguinate", 2, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Vein Ripper", 6, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
+add("Vindictive Vampire", 4, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Viscera Seer", 1, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Vito, Fanatic of Aclazotz", 4, "Creature", colors={"B", "W"}, produces=set(), tags={"drain_aristocrats", "token_maker", "vampire_type"})
+add("Vito, Thorn of the Dusk Rose", 3, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
+add("Welcoming Vampire", 3, "Creature", colors={"W"}, produces=set(), tags={"draw", "vampire_type"})
+add("Zulaport Cutthroat", 2, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats"})
+add("Arcane Signet", 2, "Artifact", colors=set(), produces={"B", "R", "W"}, tags={"ramp"})
+add("Ashnod's Altar", 3, "Artifact", colors=set(), produces={"C"}, tags={"ramp"})
+add("Phyrexian Altar", 3, "Artifact", colors=set(), produces={"B", "G", "R", "U", "W"}, tags={"ramp"})
+add("Skullclamp", 1, "Artifact", colors=set(), produces=set(), tags={"draw"})
+add("Sol Ring", 1, "Artifact", colors=set(), produces={"C"}, tags={"ramp"})
+add("Anointed Procession", 4, "Enchantment", colors={"W"}, produces=set(), tags={"token_maker"})
+add("Bastion of Remembrance", 3, "Enchantment", colors={"B"}, produces=set(), tags={"drain_aristocrats", "token_maker"})
+add("Black Market Connections", 3, "Enchantment", colors={"B"}, produces=set(), tags={"draw", "token_maker"})
+add("Caretaker's Talent", 3, "Enchantment", colors={"W"}, produces=set(), tags={"draw", "token_maker"})
+add("Exquisite Blood", 5, "Enchantment", colors={"B"}, produces=set(), tags=set())
+add("Funeral Room // Awakening Hall", 3, "Enchantment", colors={"B"}, produces=set(), tags={"drain_aristocrats"})
+add("Goblin Bombardment", 2, "Enchantment", colors={"R"}, produces=set(), tags={"removal"})
+# Achado real 2026-08-28 (varredura exaustiva): layout real e' "transform",
+# NAO "modal_dfc" - so o lado Legion's Landing (frente, encantamento {W})
+# pode ser conjurado da mao; Adanto, the First Fort (verso, land) so e'
+# alcancavel via "when you attack with three or more creatures,
+# transform". A versao anterior registrava direto como Land, jogando
+# ilegalmente o verso sem nunca ter conjurado a frente (e sem nunca criar
+# o token de ETB da Legion's Landing de verdade).
+add("Legion's Landing // Adanto, the First Fort", 1, "Enchantment", colors={"W"}, produces=set(), tags={"token_maker"})
+add("Smothering Tithe", 4, "Enchantment", colors={"W"}, produces=set(), tags=set())
+add("The Meathook Massacre", 2, "Enchantment", colors={"B"}, produces=set(), tags={"drain_aristocrats", "wipe"})
+add("Unholy Annex // Ritual Chamber", 3, "Enchantment", colors={"B"}, produces=set(), tags={"drain_aristocrats", "draw"})
+add("Warleader's Call", 3, "Enchantment", colors={"R", "W"}, produces=set(), tags=set())
+add("Elspeth, Storm Slayer", 5, "Planeswalker", colors={"W"}, produces=set(), tags={"removal", "token_maker", "wipe"})
+add("Sorin, Imperious Bloodlord", 3, "Planeswalker", colors={"B"}, produces=set(), tags={"removal"})
+add("Anguished Unmaking", 3, "Instant", colors={"B", "W"}, produces=set(), tags={"removal"})
+add("Call the Coppercoats", 3, "Instant", colors={"W"}, produces=set(), tags={"token_maker"})
+add("Clever Concealment", 4, "Instant", colors={"W"}, produces=set(), tags=set())
+add("Fell the Profane // Fell Mire", 4, "Land", colors={"B"}, produces={"B"}, tags={"removal"})
+add("Get Lost", 2, "Instant", colors={"W"}, produces=set(), tags={"removal"})
+add("Path to Exile", 1, "Instant", colors={"W"}, produces=set(), tags={"removal"})
+add("Plumb the Forbidden", 2, "Instant", colors={"B"}, produces=set(), tags={"draw"})
+add("Swords to Plowshares", 1, "Instant", colors={"W"}, produces=set(), tags={"removal"})
+add("Teferi's Protection", 3, "Instant", colors={"W"}, produces=set(), tags=set())
+add("Vampiric Tutor", 1, "Instant", colors={"B"}, produces=set(), tags={"tutor"})
+add("Agadeem's Awakening // Agadeem, the Undercrypt", 3, "Land", colors={"B"}, produces={"B"}, tags=set())
+add("Bloodline Bidding", 8, "Sorcery", colors={"B"}, produces=set(), tags=set())
+add("Diabolic Intent", 2, "Sorcery", colors={"B"}, produces=set(), tags={"tutor"})
+add("Rite of Oblivion", 2, "Sorcery", colors={"B", "W"}, produces=set(), tags={"removal"})
+add("Sevinne's Reclamation", 3, "Sorcery", colors={"W"}, produces=set(), tags=set())
+add("Vindicate", 3, "Sorcery", colors={"B", "W"}, produces=set(), tags={"removal"})
+add("Arid Mesa", 0, "Land", colors=set(), produces={"R", "W"}, tags=set())  # busca Mountain ou Plains
+add("Battlefield Forge", 0, "Land", colors={"R", "W"}, produces={"C", "R", "W"}, tags=set())
+add("Blackcleave Cliffs", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags=set())
+add("Blazemire Verge", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags={"verge_mountain_gate"})
+add("Blood Crypt", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags=set())
+add("Bloodstained Mire", 0, "Land", colors=set(), produces={"B", "R"}, tags=set())  # busca Swamp ou Mountain
+add("Cabal Coffers", 0, "Land", colors={"B"}, produces={"B"}, tags=set())
+add("Cavern of Souls", 0, "Land", colors=set(), produces={"B", "R", "W"}, tags={"vampire_only_color"})
+add("City of Brass", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())
+add("Command Tower", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())
+add("Fetid Heath", 0, "Land", colors={"B", "W"}, produces={"B", "W"}, tags={"filter_land"})
+add("Fountainport", 0, "Land", colors=set(), produces={"C"}, tags={"draw", "token_maker"})
+add("Godless Shrine", 0, "Land", colors={"B", "W"}, produces={"B", "W"}, tags=set())
+add("Haunted Ridge", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags=set())
+add("Luxury Suite", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags=set())
+add("Mana Confluence", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())
+add("Marsh Flats", 0, "Land", colors=set(), produces={"W", "B"}, tags=set())  # busca Plains ou Swamp
+add("Minas Tirith", 0, "Land", colors={"W"}, produces={"W"}, tags={"draw"})
+add("Plains", 0, "Land", colors={"W"}, produces={"W"}, tags=set())
+add("Phyrexian Tower", 0, "Land", colors={"B"}, produces={"B", "C"}, tags=set())
+add("Rugged Prairie", 0, "Land", colors={"R", "W"}, produces={"R", "W"}, tags={"filter_land"})
+add("Savai Triome", 0, "Land", colors={"B", "R", "W"}, produces={"B", "R", "W"}, tags={"draw"})
+add("Spectator Seating", 0, "Land", colors={"R", "W"}, produces={"R", "W"}, tags=set())
+add("Swamp", 0, "Land", colors={"B"}, produces={"B"}, tags=set())
+add("Takenuma, Abandoned Mire", 0, "Land", colors={"B"}, produces={"B"}, tags=set())
+add("Urborg, Tomb of Yawgmoth", 0, "Land", colors=set(), produces={"B"}, tags=set())
+add("Urza's Saga", 0, "Land", colors=set(), produces={"C"}, tags={"token_maker"})
+add("Voldaren Estate", 0, "Land", colors=set(), produces={"B", "R", "W"}, tags={"vampire_only_color", "token_maker"})
+add("Westvale Abbey // Ormendahl, Profane Prince", 0, "Land", colors={"B"}, produces={"C"}, tags={"token_maker"})
+
+# Achado real 2026-08-27 (usuario: "Todas as cartas auditadas... tokens
+# tb?"): TODOS os tokens deste deck viviam SO em state.tokens (pool
+# separado, usado so como municao de sacrificio) e NUNCA eram
+# adicionados a state.battlefield - ou seja, is_vampire()/is_creature()
+# nem CONSEGUIRIAM ler esses nomes (KeyError em CARD_DB, nao existiam
+# aqui) e qualquer contagem de "quantos Vampiros voce controla"
+# (Champion of Dusk, Sanctum Seeker) NUNCA via os tokens da Eminence.
+# Corrigido - tokens agora tem entrada real e sao adicionados aos DOIS
+# (battlefield E tokens quando servem de fodder de sacrificio).
+add("Vampire Token", 0, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Human Soldier Token", 0, "Creature", colors={"W"}, produces=set(), tags=set())
+add("Snake Token", 0, "Creature", colors={"B"}, produces=set(), tags=set())
+add("Vampire Demon Token", 0, "Creature", colors={"W", "B"}, produces=set(), tags={"vampire_type"})
+add("Shapeshifter Token", 0, "Creature", colors=set(), produces=set(), tags={"vampire_type"})
+# Achado real 2026-08-27 (usuario: "para disparar Caretaker's Talent e
+# outros gatilhos de token/artefato"): Treasure ("T, Sacrifice: Add
+# one mana of any color") precisa ser um token DE VERDADE (entrar em
+# battlefield) pra disparar "whenever one or more tokens enter" do
+# Caretaker's Talent - antes (Pitiless Plunderer, Black Market
+# Connections) era so' um bonus de mana abstrato, nunca uma entrada
+# real. Ver create_treasure_and_crack().
+add("Treasure Token", 0, "Artifact", colors=set(), produces=set(), tags=set())
+# Achado real 2026-08-28 (auditoria de checklist ampliada - varredura
+# exaustiva de oracle_text das 94 cartas): Funeral Room // Awakening Hall e
+# Unholy Annex // Ritual Chamber sao "Room" cards (Duskmourn) - depois de
+# conjurar UM lado, "As a sorcery, you may pay the mana cost of a locked
+# door to unlock it" tambem, ganhando o efeito do OUTRO lado no MESMO
+# permanente. 100% ausente em 10 rodadas de correcao anteriores - so o lado
+# inicialmente conjurado tinha efeito. Ritual Chamber cria um Demon 6/6
+# flying - token novo, precisa de entrada real no CARD_DB.
+add("Demon Token", 0, "Creature", colors={"B"}, produces=set(), tags=set())
+# Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo):
+# Urza's Saga capitulo II (Construct token), Fountainport (Fish token) e
+# Voldaren Estate (Blood token) precisam de entrada real no CARD_DB pra
+# poder "entrar em campo" de verdade (mesmo padrao do Demon Token acima).
+add("Construct Token", 0, "Creature", colors=set(), produces=set(), tags=set())
+add("Fish Token", 0, "Creature", colors={"U"}, produces=set(), tags=set())
+add("Blood Token", 0, "Artifact", colors=set(), produces=set(), tags=set())
+
+def C(name: str) -> Card:
+    return CARD_DB[name]
+
+def parse_decklist(text: str) -> List[str]:
+    deck = []
+    for line in text.strip().splitlines():
+        line = line.strip()
+        if not line or line.startswith("//") or line.startswith("#"):
+            continue
+        parts = line.split(" ", 1)
+        qty = int(parts[0])
+        name = parts[1].strip()
+        deck.extend([name] * qty)
+    return deck
+
+def is_land(card: str) -> bool:
+    return C(card).type == "Land"
+
+def is_creature(card: str) -> bool:
+    return C(card).type == "Creature"
+
+def is_artifact(card: str) -> bool:
+    return C(card).type == "Artifact"
+
+def is_enchantment(card: str) -> bool:
+    return C(card).type == "Enchantment"
+
+def is_vampire(card: str) -> bool:
+    return has_tag(card, "vampire_type") or card == COMMANDER
+
+def is_vampire_in_play(card: str) -> bool:
+    """Achado real 2026-09-14 (mesma classe do bug encontrado no
+    Beorn/Firdoch Core): Roaming Throne - "As this creature enters,
+    choose a creature type. This creature is the chosen type in
+    addition to its other types" - a convencao deste deck (unica
+    escolha sensata, tribal Vampiro) e' sempre escolher Vampire, e ela
+    passa a SER um Vampiro enquanto estiver na batalha. `is_vampire()`
+    puro (tag "vampire_type") nao reconhece Roaming Throne porque essa
+    e' uma caracteristica GANHA ao entrar, nao impressa - correto pra
+    checagens de mao/cemiterio/casting (Sorin -3 "put a Vampire creature
+    CARD from your hand" nao deveria aceitar Roaming Throne ainda na
+    mao, ela so ganha o tipo ao entrar; Eminence "cast another Vampire
+    SPELL" tambem nao deveria contar o proprio cast dela, a escolha so'
+    acontece na resolucao) - mas ERRADO pras 3 contagens reais de
+    "quantos Vampiros voce controla" (Voldaren Estate desconto,
+    Champion of Dusk draw, gatilho de ataque da propria Edgar), que
+    olham o BATTLEFIELD, onde ela ja e' um Vampiro de verdade. Este
+    helper separado e' usado so' nesses 3 loops sobre state.battlefield."""
+    return is_vampire(card) or card == "Roaming Throne"
+
+def has_tag(card: str, tag: str) -> bool:
+    return tag in C(card).tags
+
+# Achado real 2026-08-27 (auditoria do resto do deck): Bartolome del
+# Presidio ("Sacrifice another creature or artifact: Put a +1/+1
+# counter on Bartolome del Presidio") e' um outlet de sacrificio DE
+# GRACA (sem custo de mana, igual Viscera Seer/Goblin Bombardment) que
+# nunca tinha sido incluido aqui.
+# Achado real 2026-08-27 (auditoria de terrenos): Minas Tirith
+# ("enters tapped unless you control a legendary creature") nunca
+# checava isso - conjunto de criaturas lendarias reais deste deck (nao
+# inclui Ojer Taq, so' virar criatura via a face front que este
+# simulador nunca conjura - Land-primary - nem Purphoros, que so e'
+# criatura condicional a devocao, nao rastreada em lugar nenhum).
+LEGENDARY_CREATURE_NAMES = {
+    COMMANDER, "Bartolomé del Presidio", "Clavileño, First of the Blessed",
+    "Elenda, the Dusk Rose", "Mondrak, Glory Dominus",
+    "Vito, Fanatic of Aclazotz", "Vito, Thorn of the Dusk Rose",
+}
+
+SAC_OUTLETS = {"Ashnod's Altar", "Phyrexian Altar", "Viscera Seer", "Goblin Bombardment",
+               "Bartolomé del Presidio", "Phyrexian Tower"}
+
+# Achado real 2026-08-27 (usuario: "faca a carta por carta do Markov",
+# mesmo rigor ja aplicado no Ur-Dragon/Hei Bai): a formula de cada
+# death payoff NAO era uniforme no oraculo real, mas o codigo antigo
+# tratava todo mundo em DEATH_PAYOFFS como "drain 1, gain 1" (exceto
+# Vein Ripper, hardcoded 2). Conferido carta por carta contra o
+# oraculo: (drain, gain) por evento de morte de UMA criatura.
+# - Blood Artist / Cruel Celebrant / Vindictive Vampire / Bastion of
+#   Remembrance / Funeral Room: "opponent loses 1, you gain 1" - (1, 1).
+# - Vein Ripper: "opponent loses 2, you gain 2" - (2, 2).
+# - Zulaport Cutthroat: MESMO texto do Blood Artist ("this or another
+#   creature you control dies") - (1, 1) - estava 100% ausente do set
+#   antigo, apesar de tageada drain_aristocrats e citada como
+#   "habilitador redundante" na propria auditoria.md secao 6.
+# - The Meathook Massacre: SO "opponent loses 1" quando morre criatura
+#   NOSSA - sem ganho de vida nessa clausula (o "you gain 1" dela e' só
+#   quando MORRE CRIATURA DO OPONENTE, que nao existe neste goldfish
+#   solo) - (1, 0), assimetrico, NAO pode reusar a formula (1,1).
+# - Cordial Vampire: "put a +1/+1 counter on each Vampire you control"
+#   - NAO e' drain/lifegain, e' distribuicao de contador - (0, 0) aqui
+#   de proposito (ver docstring "Simplificacoes" no topo do arquivo
+#   pra por que contadores nao tem payoff numerico modelavel neste
+#   simulador especifico).
+DEATH_PAYOFF_FORMULAS = {
+    "Blood Artist": (1, 1),
+    "Cruel Celebrant": (1, 1),
+    "Vindictive Vampire": (1, 1),
+    "Bastion of Remembrance": (1, 1),
+    "Funeral Room // Awakening Hall": (1, 1),
+    "Vein Ripper": (2, 2),
+    "Zulaport Cutthroat": (1, 1),
+    "The Meathook Massacre": (1, 0),
+    "Cordial Vampire": (0, 0),
+}
+DEATH_PAYOFFS = set(DEATH_PAYOFF_FORMULAS.keys())
+
+# Anointed Procession / Mondrak, Glory Dominus / Elspeth, Storm Slayer:
+# "If one or more tokens would be created under your control, twice
+# that many... instead" - replacement effeitos reais, cada um dobra o
+# numero de tokens (nao o gatilho como o Roaming Throne - sao mecanicas
+# DIFERENTES, ver token_multiplier() abaixo). Achado real 2026-08-27
+# (auditoria do resto do deck): Elspeth, Storm Slayer tem o MESMO texto
+# estatico dos outros 2, mas nunca foi incluida na tupla (so' citada
+# num comentario antigo, nunca de verdade adicionada aqui) - mesmo
+# achado de "tag existe, dispatch nao" da Correcao #1.
+TOKEN_DOUBLER_SOURCES = ("Anointed Procession", "Mondrak, Glory Dominus", "Elspeth, Storm Slayer")
+
+# Achado real 2026-08-28 (usuario: "Preciso que os counters de lealdade e
+# ativacoes de planeswalker sejam sempre contabilizados... para tudo,
+# sempre tambem!" - regra permanente categoria 12,
+# references/goldfish-sim-card-rules.md). Sorin/Elspeth estavam deferidas
+# desde a Correcao #1 por essa exata razao (loyalty abilities fora de
+# escopo) - revisitado aqui. Nenhum dobrador real de COUNTER existe nesse
+# deck (Anointed Procession/Mondrak/Elspeth so dobram TOKEN, oraculo real
+# confirmado - ver TOKEN_DOUBLER_SOURCES acima), entao a lealdade nao
+# precisa de logica de dobro como no Prismatic Bridge.
+PLANESWALKER_STARTING_LOYALTY = {"Sorin, Imperious Bloodlord": 4, "Elspeth, Storm Slayer": 5}
+
+# Achado real 2026-08-27 (auditoria do resto do deck): removal/protecao
+# sem alvo real neste goldfish solo (mesma convencao ja aplicada no
+# Hei Bai/Ur-Dragon) NUNCA era excluida do loop generico de conjuracao
+# - Anguished Unmaking, Get Lost, Path to Exile, Swords to Plowshares,
+# Vindicate, Rite of Oblivion eram conjuradas as cegas, gastando carta
+# e mana de graca, competindo por prioridade cedo contra spells de
+# valor real. Call the Coppercoats teria SEMPRE X=0 (conta criaturas de
+# OPONENTE, que nao existem aqui). Clever Concealment/Teferi's
+# Protection sao protecao pura, sem efeito de tabuleiro modelavel. Um
+# piloto real segura essas cartas ate ter alvo/necessidade real.
+EXCLUDE_BLIND_CAST = {
+    "Anguished Unmaking", "Get Lost", "Path to Exile", "Swords to Plowshares",
+    "Vindicate", "Rite of Oblivion", "Call the Coppercoats",
+    "Clever Concealment", "Teferi's Protection",
+}
+
+# Poder real (Scryfall) das criaturas relevantes pro gatilho do
+# Welcoming Vampire ("one or more OTHER creatures you control with
+# power 2 or less enter"). So criaturas NOMEADAS deste deck - tokens
+# (Vampire Token 1/1, Snake Token 1/1) sao tratados como poder <=2 na
+# hora do gatilho (todos os tokens deste deck realmente tem poder
+# baixo, ver goldfish-log.md).
+CREATURE_POWER = {
+    COMMANDER: 4, "Bartolomé del Presidio": 2, "Blood Artist": 0,
+    "Bloodletter of Aclazotz": 2, "Bloodthirsty Conqueror": 5,
+    "Champion of Dusk": 4, "Charismatic Conqueror": 2,
+    "Clavileño, First of the Blessed": 2, "Cordial Vampire": 1,
+    "Cruel Celebrant": 1, "Elenda, the Dusk Rose": 1,
+    "Emeritus of Woe // Demonic Tutor": 5, "Enduring Tenacity": 4, "Indulgent Aristocrat": 1,
+    "Mondrak, Glory Dominus": 4, "Nullpriest of Oblivion": 2,
+    "Ojer Taq, Deepest Foundation // Temple of Civilization": 6,
+    "Ophiomancer": 2, "Pitiless Plunderer": 1, "Purphoros, God of the Forge": 6,
+    "Roaming Throne": 4, "Sanctum Seeker": 3,
+    "Stensian Sanguinist // Exsanguinate": 2, "Vein Ripper": 6,
+    "Vindictive Vampire": 2, "Viscera Seer": 1, "Vito, Fanatic of Aclazotz": 4,
+    "Vito, Thorn of the Dusk Rose": 1, "Welcoming Vampire": 2,
+    "Zulaport Cutthroat": 1,
+    # Tokens - poder real de cada um (achado real 2026-08-27: o
+    # fallback generico `1 if "Token" in name else 3` dava poder 1 pra
+    # QUALQUER token, incluindo o Vampire Demon Token 4/3 do Vito
+    # Fanatic - qualificava errado pro gatilho do Welcoming Vampire,
+    # "power 2 or less").
+    "Vampire Token": 1, "Human Soldier Token": 1, "Snake Token": 1,
+    "Vampire Demon Token": 4, "Shapeshifter Token": 3, "Demon Token": 6,
+}
+
+# =========================================================
+# GAME STATE
+# =========================================================
+
+@dataclass
+class GameState:
+    rng: random.Random
+    library: List[str]
+    hand: List[str] = field(default_factory=list)
+    battlefield: List[str] = field(default_factory=list)
+    graveyard: List[str] = field(default_factory=list)
+    tokens: List[str] = field(default_factory=list)  # tokens de Vampiro 1/1 da Eminence, disponiveis pra sac
+    turn: int = 0
+    land_played: bool = False
+    mana_spent_this_turn: int = 0
+    lands_played_total: int = 0
+
+    commander_in_play: bool = False
+    commander_cast_turn: Optional[int] = None
+    commander_cast_count: int = 0
+
+    eminence_tokens_created: int = 0
+    edgar_attack_counters_total: int = 0
+    edgar_attack_turns: int = 0
+
+    adanto_tokens_created: int = 0
+    minas_tirith_draws: int = 0
+
+    drain_total: int = 0
+    lifegain_total: int = 0
+    creatures_sacrificed_total: int = 0
+    death_trigger_events: int = 0
+
+    champion_of_dusk_draws: int = 0
+    welcoming_vampire_draws: int = 0
+    welcoming_vampire_trigger_pending: int = 0
+    caretakers_talent_trigger_pending: int = 0
+    caretakers_talent_draws: int = 0
+
+    # Black Market Connections: achado real 2026-08-27 (auditoria do
+    # resto do deck) - "choose one or more" com 3 modos, cada um custa
+    # vida (nao rastreada aqui). 100% ausente antes (lumped errado em
+    # "modal deferido" junto com o Class do Caretaker's Talent - eram
+    # cartas diferentes, achado incorreto na Correcao #1 nunca
+    # revisitado ate agora). Implementado por DEFAULT so' o modo mais
+    # barato (Sell Contraband, 1 Treasure) - Buy Information/Hire a
+    # Mercenary ficam deferidos (o mesmo "greedy pega os 3 de graca"
+    # nao e' um piloto realista so' porque vida nao e' rastreada aqui).
+    black_market_treasures: int = 0
+    # Achado real 2026-08-28 (auditoria de checklist - metricas basicas
+    # obrigatorias: ramp/draw/interaction/finisher). Nao havia nenhuma
+    # metrica agregada de ramp ate agora (so tags decorativas em Arcane
+    # Signet/Sol Ring/Ashnod's Altar/Phyrexian Altar).
+    ramp_pieces_cast: int = 0
+
+    # Funeral Room // Awakening Hall e Unholy Annex // Ritual Chamber -
+    # "unlock the other door" (ver comentario no add() do Demon Token acima).
+    awakening_hall_unlocked: bool = False
+    awakening_hall_reanimated: int = 0
+    ritual_chamber_unlocked: bool = False
+    ritual_chamber_demons_created: int = 0
+
+    # Ojer Taq // Temple of Civilization e Legion's Landing // Adanto -
+    # cartas "transform" (layout real, Scryfall), so a frente e' castavel
+    # da mao. True depois que o gatilho de transformacao real dispara.
+    ojer_taq_transformed: bool = False
+    legion_landing_transformed: bool = False
+
+    # Agadeem's Awakening // Agadeem, the Undercrypt - MDFC verdadeiro
+    # (layout modal_dfc), as 2 faces sao alcancaveis independentemente da
+    # mao. Rastreia se o lado Sorcery foi conjurado (consome o card da
+    # mao, entao nunca mais e' jogavel como land depois).
+    agadeems_awakening_cast: bool = False
+    agadeems_awakening_reanimated: int = 0
+
+    # Lealdade real de Sorin/Elspeth (regra nova, ver PLANESWALKER_STARTING_LOYALTY).
+    loyalty: Dict[str, int] = field(default_factory=dict)
+    pw_activations_total: int = 0
+    pw_tokens_created_total: int = 0
+    pw_counters_distributed_total: int = 0
+    pw_free_creature_total: int = 0
+    pw_deaths_total: int = 0
+    # CR 606.3 (2026-09-25): 1 ativacao por PW por turno, rastreada por nome
+    # -- permite ativar o PW que entra DEPOIS da passada do main phase.
+    pw_activated_this_turn: Set[str] = field(default_factory=set)
+    late_pw_activations_total: int = 0
+    sorin_vampire_sacs_total: int = 0
+
+    # Achado real 2026-08-28 (usuario: "verifique as cartas com niveis,
+    # como classes e sagas... o caretaker's talent se elevado ao nivel 3
+    # aumenta todos as token creatures"): nivel comeca em 1 (habilidade
+    # base) ao ser conjurada, sobe "as a sorcery" pagando o custo real.
+    caretakers_talent_level: int = 1
+    caretakers_talent_level2_copies: int = 0
+
+    sanctum_seeker_drains: int = 0
+    vito_fanatic_stage_this_turn: int = 0
+    vito_fanatic_demons_created: int = 0
+    clavileno_triggers: int = 0
+    # elenda_counters / elenda_death_tokens: achado real 2026-08-27 -
+    # estes 2 campos existiam mas NUNCA eram incrementados em lugar
+    # nenhum (dead fields). Investigado: nao e' so um bug de "esqueci
+    # de somar" - o gatilho de MORTE da propria Elenda ("when Elenda
+    # dies, create X tokens where X is Elenda's power") nunca teria
+    # janela real pra disparar neste simulador, porque o sac_loop so
+    # sacrifica TOKENS de Vampiro (decisao ja documentada no docstring
+    # do topo do arquivo, "Loop de sacrificio... limitado a tokens"),
+    # nenhuma criatura NOMEADA (Elenda inclusa) jamais morre aqui. Os
+    # campos ficam mantidos por transparencia de dado (elenda_counters
+    # agora E' incrementado de verdade a cada morte de token, ver
+    # _apply_death_payoffs - e' o passivo REAL dela, "whenever another
+    # creature dies, put a +1/+1 counter on Elenda"), mas
+    # elenda_death_tokens fica travado em 0 de proposito - documentado,
+    # nao e' mais um buraco silencioso.
+    elenda_counters: int = 0
+    elenda_death_tokens: int = 0
+
+    purphoros_damage_total: int = 0
+    warleaders_call_damage_total: int = 0
+    ophiomancer_snakes_created: int = 0
+    skullclamp_draws: int = 0
+    pitiless_plunderer_treasures: int = 0
+    unholy_annex_draws: int = 0
+    bastion_of_remembrance_tokens: int = 0
+    token_doubler_events: int = 0
+
+    # Achado real 2026-08-27 (usuario: "Vc contabilizou a eminence... e
+    # o Emeritus of Woe tem o Demonic Tutor Prepared, mais um tutor!"):
+    # Vampiric Tutor/Diabolic Intent so tinham busca de verdade DENTRO
+    # de combo_hunt() (gated por COMBO_HUNTING_POLICY=False por
+    # padrao) - na politica DEFAULT (o batch oficial), os 2 tutores
+    # eram conjurados as cegas sem NENHUM efeito de busca. Emeritus of
+    # Woe (mecanica "prepared": entra ja preparado = permissao de
+    # conjurar 1 copia do Demonic Tutor na hora - AINDA pagando
+    # {1}{B}=2, ver try_emeritus_prepared_tutor - e fica preparado de
+    # novo toda vez que 2+ criaturas morrem no turno) era 100% ausente.
+    tutors_used_total: int = 0
+    emeritus_of_woe_tutors: int = 0
+    emeritus_prepared: bool = False
+    creatures_died_this_turn: int = 0
+
+    # Achado real 2026-08-27 (usuario: "Vc contou o Exsanguinate
+    # preparado do Sanguine Stensian como mana sink e um finalizador
+    # potencial?"): Stensian Sanguinist tem a MESMA mecanica "prepared"
+    # do Emeritus of Woe, mas com gatilho diferente - "whenever you
+    # attack, target creature gains deathtouch... whenever that
+    # creature deals combat damage to a player, becomes prepared" (nao
+    # e' morte de criatura - a tag 'drain_aristocrats' antiga era
+    # decorativa E errada, removida). 100% ausente antes.
+    stensian_prepared: bool = False
+    exsanguinate_casts: int = 0
+    exsanguinate_x_total: int = 0
+
+    # Achado real 2026-08-27 (auditoria do resto do deck, pedido do
+    # usuario "Audite o resto do deck"): Plumb the Forbidden, Sevinne's
+    # Reclamation e Bloodline Bidding eram conjuradas as cegas sem
+    # NENHUM efeito - nem tagueadas certo (Plumb tinha 'draw' mas sem
+    # dispatch) nem excluidas do auto-cast como as removals viraram.
+    plumb_the_forbidden_draws: int = 0
+    sevinnes_reclamation_returns: int = 0
+    bloodline_bidding_returns: int = 0
+    urzas_saga_entered_turn: Optional[int] = None
+    urzas_saga_tutors: int = 0
+
+    # Achado real 2026-08-27 (auditoria do resto do deck): este
+    # simulador nao tinha NENHUM rastreio de terreno tapado - Savai
+    # Triome ("enters tapped", sempre) e Blackcleave Cliffs/Haunted
+    # Ridge (tapados condicional a quantidade de OUTROS terrenos ja em
+    # campo) contribuiam mana no mesmo turno em que entravam, sem
+    # restricao nenhuma. Corrigido - ver play_land().
+    tapped_lands_this_turn: int = 0
+
+    combo_active: bool = False
+    combo_active_turn: Optional[int] = None
+    combo_enabler: Optional[str] = None
+    both_combo_pieces_turn: Optional[int] = None  # turno em que as 2 pecas ja estao em campo (antes de precisar de um gatilho pra "ligar")
+
+    roaming_throne_doublings: int = 0
+
+    # Achados reais 2026-09-01 (leitura linha-a-linha completa do
+    # oraculo, pedida explicitamente pelo usuario apos o mesmo trabalho
+    # no Toph/Beorn): mecanicas que estavam "deferidas" por julgamento de
+    # valor ("baixo valor esperado", "sem engine clara") em vez de
+    # impossibilidade estrutural real, agora compiladas de verdade.
+    urzas_saga_construct_tokens: int = 0
+    nullpriest_kicked_reanimations: int = 0
+    voldaren_estate_blood_tokens: int = 0
+    voldaren_estate_used_this_turn: bool = False
+    fountainport_treasures: int = 0
+    fountainport_fish: int = 0
+    fountainport_draws: int = 0
+    fountainport_used_this_turn: bool = False
+
+    # ---- Modo opcional de resiliencia (interacao de oponente), 2026-09-20 ----
+    # Porte do mesmo modo ja implementado e validado no Megatron/Ur-Dragon/
+    # Hei Bai (usuario: "Agora implementa essas mudanças no Markov"). Todos
+    # os campos abaixo ficam INERTES em modo padrao (`simulate_one`/
+    # `run_batch`) -- so' tem efeito quando `interaction_rng` e' setado por
+    # `simulate_one_with_interaction`. `life` e' NOVO neste arquivo (o
+    # motor padrao nunca rastreou vida propria, so' contadores agregados de
+    # drain/lifegain do OPONENTE) -- serve so' de alvo pro ataque de
+    # oponente do modo de resiliencia, comeca em 40 (vida inicial real de
+    # Commander) e nunca e' lido/escrito por nenhuma funcao de modo padrao.
+    interaction_rng: Optional[random.Random] = None
+    life: int = 40
+    wiped_this_round: bool = False
+    creatures_destroyed_by_opponent_total: int = 0
+    smart_removals_total: int = 0
+    smart_removal_log: list = field(default_factory=list)
+    smart_attacks_taken_total: int = 0
+    smart_attack_log: list = field(default_factory=list)
+    smart_discards_total: int = 0
+    smart_discard_log: list = field(default_factory=list)
+    smart_wipes_total: int = 0
+    smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
+    smart_counters_total: int = 0
+    smart_counter_log: list = field(default_factory=list)
+    smart_graveyard_wipes_total: int = 0
+    smart_graveyard_wipe_log: list = field(default_factory=list)
+    graveyard_wipe_used: bool = False
+    smart_graveyard_snipes_total: int = 0
+    smart_graveyard_snipe_log: list = field(default_factory=list)
+
+    def draw(self, n: int = 1):
+        for _ in range(n):
+            if self.library:
+                self.hand.append(self.library.pop(0))
+
+    def has(self, name: str) -> bool:
+        return name in self.battlefield
+
+    def roaming_throne_active(self) -> bool:
+        return self.has("Roaming Throne")
+
+def effective_power(state: GameState, name: str) -> int:
+    # Warleader's Call: "Creatures you control get +1/+1" - habilidade
+    # ESTATICA de anthem, achado real 2026-08-28 (auditoria de checklist -
+    # habilidades estaticas). O gatilho de dano dela ja era modelado
+    # (on_creature_enters), mas o anthem em si nunca era aplicado em
+    # nenhum calculo de poder - importa pro limiar do Welcoming Vampire
+    # ("power 2 or less"): uma criatura de poder 2 (ex. Bloodletter of
+    # Aclazotz) vira poder 3 com o anthem ativo, deixando de qualificar.
+    base = CREATURE_POWER.get(name, 1 if "Token" in name else 3)
+    if state.has("Warleader's Call") and name != "Warleader's Call":
+        base += 1
+    # Achado real 2026-08-28 (usuario: "verifique as cartas com niveis...
+    # o caretaker's talent se elevado ao nivel 3 aumenta todos as token
+    # creatures"): "Creature tokens you control get +2/+2" - so' TOKENS,
+    # nao qualquer criatura (diferente do Warleader's Call). Importa MUITO
+    # pro limiar do Welcoming Vampire: Vampire Token 1/1 vira 3/3 (deixa
+    # de qualificar "power 2 or less" assim que o nivel 3 e' alcancado).
+    if "Token" in name and state.has("Caretaker's Talent") and state.caretakers_talent_level >= 3:
+        base += 2
+    return base
+
+# =========================================================
+# MANA MODEL
+# =========================================================
+
+# Achado real 2026-08-27 (auditoria de terrenos): swamp_count() checava
+# `"Swamp" in c` (substring do NOME) - perde Blood Crypt e Godless
+# Shrine, que tem o TIPO Swamp de verdade (`Land — Swamp Mountain` /
+# `Land — Plains Swamp`) mas nao tem "Swamp" no proprio nome. Cabal
+# Coffers ("Add B for each Swamp you control") ficava subcontando.
+SWAMP_TYPED_LANDS = {"Swamp", "Blood Crypt", "Godless Shrine"}
+MOUNTAIN_TYPED_LANDS = {"Mountain", "Blood Crypt", "Savai Triome"}
+
+def swamp_count(state: GameState) -> int:
+    if state.has("Urborg, Tomb of Yawgmoth"):
+        return sum(1 for c in state.battlefield if is_land(c))
+    return sum(1 for c in state.battlefield if c in SWAMP_TYPED_LANDS)
+
+def total_mana(state: GameState) -> int:
+    total = 0
+    for card in state.battlefield:
+        if card == "Cabal Coffers":
+            # Achado real 2026-08-27 (auditoria de terrenos): Cabal
+            # Coffers NAO tem "{T}: Add" nenhum - a UNICA habilidade
+            # dela e' "{2}, {T}: Add B for each Swamp you control".
+            # A versao anterior dava +1 (como terreno normal) MAIS o
+            # bonus de swamps, de GRACA, sem nunca pagar o {2} real.
+            # Corrigido - ver try_cabal_coffers(), chamada separada
+            # (custo condicional, so vale a pena com Swamps o
+            # suficiente pra compensar).
+            continue
+        if card == "Ojer Taq, Deepest Foundation // Temple of Civilization":
+            # So produz mana depois de transformada (Temple of Civilization,
+            # {T}: Add W) - enquanto e' a criatura Ojer Taq, nao tem
+            # habilidade de mana nenhuma.
+            if state.ojer_taq_transformed:
+                total += 1
+            continue
+        if card == "Legion's Landing // Adanto, the First Fort":
+            # Idem - so produz mana depois de transformada em Adanto.
+            if state.legion_landing_transformed:
+                total += 1
+            continue
+        if is_land(card):
+            total += 1
+        elif card == "Sol Ring":
+            total += 2
+        elif card in ("Ashnod's Altar", "Phyrexian Altar"):
+            continue  # exige sacrificio, nao conta como mana livre - ver sac_loop
+        elif has_tag(card, "ramp"):
+            total += 1
+    return total - state.tapped_lands_this_turn
+
+def try_cabal_coffers(state: GameState, log: List[Dict]):
+    if not state.has("Cabal Coffers"):
+        return
+    sc = swamp_count(state)
+    if sc <= 2 or remaining_mana(state) < 2:
+        return  # custa 2 pra ativar - so vale se devolver mais que 2
+    net = sc - 2
+    state.mana_spent_this_turn -= net
+    log.append({"trigger": "cabal_coffers", "swamps": sc, "net": net, "turn": state.turn})
+
+CARETAKERS_TALENT_LEVEL_COST = {2: 1, 3: 4}  # {W}=1 pro nivel 2, {3}{W}=4 pro nivel 3
+
+def try_level_up_caretakers_talent(state: GameState, log: List[Dict]):
+    if not state.has("Caretaker's Talent") or state.caretakers_talent_level >= 3:
+        return
+    next_level = state.caretakers_talent_level + 1
+    cost = CARETAKERS_TALENT_LEVEL_COST[next_level]
+    if remaining_mana(state) < cost or color_sources(state, "W") < 1:
+        return
+    state.mana_spent_this_turn += cost
+    state.caretakers_talent_level = next_level
+    log.append({"trigger": "caretakers_talent_level_up", "level": next_level, "turn": state.turn})
+    if next_level == 2:
+        # "When this Class becomes level 2, create a token that's a copy
+        # of target token you control." Efeito de UMA VEZ SO (nao e'
+        # estatico) - escolhe o Vampire Token (o unico token nomeado
+        # criado em volume real neste deck, via Eminence). Sujeito ao
+        # dobrador de token (Anointed Procession/Mondrak/Elspeth), ja que
+        # "create a token" real dispara esse replacement effect.
+        if "Vampire Token" in state.battlefield:
+            n = token_multiplier(state)
+            for _ in range(n):
+                state.tokens.append("Vampire Token")
+                state.battlefield.append("Vampire Token")
+            state.caretakers_talent_level2_copies += n
+            on_creature_enters(state, log, "Vampire Token", count=n)
+            log.append({"trigger": "caretakers_talent_token_copy", "count": n, "turn": state.turn})
+
+def try_adanto(state: GameState, log: List[Dict]):
+    # Achado real 2026-08-28 (auditoria de checklist de mecanica): a
+    # habilidade da Adanto ("{2}{W}, {T}: Create a 1/1 white Vampire
+    # creature token with lifelink") estava so tagueada como
+    # "token_maker", nunca despachada. {T} = uma ativacao por turno.
+    # Achado real 2026-08-28 (varredura exaustiva): a habilidade da Adanto
+    # so existe depois de Legion's Landing transformar de verdade (layout
+    # "transform" - ver comentario no add() da carta) - antes disso, o
+    # permanente em campo E' Legion's Landing (encantamento), sem essa
+    # ativada nem habilidade de mana nenhuma.
+    if not state.has("Legion's Landing // Adanto, the First Fort") or not state.legion_landing_transformed:
+        return
+    if remaining_mana(state) < 3 or color_sources(state, "W") < 1:
+        return
+    state.mana_spent_this_turn += 3
+    n = token_multiplier(state)
+    for _ in range(n):
+        state.tokens.append("Vampire Token")
+        state.battlefield.append("Vampire Token")
+    state.adanto_tokens_created += n
+    on_creature_enters(state, log, "Vampire Token", count=n)
+    log.append({"trigger": "adanto_token", "count": n, "turn": state.turn})
+
+def controls_a_demon(state: GameState) -> bool:
+    return any("Demon" in c for c in state.battlefield)
+
+def try_unlock_rooms(state: GameState, log: List[Dict]):
+    # Achado real 2026-08-28 (auditoria de checklist ampliada): "Room" cards
+    # (Duskmourn) permitem, "as a sorcery", pagar o custo de mana da porta
+    # ainda trancada pra tambem destranca-la no MESMO permanente - nao e' um
+    # cast de spell (nao dispara Eminence/gatilhos de conjuracao), e' uma
+    # acao especial, igual subir de nivel de Class. 100% ausente antes.
+    if state.has("Funeral Room // Awakening Hall") and not state.awakening_hall_unlocked:
+        cost = 8  # Awakening Hall: {6}{B}{B}
+        if remaining_mana(state) >= cost:
+            state.mana_spent_this_turn += cost
+            state.awakening_hall_unlocked = True
+            targets = [c for c in state.graveyard if is_creature(c)]
+            for target in targets:
+                state.graveyard.remove(target)
+                state.battlefield.append(target)
+                apply_etb(state, target, log)
+                on_creature_enters(state, log, target)
+                state.awakening_hall_reanimated += 1
+            log.append({"trigger": "awakening_hall_unlock", "reanimated": targets, "turn": state.turn})
+
+    if state.has("Unholy Annex // Ritual Chamber") and not state.ritual_chamber_unlocked:
+        cost = 5  # Ritual Chamber: {3}{B}{B}
+        if remaining_mana(state) >= cost:
+            state.mana_spent_this_turn += cost
+            state.ritual_chamber_unlocked = True
+            state.tokens.append("Demon Token")
+            state.battlefield.append("Demon Token")
+            state.ritual_chamber_demons_created += 1
+            on_creature_enters(state, log, "Demon Token")
+            log.append({"trigger": "ritual_chamber_unlock", "turn": state.turn})
+
+def try_agadeems_awakening(state: GameState, log: List[Dict]):
+    # Agadeem's Awakening // Agadeem, the Undercrypt e' um MDFC verdadeiro
+    # (layout real "modal_dfc", Scryfall - confirmado numa varredura
+    # exaustiva pedida pelo usuario depois dele perguntar diretamente "e
+    # Agadeem's Awakening?"). A versao anterior so jogava o verso (Land)
+    # direto, nunca considerando conjurar a frente: "{X}{B}{B}{B}, Return
+    # from your graveyard to the battlefield any number of target creature
+    # cards that each have a different mana value X or less." So vale abrir
+    # mao do land drop se houver 2+ alvos de MV distinto no cemiterio -
+    # com menos que isso, o land e' sempre melhor (mana e' recurso mais
+    # escasso que reanimar 1 criatura so). Chamada ANTES de play_land() no
+    # main_phase, pra tirar a carta da mao antes dela virar candidata a land.
+    name = "Agadeem's Awakening // Agadeem, the Undercrypt"
+    if name not in state.hand or state.agadeems_awakening_cast:
+        return
+    by_mv = {}
+    for c in state.graveyard:
+        if is_creature(c) and C(c).mv not in by_mv:
+            by_mv[C(c).mv] = c
+    candidates = sorted(by_mv.items())
+    if len(candidates) < 2:
+        return
+    for x in range(len(candidates), 1, -1):
+        eligible = [(mv, c) for mv, c in candidates if mv <= x]
+        if len(eligible) >= 2 and remaining_mana(state) >= x + 3:
+            state.hand.remove(name)
+            state.agadeems_awakening_cast = True
+            state.mana_spent_this_turn += x + 3
+            for mv, target in eligible:
+                state.graveyard.remove(target)
+                state.battlefield.append(target)
+                apply_etb(state, target, log)
+                on_creature_enters(state, log, target)
+                state.agadeems_awakening_reanimated += 1
+            log.append({"action": "agadeems_awakening_cast", "x": x,
+                         "reanimated": [c for _, c in eligible], "turn": state.turn})
+            return
+
+def try_minas_tirith(state: GameState, log: List[Dict]):
+    # Achado real 2026-08-28 (auditoria de checklist de mecanica): a
+    # habilidade "{1}{W}, {T}: Draw a card. Activate only if you attacked
+    # with two or more creatures this turn" estava so tagueada como
+    # "draw", nunca despachada. Esse motor assume que TODAS as criaturas
+    # atacam desimpedidas a cada combate (mesma premissa ja usada pro
+    # contador de ataque do proprio Edgar) - "atacou com 2+" vira "2+
+    # criaturas em campo no momento do combate". {T} = uma vez por turno,
+    # chamado logo depois de combat_step().
+    if not state.has("Minas Tirith") or not state.commander_in_play:
+        return
+    if state.turn <= state.commander_cast_turn:
+        return  # sem combate ainda nesse turno (mesmo guard do combat_step)
+    n_creatures = sum(1 for c in state.battlefield if is_creature(c))
+    if n_creatures < 2:
+        return
+    if remaining_mana(state) < 2 or color_sources(state, "W") < 1:
+        return
+    state.mana_spent_this_turn += 2
+    state.draw(1)
+    state.minas_tirith_draws += 1
+    log.append({"trigger": "minas_tirith_draw", "attackers_proxy": n_creatures, "turn": state.turn})
+
+def try_voldaren_estate_blood(state: GameState, log: List[Dict]):
+    # Achado real 2026-09-01 (leitura linha-a-linha completa do oraculo,
+    # "compile TUDO"): "{5}, {T}: Create a Blood token. This ability costs
+    # {1} less to activate for each Vampire you control" estava deferida
+    # por "baixo valor esperado" (julgamento de valor, nao impossibilidade
+    # estrutural) - corrigido. Custo minimo {1} (nunca fica de graca -
+    # "This ability costs {1} less" nao reduz abaixo de {1} generico por
+    # convencao de regras, CR 601.2f).
+    if not state.has("Voldaren Estate") or state.voldaren_estate_used_this_turn:
+        return
+    vampires = sum(1 for c in state.battlefield if is_vampire_in_play(c))
+    cost = max(1, 5 - vampires)
+    if remaining_mana(state) < cost:
+        return
+    state.mana_spent_this_turn += cost
+    state.voldaren_estate_used_this_turn = True
+    state.battlefield.append("Blood Token")
+    state.voldaren_estate_blood_tokens += 1
+    on_token_enters(state, log, "Blood Token", count=1)
+    log.append({"trigger": "voldaren_estate_blood", "cost": cost, "turn": state.turn})
+
+def try_fountainport(state: GameState, log: List[Dict]):
+    # Achado real 2026-09-01 (leitura linha-a-linha completa do oraculo,
+    # "compile TUDO"): as 3 habilidades ativadas ("{2},{T},Sac token: draw"
+    # / "{3},{T},1 vida: Fish 1/1" / "{4},{T}: Treasure") estavam 100%
+    # ausentes, so tratada como terreno incolor fixo - deferida por "baixo
+    # valor esperado". As 3 compartilham {T} (mesmo terreno, so 1 ativacao
+    # por turno) - prioridade: sac-token-draw (melhor taxa, se sobrar token
+    # no pool depois do sac_loop) > Treasure ({4}, rampa futura) > Fish
+    # ({3}+1 vida, corpo 1/1 sem payoff proprio).
+    if not state.has("Fountainport") or state.fountainport_used_this_turn:
+        return
+    if state.tokens and remaining_mana(state) >= 2:
+        state.mana_spent_this_turn += 2
+        state.fountainport_used_this_turn = True
+        popped = state.tokens.pop()
+        state.battlefield.remove(popped)
+        # Achado real 2026-09-13: Pitiless Plunderer/Vito Fanatic
+        # extraidos pra _creature_sacrificed (ver comentario la) - antes
+        # so os death payoffs disparavam aqui, Vito Fanatic nunca.
+        _creature_sacrificed(state, log, source="fountainport_sac")
+        state.draw(1)
+        state.fountainport_draws += 1
+        log.append({"trigger": "fountainport_sac_draw", "turn": state.turn})
+        return
+    if remaining_mana(state) >= 4:
+        state.mana_spent_this_turn += 4
+        state.fountainport_used_this_turn = True
+        t = token_multiplier(state, creature=False)
+        create_treasure_and_crack(state, log, t, source="fountainport_treasure")
+        state.fountainport_treasures += t
+        log.append({"trigger": "fountainport_treasure", "turn": state.turn})
+        return
+    if remaining_mana(state) >= 3:
+        state.mana_spent_this_turn += 3
+        state.fountainport_used_this_turn = True
+        n = token_multiplier(state, creature=True)
+        for _ in range(n):
+            state.battlefield.append("Fish Token")
+        state.fountainport_fish += n
+        on_creature_enters(state, log, "Fish Token", count=n)
+        log.append({"trigger": "fountainport_fish", "turn": state.turn})
+
+def color_sources(state: GameState, color: str, for_vampire: bool = False) -> int:
+    """Conta fontes de mana colorida REAIS pra `color`, respeitando
+    restricoes de uso do oraculo real (achado 2026-08-28, auditoria de
+    checklist de mecanica):
+    - Cavern of Souls / Voldaren Estate (tag "vampire_only_color"): a mana
+      colorida so pode ser gasta pra conjurar um spell de criatura Vampiro
+      (Cavern) / spell Vampiro (Voldaren) - nao vale pra qualquer spell.
+    - Fetid Heath / Rugged Prairie (tag "filter_land"): sao filter lands -
+      precisam de uma fonte de mana colorida JA existente (W/B ou R/W) pra
+      "filtrar", nao produzem cor do nada. Aproximado aqui como: so contam
+      se existir OUTRA fonte real da mesma cor em campo.
+    - Blazemire Verge (tag "verge_mountain_gate"): {T}: Add {B} sempre, mas
+      {T}: Add {R} so se controlar Swamp ou Mountain."""
+    n = 0
+    for card in state.battlefield:
+        if card == "Ojer Taq, Deepest Foundation // Temple of Civilization":
+            if color == "W" and state.ojer_taq_transformed:
+                n += 1
+            continue
+        if card == "Legion's Landing // Adanto, the First Fort":
+            if color == "W" and state.legion_landing_transformed:
+                n += 1
+            continue
+        if color not in C(card).produces:
+            continue
+        if has_tag(card, "vampire_only_color") and not for_vampire:
+            continue
+        if has_tag(card, "verge_mountain_gate") and color == "R":
+            if swamp_count(state) <= 0 and not any(m in state.battlefield for m in MOUNTAIN_TYPED_LANDS):
+                continue
+        if has_tag(card, "filter_land"):
+            has_other_source = any(
+                other != card and color in C(other).produces
+                and not has_tag(other, "filter_land")
+                and not (has_tag(other, "vampire_only_color") and not for_vampire)
+                for other in state.battlefield
+            )
+            if not has_other_source:
+                continue
+        n += 1
+    return n
+
+def remaining_mana(state: GameState) -> int:
+    return total_mana(state) - state.mana_spent_this_turn
+
+def commander_effective_mv(state: GameState) -> int:
+    return C(COMMANDER).mv + 2 * state.commander_cast_count
+
+def can_cast(state: GameState, card: str) -> bool:
+    mv = commander_effective_mv(state) if card == COMMANDER else C(card).mv
+    if remaining_mana(state) < mv:
+        return False
+    vamp = is_vampire(card) and C(card).type == "Creature"
+    for color in C(card).colors:
+        if color_sources(state, color, for_vampire=vamp) < 1:
+            return False
+    return True
+
+# =========================================================
+# MULLIGAN
+# =========================================================
+
+FAST_RAMP = {"Sol Ring", "Arcane Signet"}
+
+def should_keep(hand: List[str]) -> bool:
+    lands = sum(1 for c in hand if is_land(c))
+    if lands > 5:
+        return False
+    if lands >= 3:
+        return True
+    if lands == 2:
+        return any(c in FAST_RAMP for c in hand)
+    return False
+
+def choose_bottom(hand: List[str], n: int) -> List[str]:
+    nonlands = [c for c in hand if not is_land(c)]
+    nonlands.sort(key=lambda c: -C(c).mv)
+    return nonlands[:n] if len(nonlands) >= n else (nonlands + [c for c in hand if is_land(c)])[:n]
+
+# =========================================================
+# LAND DROP
+# =========================================================
+
+def play_land(state: GameState, log: List[Dict]):
+    if state.land_played:
+        return
+    lands_in_hand = [c for c in state.hand if is_land(c)]
+    if not lands_in_hand:
+        return
+    have_colors = set()
+    for c in state.battlefield:
+        have_colors |= C(c).produces
+    missing = {"W", "B", "R"} - have_colors
+    best = None
+    for c in lands_in_hand:
+        if C(c).produces & missing:
+            best = c
+            break
+    choice = best or lands_in_hand[0]
+    state.hand.remove(choice)
+    state.battlefield.append(choice)
+    state.land_played = True
+    state.lands_played_total += 1
+
+    other_lands = sum(1 for c in state.battlefield if is_land(c) and c != choice)
+    has_legendary_creature = any(n in state.battlefield for n in LEGENDARY_CREATURE_NAMES)
+    if choice == "Savai Triome" or \
+            (choice == "Blackcleave Cliffs" and other_lands > 2) or \
+            (choice == "Haunted Ridge" and other_lands < 2) or \
+            (choice == "Minas Tirith" and not has_legendary_creature):
+        state.tapped_lands_this_turn += 1
+    if choice == "Urza's Saga":
+        state.urzas_saga_entered_turn = state.turn
+
+# =========================================================
+# EMINENCE + GATILHOS DE VAMPIRO (Passo 0 - ver docstring)
+# =========================================================
+
+def _times(state: GameState, is_vampire_source: bool = True) -> int:
+    # Roaming Throne: "If a triggered ability of ANOTHER CREATURE you
+    # control OF THE CHOSEN TYPE triggers, it triggers an additional
+    # time" - so vale pra gatilhos cuja FONTE e' uma criatura Vampiro
+    # (tipo escolhido, ver docstring do topo). Achado real 2026-08-27
+    # (usuario: "faca a carta por carta"): a versao antiga aplicava
+    # `_times()` (dobra) globalmente em QUALQUER gatilho sem checar se
+    # a fonte de fato e' uma criatura Vampiro - por coincidencia todos
+    # os gatilhos ja implementados antes eram mesmo Vampiros, entao
+    # nunca deu bug ate agora, mas os gatilhos novos desta rodada
+    # (Purphoros, Warleader's Call, Ophiomancer, Skullclamp, Pitiless
+    # Plunderer, Zulaport Cutthroat, Meathook Massacre, Bastion of
+    # Remembrance, Funeral Room, Unholy Annex) tem fontes que NAO sao
+    # criaturas Vampiro (algumas nem sao criaturas) - passar
+    # is_vampire_source=False nesses evita dobrar errado.
+    return 2 if (is_vampire_source and state.roaming_throne_active()) else 1
+
+def _log_doubling(state: GameState, times: int):
+    if times == 2:
+        state.roaming_throne_doublings += 1
+
+def token_multiplier(state: GameState, creature: bool = True) -> int:
+    # Anointed Procession / Mondrak, Glory Dominus: replacement effects
+    # reais e INDEPENDENTES do Roaming Throne (que dobra o GATILHO, nao
+    # a contagem de token) - cada um "twice that many tokens created
+    # instead", empilham multiplicativamente entre si (regra real: cada
+    # efeito de substituicao se aplica na ordem escolhida pelo
+    # controlador). Achado real 2026-08-27: nenhum dos dois era checado
+    # em lugar nenhum, apesar de tageados 'token_maker'.
+    n = sum(1 for c in TOKEN_DOUBLER_SOURCES if state.has(c))
+    mult = 2 ** n
+    # Ojer Taq, Deepest Foundation (frente, enquanto nao transformada):
+    # "If one or more CREATURE tokens would be created under your
+    # control, three times that many..." - so' criatura, ao contrario dos
+    # 3 acima (que valem pra QUALQUER token, Treasure incluido). Achado
+    # real 2026-08-28 (varredura exaustiva): 100% ausente ate essa
+    # correcao - nem a carta em si podia ser conjurada antes.
+    if creature and state.has("Ojer Taq, Deepest Foundation // Temple of Civilization") \
+            and not state.ojer_taq_transformed:
+        mult *= 3
+    if mult > 1:
+        state.token_doubler_events += 1
+    return mult
+
+def _check_combo(state: GameState, log: List[Dict]):
+    if state.combo_active:
+        return
+    for enabler in ("Exquisite Blood", "Bloodthirsty Conqueror"):
+        if not state.has(enabler):
+            continue
+        for partner in GAIN_LIFE_DRAIN_SOURCES:
+            # Achado real 2026-08-27: so Exquisite Blood era checado
+            # como habilitador do combo com Vito, Thorn of the Dusk
+            # Rose. Bloodthirsty Conqueror ("whenever an opponent loses
+            # life, you gain that much life") forma o MESMO loop
+            # infinito com Vito Thorn - e' um habilitador alternativo
+            # real que a auditoria original nunca detectou.
+            #
+            # Achado real 2026-08-28 (auditoria de checklist - habilidades
+            # estaticas): Enduring Tenacity ("whenever you gain life,
+            # target opponent loses that much life") e' um segundo
+            # habilitador possivel pro MESMO loop (funcionalmente
+            # identico a Vito Thorn pra esse proposito) - fecha o combo
+            # de graca (sem precisar da propria Vito Thorn em campo).
+            if state.has(partner):
+                state.combo_active = True
+                state.combo_active_turn = state.turn
+                state.combo_enabler = f"{enabler}+{partner}"
+                log.append({"trigger": "combo_active", "enabler": state.combo_enabler, "turn": state.turn})
+                return
+
+GAIN_LIFE_DRAIN_SOURCES = ("Vito, Thorn of the Dusk Rose", "Enduring Tenacity")
+
+def gain_life(state: GameState, amt: int, log: List[Dict], source: str = ""):
+    if amt <= 0:
+        return
+    state.lifegain_total += amt
+    if not state.combo_active:
+        # Achado real 2026-08-27 (usuario: "faca a carta por carta do
+        # Markov"): Vito, Thorn of the Dusk Rose - a peca de combo mais
+        # famosa da lista - tinha ZERO implementacao da PROPRIA
+        # habilidade ("whenever you gain life, target opponent loses
+        # that much life"). So era usado como string-match pra decidir
+        # se o combo com Exquisite Blood estava montado, nunca gerava
+        # valor real por conta propria (mesmo sem Exquisite Blood em
+        # campo). 1 hop so (nao recursivo) - uma vez que o combo real
+        # for detectado (ver _check_combo), o jogo e' tratado como
+        # ganho e paramos de somar incrementos individuais infinitos.
+        #
+        # Achado real 2026-08-28 (auditoria de checklist - habilidades
+        # estaticas): Enduring Tenacity tem O MESMO texto real de Vito
+        # Thorn ("Whenever you gain life, target opponent loses that
+        # much life") - estava tageada 'drain_aristocrats' e tratada
+        # como se fosse um death payoff (nunca era - essa habilidade nao
+        # tem nada a ver com morte de criatura), entao ficava 100%
+        # ausente. Se as DUAS estiverem em campo, cada uma dispara
+        # separadamente (2 fontes independentes do mesmo efeito, regra
+        # real de Magic).
+        # Achado real 2026-08-28 (usuario perguntou direto: "considerou
+        # que se o Bloodletter estiver em campo o dano que eu causo e'
+        # dobrado?"): este loop escrevia direto em state.drain_total, SEM
+        # passar por lose_life_opponent() - que e' onde o dobro do
+        # Bloodletter of Aclazotz ("if an opponent would lose life during
+        # your turn, they lose twice that much") esta implementado. O
+        # drain do Vito Thorn/Enduring Tenacity E' "oponente perde vida no
+        # seu turno" - deveria ser dobrado igual a Purphoros/Sanctum
+        # Seeker/Exsanguinate/etc, mas nunca era. Corrigido: chama
+        # lose_life_opponent() de verdade, que tambem ja cuida do
+        # Bloodthirsty Conqueror ("opponent loses life -> you gain that
+        # much") e do _check_combo() sem recursao (lose_life_opponent
+        # nunca chama gain_life() de volta, so escreve direto em
+        # lifegain_total - ver comentario la, "1 hop so").
+        for src in GAIN_LIFE_DRAIN_SOURCES:
+            if state.has(src):
+                lose_life_opponent(state, amt, log, source=f"gain_to_drain_{src}")
+    _check_combo(state, log)
+
+def lose_life_opponent(state: GameState, amt: int, log: List[Dict], source: str = ""):
+    if amt <= 0:
+        return
+    if state.has("Bloodletter of Aclazotz"):
+        # Achado real 2026-08-27 (auditoria do resto do deck): "If an
+        # opponent would lose life during YOUR TURN, they lose twice
+        # that much life instead." Este simulador SO avanca os
+        # PROPRIOS turnos (nunca simula turno de oponente), entao essa
+        # condicao e' sempre verdadeira aqui - um multiplicador
+        # universal sobre TODO drain do motor (Zulaport, Blood Artist,
+        # Purphoros, Warleader's Call, Sanctum Seeker, Exsanguinate,
+        # etc.), 100% ausente antes apesar de ser uma das criaturas
+        # mais impactantes da lista pra esse exato pacote de
+        # aristocratas. Replacement effect - dobra uma vez so, antes de
+        # qualquer gatilho reagir (Bloodthirsty Conqueror abaixo ja
+        # reage ao valor CORRETO, ja dobrado).
+        amt *= 2
+        log.append({"trigger": "bloodletter_of_aclazotz_double", "amt": amt, "source": source, "turn": state.turn})
+    state.drain_total += amt
+    if state.has("Bloodthirsty Conqueror") and not state.combo_active:
+        state.lifegain_total += amt
+        log.append({"trigger": "bloodthirsty_conqueror_gain", "amt": amt, "source": source, "turn": state.turn})
+    _check_combo(state, log)
+
+def on_creature_enters(state: GameState, log: List[Dict], name: str, count: int = 1):
+    # Dispara pra QUALQUER criatura entrando (conjurada OU token) -
+    # Purphoros e Warleader's Call NAO exigem fonte Vampiro (e' "a
+    # creature"/"another creature" generico). Achado real 2026-08-27:
+    # Purphoros e Warleader's Call tinham ZERO implementacao apesar de
+    # serem motores de dano centrais num deck que cria muitos tokens
+    # (cada Eminence, cada Snake do Ophiomancer, cada token do Bastion
+    # of Remembrance conta).
+    if count <= 0:
+        return
+    if state.has("Purphoros, God of the Forge") and name != "Purphoros, God of the Forge":
+        amt = 2 * count
+        state.purphoros_damage_total += amt
+        lose_life_opponent(state, amt, log, source="purphoros")
+    if state.has("Warleader's Call"):
+        amt = count
+        state.warleaders_call_damage_total += amt
+        lose_life_opponent(state, amt, log, source="warleaders_call")
+    if state.has("Welcoming Vampire") and name != "Welcoming Vampire":
+        # "one or more OTHER creatures you control with power 2 or less
+        # enter, draw a card. Triggers only once each turn." Achado
+        # real 2026-08-27: a condicao antiga era ERRADA - checava se um
+        # vampiro tinha sido CONJURADO (condicao da Eminence, gatilho
+        # DIFERENTE), nao se uma criatura de poder baixo de fato ENTROU
+        # (perdia criaturas nao-Vampiro de poder baixo, ex. Ophiomancer
+        # 2/2, e so acertava por coincidencia quando a Eminence tambem
+        # disparava).
+        power = effective_power(state, name)
+        if power <= 2:
+            state.welcoming_vampire_trigger_pending = 1
+    on_token_enters(state, log, name, count=count)
+
+def on_token_enters(state: GameState, log: List[Dict], name: str, count: int = 1):
+    # Achado real 2026-08-27 (usuario: "para disparar Caretaker's
+    # Talent e outros gatilhos de token/artefato"): extraido de
+    # on_creature_enters() pra tambem cobrir tokens NAO-criatura
+    # (Treasure) - "whenever one or more tokens you control enter" nao
+    # se restringe a criatura no oraculo real. Chamado tanto por
+    # on_creature_enters() (tokens de criatura) quanto direto por
+    # create_treasure_and_crack() (Treasure).
+    if count <= 0 or "Token" not in name:
+        return
+    if state.has("Caretaker's Talent"):
+        # Habilidade BASE do Class (antes de qualquer nivel) -
+        # "Whenever one or more tokens you control enter, draw a card.
+        # Triggers only once each turn" - nao depende de subir de
+        # nivel (isso e' so' pros niveis 2/3, ja deferidos). Estava
+        # 100% ausente, lumped errado junto com o resto do Class
+        # deferido na Correcao #1.
+        state.caretakers_talent_trigger_pending = 1
+
+def create_treasure_and_crack(state: GameState, log: List[Dict], count: int, source: str):
+    # Achado real 2026-08-27 (usuario pediu explicitamente): Treasure
+    # ("T, Sacrifice: Add one mana of any color") agora e' um token DE
+    # VERDADE - entra em battlefield (dispara on_token_enters, ex.
+    # Caretaker's Talent), depois um jogador greedy racha na hora pra
+    # mana (mesmo padrao de "usa a mana no mesmo turno" do resto do
+    # motor). Compartilhado entre Pitiless Plunderer e Black Market
+    # Connections - as 2 fontes de Treasure deste deck.
+    if count <= 0:
+        return
+    for _ in range(count):
+        state.battlefield.append("Treasure Token")
+    on_token_enters(state, log, "Treasure Token", count=count)
+    for _ in range(count):
+        state.battlefield.remove("Treasure Token")
+        # Vito, Fanatic of Aclazotz: "Whenever you sacrifice ANOTHER
+        # PERMANENT" - achado real 2026-09-13, cracar um Treasure ("{T},
+        # Sacrifice this token: Add...") e' um sacrificio de permanente
+        # de verdade, mesmo sem nenhuma criatura envolvida neste evento
+        # especifico. Chamada aqui cobre as 3 fontes de Treasure do
+        # deck (Pitiless Plunderer, Black Market Connections,
+        # Fountainport) de uma vez so.
+        _vito_fanatic_sacrifice_trigger(state, log)
+    state.mana_spent_this_turn -= count
+    log.append({"trigger": "treasure_created_and_cracked", "count": count, "source": source, "turn": state.turn})
+
+def eminence_trigger(state: GameState, card: str, log: List[Dict]):
+    # "Whenever you cast another Vampire spell, if Edgar is in the
+    # command zone or on the battlefield, create a 1/1 black Vampire
+    # creature token." Funciona mesmo com Edgar so na zona de comando.
+    #
+    # Achado real 2026-09-20 (ao portar o modo de resiliencia -- ver
+    # `remove_permanent`): a condicao antiga `state.commander_in_play or
+    # state.commander_cast_count == 0` so' cobria 2 dos 3 estados reais
+    # de Edgar (em campo; ainda nunca conjurado = literalmente na zona
+    # de comando ainda). Antes desta rodada Edgar nunca DEIXAVA o campo
+    # depois de conjurado (nenhum removal existia neste motor), entao o
+    # 3o estado real -- destruido por um oponente e voltando pra zona de
+    # comando via CR 903.9 -- nunca acontecia e o bug ficava dormant.
+    # Agora que `remove_permanent` pode zerar `commander_in_play` de
+    # verdade, esse 3o estado e' alcancavel: Edgar destruido, sem
+    # nenhuma substituicao de zona alem da zona de comando (nao tem
+    # "shuffle into library"/exile), ENTAO ele esta' SEMPRE em campo OU
+    # na zona de comando neste motor -- Eminence esta' disponivel
+    # incondicionalmente. Simplificado pra refletir isso (comportamento
+    # em modo padrao continua 100% identico: antes do 1o cast a formula
+    # antiga tambem dava True via `commander_cast_count == 0`, e depois
+    # do 1o cast `commander_in_play` nunca virava False em modo padrao).
+    if card == COMMANDER or not is_vampire(card):
+        return
+    times = _times(state)
+    for _ in range(times):
+        n = token_multiplier(state)
+        for _ in range(n):
+            state.tokens.append("Vampire Token")
+            state.battlefield.append("Vampire Token")
+            state.eminence_tokens_created += 1
+        on_creature_enters(state, log, "Vampire Token", count=n)
+    _log_doubling(state, times)
+    log.append({"trigger": "eminence", "card": card, "times": times, "turn": state.turn})
+
+def welcoming_vampire_check(state: GameState, log: List[Dict]):
+    # "Whenever one or more OTHER creatures you control with power 2 or
+    # less enter, draw a card. This ability triggers only once each
+    # turn." O flag pending agora e' setado em on_creature_enters (ver
+    # acima), checando poder de verdade em vez de piggyback na Eminence.
+    if not state.has("Welcoming Vampire"):
+        return
+    if state.welcoming_vampire_trigger_pending <= 0:
+        return
+    times = _times(state)
+    for _ in range(times):
+        state.draw(1)
+        state.welcoming_vampire_draws += 1
+    _log_doubling(state, times)
+    log.append({"trigger": "welcoming_vampire", "times": times, "turn": state.turn})
+    state.welcoming_vampire_trigger_pending = 0
+
+def caretakers_talent_check(state: GameState, log: List[Dict]):
+    # Habilidade BASE do Class (nao depende de nivel): "Whenever one or
+    # more tokens you control enter, draw a card. Triggers only once
+    # each turn." Fonte nao-criatura (Enchantment - Class) -> sem
+    # dobra do Roaming Throne.
+    if not state.has("Caretaker's Talent"):
+        return
+    if state.caretakers_talent_trigger_pending <= 0:
+        return
+    state.draw(1)
+    state.caretakers_talent_draws += 1
+    log.append({"trigger": "caretakers_talent", "turn": state.turn})
+    state.caretakers_talent_trigger_pending = 0
+
+def _tutor_target(state: GameState) -> Optional[str]:
+    # Heuristica generica de "melhor carta disponivel" pra qualquer
+    # tutor deste deck (Vampiric Tutor, Diabolic Intent, Demonic Tutor
+    # do Emeritus of Woe). Prioridade 1: fechar o combo se so falta 1
+    # peca e a outra ja esta resolvida/na mao - motivo real: um
+    # jogador de verdade sempre fecha o combo antes de buscar
+    # qualquer outra coisa. Prioridade 2 (fallback generico, mesma
+    # convencao "pega o melhor" usada nos outros decks desta sessao):
+    # maior mana value ainda na biblioteca.
+    have = [p for p in COMBO_PIECES if p in state.battlefield or p in state.hand]
+    missing = [p for p in COMBO_PIECES if p not in state.battlefield and p not in state.hand]
+    if have and missing and missing[0] in state.library:
+        return missing[0]
+    pool = [c for c in state.library if not is_land(c)]
+    if not pool:
+        return None
+    return max(pool, key=lambda c: C(c).mv)
+
+def _diabolic_intent_has_fodder(state: GameState) -> bool:
+    return bool(state.tokens) or any(
+        is_creature(c) and c != COMMANDER and c not in COMBO_PIECES for c in state.battlefield)
+
+def _pay_diabolic_intent_cost(state: GameState, log: List[Dict]):
+    # "As an additional cost to cast this spell, sacrifice a creature."
+    # Achado real 2026-08-27 (usuario: "pode tb ser sacrificado pro
+    # Diabolic Intent"): prioriza um token da Eminence disponivel
+    # (fodder de graca, ja excedente) sobre uma criatura NOMEADA de
+    # verdade - um jogador real sempre prefere isso. So chamar depois
+    # de confirmar _diabolic_intent_has_fodder(state).
+    if state.tokens:
+        popped = state.tokens.pop()
+        state.battlefield.remove(popped)
+        log.append({"action": "diabolic_intent_sac", "sacrificed": "token", "turn": state.turn})
+        # Achado real 2026-08-28 (varredura exaustiva): esta funcao nunca
+        # chamava _apply_death_payoffs - o sacrificio pro Diabolic Intent
+        # e' uma morte de criatura de verdade (Zulaport Cutthroat/Blood
+        # Artist/etc deveriam disparar), mas nunca disparavam aqui.
+        # Achado real 2026-09-13: so' os death payoffs disparavam - nao
+        # Pitiless Plunderer nem Vito Fanatic, tambem cascatas reais de
+        # sacrificio de criatura. Corrigido via _creature_sacrificed
+        # (que tambem soma creatures_sacrificed_total, ausente antes).
+        _creature_sacrificed(state, log, source="diabolic_intent")
+        return
+    sac_candidates = [c for c in state.battlefield
+                       if is_creature(c) and c != COMMANDER and c not in COMBO_PIECES]
+    # Um jogador real evita sacrificar o Ojer Taq (perde o estatico de
+    # triplicar token de criatura) se houver qualquer outra opcao -
+    # deprioriza ela no lugar de pegar sac_candidates[0] as cegas.
+    sac_candidates.sort(key=lambda c: c == "Ojer Taq, Deepest Foundation // Temple of Civilization")
+    victim = sac_candidates[0]
+    state.battlefield.remove(victim)
+    if victim == "Ojer Taq, Deepest Foundation // Temple of Civilization":
+        # "When Ojer Taq dies, return it to the battlefield tapped and
+        # transformed under its owner's control." Achado real 2026-08-28
+        # (varredura exaustiva): nao vai pro cemiterio - volta direto como
+        # Temple of Civilization (land), tapped nesse turno (nao produz
+        # mana ate o proximo).
+        state.ojer_taq_transformed = True
+        state.battlefield.append(victim)
+        state.tapped_lands_this_turn += 1
+        log.append({"action": "ojer_taq_death_transform", "turn": state.turn})
+    else:
+        state.graveyard.append(victim)
+    log.append({"action": "diabolic_intent_sac", "sacrificed": victim, "turn": state.turn})
+    _creature_sacrificed(state, log, source="diabolic_intent")
+
+def _fire_death_payoff(state: GameState, log: List[Dict], payoff: str, source: str):
+    # Corpo de UM payoff de morte (extraido de _apply_death_payoffs,
+    # achado real 2026-09-13): agora reutilizavel tambem pro caso
+    # estreito da Cruel Celebrant, a UNICA carta do DEATH_PAYOFF_FORMULAS
+    # cujo oraculo real diz "creature OR PLANESWALKER you control dies"
+    # (as outras 8 - Blood Artist/Zulaport/Vindictive Vampire/Bastion of
+    # Remembrance/Funeral Room/Vein Ripper/Meathook Massacre/Cordial
+    # Vampire - sao criatura-only, confirmado via Scryfall). add_loyalty()
+    # chama isto direto (so pra Cruel Celebrant) quando um planeswalker
+    # morre - nao pode reusar _apply_death_payoffs() inteira ali, isso
+    # dispararia Blood Artist/Zulaport/etc errado pra morte de
+    # planeswalker.
+    is_vamp_source = is_vampire(payoff)
+    times = _times(state, is_vampire_source=is_vamp_source)
+    drain_amt, gain_amt = DEATH_PAYOFF_FORMULAS[payoff]
+    for _ in range(times):
+        state.death_trigger_events += 1
+        if drain_amt:
+            lose_life_opponent(state, drain_amt, log, source=payoff)
+        if gain_amt:
+            gain_life(state, gain_amt, log, source=payoff)
+    _log_doubling(state, times)
+    log.append({"trigger": "death_payoff", "card": payoff, "source": source, "times": times, "turn": state.turn})
+
+def _apply_death_payoffs(state: GameState, log: List[Dict], source: str):
+    # Elenda, the Dusk Rose: "Whenever ANOTHER creature dies, put a
+    # +1/+1 counter on Elenda." Passivo real dela, independente do set
+    # DEATH_PAYOFFS (ela nao dreno/gancha vida por morte de outrem).
+    # Sem payoff numerico modelavel alem do proprio contador (ver
+    # comentario em GameState) - rastreado por transparencia de dado.
+    if state.has("Elenda, the Dusk Rose"):
+        state.elenda_counters += _times(state, is_vampire_source=True)
+    for payoff in DEATH_PAYOFFS:
+        if not state.has(payoff):
+            continue
+        _fire_death_payoff(state, log, payoff, source)
+
+def _vito_fanatic_sacrifice_trigger(state: GameState, log: List[Dict]):
+    # Vito, Fanatic of Aclazotz: "Whenever you sacrifice ANOTHER
+    # PERMANENT..." - nao e' so' criatura, e' QUALQUER permanente.
+    # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): esta
+    # cascata so disparava dentro do sac_loop() principal antes -
+    # extraida pra helper compartilhado, agora chamada de todo ponto
+    # real de sacrificio deste deck (ver _creature_sacrificed abaixo e
+    # create_treasure_and_crack, que tambem sacrifica um permanente de
+    # verdade ao cracar o Treasure).
+    if not state.has("Vito, Fanatic of Aclazotz"):
+        return
+    state.vito_fanatic_stage_this_turn += 1
+    stage = state.vito_fanatic_stage_this_turn
+    if stage == 1:
+        gain_life(state, 2, log, source="vito_fanatic")
+    elif stage == 2:
+        lose_life_opponent(state, 2, log, source="vito_fanatic")
+    elif stage == 3:
+        n = token_multiplier(state)
+        # So' state.battlefield, NAO state.tokens - achado real
+        # 2026-08-27: um 4/3 flying e' o bode fodder ERRADO (um jogador
+        # real prefere sacrificar Vampire Tokens 1/1, ja disponiveis) -
+        # fica fora do pool descartavel de proposito.
+        for _ in range(n):
+            state.battlefield.append("Vampire Demon Token")
+        state.vito_fanatic_demons_created += n
+        state.vito_fanatic_stage_this_turn = 0
+        on_creature_enters(state, log, "Vampire Demon Token", count=n)
+
+def _apply_creature_death_payoffs(state: GameState, log: List[Dict], source: str):
+    # Cascata de "uma criatura MINHA morreu" que dispara em QUALQUER
+    # morte real, nao so' sacrificio -- Pitiless Plunderer ("Whenever
+    # ANOTHER creature you control DIES", verificado via Scryfall,
+    # 2026-09-20: NAO e' sacrifice-restricted) + death payoffs (Blood
+    # Artist/Zulaport/Cruel Celebrant/Vindictive Vampire/Bastion of
+    # Remembrance + contador da Elenda, ja documentados como "dies"
+    # gerais em `_apply_death_payoffs`). Extraido de
+    # `_creature_sacrificed()` (achado real ao portar o modo de
+    # resiliencia do Megatron/Ur-Dragon/Hei Bai pra este deck, que ate'
+    # entao nunca tinha NENHUM jeito de uma criatura NOMEADA morrer --
+    # so' sacrificio de token) pra ser reusado tambem por remocao de
+    # OPONENTE (`remove_permanent`, destroy/wipe real, nao sacrificio) --
+    # `_vito_fanatic_sacrifice_trigger` fica DE FORA de proposito, o
+    # oraculo real dele e' "whenever YOU sacrifice another permanent",
+    # nao "whenever a creature dies" -- destruicao de oponente nao e'
+    # algo que EU sacrifiquei.
+    state.creatures_died_this_turn += 1
+    if state.has("Pitiless Plunderer"):
+        t = token_multiplier(state, creature=False)
+        create_treasure_and_crack(state, log, t, source=f"pitiless_plunderer_{source}")
+        state.pitiless_plunderer_treasures += t
+    _apply_death_payoffs(state, log, source=source)
+
+def _creature_sacrificed(state: GameState, log: List[Dict], source: str):
+    # Cascata compartilhada de "uma criatura sua acabou de ser
+    # sacrificada" (Pitiless Plunderer + death payoffs + Vito Fanatic).
+    # Achado real 2026-09-13: antes desta rodada, so' o sac_loop()
+    # principal chamava os 3 juntos - os outros 4 pontos reais de
+    # sacrificio de criatura do deck (custo do Diabolic Intent, custo
+    # opcional do Plumb the Forbidden, sac-token do Fountainport, +1
+    # "sac a Vampire" do Sorin) chamavam so' PARTE da cascata (Diabolic
+    # Intent/Fountainport so death payoffs, sem Pitiless Plunderer/Vito
+    # Fanatic; Plumb the Forbidden e Sorin nao chamavam NADA disso alem
+    # dos death payoffs - Sorin nao chamava nem isso). Extraido pra um
+    # helper unico, chamado de todo lugar que sacrifica uma criatura de
+    # verdade. Skullclamp fica de fora de proposito (fica so' no
+    # sac_loop, onde a maioria dos sacrificios acontece de fato) - e'
+    # uma unica peca fisica de Equipment por turno, generalizar o
+    # reequipe pra todo ponto arriscaria contagem dupla sem ganho real
+    # de precisao.
+    #
+    # Refatorado 2026-09-20 (porte do modo de resiliencia): a parte
+    # "Pitiless Plunderer + death payoffs" virou `_apply_creature_death_
+    # payoffs` (compartilhada com remocao de oponente, ver comentario
+    # la) -- este helper agora so' adiciona o que e' EXCLUSIVO de
+    # sacrificio de verdade (o contador + Vito Fanatic). Mesmo
+    # comportamento de antes pros 5 call sites reais ja existentes,
+    # confirmado por regressao bit-a-bit do modo padrao.
+    state.creatures_sacrificed_total += 1
+    _apply_creature_death_payoffs(state, log, source=source)
+    _vito_fanatic_sacrifice_trigger(state, log)
+
+def remove_permanent(state: GameState, log: List[Dict], name: str, source: str = "opponent"):
+    """Ponto central de remocao de permanente do CAMPO por acao de
+    OPONENTE (wipe/remocao do modo de resiliencia, 2026-09-20 -- porte
+    do Megatron/Ur-Dragon/Hei Bai, usuario: "Agora implementa essas
+    mudanças no Markov"). Este deck NUNCA teve nenhum jeito de uma
+    criatura NOMEADA morrer antes desta rodada (so' sacrificio de
+    TOKEN via `sac_loop`, ver docstring do topo do arquivo) -- este e'
+    o 1o ponto real de "destroy"/wipe verdadeiro deste simulador.
+
+    Comandante: CORRIGIDO 2026-09-21 (achado real do usuario, CR
+    903.9a -- ver `rules-cache/comprehensive-rules.txt` linhas
+    6888-6896, Regra 18 de `references/user-standing-rules.md`). A
+    versao anterior tratava CR 903.9 como UM efeito de substituicao so'
+    (a mesma confusao cometida em todos os 9 decks desta sessao,
+    corrigida primeiro no Megatron) -- mas 903.9a (cemiterio/exilio, o
+    caso de MORTE) e' ACAO BASEADA EM ESTADO (CR 704), nao substituicao:
+    Edgar vai pro cemiterio DE VERDADE primeiro (CR 700.4, "dies"),
+    disparando Pitiless Plunderer/Blood Artist/Zulaport/Cruel
+    Celebrant/Vindictive Vampire/Bastion of Remembrance/Elenda
+    normalmente (todos sao "CARDNAME or another creature you control
+    dies"/"another creature you control dies" -- Edgar e' uma criatura
+    de verdade morrendo, nenhuma dessas cartas precisa ser ELE mesmo).
+    SO' DEPOIS o dono escolhe move-lo pra zona de comando --
+    `commander_in_play` vira False, recastavel depois (`main_phase`
+    ajustado pra permitir recast, ver comentario la'). Achado real
+    NUMERICO (diferente de Ur-Dragon/Hei Bai, que nao tem payoff de
+    morte nenhum): este deck TEM Pitiless Plunderer/death payoffs reais,
+    entao a versao antiga estava perdendo Treasures e drain de vida
+    genuinos toda vez que Edgar morria pra remocao de oponente.
+    `_vito_fanatic_sacrifice_trigger` continua DE FORA de proposito --
+    seu oraculo real e' "whenever YOU SACRIFICE another permanent", e
+    destruicao de oponente nunca e' sacrificio.
+
+    Token (Vampire Token da Eminence, Vampire Demon Token do Vito
+    Fanatic): sai de `state.battlefield` E de `state.tokens` (mantem o
+    pool do `sac_loop` consistente) -- deixa de existir sem ir pro
+    cemiterio (mesma convencao ja' usada em `sac_loop`), mas ainda
+    dispara `_apply_creature_death_payoffs` se for uma criatura (um
+    token morto "dies" normalmente antes de deixar de existir).
+
+    Carta nomeada (nao-comandante): vai pro cemiterio de verdade,
+    dispara `_apply_creature_death_payoffs` se for criatura."""
+    if name not in state.battlefield:
+        return
+    if name in state.loyalty:
+        # Planeswalker (Sorin esta' na INTERACTION_ENGINE_PRIORITY): mesma
+        # cascata de morte da lealdade a 0 -- clausula de PW da Cruel
+        # Celebrant, lealdade limpa (achado 2026-09-25, Regra #3).
+        _planeswalker_dies(state, name, log, source=source)
+        return
+    state.battlefield.remove(name)
+    if name == COMMANDER:
+        state.graveyard.append(name)
+        state.creatures_destroyed_by_opponent_total += 1
+        if is_creature(name):
+            _apply_creature_death_payoffs(state, log, source=source)
+        if name in state.graveyard:
+            state.graveyard.remove(name)
+        state.commander_in_play = False
+        return
+    if name in state.tokens:
+        state.tokens.remove(name)
+    else:
+        state.graveyard.append(name)
+        state.creatures_destroyed_by_opponent_total += 1
+    if is_creature(name):
+        _apply_creature_death_payoffs(state, log, source=source)
+
+def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason: str = ""):
+    if pw not in state.loyalty:
+        return
+    state.loyalty[pw] += amount
+    log.append({"trigger": "loyalty_change", "pw": pw, "amount": amount,
+                "new_loyalty": state.loyalty[pw], "reason": reason, "turn": state.turn})
+    if state.loyalty[pw] <= 0:
+        _planeswalker_dies(state, pw, log, source="loyalty_zero")
+
+
+def _planeswalker_dies(state: GameState, pw: str, log: List[Dict], source: str):
+    """Cascata unica de "um planeswalker seu morre" -- extraida de
+    `add_loyalty` (2026-09-25, Regra #3: gatilho compartilhado ligado so'
+    em ALGUNS pontos). Antes so' a lealdade chegando a 0 disparava isto;
+    remocao de OPONENTE (`remove_permanent`, modo de resiliencia -- o Sorin
+    esta' na `INTERACTION_ENGINE_PRIORITY`) mandava o Sorin pro cemiterio
+    sem a clausula de PW da Cruel Celebrant e deixava a lealdade velha em
+    `state.loyalty`."""
+    if pw in state.battlefield:
+        state.battlefield.remove(pw)
+    state.graveyard.append(pw)
+    state.loyalty.pop(pw, None)
+    state.pw_deaths_total += 1
+    log.append({"trigger": "planeswalker_death", "pw": pw, "source": source, "turn": state.turn})
+    # Cruel Celebrant: "Whenever this creature or another creature OR
+    # PLANESWALKER you control dies..." - achado real 2026-09-13
+    # (auditoria oraculo-por-oraculo): Sorin, Imperious Bloodlord
+    # PODE morrer de verdade aqui (-3 com lealdade == 3), e essa
+    # clausula nunca disparava - so DEATH_PAYOFFS de criatura eram
+    # cobertos. E' a UNICA carta desta lista com essa clausula extra
+    # (confirmado via Scryfall - Blood Artist/Zulaport/Vindictive
+    # Vampire/Bastion/Funeral Room/Vein Ripper/Meathook/Cordial sao
+    # todas criatura-only).
+    if state.has("Cruel Celebrant"):
+        _fire_death_payoff(state, log, "Cruel Celebrant", source="planeswalker_death")
+
+def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
+    loy = state.loyalty[pw]
+    state.pw_activations_total += 1
+    state.pw_activated_this_turn.add(pw)
+
+    if pw == "Sorin, Imperious Bloodlord":
+        # 2 habilidades de "+1" reais (regra: so uma ativacao/turno no
+        # total, nao uma de cada) - prioriza sacrificar um token da
+        # Eminence (sempre disponivel na maioria dos jogos) por 3 dano +
+        # 3 vida (drena via lose_life_opponent, entao herda o dobro do
+        # Bloodletter of Aclazotz se estiver em campo - mesmo bug ja
+        # corrigido na Correcao #14). Senao, -3 poe um Vampiro da mao em
+        # campo de graca se houver um. Senao, +1 poe contador num Vampiro
+        # (sem alvo real de combate pro deathtouch/lifelink, so o
+        # contador importa).
+        # CORRIGIDO 2026-09-25: o oraculo e' "You may sacrifice a VAMPIRE" --
+        # o codigo fazia `state.tokens.pop()`, que pegava QUALQUER ficha do
+        # pool (Human Soldier da Elspeth/Bastion, Snake da Ophiomancer,
+        # Demon da Ritual Chamber). Agora so' ficha de Vampiro do pool
+        # descartavel (Vampire Token da Eminence/Legion's Landing,
+        # Shapeshifter changeling). O Vampire Demon 4/3 do Vito fica fora do
+        # pool de proposito (ver `_vito_fanatic_sacrifice_trigger`).
+        vamp_tokens = [t for t in state.tokens if is_vampire(t)]
+        if vamp_tokens:
+            popped = vamp_tokens[-1]
+            state.tokens.remove(popped)
+            state.battlefield.remove(popped)
+            state.sorin_vampire_sacs_total += 1
+            # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): este
+            # e' um sacrificio de criatura de verdade ("You may sacrifice
+            # a Vampire") - antes so incrementava creatures_died_this_turn
+            # sem passar pela cascata real de sacrificio (Blood Artist/
+            # Zulaport/Cruel Celebrant/etc, Pitiless Plunderer, Vito
+            # Fanatic ficavam TODOS mudos aqui, mesmo em campo). Corrigido
+            # via _creature_sacrificed, mesmo helper do sac_loop.
+            _creature_sacrificed(state, log, source="sorin_sac_vampire")
+            add_loyalty(state, pw, 1, log, reason="sorin_plus1_sac")
+            lose_life_opponent(state, 3, log, source="sorin_sac_vampire")
+            gain_life(state, 3, log, source="sorin_sac_vampire")
+        elif loy >= 3:
+            vampire_creatures_in_hand = [c for c in state.hand if is_vampire(c) and is_creature(c)]
+            if vampire_creatures_in_hand:
+                target = vampire_creatures_in_hand[0]
+                add_loyalty(state, pw, -3, log, reason="sorin_minus3")
+                state.hand.remove(target)
+                state.battlefield.append(target)
+                apply_etb(state, target, log)
+                on_creature_enters(state, log, target)
+                state.pw_free_creature_total += 1
+                log.append({"trigger": "sorin_free_vampire", "card": target, "turn": state.turn})
+            else:
+                add_loyalty(state, pw, 1, log, reason="sorin_plus1_counter")
+        else:
+            add_loyalty(state, pw, 1, log, reason="sorin_plus1_counter")
+
+    elif pw == "Elspeth, Storm Slayer":
+        # +1 (token Soldier, sujeito ao proprio dobrador dela - Elspeth e'
+        # uma das TOKEN_DOUBLER_SOURCES) e' repetivel e sem risco -
+        # consistentemente melhor que o "0" (contador de uma vez so, sem
+        # combate pra valer) ou o "-3" (sem alvo real de oponente).
+        n = token_multiplier(state)
+        for _ in range(n):
+            state.tokens.append("Human Soldier Token")  # ja registrada (Bastion of Remembrance) - Soldier, NAO Vampire
+            state.battlefield.append("Human Soldier Token")
+        state.pw_tokens_created_total += n
+        on_creature_enters(state, log, "Human Soldier Token", count=n)
+        add_loyalty(state, pw, 1, log, reason="elspeth_plus1")
+        log.append({"trigger": "elspeth_soldier_tokens", "count": n, "turn": state.turn})
+
+def activate_planeswalkers(state: GameState, log: List[Dict]):
+    for pw in list(state.loyalty.keys()):
+        if pw not in state.battlefield:
+            continue
+        resolve_planeswalker(state, pw, log)
+
+
+def activate_unactivated_planeswalkers(state: GameState, log: List[Dict]):
+    """CR 606.3: "A player may activate a loyalty ability of a permanent they
+    control any time they have priority and the stack is empty during a main
+    phase of their turn, but only if no player has previously activated a
+    loyalty ability of that permanent that turn." CORRIGIDO 2026-09-25
+    (mesmo bug de orquestracao achado no Prismatic Bridge, Regra #6): a unica
+    passada (`activate_planeswalkers`) rodava ANTES de `cast_available_spells`
+    -- Sorin/Elspeth conjurados da mao (ou Sorin devolvido pela Sevinne's
+    Reclamation) so' ativavam no turno SEGUINTE. Nao existe doenca de
+    invocacao pra lealdade. Chamado depois de cada conjuracao nas 2
+    passadas de `cast_available_spells` (as 2 sao main phase 1: antes do
+    combate)."""
+    for pw in list(state.loyalty.keys()):
+        if pw in state.pw_activated_this_turn or pw not in state.battlefield:
+            continue
+        state.late_pw_activations_total += 1
+        resolve_planeswalker(state, pw, log)
+
+def apply_etb(state: GameState, card: str, log: List[Dict]):
+    if card in PLANESWALKER_STARTING_LOYALTY:
+        state.loyalty[card] = PLANESWALKER_STARTING_LOYALTY[card]
+        log.append({"trigger": "planeswalker_enters", "pw": card, "loyalty": state.loyalty[card], "turn": state.turn})
+    if card == "Champion of Dusk":
+        vamps = sum(1 for c in state.battlefield if is_vampire_in_play(c))
+        times = _times(state)
+        for _ in range(times):
+            state.draw(vamps)
+            state.champion_of_dusk_draws += vamps
+        _log_doubling(state, times)
+        log.append({"trigger": "champion_of_dusk", "vamps": vamps, "times": times, "turn": state.turn})
+    elif card == "Bastion of Remembrance":
+        # "When this enchantment enters, create a 1/1 white Human
+        # Soldier creature token." Achado real 2026-08-27: o ETB nunca
+        # era modelado (so o drain passivo, ja adicionado em
+        # DEATH_PAYOFF_FORMULAS). Fonte nao-criatura -> sem dobra do
+        # Roaming Throne, mas SUJEITO aos dobradores de token
+        # (Anointed Procession/Mondrak).
+        n = token_multiplier(state)
+        for _ in range(n):
+            state.tokens.append("Human Soldier Token")
+            state.battlefield.append("Human Soldier Token")
+        state.bastion_of_remembrance_tokens += n
+        on_creature_enters(state, log, "Human Soldier Token", count=n)
+        log.append({"trigger": "bastion_of_remembrance_etb", "tokens": n, "turn": state.turn})
+    elif card == "Legion's Landing // Adanto, the First Fort":
+        # "When Legion's Landing enters, create a 1/1 white Vampire
+        # creature token with lifelink." Achado real 2026-08-28 (varredura
+        # exaustiva): 100% ausente ate essa correcao - a carta era
+        # registrada direto como o verso (Adanto, land), pulando o cast e
+        # o ETB reais da frente inteiramente (ver comentario no add()).
+        n = token_multiplier(state)
+        for _ in range(n):
+            state.tokens.append("Vampire Token")
+            state.battlefield.append("Vampire Token")
+        state.eminence_tokens_created += n  # mesmo pool de Vampire Token da Eminence, ver metricas
+        on_creature_enters(state, log, "Vampire Token", count=n)
+        log.append({"trigger": "legions_landing_etb", "tokens": n, "turn": state.turn})
+    elif card == "Emeritus of Woe // Demonic Tutor":
+        # Achado real 2026-08-27 (usuario: "o Emeritus of Woe tem o
+        # Demonic Tutor Prepared, mais um tutor!"): "This creature
+        # enters prepared. (While it's prepared, you may cast a copy
+        # of its spell.)" - a 1a implementacao tratou a copia como
+        # GRATIS, mas o usuario corrigiu (2a rodada, achado real de
+        # novo): "prepared" so' te DA PERMISSAO de conjurar a copia
+        # (mesmo sem a carta fisica em maos) - o texto de lembrete NAO
+        # diz "without paying its mana cost" (diferente de mecanicas
+        # que sao free-cast de verdade, ex. o kicker do Aang's Journey
+        # no Hei Bai) - ainda paga o custo REAL do Demonic Tutor,
+        # {1}{B} = 2 mana generico neste modelo. So dispara se houver
+        # mana sobrando.
+        if remaining_mana(state) >= 2:
+            target = _tutor_target(state)
+            if target:
+                state.mana_spent_this_turn += 2
+                state.library.remove(target)
+                state.hand.append(target)
+                state.tutors_used_total += 1
+                state.emeritus_of_woe_tutors += 1
+                log.append({"trigger": "emeritus_of_woe_etb_tutor", "found": target, "turn": state.turn})
+
+def do_upkeep(state: GameState, log: List[Dict]):
+    # Ophiomancer: "At the beginning of each upkeep, if you control no
+    # Snakes, create a 1/1 black Snake creature token with deathtouch."
+    # Achado real 2026-08-27: 100% ausente apesar de tageada
+    # 'token_maker' - a unica criatura deste deck com gatilho de upkeep
+    # de verdade. "Each upkeep" inclui o do oponente num jogo real, mas
+    # este simulador so avanca os PROPRIOS turnos (mesma limitacao ja
+    # documentada pro Seedborn Muse no Hei Bai) - modelado 1x por
+    # upkeep proprio, conservador.
+    if state.has("Ophiomancer") and "Snake Token" not in state.battlefield:
+        n = token_multiplier(state)
+        for _ in range(n):
+            state.tokens.append("Snake Token")
+            state.battlefield.append("Snake Token")
+        state.ophiomancer_snakes_created += n
+        on_creature_enters(state, log, "Snake Token", count=n)
+        log.append({"trigger": "ophiomancer_upkeep", "tokens": n, "turn": state.turn})
+
+def do_urzas_saga_chapter_check(state: GameState, log: List[Dict]):
+    # Urza's Saga: "As this Saga enters and after your draw step, add a
+    # lore counter. Sacrifice after III." Capitulo III (2o draw step
+    # depois de entrar) e' um tutor real e alto valor: "Search your
+    # library for an artifact card with mana cost {0} or {1}, put it onto
+    # the battlefield, then shuffle" - e' o momento em que a Saga se
+    # sacrifica (para de produzir mana a partir daqui). Achado real
+    # 2026-08-27: 100% ausente, tratada so como terreno incolor fixo pro
+    # resto do jogo (nunca parava de produzir mana, nunca buscava nada).
+    if state.urzas_saga_entered_turn is None:
+        return
+    if "Urza's Saga" not in state.battlefield:
+        return
+    if state.turn == state.urzas_saga_entered_turn + 1:
+        # Achado real 2026-09-01 (leitura linha-a-linha do oraculo, "compile
+        # TUDO"): capitulo II ("{2},{T}: Create a 0/0 colorless Construct
+        # artifact creature token with 'This token gets +1/+1 for each
+        # artifact you control'") estava deferido por "julgamento de valor"
+        # ("baixo valor esperado"), nao por impossibilidade estrutural -
+        # corrigido. Ativa quando sobra mana (mesma simplificacao ja usada
+        # em Minas Tirith: gasta o {2} sem modelar exclusividade entre
+        # "produzir mana propria" e "ativar a habilidade" no mesmo turno,
+        # precedente ja estabelecido no resto do arquivo). P/T real do
+        # Construct (escala com artefatos controlados) nao e' rastreado -
+        # mesma limitacao de "sem P/T por criatura" documentada no topo do
+        # arquivo - contado como token real (dispara Purphoros/Warleader's
+        # Call/Welcoming Vampire/Caretaker's Talent normalmente).
+        if remaining_mana(state) >= 2:
+            state.mana_spent_this_turn += 2
+            state.urzas_saga_construct_tokens += 1
+            on_creature_enters(state, log, "Construct Token", count=1)
+            log.append({"trigger": "urzas_saga_chapter2_construct", "turn": state.turn})
+        return
+    if state.turn != state.urzas_saga_entered_turn + 2:
+        return
+    pool = [c for c in state.library if C(c).type == "Artifact" and C(c).mv <= 1]
+    if pool:
+        target = max(pool, key=lambda c: C(c).mv)
+        state.library.remove(target)
+        state.battlefield.append(target)
+        state.urzas_saga_tutors += 1
+        log.append({"trigger": "urzas_saga_chapter3", "found": target, "turn": state.turn})
+    state.battlefield.remove("Urza's Saga")
+    log.append({"trigger": "urzas_saga_sacrificed", "turn": state.turn})
+
+def do_end_step(state: GameState, log: List[Dict]):
+    # Unholy Annex (a metade barata do Room, ja corrigido o mv real
+    # nesta rodada - achado real: estava 8, deveria ser 3): "At the
+    # beginning of your end step, draw a card. If you control a Demon,
+    # each opponent loses 2 life and you gain 2 life. Otherwise, you
+    # lose 2 life." Achado real 2026-08-27: mesmo agora castavel (mv
+    # corrigido), nunca tinha nenhum efeito implementado. "You lose 2
+    # life" na clausula sem Demon nao tem onde acumular - este
+    # simulador nao rastreia vida propria real (mesma convencao de
+    # Champion of Dusk/Vampiric Tutor, ja documentada) - so a compra +
+    # a clausula COM Demon sao modeladas (drain/gain reais).
+    if state.has("Unholy Annex // Ritual Chamber"):
+        state.draw(1)
+        state.unholy_annex_draws += 1
+        # Achado real 2026-08-28 (auditoria de checklist ampliada): a
+        # condicao real e' "if you control a Demon" - a versao anterior so
+        # checava vito_fanatic_demons_created (um contador CUMULATIVO,
+        # nao "controla agora"), ignorando que a propria Ritual Chamber
+        # (ver try_unlock_rooms) cria um Demon de verdade que satisfaz essa
+        # condicao por si so, sem depender do Vito Fanatic.
+        if controls_a_demon(state):
+            lose_life_opponent(state, 2, log, source="unholy_annex")
+            gain_life(state, 2, log, source="unholy_annex")
+        log.append({"trigger": "unholy_annex_endstep", "turn": state.turn})
+
+    # Emeritus of Woe: "At the beginning of your end step, if two or
+    # more creatures died this turn, this creature becomes prepared."
+    # A copia do Demonic Tutor (ainda pagando {1}{B}=2, ver
+    # try_emeritus_prepared_tutor) e' consumida em ate 2 janelas do
+    # proximo turno (fim do main_phase inicial, e de novo depois da
+    # mana extra do sac_loop). Este deck sacrifica 2 tokens/turno com
+    # facilidade (sac_loop), entao essa condicao e' bem alcancavel.
+    if state.has("Emeritus of Woe // Demonic Tutor") and state.creatures_died_this_turn >= 2:
+        state.emeritus_prepared = True
+        log.append({"trigger": "emeritus_of_woe_prepared", "turn": state.turn})
+
+def sac_loop(state: GameState, log: List[Dict]):
+    # Ate 2 sacrificios por turno (ver docstring), consumindo tokens de
+    # Vampiro disponiveis, se houver pelo menos 1 sac outlet em campo.
+    free_outlets = [c for c in state.battlefield if c in SAC_OUTLETS]
+    # Achado real 2026-08-27 (auditoria do resto do deck): Indulgent
+    # Aristocrat ("{2}, Sacrifice a creature: put a +1/+1 counter on
+    # each Vampire you control") e' um outlet de sacrificio real, so
+    # que PAGO (diferente de Viscera Seer/Goblin Bombardment, que sao
+    # de graca) - nunca era considerado, mesmo so' importando no caso
+    # estreito de nenhum outlet livre estar em campo (o proprio +1/+1
+    # counter continua sem payoff numerico, ver Cordial Vampire -
+    # o valor real aqui e' desbloquear os death payoffs via sacrificio
+    # quando nao ha outro jeito).
+    has_paid_outlet = state.has("Indulgent Aristocrat")
+    if not free_outlets and not has_paid_outlet:
+        return
+    if not state.tokens:
+        return
+    n = min(2, len(state.tokens))
+    for i in range(n):
+        if not state.tokens:
+            break
+        if not free_outlets:
+            if remaining_mana(state) < 2:
+                break
+            state.mana_spent_this_turn += 2
+            log.append({"action": "indulgent_aristocrat_sac_cost", "turn": state.turn})
+        popped = state.tokens.pop()
+        state.battlefield.remove(popped)
+        if "Ashnod's Altar" in state.battlefield:
+            state.mana_spent_this_turn -= 2  # +2 mana efetivo pro resto do turno
+        elif "Phyrexian Altar" in state.battlefield:
+            state.mana_spent_this_turn -= 1
+        elif "Phyrexian Tower" in state.battlefield:
+            # Achado real 2026-08-27: "{T}, Sacrifice a creature: Add
+            # {B}{B}" - e' um terreno NORMAL (ja conta +1 mana generico
+            # em total_mana() so por estar em campo), entao usar esta
+            # habilidade EM VEZ do {T}: Add C normal (mesmo tap, mesma
+            # terra) da um ganho LIQUIDO de +1 (2 ganhos - 1 perdido do
+            # tap normal que nao rola mais esse turno), nao +2.
+            state.mana_spent_this_turn -= 1
+        # Skullclamp: achado real 2026-08-27 - "equipped creature gets
+        # +1/-1. Whenever equipped creature dies, draw two cards." So
+        # UM sacrificio por turno pode estar "equipado" (custo real de
+        # reequipar {1} a cada novo corpo, ja que o Equipment sobrevive
+        # a morte da criatura anterior) - modelado no PRIMEIRO
+        # sacrificio do turno, se houver mana pro equip.
+        if i == 0 and state.has("Skullclamp") and remaining_mana(state) >= 1:
+            state.mana_spent_this_turn += 1
+            state.draw(2)
+            state.skullclamp_draws += 2
+            log.append({"trigger": "skullclamp_draw", "turn": state.turn})
+        # Pitiless Plunderer/death payoffs/Vito Fanatic: extraidos pra
+        # _creature_sacrificed() (achado real 2026-09-13, ver comentario
+        # la) - mesmo efeito de antes, agora compartilhado com os outros
+        # 4 pontos reais de sacrificio de criatura do deck.
+        _creature_sacrificed(state, log, source="sac_loop")
+
+def combat_step(state: GameState, log: List[Dict]):
+    if not state.commander_in_play or state.turn <= state.commander_cast_turn:
+        return  # summoning sickness no turno em que entrou
+    state.edgar_attack_turns += 1
+
+    # Legion's Landing: "When you attack with three or more creatures,
+    # transform Legion's Landing." Achado real 2026-08-28 (varredura
+    # exaustiva): gatilho de transformacao 100% ausente ate essa correcao
+    # (a carta nem podia chegar aqui como Legion's Landing antes, ja que
+    # era registrada direto como o verso). "3+ creatures" e' geral, nao so
+    # Vampiro - mesma premissa ja usada pro Minas Tirith (todas as
+    # criaturas em campo no momento do combate atacam desimpedidas).
+    if state.has("Legion's Landing // Adanto, the First Fort") and not state.legion_landing_transformed:
+        n_creatures_attacking = sum(1 for c in state.battlefield if is_creature(c))
+        if n_creatures_attacking >= 3:
+            state.legion_landing_transformed = True
+            log.append({"trigger": "legions_landing_transform", "turn": state.turn})
+
+    vamps_in_play = sum(1 for c in state.battlefield if is_vampire_in_play(c))
+    times = _times(state)
+    for _ in range(times):
+        state.edgar_attack_counters_total += vamps_in_play
+    _log_doubling(state, times)
+    log.append({"trigger": "edgar_attack_counters", "vamps": vamps_in_play, "times": times, "turn": state.turn})
+
+    if state.has("Sanctum Seeker"):
+        # Achado real 2026-08-27 (auditoria de tokens): "Whenever A
+        # VAMPIRE you control attacks" - gatilho POR vampiro atacante,
+        # nao um trigger unico por combate. Este simulador assume que
+        # TODOS os vampiros atacam desimpedidos (mesma premissa que ja
+        # escala o contador de ataque do proprio Edgar por
+        # vamps_in_play) - a versao anterior disparava so 1x por
+        # combate, ignorando essa escala (e' o mesmo bug que os tokens
+        # da Eminence nunca contarem pra vamps_in_play - agora que
+        # entram em state.battlefield, isso tambem corrige a contagem
+        # aqui).
+        times2 = _times(state)
+        n_triggers = vamps_in_play * times2
+        for _ in range(n_triggers):
+            state.sanctum_seeker_drains += 1
+            lose_life_opponent(state, 1, log, source="sanctum_seeker")
+            gain_life(state, 1, log, source="sanctum_seeker")
+        _log_doubling(state, times2)
+        log.append({"trigger": "sanctum_seeker", "vamps": vamps_in_play, "times": times2, "turn": state.turn})
+
+    if state.has("Clavileño, First of the Blessed"):
+        times3 = _times(state)
+        state.clavileno_triggers += times3
+        _log_doubling(state, times3)
+        log.append({"trigger": "clavileno", "times": times3, "turn": state.turn})
+
+    if state.has("Stensian Sanguinist // Exsanguinate"):
+        # "Whenever you attack, target attacking creature gains
+        # deathtouch... whenever THAT creature deals combat damage to
+        # a player, this creature becomes prepared." Achado real
+        # 2026-08-27 (usuario perguntou direto): este simulador nao
+        # modela bloqueadores (goldfish, "Edgar ataca livre" ja e' a
+        # premissa de todo o combat_step) - qualquer criatura atacante
+        # conecta sem oposicao, entao a condicao "dealt combat damage"
+        # e' praticamente garantida sempre que ha combate. Nao precisa
+        # da propria Stensian atacar - so precisa estar em campo quando
+        # o ataque acontece.
+        state.stensian_prepared = True
+        log.append({"trigger": "stensian_sanguinist_prepared", "turn": state.turn})
+
+# =========================================================
+# TURNO
+# =========================================================
+
+def _cast_combo_piece(state: GameState, card: str, log: List[Dict]):
+    state.hand.remove(card)
+    state.mana_spent_this_turn += C(card).mv
+    state.battlefield.append(card)
+    apply_etb(state, card, log)
+    if is_creature(card):
+        on_creature_enters(state, log, card)
+    eminence_trigger(state, card, log)
+    log.append({"action": "cast_combo_piece", "card": card, "turn": state.turn})
+    if all(p in state.battlefield for p in COMBO_PIECES) and state.both_combo_pieces_turn is None:
+        state.both_combo_pieces_turn = state.turn
+        log.append({"trigger": "both_combo_pieces_in_play", "turn": state.turn})
+
+def combo_hunt(state: GameState, log: List[Dict]):
+    missing = [p for p in COMBO_PIECES if p not in state.battlefield and p not in state.hand]
+
+    # Diabolic Intent: busca direto pra mao, mas exige sacrificar uma
+    # criatura ja em campo como custo adicional. Achado real 2026-08-27
+    # (via teste de robustez, so aparece com COMBO_HUNTING_POLICY=True):
+    # sac_candidates nao excluia as PROPRIAS pecas do combo - dava pra
+    # sacrificar Vito, Thorn of the Dusk Rose (unica peca-criatura do
+    # combo) buscando a OUTRA peca, autodestrutivo e causava crash
+    # depois. Corrigido; e' o mesmo `_pay_diabolic_intent_cost()` usado
+    # pela politica default agora (achado real 2026-08-27, usuario:
+    # "pode tb ser sacrificado pro Diabolic Intent" - prioriza token da
+    # Eminence disponivel sobre criatura nomeada de verdade).
+    if missing and "Diabolic Intent" in state.hand and can_cast(state, "Diabolic Intent") \
+            and _diabolic_intent_has_fodder(state):
+        state.hand.remove("Diabolic Intent")
+        state.mana_spent_this_turn += C("Diabolic Intent").mv
+        state.graveyard.append("Diabolic Intent")
+        _pay_diabolic_intent_cost(state, log)
+        target = missing[0]
+        state.library.remove(target)
+        state.hand.append(target)
+        state.tutors_used_total += 1
+        log.append({"action": "diabolic_intent", "found": target, "turn": state.turn})
+        missing = [p for p in COMBO_PIECES if p not in state.battlefield and p not in state.hand]
+
+    # Vampiric Tutor: busca pro topo da biblioteca (nao pra mao direto) -
+    # a proxima compra normal (inicio do proximo turno) pega a carta.
+    if missing and "Vampiric Tutor" in state.hand and can_cast(state, "Vampiric Tutor"):
+        state.hand.remove("Vampiric Tutor")
+        state.mana_spent_this_turn += C("Vampiric Tutor").mv
+        state.graveyard.append("Vampiric Tutor")
+        target = missing[0]
+        state.library.remove(target)
+        state.library.insert(0, target)
+        state.tutors_used_total += 1
+        log.append({"action": "vampiric_tutor", "found": target, "turn": state.turn})
+
+    # Conjura qualquer peca do combo que ja esteja na mao, com prioridade
+    # sobre o resto da mao (loop generico do main_phase abaixo so pega o
+    # que sobrar).
+    for piece in COMBO_PIECES:
+        if piece in state.hand and can_cast(state, piece):
+            _cast_combo_piece(state, piece, log)
+
+def cast_available_spells(state: GameState, log: List[Dict]):
+    # Extraido de main_phase() (achado real 2026-08-27, usuario: "faca a
+    # carta por carta do Markov") pra poder ser chamado de NOVO depois
+    # do sac_loop() - a mana dos altares (Ashnod's/Phyrexian) e agora
+    # tambem do Pitiless Plunderer (Treasures) so fica disponivel
+    # DEPOIS que o sac_loop roda, mas o sac_loop so processa tokens
+    # CRIADOS neste mesmo turno (pela Eminence durante o main_phase) -
+    # ou seja, essa mana bonus nunca tinha CHANCE de ser gasta em nada:
+    # o turno so tinha 1 passada de conjuracao, antes do sac_loop
+    # sequer rodar. Corrigido chamando esta funcao de novo depois do
+    # sac_loop em play_turn(), pra essa mana extra virar spells de
+    # verdade em vez de ser descartada no reset do proximo turno.
+    for _ in range(8):
+        castables = [c for c in state.hand if c != COMMANDER and not is_land(c) and can_cast(state, c)
+                     # Diabolic Intent exige sacrificio como custo
+                     # ADICIONAL obrigatorio - sem fodder disponivel a
+                     # magica nao pode ser conjurada de verdade.
+                     and (c != "Diabolic Intent" or _diabolic_intent_has_fodder(state))
+                     and c not in EXCLUDE_BLIND_CAST]
+        if not castables:
+            break
+        castables.sort(key=lambda c: C(c).mv)
+        choice = castables[0]
+        if has_tag(choice, "ramp"):
+            state.ramp_pieces_cast += 1
+        state.hand.remove(choice)
+        state.mana_spent_this_turn += C(choice).mv
+        if C(choice).type in ("Instant", "Sorcery"):
+            state.graveyard.append(choice)
+            # Achado real 2026-08-27 (usuario: "Vc contabilizou a
+            # eminence... o Emeritus of Woe tem o Demonic Tutor
+            # Prepared, mais um tutor!"): reconferindo o resto do
+            # motor de tutor, achei que Vampiric Tutor/Diabolic Intent
+            # SO tinham busca de verdade dentro de combo_hunt() (gated
+            # por COMBO_HUNTING_POLICY=False por padrao) - na politica
+            # DEFAULT (o batch oficial reportado ao usuario), os 2
+            # eram conjurados as cegas sem NENHUM efeito de busca.
+            # Corrigido aqui tambem, pra qualquer politica.
+            if choice == "Vampiric Tutor":
+                target = _tutor_target(state)
+                if target:
+                    state.library.remove(target)
+                    state.library.insert(0, target)
+                    state.tutors_used_total += 1
+                    log.append({"action": "vampiric_tutor", "found": target, "turn": state.turn})
+            elif choice == "Diabolic Intent":
+                _pay_diabolic_intent_cost(state, log)
+                target = _tutor_target(state)
+                if target:
+                    state.library.remove(target)
+                    state.hand.append(target)
+                    state.tutors_used_total += 1
+                    log.append({"action": "diabolic_intent", "found": target, "turn": state.turn})
+            elif choice == "Plumb the Forbidden":
+                # Achado real 2026-08-27 (auditoria do resto do deck):
+                # "As an additional cost to cast this spell, you may
+                # sacrifice one or more creatures. When you do, copy
+                # this spell for each creature sacrificed. You draw a
+                # card and lose 1 life [por copia]." 100% ausente -
+                # tageada 'draw' mas nunca implementada, conjurada as
+                # cegas sem nenhum efeito. Sacrifica TODOS os tokens
+                # disponiveis (greedy, mesma logica do resto do motor)
+                # - cada sacrificio TAMBEM dispara os death payoffs
+                # (Zulaport/Blood Artist/etc), igual o sac_loop. Achado
+                # real 2026-09-13: so os death payoffs disparavam aqui -
+                # Pitiless Plunderer e Vito Fanatic (tambem cascatas
+                # reais de sacrificio de criatura) nunca disparavam.
+                # Corrigido via _creature_sacrificed (mesmo helper
+                # compartilhado do sac_loop/Diabolic Intent/Fountainport).
+                n_sac = len(state.tokens)
+                for _ in range(n_sac):
+                    popped = state.tokens.pop()
+                    state.battlefield.remove(popped)
+                    _creature_sacrificed(state, log, source="plumb_the_forbidden")
+                state.draw(1 + n_sac)
+                state.plumb_the_forbidden_draws += 1 + n_sac
+                log.append({"action": "plumb_the_forbidden", "sacrificed": n_sac, "drew": 1 + n_sac, "turn": state.turn})
+            elif choice == "Sevinne's Reclamation":
+                # Achado real 2026-08-27: "Return target permanent card
+                # MV<=3 from graveyard to battlefield" - 100% ausente.
+                # Baixo valor esperado (poucas criaturas morrem por
+                # NOME neste simulador, so via custo do Diabolic Intent
+                # sem token disponivel) mas nao devia ser conjurada as
+                # cegas sem efeito - agora tenta de verdade.
+                pool = [c for c in state.graveyard if C(c).type != "Instant" and C(c).type != "Sorcery" and C(c).mv <= 3]
+                if pool:
+                    target = max(pool, key=lambda c: C(c).mv)
+                    state.graveyard.remove(target)
+                    state.battlefield.append(target)
+                    apply_etb(state, target, log)
+                    if is_creature(target):
+                        on_creature_enters(state, log, target)
+                    state.sevinnes_reclamation_returns += 1
+                    log.append({"action": "sevinnes_reclamation", "found": target, "turn": state.turn})
+            elif choice == "Bloodline Bidding":
+                # Achado real 2026-08-27: "Choose a creature type.
+                # Return all creature cards of the chosen type from
+                # your graveyard to the battlefield" - 100% ausente.
+                # Escolhe Vampire (tema do deck) - baixo volume esperado
+                # pela mesma razao do Sevinne's Reclamation, mas real
+                # quando acontece (reanima TODOS de uma vez, sem limite
+                # de MV).
+                targets = [c for c in state.graveyard if is_creature(c) and is_vampire(c)]
+                for target in targets:
+                    state.graveyard.remove(target)
+                    state.battlefield.append(target)
+                    apply_etb(state, target, log)
+                    on_creature_enters(state, log, target)
+                    state.bloodline_bidding_returns += 1
+                if targets:
+                    log.append({"action": "bloodline_bidding", "found": targets, "turn": state.turn})
+        elif choice == "Nullpriest of Oblivion":
+            # Kicker {3}{B}: "When this creature enters, if it was kicked,
+            # return target creature card from your graveyard to the
+            # battlefield." Achado real 2026-09-01 (leitura linha-a-linha,
+            # "compile TUDO"): deferida antes por "baixo valor esperado"
+            # (julgamento de valor, nao impossibilidade estrutural real).
+            # A base ({1}{B}=2) ja foi paga acima (state.mana_spent_this_turn
+            # += C(choice).mv) - so falta o kicker ({3}{B}=4 adicional, total
+            # kicked {4}{B}{B}=6), so pago se houver alvo real de reanimacao
+            # no cemiterio.
+            state.battlefield.append(choice)
+            reanimate_targets = [c for c in state.graveyard if is_creature(c)]
+            if reanimate_targets and remaining_mana(state) >= 4:
+                state.mana_spent_this_turn += 4
+                target = max(reanimate_targets, key=lambda c: C(c).mv)
+                state.graveyard.remove(target)
+                state.battlefield.append(target)
+                state.nullpriest_kicked_reanimations += 1
+                apply_etb(state, target, log)
+                on_creature_enters(state, log, target)
+                log.append({"action": "nullpriest_kicked", "reanimated": target, "turn": state.turn})
+            apply_etb(state, choice, log)
+            on_creature_enters(state, log, choice)
+        else:
+            state.battlefield.append(choice)
+            apply_etb(state, choice, log)
+            if is_creature(choice):
+                on_creature_enters(state, log, choice)
+        eminence_trigger(state, choice, log)
+        log.append({"action": "cast", "card": choice, "turn": state.turn})
+        # CR 606.3: PW que acabou de entrar ativa JA' neste main phase.
+        activate_unactivated_planeswalkers(state, log)
+    activate_unactivated_planeswalkers(state, log)
+
+    if all(p in state.battlefield for p in COMBO_PIECES) and state.both_combo_pieces_turn is None:
+        state.both_combo_pieces_turn = state.turn
+        log.append({"trigger": "both_combo_pieces_in_play", "turn": state.turn})
+
+def do_black_market_connections(state: GameState, log: List[Dict]):
+    # "At the beginning of your first main phase, choose one or more -
+    # Sell Contraband (Treasure, lose 1 life), Buy Information (draw,
+    # lose 2 life), Hire a Mercenary (3/2 Shapeshifter changeling
+    # token, lose 3 life)." Achado real 2026-08-27 (usuario pediu
+    # explicitamente): por DEFAULT so' o modo mais barato (Sell
+    # Contraband, 1 Treasure) - a versao anterior escolhia os 3 modos
+    # de graca todo turno so' porque vida nao e' rastreada aqui, o que
+    # e' otimista demais (perder 6 vida/turno de forma automatica nao
+    # e' um piloto realista, mesmo sem numero exato de vida neste
+    # modelo). O Treasure agora e' um token DE VERDADE (ver
+    # create_treasure_and_crack) - dispara Caretaker's Talent e
+    # qualquer outro gatilho de token, em vez de ser so' um bonus de
+    # mana abstrato.
+    if not state.has("Black Market Connections"):
+        return
+    t = token_multiplier(state, creature=False)
+    create_treasure_and_crack(state, log, t, source="black_market_connections")
+    state.black_market_treasures += t
+
+def main_phase(state: GameState, log: List[Dict]):
+    do_black_market_connections(state, log)
+    if COMBO_HUNTING_POLICY:
+        combo_hunt(state, log)
+
+    # Achado real 2026-09-20 (porte do modo de resiliencia): a condicao
+    # `commander_cast_count == 0` de antes so' permitia conjurar Edgar
+    # UMA vez pra sempre -- nunca era um problema em modo padrao (nenhum
+    # removal existia, `commander_in_play` nunca voltava a False), mas
+    # bloquearia recast de verdade depois de `remove_permanent` mandar
+    # Edgar de volta pra zona de comando (CR 903.9). Removida -- `not
+    # state.commander_in_play` sozinho ja' e' a condicao real (100%
+    # identico em modo padrao: antes do 1o cast os dois dao a mesma
+    # resposta, e depois do 1o cast `commander_in_play` nunca fica False
+    # sem o modo de resiliencia). Contraataque (`try_smart_opponent_
+    # counter`, 7a categoria do modo de resiliencia -- so' faz sentido
+    # no exato momento do cast, mesmo padrao do Megatron/Ur-Dragon/Hei
+    # Bai): mana gasta e taxa contam ANTES do counter (CR 903.10a conta
+    # "cast", nao "resolved"), entrada em campo so' DEPOIS de passar.
+    if not state.commander_in_play and can_cast(state, COMMANDER):
+        state.mana_spent_this_turn += commander_effective_mv(state)
+        state.commander_cast_count += 1
+        if try_smart_opponent_counter(state):
+            log.append({"action": "cast_commander_countered", "turn": state.turn})
+        else:
+            state.battlefield.append(COMMANDER)
+            state.commander_in_play = True
+            state.commander_cast_turn = state.turn
+            on_creature_enters(state, log, COMMANDER)
+            log.append({"action": "cast_commander", "turn": state.turn})
+
+    activate_planeswalkers(state, log)
+    try_level_up_caretakers_talent(state, log)
+    try_cabal_coffers(state, log)
+    try_adanto(state, log)
+    try_unlock_rooms(state, log)
+    cast_available_spells(state, log)
+    try_emeritus_prepared_tutor(state, log)
+    try_stensian_prepared_exsanguinate(state, log)
+
+def try_emeritus_prepared_tutor(state: GameState, log: List[Dict]):
+    # Emeritus of Woe "prepared" (setado no do_end_step do turno
+    # anterior): "you may cast a copy of its spell" - so' PERMISSAO,
+    # ainda paga o custo real do Demonic Tutor ({1}{B}=2, achado real
+    # 2026-08-27, usuario corrigiu: "o tutor... nao e' gratuito, custa
+    # 2cmc pra cast"). Chamado 2x por turno (fim do main_phase E depois
+    # da 2a passada de cast_available_spells no play_turn, ver la) pra
+    # tambem poder usar mana sobrando do sac_loop (Ashnod's/Treasure) -
+    # mesmo padrao ja usado pro resto do motor.
+    if state.emeritus_prepared and remaining_mana(state) >= 2:
+        target = _tutor_target(state)
+        if target:
+            state.mana_spent_this_turn += 2
+            state.library.remove(target)
+            state.hand.append(target)
+            state.tutors_used_total += 1
+            state.emeritus_of_woe_tutors += 1
+            log.append({"trigger": "emeritus_of_woe_prepared_tutor", "found": target, "turn": state.turn})
+            state.emeritus_prepared = False
+
+def try_stensian_prepared_exsanguinate(state: GameState, log: List[Dict]):
+    # Stensian Sanguinist "prepared" (setado em combat_step, ver
+    # acima). Exsanguinate ({X}{B}{B}, "each opponent loses X life, you
+    # gain life equal") e' um mana sink puro e um finalizador em
+    # potencial. 2 achados reais aqui, os 2 apontados pelo usuario:
+    # (1) 2026-08-27 - a copia AINDA paga o custo real (nao e'
+    # free-cast, mesmo erro ja corrigido no Emeritus of Woe), entao
+    # X = mana sobrando menos o {B}{B} fixo, so' conjura se X>0.
+    # (2) 2026-08-27 (correcao seguinte) - a 1a versao so chamava esta
+    # funcao ANTES do combate (achando que "prepared" so' liberava no
+    # turno SEGUINTE, por analogia errada com o Emeritus of Woe, que de
+    # fato so libera no fim do end step). Mas Stensian fica prepared
+    # DURANTE o combate, e Magic real tem uma 2a main phase logo depois
+    # do combate NO MESMO turno - corrigido chamando esta funcao
+    # tambem logo apos combat_step() em play_turn(). "Prepared" nao
+    # expira no fim do turno (texto de lembrete nao diz isso), entao as
+    # chamadas anteriores ao combate continuam validas como fallback
+    # pro turno seguinte se nao sobrar mana nem na 2a main phase.
+    if not state.stensian_prepared:
+        return
+    if color_sources(state, "B") < 1 or remaining_mana(state) < 2:
+        return
+    x = remaining_mana(state) - 2
+    if x <= 0:
+        return
+    state.mana_spent_this_turn += 2 + x
+    lose_life_opponent(state, x, log, source="exsanguinate")
+    gain_life(state, x, log, source="exsanguinate")
+    state.exsanguinate_casts += 1
+    state.exsanguinate_x_total += x
+    state.stensian_prepared = False
+    log.append({"trigger": "exsanguinate_prepared", "x": x, "turn": state.turn})
+
+def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
+    state.turn = turn
+    state.land_played = False
+    state.mana_spent_this_turn = 0
+    state.vito_fanatic_stage_this_turn = 0
+    state.welcoming_vampire_trigger_pending = 0
+    state.caretakers_talent_trigger_pending = 0
+    state.creatures_died_this_turn = 0
+    state.tapped_lands_this_turn = 0
+    state.voldaren_estate_used_this_turn = False
+    state.fountainport_used_this_turn = False
+    state.pw_activated_this_turn = set()
+    log = []
+
+    do_upkeep(state, log)
+    state.draw(1)
+    do_urzas_saga_chapter_check(state, log)
+    try_agadeems_awakening(state, log)
+    play_land(state, log)
+    main_phase(state, log)
+    sac_loop(state, log)
+    try_fountainport(state, log)  # depois do sac_loop pra poder usar token sobrando no pool
+    try_voldaren_estate_blood(state, log)
+    cast_available_spells(state, log)  # mana extra de altares/Treasures do sac_loop, ver docstring de cast_available_spells
+    try_unlock_rooms(state, log)
+    try_emeritus_prepared_tutor(state, log)
+    try_stensian_prepared_exsanguinate(state, log)
+    welcoming_vampire_check(state, log)
+    caretakers_talent_check(state, log)
+    combat_step(state, log)
+    try_minas_tirith(state, log)
+    # 2a main phase (achado real 2026-08-27, usuario corrigiu de novo:
+    # "Os spells preparados que sao preparados no combate podem ser
+    # cast na second main phase, nao precisam esperar um turno") - o
+    # turno de Magic real tem main phase 1 -> combate -> main phase 2
+    # -> end step, TUDO no mesmo turno. Stensian Sanguinist fica
+    # prepared DURANTE o combate (ver combat_step acima) - errado supor
+    # que so' da pra usar no turno seguinte, quando na real ha uma 2a
+    # main phase disponivel na hora, no mesmo turno, com qualquer mana
+    # que ainda estiver sobrando. As chamadas de try_* la em cima (pre
+    # combate) continuam validas como fallback: "prepared" nao expira
+    # no fim do turno (o texto de lembrete nao diz isso), entao se nao
+    # sobrar mana nem aqui, o proximo turno ainda tenta de novo.
+    try_stensian_prepared_exsanguinate(state, log)
+    do_end_step(state, log)
+
+    game_log.append(log)
+
+# =========================================================
+# SIMULACAO
+# =========================================================
+
+def simulate_one(seed: int, turns: int = 8) -> Dict:
+    rng = random.Random(seed)
+    deck = parse_decklist(DECKLIST_TEXT)
+    assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
+    rng.shuffle(deck)
+    state = GameState(rng=rng, library=deck)
+
+    mulligans = 0
+    while True:
+        state.hand = []
+        state.draw(7)
+        if should_keep(state.hand) or mulligans >= 2:
+            break
+        mulligans += 1
+        state.library.extend(state.hand)
+        state.hand = []
+        rng.shuffle(state.library)
+    # Achado real 2026-09-18 (mesma convencao dos goldfishes manuais do
+    # usuario no Archidekt): 1o mulligan e' GRATIS -- so' a partir do 2o
+    # entra a punicao real do London Mulligan (bottom N-1 cartas).
+    mulligan_penalty = max(0, mulligans - 1)
+    if mulligan_penalty:
+        # London mulligan (CR 103.5): as cartas vao pro FUNDO do grimorio,
+        # sem embaralhar depois. CORRIGIDO 2026-09-24: havia um
+        # `rng.shuffle(state.library)` aqui que devolvia as cartas do fundo
+        # pra posicoes aleatorias (mesmo bug achado no Prismatic Bridge).
+        bottoms = choose_bottom(state.hand, mulligan_penalty)
+        for c in bottoms:
+            state.hand.remove(c)
+            state.library.append(c)
+
+    game_log = []
+    for t in range(1, turns + 1):
+        play_turn(state, t, game_log)
+
+    return {
+        "seed": seed,
+        "mulligans": mulligans,
+        "commander_cast_turn": state.commander_cast_turn,
+        "eminence_tokens_created": state.eminence_tokens_created,
+        "adanto_tokens_created": state.adanto_tokens_created,
+        "minas_tirith_draws": state.minas_tirith_draws,
+        "edgar_attack_counters_total": state.edgar_attack_counters_total,
+        "edgar_attack_turns": state.edgar_attack_turns,
+        "drain_total": state.drain_total,
+        "lifegain_total": state.lifegain_total,
+        "creatures_sacrificed_total": state.creatures_sacrificed_total,
+        "death_trigger_events": state.death_trigger_events,
+        "champion_of_dusk_draws": state.champion_of_dusk_draws,
+        "welcoming_vampire_draws": state.welcoming_vampire_draws,
+        "sanctum_seeker_drains": state.sanctum_seeker_drains,
+        "vito_fanatic_demons_created": state.vito_fanatic_demons_created,
+        "clavileno_triggers": state.clavileno_triggers,
+        "combo_active": state.combo_active,
+        "combo_active_turn": state.combo_active_turn,
+        "combo_enabler": state.combo_enabler,
+        "both_combo_pieces_turn": state.both_combo_pieces_turn,
+        "roaming_throne_in_play": state.has("Roaming Throne"),
+        "roaming_throne_doublings": state.roaming_throne_doublings,
+        "lands_played_total": state.lands_played_total,
+        "purphoros_damage_total": state.purphoros_damage_total,
+        "warleaders_call_damage_total": state.warleaders_call_damage_total,
+        "ophiomancer_snakes_created": state.ophiomancer_snakes_created,
+        "skullclamp_draws": state.skullclamp_draws,
+        "pitiless_plunderer_treasures": state.pitiless_plunderer_treasures,
+        "unholy_annex_draws": state.unholy_annex_draws,
+        "bastion_of_remembrance_tokens": state.bastion_of_remembrance_tokens,
+        "elenda_counters": state.elenda_counters,
+        "token_doubler_events": state.token_doubler_events,
+        "tutors_used_total": state.tutors_used_total,
+        "emeritus_of_woe_tutors": state.emeritus_of_woe_tutors,
+        "exsanguinate_casts": state.exsanguinate_casts,
+        "exsanguinate_x_total": state.exsanguinate_x_total,
+        "plumb_the_forbidden_draws": state.plumb_the_forbidden_draws,
+        "sevinnes_reclamation_returns": state.sevinnes_reclamation_returns,
+        "bloodline_bidding_returns": state.bloodline_bidding_returns,
+        "urzas_saga_tutors": state.urzas_saga_tutors,
+        "caretakers_talent_draws": state.caretakers_talent_draws,
+        "black_market_treasures": state.black_market_treasures,
+        "ramp_pieces_cast": state.ramp_pieces_cast,
+        "awakening_hall_unlocked": state.awakening_hall_unlocked,
+        "awakening_hall_reanimated": state.awakening_hall_reanimated,
+        "ritual_chamber_unlocked": state.ritual_chamber_unlocked,
+        "ritual_chamber_demons_created": state.ritual_chamber_demons_created,
+        "ojer_taq_in_play": state.has("Ojer Taq, Deepest Foundation // Temple of Civilization"),
+        "ojer_taq_transformed": state.ojer_taq_transformed,
+        "legion_landing_in_play": state.has("Legion's Landing // Adanto, the First Fort"),
+        "legion_landing_transformed": state.legion_landing_transformed,
+        "agadeems_awakening_cast": state.agadeems_awakening_cast,
+        "agadeems_awakening_reanimated": state.agadeems_awakening_reanimated,
+        "pw_activations_total": state.pw_activations_total,
+        "pw_tokens_created_total": state.pw_tokens_created_total,
+        "pw_free_creature_total": state.pw_free_creature_total,
+        "pw_deaths_total": state.pw_deaths_total,
+        "late_pw_activations_total": state.late_pw_activations_total,
+        "sorin_vampire_sacs_total": state.sorin_vampire_sacs_total,
+        "sorin_in_play": state.has("Sorin, Imperious Bloodlord"),
+        "elspeth_in_play": state.has("Elspeth, Storm Slayer"),
+        "caretakers_talent_in_play": state.has("Caretaker's Talent"),
+        "caretakers_talent_level_end": state.caretakers_talent_level,
+        "caretakers_talent_level2_copies": state.caretakers_talent_level2_copies,
+        # Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo):
+        "urzas_saga_construct_tokens": state.urzas_saga_construct_tokens,
+        "nullpriest_kicked_reanimations": state.nullpriest_kicked_reanimations,
+        "voldaren_estate_blood_tokens": state.voldaren_estate_blood_tokens,
+        "fountainport_treasures": state.fountainport_treasures,
+        "fountainport_fish": state.fountainport_fish,
+        "fountainport_draws": state.fountainport_draws,
+    }
+
+def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
+    import json as _json, statistics
+    results = [simulate_one(seed_base + i, turns) for i in range(n)]
+    with open(out_jsonl, "w") as f:
+        for r in results:
+            f.write(_json.dumps(r) + "\n")
+
+    cmd_turns = [r["commander_cast_turn"] for r in results if r["commander_cast_turn"] is not None]
+    never = n - len(cmd_turns)
+    combo_turns = [r["combo_active_turn"] for r in results if r["combo_active"]]
+
+    print(f"=== Edgar Markov Goldfish v1 - n={n}, turns={turns} ===")
+    print(f"Avg mulligans: {sum(r['mulligans'] for r in results)/n:.2f}")
+    if cmd_turns:
+        print(f"Turno medio de conjuracao do Edgar Markov: {statistics.mean(cmd_turns):.2f} | mediana: {statistics.median(cmd_turns)}")
+    print(f"Nunca conjurado em {turns} turnos: {100*never/n:.1f}%")
+    print(f"Avg tokens de Vampiro via Eminence: {sum(r['eminence_tokens_created'] for r in results)/n:.2f}")
+    print(f"Avg tokens de Vampiro via Adanto (agora despachado): {sum(r['adanto_tokens_created'] for r in results)/n:.2f}")
+    print(f"Avg compras via Minas Tirith (agora despachado): {sum(r['minas_tirith_draws'] for r in results)/n:.2f}")
+    print(f"Avg turnos em que Edgar atacou: {sum(r['edgar_attack_turns'] for r in results)/n:.2f}")
+    print(f"Avg contadores +1/+1 distribuidos (ataque do Edgar): {sum(r['edgar_attack_counters_total'] for r in results)/n:.2f}")
+    print(f"Avg drain_total (proxy de vida perdida pelo oponente): {sum(r['drain_total'] for r in results)/n:.2f}")
+    print(f"Avg lifegain_total (proxy de vida ganha): {sum(r['lifegain_total'] for r in results)/n:.2f}")
+    print(f"Avg criaturas sacrificadas: {sum(r['creatures_sacrificed_total'] for r in results)/n:.2f}")
+    print(f"Avg gatilhos de morte (death payoffs): {sum(r['death_trigger_events'] for r in results)/n:.2f}")
+    print(f"Avg compras via Champion of Dusk: {sum(r['champion_of_dusk_draws'] for r in results)/n:.2f}")
+    print(f"Avg compras via Welcoming Vampire: {sum(r['welcoming_vampire_draws'] for r in results)/n:.2f}")
+    print(f"Avg drains via Sanctum Seeker: {sum(r['sanctum_seeker_drains'] for r in results)/n:.2f}")
+    print(f"Avg Demons criados via Vito Fanatic (3o estagio): {sum(r['vito_fanatic_demons_created'] for r in results)/n:.2f}")
+    print(f"Avg gatilhos de Clavileno (sem efeito numerico extra modelado): {sum(r['clavileno_triggers'] for r in results)/n:.2f}")
+    print(f"Avg dano via Purphoros: {sum(r['purphoros_damage_total'] for r in results)/n:.2f}")
+    print(f"Avg dano via Warleader's Call: {sum(r['warleaders_call_damage_total'] for r in results)/n:.2f}")
+    print(f"Avg Snakes via Ophiomancer: {sum(r['ophiomancer_snakes_created'] for r in results)/n:.2f}")
+    print(f"Avg compras via Skullclamp: {sum(r['skullclamp_draws'] for r in results)/n:.2f}")
+    print(f"Avg Treasures via Pitiless Plunderer: {sum(r['pitiless_plunderer_treasures'] for r in results)/n:.2f}")
+    print(f"Avg compras via Unholy Annex (end step): {sum(r['unholy_annex_draws'] for r in results)/n:.2f}")
+    print(f"Avg tokens via Bastion of Remembrance ETB: {sum(r['bastion_of_remembrance_tokens'] for r in results)/n:.2f}")
+    print(f"Avg contadores da Elenda (passivo, sem payoff numerico alem do dado): {sum(r['elenda_counters'] for r in results)/n:.2f}")
+    print(f"Avg eventos de dobra de token (Anointed Procession/Mondrak): {sum(r['token_doubler_events'] for r in results)/n:.2f}")
+    print(f"Avg tutores usados no total (Vampiric Tutor/Diabolic Intent/Emeritus of Woe): {sum(r['tutors_used_total'] for r in results)/n:.2f}")
+    print(f"Avg tutores via Emeritus of Woe (Demonic Tutor prepared): {sum(r['emeritus_of_woe_tutors'] for r in results)/n:.2f}")
+    print(f"Avg Exsanguinate conjurados (Stensian Sanguinist prepared): {sum(r['exsanguinate_casts'] for r in results)/n:.2f}")
+    print(f"Avg X total do Exsanguinate (drain/gain): {sum(r['exsanguinate_x_total'] for r in results)/n:.2f}")
+    print(f"Avg compras via Plumb the Forbidden: {sum(r['plumb_the_forbidden_draws'] for r in results)/n:.2f}")
+    print(f"Avg reanimacoes via Sevinne's Reclamation: {sum(r['sevinnes_reclamation_returns'] for r in results)/n:.2f}")
+    print(f"Avg reanimacoes via Bloodline Bidding: {sum(r['bloodline_bidding_returns'] for r in results)/n:.2f}")
+    print(f"Avg tutores via Urza's Saga (capitulo III): {sum(r['urzas_saga_tutors'] for r in results)/n:.2f}")
+    print()
+    print("--- Achados 2026-09-01 (leitura linha-a-linha completa do oraculo, pedida pelo usuario) ---")
+    print(f"Avg Construct tokens via Urza's Saga (capitulo II): {sum(r['urzas_saga_construct_tokens'] for r in results)/n:.2f}")
+    print(f"Avg reanimacoes via Nullpriest of Oblivion (kicked): {sum(r['nullpriest_kicked_reanimations'] for r in results)/n:.2f}")
+    print(f"Avg Blood tokens via Voldaren Estate: {sum(r['voldaren_estate_blood_tokens'] for r in results)/n:.2f}")
+    print(f"Avg Treasures via Fountainport: {sum(r['fountainport_treasures'] for r in results)/n:.2f}")
+    print(f"Avg Fish tokens via Fountainport: {sum(r['fountainport_fish'] for r in results)/n:.2f}")
+    print(f"Avg compras via Fountainport (sac token): {sum(r['fountainport_draws'] for r in results)/n:.2f}")
+    print(f"Avg compras via Caretaker's Talent (base, token ETB): {sum(r['caretakers_talent_draws'] for r in results)/n:.2f}")
+    print(f"Avg Treasures via Black Market Connections: {sum(r['black_market_treasures'] for r in results)/n:.2f}")
+    ah_unlocked = sum(1 for r in results if r["awakening_hall_unlocked"])
+    if ah_unlocked:
+        print(f"Awakening Hall destrancada em {100*ah_unlocked/n:.1f}% dos jogos, "
+              f"avg criaturas reanimadas: {sum(r['awakening_hall_reanimated'] for r in results)/n:.2f}")
+    rc_unlocked = sum(1 for r in results if r["ritual_chamber_unlocked"])
+    if rc_unlocked:
+        print(f"Ritual Chamber destrancada em {100*rc_unlocked/n:.1f}% dos jogos "
+              f"(cria o Demon que habilita o bonus do proprio Unholy Annex)")
+
+    ojer_taq_in_play = sum(1 for r in results if r["ojer_taq_in_play"])
+    if ojer_taq_in_play:
+        ojer_taq_transformed = sum(1 for r in results if r["ojer_taq_transformed"])
+        print(f"Ojer Taq, Deepest Foundation conjurada (como criatura 6/6, {{4}}{{W}}{{W}}) em "
+              f"{100*ojer_taq_in_play/n:.1f}% dos jogos, transformada (morreu -> Temple of Civilization) "
+              f"em {100*ojer_taq_transformed/n:.1f}%")
+    legion_landing_in_play = sum(1 for r in results if r["legion_landing_in_play"])
+    if legion_landing_in_play:
+        legion_landing_transformed = sum(1 for r in results if r["legion_landing_transformed"])
+        print(f"Legion's Landing conjurada (como encantamento {{W}}, cria 1 Vampire Token) em "
+              f"{100*legion_landing_in_play/n:.1f}% dos jogos, transformada em Adanto (atacou com 3+) em "
+              f"{100*legion_landing_transformed/n:.1f}%")
+    aa_cast = sum(1 for r in results if r["agadeems_awakening_cast"])
+    if aa_cast:
+        print(f"Agadeem's Awakening conjurada como Sorcery (em vez de land) em {100*aa_cast/n:.1f}% dos "
+              f"jogos, avg criaturas reanimadas quando conjurada: "
+              f"{sum(r['agadeems_awakening_reanimated'] for r in results)/max(aa_cast,1):.2f}")
+
+    # Achado real 2026-08-28 (usuario: "Preciso que os counters de lealdade
+    # e ativacoes de planeswalker sejam sempre contabilizados... para tudo,
+    # sempre tambem!") - Sorin/Elspeth estavam deferidas desde a Correcao
+    # #1 por essa razao, revisitado aqui.
+    sorin_in_play = sum(1 for r in results if r["sorin_in_play"])
+    elspeth_in_play = sum(1 for r in results if r["elspeth_in_play"])
+    if sorin_in_play or elspeth_in_play:
+        print()
+        print(f"--- Planeswalkers (lealdade + ativacoes reais, regra nova) ---")
+        print(f"Sorin, Imperious Bloodlord em campo em {100*sorin_in_play/n:.1f}% dos jogos")
+        print(f"Elspeth, Storm Slayer em campo em {100*elspeth_in_play/n:.1f}% dos jogos")
+        print(f"Avg ativacoes de habilidade de planeswalker por partida: {sum(r['pw_activations_total'] for r in results)/n:.2f}")
+        print(f"Avg tokens criados via Elspeth (+1, sujeito ao proprio dobrador dela): {sum(r['pw_tokens_created_total'] for r in results)/n:.2f}")
+        print(f"Avg Vampiros postos em campo de graca via Sorin (-3): {sum(r['pw_free_creature_total'] for r in results)/n:.2f}")
+        print(f"Avg mortes de planeswalker (lealdade a 0): {sum(r['pw_deaths_total'] for r in results)/n:.2f}")
+
+    ct_in_play = sum(1 for r in results if r["caretakers_talent_in_play"])
+    if ct_in_play:
+        ct_lvl3 = sum(1 for r in results if r["caretakers_talent_level_end"] >= 3)
+        print(f"Caretaker's Talent em campo em {100*ct_in_play/n:.1f}% dos jogos, alcancou nivel 3 "
+              f"(tokens criatura +2/+2, afeta o limiar do Welcoming Vampire) em {100*ct_lvl3/n:.1f}%, "
+              f"avg copias de token via nivel 2: {sum(r['caretakers_talent_level2_copies'] for r in results)/n:.2f}")
+    print()
+    print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
+    print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")
+    if combo_turns:
+        print(f"Turno medio em que o combo liga: {statistics.mean(combo_turns):.2f} | mediana: {statistics.median(combo_turns)}")
+    enablers = [r["combo_enabler"] for r in results if r["combo_active"]]
+    if enablers:
+        from collections import Counter
+        print(f"Habilitador do combo: {dict(Counter(enablers))}")
+    print()
+    rt_in_play = sum(1 for r in results if r["roaming_throne_in_play"])
+    print(f"Roaming Throne em campo em {100*rt_in_play/n:.1f}% dos jogos (tipo escolhido: Vampire)")
+    print(f"Avg gatilhos de Vampiro dobrados por partida: {sum(r['roaming_throne_doublings'] for r in results)/n:.2f}")
+    print()
+
+    # Achado real 2026-08-28 (auditoria de checklist - metricas basicas
+    # obrigatorias em TODO simulador: ramp, draw, interaction, recursion,
+    # finisher/lethality - "recursion" adicionada por reforco explicito do
+    # usuario apos a Correcao #10: "acrescente a variavel recursao e
+    # interacao a lista de variaveis pra avaliar/medir/registrar em todos
+    # os decks"). As metricas especificas de carta acima ja cobrem quase
+    # tudo isso, mas nunca estavam resumidas nas categorias-base
+    # explicitamente - agregando aqui pra deixar auditavel de relance, sem
+    # precisar somar manualmente.
+    print("--- Metricas basicas (checklist obrigatoria) ---")
+    print(f"RAMP: avg pecas de rampa conjuradas (Sol Ring/Arcane Signet/Ashnod's Altar/Phyrexian Altar): "
+          f"{sum(r['ramp_pieces_cast'] for r in results)/n:.2f}")
+    total_draw = sum(
+        r["champion_of_dusk_draws"] + r["welcoming_vampire_draws"] + r["skullclamp_draws"]
+        + r["unholy_annex_draws"] + r["caretakers_talent_draws"] + r["minas_tirith_draws"]
+        + r["plumb_the_forbidden_draws"]
+        for r in results)
+    print(f"DRAW: avg compras extras totais (soma de todos os motores - Champion of Dusk, Welcoming Vampire, "
+          f"Skullclamp, Unholy Annex, Caretaker's Talent, Minas Tirith, Plumb the Forbidden): {total_draw/n:.2f}")
+    print(f"INTERACTION: avg remocao conjurada de verdade: 0.00 (N/A por arquitetura - este e' um goldfish "
+          f"SOLO sem oponente real pra mirar. 6 spells de remocao reais na lista (Anguished Unmaking, Get "
+          f"Lost, Path to Exile, Swords to Plowshares, Vindicate, Rite of Oblivion) ficam em "
+          f"EXCLUDE_BLIND_CAST de proposito - um piloto real segura remocao ate ter alvo, nunca conjura as "
+          f"cegas. So Goblin Bombardment, sac outlet nao removal de fato neste motor, e' castavel; 0 e' o "
+          f"resultado CORRETO, nao um bug.)")
+    total_recursion = sum(
+        r["sevinnes_reclamation_returns"] + r["bloodline_bidding_returns"] + r["awakening_hall_reanimated"]
+        + r["agadeems_awakening_reanimated"]
+        for r in results)
+    print(f"RECURSION: avg cartas recuperadas do cemiterio pro campo (soma de Sevinne's Reclamation, "
+          f"Bloodline Bidding, Awakening Hall, Agadeem's Awakening): {total_recursion/n:.2f}. Tutores de "
+          f"biblioteca (Vampiric Tutor/Diabolic Intent/Emeritus of Woe/Urza's Saga) NAO contam aqui - buscam "
+          f"da biblioteca, nao do cemiterio, categoria diferente por definicao.")
+    total_finisher_damage = sum(
+        r["drain_total"] + r["purphoros_damage_total"] + r["warleaders_call_damage_total"]
+        + r["exsanguinate_x_total"]
+        for r in results)
+    print(f"FINISHER/LETHALITY: combo infinito (Exquisite Blood/Bloodthirsty Conqueror + Vito Thorn/Enduring "
+          f"Tenacity) monta e liga em {100*len(combo_turns)/n:.1f}% dos jogos"
+          + (f", turno medio {statistics.mean(combo_turns):.2f}" if combo_turns else "")
+          + f". Fora do combo, avg 'dano' agregado (drain_total + Purphoros + Warleader's Call + "
+          f"Exsanguinate X) por partida: {total_finisher_damage/n:.2f}.")
+    print()
+    print(f"Logs salvos em: {out_jsonl}")
+    return results
+
+# =========================================================
+# MODO OPCIONAL DE RESILIENCIA (interacao de oponente)
+# =========================================================
+# Porte do modo de resiliencia ja' implementado e validado no Megatron/
+# Ur-Dragon/Hei Bai (usuario, 2026-09-20: "Agora implementa essas
+# mudanças no Markov"). Aditivo e OPCIONAL -- nunca chamado por
+# `simulate_one`/`run_batch` (modo padrao), gated inteiramente por
+# `state.interaction_rng` (None em modo padrao, todo `try_smart_
+# opponent_*` abaixo retorna cedo sem nenhum efeito colateral nesse
+# caso). Mesmas 7 categorias e' o mesmo design final ja' validado nos
+# outros 3 decks (incluindo as 3 rodadas de correcao de orquestracao de
+# turno: wipe/ataque mutuamente exclusivos por turno de oponente, wipe
+# simetrico suprimindo ataque na rodada inteira exceto haste, e o gate
+# de "atencao do oponente" pra nao assumir que 100% da mesa mira em mim
+# todo turno) -- implementado aqui direto no design final, sem precisar
+# reproduzir o historico de 3 rodadas que os outros decks passaram.
+#
+# Diferencas estruturais REAIS deste deck vs. os outros 3 (levadas em
+# conta no design abaixo, nao simplificacoes por preguica):
+# - Nenhuma criatura NOMEADA jamais morria neste motor antes desta
+#   rodada (so' sacrificio de TOKEN via sac_loop) -- `remove_permanent`
+#   acima e' o 1o ponto real de destroy/wipe verdadeiro do arquivo.
+# - Combate real (bloqueadores) NAO e' modelado (mesma convencao ja'
+#   documentada no topo do arquivo, "Edgar ataca todo turno... sem
+#   resposta do oponente") -- ataque de oponente aqui tambem conecta
+#   sem bloqueio, mesmo padrao ja usado no Ur-Dragon/Hei Bai.
+# - Este arquivo nunca rastreou vida PROPRIA (so' contadores agregados
+#   de drain/lifegain do oponente) -- `state.life` e' NOVO, existe so'
+#   como alvo do ataque de oponente do modo de resiliencia.
+
+NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), mesma convencao ja' documentada no Megatron/Ur-Dragon/Hei Bai
+
+INTERACTION_SETUP_TURNS = 2
+# Turnos 1-2 sao sempre setup, sem chance de reacao nenhuma -- o
+# oponente ainda nao tem motivo/mana pra reagir.
+
+def interaction_chance(state: GameState) -> float:
+    """Formula compartilhada de 'chance do oponente reagir esse turno' --
+    identica ao Megatron/Ur-Dragon/Hei Bai: escala com o impacto do meu
+    proprio board (permanentes nao-terreno em campo)."""
+    board_impact = sum(1 for n in state.battlefield if not is_land(n))
+    return min(0.10 + 0.03 * board_impact, 0.75)
+
+OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
+# Gate de "esse oponente esta' de olho em mim esse turno" (achado real
+# do usuario nos outros 3 decks, 2026-09-20: "se sempre for 3 contra 1,
+# ai' nao consigo fazer nada, nunca!") -- por simetria, ha' 3 alvos
+# possiveis pra atencao de qualquer oponente (eu e os outros 2 que este
+# simulador nao modela), entao a chance BASE de que um turno de
+# oponente qualquer seja sobre MIM e' 1/NUM_OPPONENTS, antes de
+# qualquer ajuste por ameaca de board (que ja' fica dentro de
+# `interaction_chance()`). Rolado 1x no INICIO de `try_smart_opponent_
+# turn`, antes de qualquer categoria.
+
+POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
+# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
+# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
+# round`), TODOS os turnos de oponente restantes na mesma rodada
+# tambem ficam sem criaturas de verdade pra atacar -- exceto por haste
+# (fisicamente possivel, Regra #1 do CLAUDE.md: so' impossibilidade
+# estrutural justifica nao modelar, nunca zerar por completo).
+
+BOARD_WIPE_CHANCE_FACTOR = 0.4
+GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
+GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
+COUNTERSPELL_CHANCE_FACTOR = 0.5
+# Mesmos fatores redutores do Megatron/Ur-Dragon/Hei Bai sobre a MESMA
+# `interaction_chance()` compartilhada -- sweeper/mass-exile sao mais
+# raros numa lista de 99 (0.4), counterspell/exilio-de-carta-unica sao
+# intermediarios (0.5), ataque/remocao/discard usam a chance cheia.
+
+INTERACTION_ENGINE_PRIORITY = [
+    "Roaming Throne",
+    "Pitiless Plunderer",
+    "Ashnod's Altar",
+    "Sanctum Seeker",
+    "Skullclamp",
+    "Black Market Connections",
+    "Caretaker's Talent",
+    "Zulaport Cutthroat",
+    "Sorin, Imperious Bloodlord",
+    "Vito, Fanatic of Aclazotz",
+]
+# Lista curada por prioridade (a mais critica primeiro) -- so' cartas
+# que sao motor RECORRENTE de valor (dobra gatilho/gera Treasure todo
+# turno/dreno por ataque ou morte/engine de draw), nao corpos grandes
+# isolados. O proprio Edgar Markov fica DE FORA de proposito -- ja' tem
+# categoria dedicada (`try_smart_opponent_counter`, mira o CAST dele
+# especificamente) e remocao nao o mata de verdade mesmo (vai pra zona
+# de comando via `remove_permanent`), entao um oponente esperto prefere
+# gastar a remocao pontual numa peca irrecuperavel.
+
+OPPONENT_ATTACKER_PROFILES = [
+    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
+    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
+    ("Elemental Token", 3),
+]
+# Mesmos perfis genericos ja' validados no Megatron/Ur-Dragon/Hei Bai --
+# sem toughness, este arquivo nao modela bloqueio (ver nota estrutural
+# no topo da secao). Todo ataque conecta.
+
+def try_smart_opponent_removal(state: GameState, log: List[Dict]) -> Optional[str]:
+    """Remocao 'inteligente' -- mira sempre a peca-motor de maior
+    prioridade presente em campo (`INTERACTION_ENGINE_PRIORITY`), nunca
+    aleatorio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    present = [n for n in INTERACTION_ENGINE_PRIORITY if n in state.battlefield]
+    if not present:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = present[0]
+    remove_permanent(state, log, target, source="opponent_removal")
+    state.smart_removals_total += 1
+    state.smart_removal_log.append((state.turn, target))
+    return target
+
+def try_smart_opponent_attack(state: GameState, log: List[Dict]) -> Optional[str]:
+    """Ataque de oponente -- SEM bloqueio (limitacao estrutural ja'
+    documentada no topo do arquivo, "combate real nao modelado"). Sempre
+    conecta em `state.life`.
+
+    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada,
+    de qualquer oponente, incluindo este mesmo turno) a chance cai pra
+    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
+    haste conjurado DEPOIS do wipe."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
+    if state.interaction_rng.random() >= chance:
+        return None
+    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
+    state.life -= power
+    state.smart_attacks_taken_total += 1
+    state.smart_attack_log.append((state.turn, name))
+    return name
+
+def try_smart_opponent_discard(state: GameState, log: List[Dict]) -> Optional[str]:
+    """Discard aleatorio -- mesma logica do Megatron/Ur-Dragon/Hei Bai
+    (alvo puramente ao acaso na mao, sem filtro nenhum)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if not state.hand:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = state.interaction_rng.choice(state.hand)
+    state.hand.remove(target)
+    state.graveyard.append(target)
+    state.smart_discards_total += 1
+    state.smart_discard_log.append((state.turn, target))
+    return target
+
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+# Pesos relativos de cada TIPO de sweeper (criatura/artefato/
+# encantamento) -- nao sao 3 chances INDEPENDENTES (achado real do
+# usuario 2026-09-20, mesma correcao feita primeiro no Megatron: "Vandalblast,
+# Farewell, Austere Command, etc" tem que existir, MAS "Obviamente tem
+# que ter uma alternancia de remocoes, aleatoria, ate pq wipes de
+# criaturas sao muito mais comuns que remocao de artefatos e
+# encantamentos"). Um oponente real, num turno so', conjura NO MAXIMO 1
+# sweeper -- nunca "destroy all creatures" E "destroy all artifacts" no
+# mesmo turno. `try_smart_opponent_wipe` rola 1x se ALGUM wipe acontece
+# (chance = soma dos 3 pesos) e SO' DEPOIS escolhe qual tipo, com
+# escolha ponderada pelos mesmos 3 fatores. Wipe de encantamento e'
+# mais relevante neste deck do que na maioria (Caretaker's Talent,
+# Black Market Connections, Anointed Procession, Smothering Tithe, The
+# Meathook Massacre sao encantamentos reais e motores de valor de
+# verdade).
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+
+def try_smart_opponent_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
+    """Board wipe ('destroy all creatures'/'destroy all artifacts'/
+    'destroy all enchantments') -- destroi TODOS os meus permanentes do
+    tipo escolhido de uma vez via `remove_permanent` (que ja' trata
+    comandante->zona de comando, token->deixa de existir, gatilhos reais
+    de morte pra cada um). Edgar Markov nunca e' artefato/encantamento
+    (Legendary Creature -- Vampire Knight, confirmado via Scryfall),
+    entao nunca e' alvo dos 2 tipos novos.
+
+    Design de 2 passos (nao 3 rolagens independentes -- ver comentario
+    de `WIPE_TYPE_WEIGHTS` acima): 1) rola 1x se ALGUM wipe acontece
+    esse turno de oponente, chance = `interaction_chance() *
+    TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso disparar, escolhe qual
+    TIPO de sweeper via escolha ponderada (`state.interaction_rng.
+    choices`) restrita aos tipos que tem pelo menos 1 alvo legal em
+    campo. Se o tipo escolhido nao for 'creature' mas algum alvo
+    destruido TAMBEM for uma criatura de verdade (artifact/enchantment
+    creature), `state.wiped_this_round` e' setado igual -- nenhuma
+    carta desta lista e' hibrida hoje (`is_creature`/`is_artifact`/
+    `is_enchantment` sao mutuamente exclusivas aqui, `Card.type` e' uma
+    string unica sem hibrido), mas a checagem fica por robustez -- uma
+    troca futura de lista nao pode silenciosamente esquecer de suprimir
+    ataque por causa disso. Sem nenhum alvo legal de tipo nenhum,
+    retorna None sem fazer nada."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
+        return None
+    candidates = {
+        "creature": [n for n in state.battlefield if is_creature(n)],
+        "artifact": [n for n in state.battlefield if is_artifact(n)],
+        "enchantment": [n for n in state.battlefield if is_enchantment(n)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if not available:
+        return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = any(is_creature(n) for n in targets)
+    for n in targets:
+        remove_permanent(state, log, n, source=f"opponent_{wipe_type}_wipe")
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, targets))
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, targets))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, targets))
+    if hit_creature:
+        state.wiped_this_round = True
+    return targets
+
+def try_smart_opponent_graveyard_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
+    """Graveyard hate, modelo MASS EXILE (Bojuka Bog/Soul-Guide
+    Lantern-style) -- dispara NO MAXIMO 1x por partida inteira
+    (`state.graveyard_wipe_used`)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.graveyard_wipe_used or not state.graveyard:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
+        return None
+    exiled = state.graveyard[:]
+    state.graveyard.clear()
+    state.graveyard_wipe_used = True
+    state.smart_graveyard_wipes_total += 1
+    state.smart_graveyard_wipe_log.append((state.turn, exiled))
+    return exiled
+
+def try_smart_opponent_graveyard_snipe(state: GameState, log: List[Dict]) -> Optional[str]:
+    """Graveyard hate, modelo EXILIO DE CARTA UNICA (Scavenging
+    Ooze/Cease-style) -- repetivel todo turno. Alvo SMART: maior MV
+    entre criatura no cemiterio -- mesmo criterio que Agadeem's
+    Awakening/Sevinne's Reclamation/Bloodline Bidding ja usam pra
+    escolher alvo real de recursao."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    candidates = [c for c in state.graveyard if is_creature(c)]
+    if not candidates:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
+        return None
+    target = max(candidates, key=lambda n: C(n).mv)
+    state.graveyard.remove(target)
+    state.smart_graveyard_snipes_total += 1
+    state.smart_graveyard_snipe_log.append((state.turn, target))
+    return target
+
+def try_smart_opponent_counter(state: GameState) -> bool:
+    """Counterspell -- so' mira a conjuracao do proprio Edgar Markov
+    (mesma logica do Megatron/Ur-Dragon/Hei Bai: o motor inteiro do
+    deck depende do comandante resolver e atacar). Chamada de dentro de
+    `main_phase()`, nao do loop de `simulate_one_with_interaction` --
+    so' faz sentido no exato momento do cast, dentro do MEU turno."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
+        return False
+    state.smart_counters_total += 1
+    state.smart_counter_log.append(state.turn)
+    return True
+
+def try_smart_opponent_turn(state: GameState, log: List[Dict]):
+    """Simula O TURNO DE UM oponente dentro da rodada entre os meus
+    turnos (mesmo design final ja' validado no Megatron/Ur-Dragon/Hei
+    Bai, Regra #6 do CLAUDE.md: bug de orquestracao de turno que
+    auditoria carta-a-carta nao pega). Chamada `NUM_OPPONENTS` vezes por
+    rodada -- um wipe de um oponente ANTERIOR na rodada continua
+    afetando corretamente o ataque de um oponente POSTERIOR na MESMA
+    rodada (chamadas em sequencia, mesmo `state`).
+
+    Gate de atencao: antes de rolar QUALQUER categoria, este turno de
+    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE` -- representa
+    a chance de que ESTE oponente especifico esteja de fato de olho em
+    mim neste turno, em vez de ocupado com o proprio board/outro
+    oponente. Wipe e ataque nao precisam de exclusao mutua manual aqui:
+    `try_smart_opponent_attack` ja' se auto-regula via `state.wiped_
+    this_round` (setado por `try_smart_opponent_wipe`, que roda antes,
+    dentro desta mesma chamada)."""
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
+    try_smart_opponent_wipe(state, log)
+    try_smart_opponent_attack(state, log)
+    try_smart_opponent_graveyard_wipe(state, log)
+    try_smart_opponent_graveyard_snipe(state, log)
+    try_smart_opponent_removal(state, log)
+    try_smart_opponent_discard(state, log)
+
+def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
+    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
+    de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
+    rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
+    neste loop -- ver `try_smart_opponent_counter`, chamada de dentro de
+    `main_phase` no exato momento do cast do comandante.
+
+    Mulligan duplicado (nao extraido pra helper compartilhado) de
+    proposito -- este arquivo nunca teve uma funcao `mulligan()`
+    separada (diferente do Megatron/Ur-Dragon/Hei Bai), e extrair uma
+    agora tocaria `simulate_one` (modo padrao) sem necessidade real; mais
+    seguro duplicar as ~15 linhas aqui do que arriscar uma regressao
+    numa funcao que precisa ficar bit-a-bit identica.
+
+    NUNCA chamado por `run_batch`/`simulate_one` padrao (nem o loop
+    aqui, nem o counter dentro de `main_phase` -- ambos ficam inertes
+    sem `interaction_rng`). Retorna o `GameState` bruto (nao um dict
+    resumido como `simulate_one`) -- mesma convencao do Megatron/
+    Ur-Dragon/Hei Bai, pra inspecao detalhada das metricas de
+    resiliencia."""
+    rng = random.Random(seed)
+    deck = parse_decklist(DECKLIST_TEXT)
+    assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
+    rng.shuffle(deck)
+    state = GameState(rng=rng, library=deck, interaction_rng=random.Random(seed + 999_999))
+
+    mulligans = 0
+    while True:
+        state.hand = []
+        state.draw(7)
+        if should_keep(state.hand) or mulligans >= 2:
+            break
+        mulligans += 1
+        state.library.extend(state.hand)
+        state.hand = []
+        rng.shuffle(state.library)
+    mulligan_penalty = max(0, mulligans - 1)
+    if mulligan_penalty:
+        # London mulligan (CR 103.5): as cartas vao pro FUNDO do grimorio,
+        # sem embaralhar depois. CORRIGIDO 2026-09-24: havia um
+        # `rng.shuffle(state.library)` aqui que devolvia as cartas do fundo
+        # pra posicoes aleatorias (mesmo bug achado no Prismatic Bridge).
+        bottoms = choose_bottom(state.hand, mulligan_penalty)
+        for c in bottoms:
+            state.hand.remove(c)
+            state.library.append(c)
+
+    interaction_log: List[Dict] = []
+    game_log = []
+    for t in range(1, turns + 1):
+        play_turn(state, t, game_log)
+        state.wiped_this_round = False
+        for _ in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state, interaction_log)
+    return state
+
+def run_batch_with_interaction(n=2000, turns=8, seed_base=6000000):
+    """Batch do modo de resiliencia -- reporta so' as metricas
+    relevantes pra 'o motor aguenta perder a peca central?', nao
+    duplica o relatorio inteiro do `run_batch` padrao."""
+    states = [simulate_one_with_interaction(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"=== Edgar Markov Goldfish v1 - MODO DE RESILIENCIA - n={n}, turns={turns} ===")
+    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
+    print(f"Avg ataques de oponente sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
+    print(f"Avg descartes forcados sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
+    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    print(f"Avg enchantment wipes sofridos: {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
+    print(f"Board wipe sofrido em {100*sum(1 for s in states if s.smart_wipes_total > 0)/n:.1f}% das partidas")
+    print(f"Avg graveyard wipes (mass exile) sofridos: {avg([s.smart_graveyard_wipes_total for s in states]):.2f}")
+    print(f"Avg graveyard snipes (exilio unico) sofridos: {avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
+    print(f"Avg counterspells sofridos (cast do comandante): {avg([s.smart_counters_total for s in states]):.2f}")
+    print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
+    print(f"Avg criaturas destruidas por oponente (fora sacrificio proprio): {avg([s.creatures_destroyed_by_opponent_total for s in states]):.2f}")
+    never_cast = sum(1 for s in states if s.commander_cast_count == 0)
+    print(f"Edgar Markov nunca conjurado em {turns} turnos: {100*never_cast/n:.1f}%")
+    recast = sum(1 for s in states if s.commander_cast_count >= 2)
+    print(f"Edgar Markov recastado ao menos 1x (removido e voltou): {100*recast/n:.1f}%")
+    return states
+
+if __name__ == "__main__":
+    run_batch(n=2000, turns=8)
+

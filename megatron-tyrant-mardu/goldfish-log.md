@@ -1,6 +1,542 @@
 # Goldfish Log — Megatron, Tyrant
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: London Mulligan e fetch lands (2026-10-03, 2ª rodada):** [`resultados-ab/2026-10-03-mulligan-e-fetches/LEIAME.md`](resultados-ab/2026-10-03-mulligan-e-fetches/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Myriad Landscape e terreno tapped em T1/T2 (2026-10-03):** [`resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md`](resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+> **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+> **Dados brutos e como reproduzir as tabelas da seção Power Depot (2026-10-03):** [`resultados-ab/2026-10-03-power-depot/LEIAME.md`](resultados-ab/2026-10-03-power-depot/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+
+---
+
+## Correção do simulador: London Mulligan e fetch lands — 2026-10-03 (2ª rodada)
+
+**Pedido:** *"Quer que eu corrija o mulligan ou modele as fetches? Os dois mudam a base de novo"* — *"Quero sim, sempre!"* (os dois achados laterais da rodada do Myriad Landscape).
+**Veredito:** os dois estão corrigidos em `megatron_goldfish_v1.py`, cada um atrás da sua chave. Efeito no goldfish (N=10.000 pareado, sementes 3.000.000+i), os dois juntos: comandante até o T3 **35,5% → 36,7%** (+1,22 ±0,43pp), até o T4 **81,3% → 82,8%** (+1,51 ±0,52pp), "nunca em T8" 3,8% → ~3,1% (−0,68 ±0,28pp), win +0,72 ±0,53pp (dentro do ruído). **O efeito de cada correção sozinha é maior e de sinais opostos:** o mulligan com escolha **sobe** o T4 em **+2,65pp**; as fetches **descem** em **−1,35pp**. **Atenção:** a base do simulador mudou de novo; números absolutos de rodadas anteriores (Power Depot, Inevitable Defeat, Myriad Landscape) são do simulador antigo; comparar números absolutos entre rodadas, não.
+
+### O que mudou no código
+1. **London Mulligan** (`MULLIGAN_BOTTOM_MODE`). Dois erros juntos: as cartas devolvidas iam para o **topo** da biblioteca (`library.insert(0, …)`; a compra tira do índice 0), e a escolhida era a de **menor** custo (terreno primeiro). Agora o jogador escolhe e elas vão para o **fundo**: só devolve terreno quando sobram mais de 4 (o de menos cores; o que entra tapped no empate); fora isso, a carta não-terreno de maior custo, protegendo Sol Ring, Arcane Signet, Fellwar Stone e Mind Stone.
+2. **Fetch lands** (`FETCHLANDS_ENABLED`). Oráculo lido ao vivo. *Evolving Wilds / Terramorphic Expanse:* entram **untapped**; "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle". *Rocky Tar Pit:* "enters tapped. {T}, Sacrifice this land: Search your library for a **Swamp or Mountain card**, put it onto the battlefield, then shuffle": o alvo é qualquer carta com o **tipo**, então Badlands, Scrubland, Plateau, Smoldering Marsh e Sunlit Marsh também servem (conferido contra o `type_line` do Scryfall); entra untapped, salvo se o próprio alvo entra tapped. Nenhuma tem habilidade de mana. Até aqui eram "terreno tapped que vira fonte de W, B e R **ao mesmo tempo**" (o Rocky: B e R).
+3. **Terreno tapped por instância.** O campo antigo `tapped_land_this_turn` guarda um **nome** e excluiria todas as cópias de um básico; os básicos buscados e os do Myriad Landscape agora entram numa lista por instância (`extra_tapped_lands_this_turn`).
+
+### Medição (apoio; N=10.000 sementes 3.000.000+i pareadas; base = simulador antes, commit 3dae6ba)
+Base: cmd ≤T3 35,5% · ≤T4 81,3% · ≤T5 89,1% · nunca 3,8% · win 85,1% · dano 86,72 · mana de flip 73,01 · mana no 1º main phase T2/T3/T4 = 2,032 / 3,401 / 4,316. Diferença pareada (variante − base), IC95%:
+
+| variante | cmd ≤T3 (pp) | cmd ≤T4 (pp) | cmd ≤T5 (pp) | nunca (pp) | win (pp) | dano | mana T2 / T3 / T4 |
+|---|---|---|---|---|---|---|---|
+| só a posição (menor MV, mas no fundo) | −1,46 ±0,35 | **−3,74 ±0,44** | −3,98 ±0,42 | +2,47 ±0,33 | −3,47 ±0,43 | −2,58 ±0,43 | −0,05 / −0,11 / −0,13 |
+| só o mulligan com escolha | +1,80 ±0,29 | **+2,65 ±0,33** | +1,83 ±0,27 | −0,93 ±0,19 | +1,93 ±0,33 | +0,80 ±0,38 | +0,03 / +0,05 / +0,07 |
+| só as fetches | −0,65 ±0,35 | **−1,35 ±0,44** | −1,29 ±0,35 | +0,33 ±0,23 | −1,33 ±0,46 | −0,48 ±0,77 | −0,01 / 0,00 / 0,00 |
+| **as duas (o que ficou)** | **+1,22 ±0,43** | **+1,51 ±0,52** | +0,74 ±0,42 | −0,68 ±0,28 | +0,72 ±0,53 | +0,71 ±0,84 | +0,02 / +0,05 / +0,07 |
+
+**Leitura (medido):** (a) corrigir só a posição **piora** o T4 em 3,74pp: o bug do topo escondia a escolha ruim (a carta de menor custo, quase sempre terreno, voltava na compra seguinte); sem escolher bem, mandar para o fundo deixa a mão sem terrenos (média de terrenos numa mão de 6 cartas com 2 mulligans: **1,44** no código antigo, **2,35** com a escolha). A correção só vale as duas partes juntas. (b) As fetches **pioram** o T4 em 1,35pp **sem mudar a mana** (T2–T4 ≈ 0): a perda é de **cor**. **Raciocínio (não medido separadamente):** o modelo antigo contava cada Evolving Wilds/Terramorphic Expanse como fonte de W, B **e** R, e a carta real busca **um** básico. (c) O Rocky Tar Pit buscou um dual com tipo em 0,17 partidas e um terreno untapped em 0,17: mais fixação que o "B/R fixo" de antes, mas não compensa o resto. Lote de 2.000 e modo resiliência (2.000) mostram a mesma direção.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-03-mulligan-e-fetches/`
+- **Smoke:** 99 cartas, 84 distintas, 0 desconhecidas, 0 duplicadas não básicas, 34 terrenos.
+- **Bit-identidade com `legacy` + fetch desligado:** 20.000/20.000 partidas idênticas ao commit 3dae6ba no modo padrão e 20.000/20.000 na resiliência. **O teste achou um erro meu da rodada do Myriad:** na 1ª versão, 1 partida em 20.000 divergia, porque os 2 básicos que o Myriad Landscape busca (que entram **tapped**) contavam como mana do próprio turno para efeitos do end step (pagavam uma cópia a mais da Ultron). Corrigido: agora entram na lista de terrenos tapped.
+- **Regressão:** 140.000 partidas (7 configurações/modos × 20.000), **0 exceções**, 0 violações de conservação dos 13 terrenos nomeados, 0 fetch sobrando em campo ao fim do turno quando havia alvo, 0 `total_mana` negativo.
+- **Testes dirigidos:** 33/33, incluindo `play_turn` completo (o Rocky Tar Pit é sacrificado **antes** do 1º main phase do T2 e o terreno buscado já rende mana: Regra #6) e a conferência dos tipos de terreno do simulador contra o `type_line` do Scryfall.
+- **A rodada anterior continua reproduzível:** o `fx_common.flags` da pasta do Myriad agora desliga as duas novidades; `verificar_reproducao.sh --tudo` de lá → 9/9.
+
+### Achados laterais (não corrigidos, Regra #1)
+- **Mulligan com sorteio das cartas do fundo** em outros 7 decks (lista no log do Vihaan); nenhum foi alterado.
+- A escolha de **quando** sacrificar a fetch (na hora; o Rocky no início do turno seguinte) e a regra de escolha do fundo do mulligan são convenções do piloto, não do oráculo.
+
+### O que NÃO foi verificado (Regra #7)
+Só as classes terreno/mana/cor, biblioteca/embaralhar/busca com restrição de tipo real, mulligan, ordem de fases e "carta no cemitério = permanente" foram varridas neste arquivo; não houve auditoria carta a carta do `.py` inteiro. Sacrificar a fetch no fim do turno do oponente ou guardá-la para afinar mais tarde não foi modelado nem medido.
+
+---
+
+## Correção do simulador: Myriad Landscape e terreno tapped em T1/T2 — 2026-10-03
+
+**Pedido:** *"Quero que vc corrija o Myriad Landscape e o terreno tapped em T1 e T2 no simulador do Megatron"* (os dois gaps que eu tinha registrado como achados laterais na avaliação do Power Depot).
+**Veredito:** os dois estão corrigidos em `megatron_goldfish_v1.py`. Efeito no goldfish (N=10.000 pareado, sementes 3.000.000+i, 8 turnos): comandante conjurado até o T3 **31,3% → 35,6%** (+4,26 ±0,45pp), até o T4 **77,8% → 81,3%** (+3,53 ±0,39pp), "nunca em T8" 4,1% → 3,8% (−0,32 ±0,13pp), win +1,25 ±0,28pp, dano médio 83,40 → 86,72. **Atenção:** a base do simulador mudou. Os números absolutos de rodadas anteriores (Power Depot, Inevitable Defeat, Kingpin etc.) foram medidos no piloto antigo; as comparações pareadas *dentro* de cada rodada continuam válidas, comparar números absolutos *entre* rodadas, não.
+
+### O que mudou no código
+1. **Myriad Landscape, 3ª habilidade** (`try_myriad_landscape`). Oráculo lido ao vivo: *This land enters tapped. {T}: Add {C}. {2}, {T}, Sacrifice this land: Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.* Ruling (1, 2018-03-16): pode achar só um básico. Antes só as duas primeiras cláusulas existiam. Agora: custo {2}+{T}, sacrifício pelo `sacrifice()` central, até 2 básicos **do mesmo tipo** (o par rende +1 terreno líquido e +2 fontes de UMA cor, não fixa as três), embaralha de verdade.
+2. **Terreno tapped em T1/T2** (`choose_land_to_play`). Em T1 e T2, com um terreno tapped e um untapped na mão, joga o tapped, **a não ser** que o tapped faça perder uma jogada de desenvolvimento (rock ou permanente castável só com o untapped; por exemplo Sol Ring em T1, Mind Stone em T2). O teste é uma simulação a seco do `main_phase`, e **só permanentes contam** (Swords/Path sem alvo no goldfish e Faithless Looting não seguram um terreno tapped).
+
+### Decisões de piloto (convenções minhas, não do oráculo; ficam documentadas no `.py`)
+- O Myriad só é ativado com mana que **sobraria** (≥3: {2} + o {C} do próprio Myriad), nunca no lugar de conjurar, **depois da 2ª main phase e antes do end step**. Os dois básicos entram tapped e desviram no próximo untap: custo de tempo zero. Antes do end step porque o "descended" do Brass's Tunnel-Grinder conta o Myriad sacrificado (teste em `play_turn` completo).
+- Tipo buscado: o de maior déficit de fonte (cor que o comandante ainda exige ou maior pip de carta da mão), depois o que traz 2 em vez de 1.
+- A janela do tapped é **T1/T2, como pedido**. Medi também até T4 (sensibilidade): **+6,94pp no T3 e +5,36pp no T4** (contra +4,26 e +3,53). Subir é só mudar `TAPPED_LAND_FIRST_MAX_TURN`; **não mudei sem você decidir**.
+
+### Medição (apoio; N=10.000 sementes 3.000.000+i, pareado; base = simulador antes, commit 22d0ed2)
+Base: cmd ≤T3 31,3% · ≤T4 77,8% · ≤T5 88,8% · nunca 4,1% · win 83,8% · dano 83,40 · mana de flip 70,25 · mana no main phase T2/T3/T4 = 1,943 / 3,300 / 4,273. Diferença pareada (variante − base), IC95%:
+
+| variante | cmd ≤T3 (pp) | cmd ≤T4 (pp) | cmd ≤T5 (pp) | nunca T8 (pp) | win (pp) | dano | mana T2 / T3 / T4 | terrenos no fim |
+|---|---|---|---|---|---|---|---|---|
+| só terreno tapped T1/T2 | +4,25 ±0,45 | +3,31 ±0,38 | +0,02 ±0,07 | +0,00 ±0,04 | +0,72 ±0,22 | +2,73 ±0,45 | +0,09 / +0,10 / +0,04 | +0,01 |
+| só Myriad (habilidade) | +0,00 | +0,04 ±0,04 | +0,15 ±0,08 | −0,34 ±0,12 | +0,31 ±0,16 | +0,56 ±0,20 | 0 / 0 / 0 | +0,15 ±0,01 |
+| **as duas (o que ficou)** | **+4,26 ±0,45** | **+3,53 ±0,39** | +0,35 ±0,13 | −0,32 ±0,13 | **+1,25 ±0,28** | **+3,32 ±0,49** | +0,09 / +0,10 / +0,04 | +0,16 |
+| sensibilidade: política cega (sempre o tapped) | +1,36 ±0,51 | +4,75 ±0,43 | +0,02 ±0,07 | +0,00 ±0,04 | +0,75 ±0,24 | +1,70 ±0,38 | **−0,13** / +0,12 / +0,10 | +0,01 |
+| sensibilidade: tapped até o T4 (+Myriad) | +6,94 ±0,55 | +5,36 ±0,48 | +0,32 ±0,14 | −0,33 ±0,13 | +1,41 ±0,30 | +4,27 ±0,60 | +0,09 / +0,10 / +0,01 | +0,16 |
+
+**Leitura (medido):** (a) o ganho do terreno vem de mana: **+0,09 e +0,10 de mana no T2 e T3**, o que coloca o comandante antes. (b) O Myriad é ativado em **15,4%** das partidas e dá **+0,15 terreno** por partida, exatamente o esperado (+1 terreno líquido × 15,4%); o efeito é pequeno e aparece em "nunca conjurado" (−0,34pp) e no win, não no T3/T4. (c) A política cega (sempre o tapped) tem **−0,13 de mana no T2**, porque perde Sol Ring/Mind Stone, e ganha menos no T3 (+1,36 contra +4,25pp); o teste de jogada perdida é o que um jogador faria. **Raciocínio (não medido diretamente):** a política cega ganha mais no T4 (+4,75 contra +3,31pp) porque, quando o piloto fica com o untapped por causa de um rock, o tapped é empurrado para o T3/T4, onde o piloto original o joga pela ordem de cor e pode custar o turno do Megatron; a sensibilidade "até o T4" (que resolve isso e mantém o teste) é consistente com a explicação, mas não a prova.
+**Lote de 2.000 (sementes 1.000.000+i, as do `run_batch`)** e **modo resiliência (2.000)** mostram a mesma direção (`resumos/ab_2000.txt`, `resumos/ab_2000_resiliencia.txt`): ambas = +3,95/+3,85pp (T3/T4) no goldfish e +3,60/+3,75pp na resiliência; win +1,95 e +2,35pp.
+
+### Validação (Regra #1) — tudo arquivado em `resultados-ab/2026-10-03-myriad-e-tapped-t1t2/`
+- **Smoke:** 99 cartas na biblioteca, 84 distintas, 0 desconhecidas, 0 duplicadas não básicas, 34 terrenos (6 Mountain/6 Plains/6 Swamp, 1 Myriad).
+- **Bit-identidade com as duas correções desligadas:** 20.000/20.000 partidas idênticas ao commit 22d0ed2 no modo padrão e 20.000/20.000 na resiliência (impressão digital do estado final inteiro).
+- **Verificação cruzada independente:** a política cega reproduz o `early_all` do harness do Power Depot (outro código, por monkeypatch) em 10.000/10.000 partidas, 12 campos por partida.
+- **Regressão:** 140.000 partidas (7 configurações/modos × 20.000), **0 exceções**, **0 violações de conservação** (Plains/Swamp/Mountain/Myriad somam sempre 6/6/6/1 entre as zonas).
+- **Testes dirigidos:** 49/49, incluindo: Myriad ativa só com remaining ≥3, nunca no turno em que entrou, tipo certo pela cor que falta, só 1 básico na biblioteca (ruling), sem básico = não sacrifica, shuffle real, `rng` nulo; `play_turn` completo (Regra #6: o Myriad conta como "descended" do Tunnel-Grinder; os básicos rendem mana no turno seguinte); T1/T2: Sol Ring em T1 e Mind Stone em T2 seguram o untapped, Swords/Path/Looting não, Sol Ring + Mind Stone em T2 deixam o tapped (o Sol Ring libera a mana do Mind Stone), T3 volta ao piloto original; a simulação a seco não altera o estado.
+
+### Achados laterais (não corrigidos, Regra #1)
+- **[Os dois foram corrigidos ainda em 2026-10-03, na 2ª rodada: ver a seção "Correção do simulador: London Mulligan e fetch lands" no topo deste arquivo.]**
+- **O London Mulligan do simulador põe as cartas devolvidas no TOPO da biblioteca** (`library.insert(0, worst)`; `draw_cards` tira do índice 0), então a carta "ao fundo" é a próxima compra. Demonstrado em runtime (`resumos/mulligan_topo.txt`); afeta as **21,4%** das mãos com 2+ mulligans. Não mexi: está fora do pedido e muda a base de tudo.
+- **As fetches (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit) seguem simplificadas** como fonte fixa já em campo, sem sacrifício, busca nem embaralhamento. É modelável com o mesmo mecanismo do Myriad; não foi feito.
+
+### O que NÃO foi verificado (Regra #7)
+Só as classes terreno/mana/cor, biblioteca/embaralhar, ordem de fases e "carta no cemitério = permanente" foram varridas; não houve auditoria carta a carta do `.py` inteiro. A política "Myriad só com mana que sobraria" e "tapped sempre que não custar jogada" em T3+ (além da sensibilidade até T4) não foram medidas como alternativas.
+
+---
+
+## Power Depot — avaliação como possível inclusão — 2026-10-03
+
+**Pedido:** *"E a inclusão de Power Depot no Megatron?"*
+Regras #3/#4/#5 e adendo de 2026-09-28: oráculo e rulings ao vivo → docs do deck → Commander Spellbook antes/depois com controle positivo → enumeração por script → simulador só como apoio. Nenhuma carta foi cortada ou adicionada à lista.
+
+**Oráculo (Scryfall ao vivo, 2026-10-03; salvo no cache):** Artifact Land (Modern Horizons 2; reimpresso em Edge of Eternities; legal, não é Game Changer, ~US$0,60). *This land enters tapped. {T}: Add {C}. {T}: Add one mana of any color. Spend this mana only to cast artifact spells or activate abilities of artifacts. Modular 1.*
+**Rulings (4):** só pode ser jogado como terreno; o contador +1/+1 do Modular é inócuo enquanto for terreno e, ao ir ao cemitério vindo do campo, você pode pô-lo num artefato-criatura alvo; o mana de qualquer cor não paga habilidades de artefato em outras zonas (cycling, unearth).
+
+### O que a carta toca nos motores reais do Megatron (`resumos/enumeracao.txt`, por script sobre o oráculo ao vivo)
+
+- **O comandante é uma magia-artefato nas duas faces.** Megatron, Tyrant é *Legendary Artifact Creature* ({3}{R}{W}{B}) e o custo "More Than Meets the Eye" ({1}{R}{W}{B}) lança a face de trás, *Legendary Artifact — Vehicle* (ruling: a magia na pilha é a face convertida). O mana de qualquer cor do Depot paga o comandante. É o ponto central da carta para este deck.
+- **Mas fixa UM pip, não três.** O Megatron exige R+W+B ao mesmo tempo; um Depot cobre só o pip que falta, as outras duas cores continuam vindo de outros terrenos/rocks.
+- **Quem mais usa a fixação:** das **36** magias-artefato não-terreno da lista, **10** têm pip colorido: Megatron, Anrakyr the Traveller ({B}), Brass's Tunnel-Grinder ({R}), Combustible Gearhulk ({R}{R}), Cursed Mirror ({R}), Demonic Junker ({B}), Ironsoul Enforcer ({W}), Melded Moxite ({R}), Noxious Gearhulk ({B}{B}) e Tarrian's Journal ({B}). **Nenhuma habilidade ativada de artefato da lista tem mana colorido no custo.**
+- **Para as outras 29 magias coloridas o Depot é só um terreno incolor** (e tapped): todo o início vermelho (Goblin Welder {R}, Goblin Engineer, Scrap Welder, Trash for Treasure, Feldon, Sneak Attack, Warstorm Surge, Chandra's Ignition), a remoção branca (Path, Swords, Generous Gift, Clever Concealment) e os wipes/Ayara em preto.
+- **É artefato em campo:** Demonic Junker (Affinity) fica {1} mais barato; é combustível de MV 0 para as saídas de sacrifício da lista (Goblin Welder, Goblin Engineer, Trash for Treasure, Daretti ×2, Osgir, Tarrian's Journal, Metalwork Colossus); com a Pia's Revolution em campo voltaria à mão e poderia ser jogado de novo como terreno; o Modular dá +1/+1 num dos 17 artefatos-criatura (Megatron incluído) quando ele vai ao cemitério. Como combustível do próprio Megatron rende **0** de dano (MV 0). Scrap Welder (exige MV maior) e Scrap Trawler (alvo de MV menor) não aproveitam um MV 0.
+- **Combos (Commander Spellbook, antes e depois de cada troca):** base = 2 combos (Blightsteel Colossus + Chandra's Ignition; Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber). Depot sem cortar: **0 combos novos**. Em **19 trocas de terreno** nenhum combo some ou aparece; controles positivos ok (cortar Chandra's Ignition ou Genesis Chamber remove o combo certo).
+
+### Medição no simulador (apoio; N=10.000 sementes 3.000.000+i pareadas, 8 turnos, troca posicional)
+
+**Como foi modelado** (detalhes no `checklist-oraculo.md`): terreno tapped; {C}; fixação condicional de **um** pip para magia-artefato; Junker conta o Depot; fora das piscinas de artefato do `.py` por política (senão o sacrifício de menor MV o escolheria à toa). **Tabela principal = política `early_all`:** qualquer terreno que entra tapped é jogado primeiro no T1/T2, **na base e nas variantes**, para o Depot não ganhar de graça de terrenos tapped jogados em ordem arbitrária pelo piloto original. Base: comandante ≤T3 32,6% · ≤T4 82,6% · ≤T5 88,8% · nunca em T8 4,1% · win 84,6% · dano 85,1.
+Diferença pareada (Depot − base), IC95%:
+
+| Depot entra no lugar de | cmd ≤T3 (pp) | cmd ≤T4 (pp) | cmd ≤T5 (pp) | nunca em T8 (pp) | win (pp) | dano | fixa o cmd |
+|---|---|---|---|---|---|---|---|
+| Plains | −1,80 ±0,29 | +0,04 ±0,21 | +0,45 ±0,18 | −0,28 ±0,12 | +0,40 ±0,20 | −0,67 ±0,27 | 2,0% |
+| Swamp | −1,12 ±0,26 | +0,24 ±0,22 | +0,64 ±0,18 | −0,39 ±0,13 | +0,39 ±0,22 | −0,48 ±0,24 | 1,6% |
+| Mountain | −1,50 ±0,28 | +0,01 ±0,23 | +0,39 ±0,18 | −0,33 ±0,13 | +0,26 ±0,21 | −0,72 ±0,27 | 1,7% |
+| Sunlit Marsh (W/B tapped) | +0,06 ±0,10 | +0,17 ±0,14 | +0,29 ±0,13 | −0,19 ±0,09 | +0,31 ±0,15 | −0,09 ±0,24 | 2,1% |
+| Rocky Tar Pit (B/R tapped) | +0,21 ±0,11 | +0,37 ±0,15 | +0,35 ±0,14 | −0,25 ±0,10 | +0,31 ±0,15 | +0,12 ±0,22 | 1,9% |
+| Smoldering Marsh (B/R tapped) | +0,09 ±0,09 | +0,13 ±0,18 | +0,28 ±0,13 | −0,18 ±0,10 | +0,25 ±0,16 | −0,29 ±0,23 | 1,7% |
+| Nomad Outpost (tri tapped) | −0,07 ±0,05 | −0,28 ±0,13 | −0,16 ±0,08 | +0,01 ±0,04 | −0,15 ±0,13 | −0,51 ±0,23 | 2,0% |
+| Evolving Wilds | −0,09 ±0,06 | −0,31 ±0,14 | −0,18 ±0,08 | +0,02 ±0,04 | −0,23 ±0,13 | −0,32 ±0,18 | 2,0% |
+| Terramorphic Expanse | −0,12 ±0,07 | −0,19 ±0,13 | −0,19 ±0,09 | +0,06 ±0,05 | −0,20 ±0,13 | −0,28 ±0,17 | 1,9% |
+| Badlands | −1,46 ±0,29 | −0,04 ±0,24 | +0,40 ±0,17 | −0,21 ±0,12 | +0,27 ±0,21 | −0,74 ±0,28 | 1,9% |
+| Scrubland | −1,69 ±0,27 | −0,64 ±0,22 | +0,10 ±0,15 | −0,09 ±0,11 | −0,04 ±0,19 | −1,12 ±0,33 | 1,8% |
+| Plateau | −1,71 ±0,28 | −0,82 ±0,23 | −0,15 ±0,14 | −0,07 ±0,07 | −0,33 ±0,19 | −0,91 ±0,29 | 1,9% |
+| Shadowblood Ridge | −1,64 ±0,28 | −0,16 ±0,23 | +0,35 ±0,17 | −0,26 ±0,12 | +0,22 ±0,19 | −1,12 ±0,36 | 2,0% |
+| Exotic Orchard | −1,83 ±0,28 | −1,04 ±0,21 | −0,51 ±0,14 | +0,12 ±0,07 | −0,57 ±0,17 | −1,37 ±0,31 | 2,2% |
+| Forbidden Orchard | −1,82 ±0,27 | −0,80 ±0,19 | −0,29 ±0,12 | +0,11 ±0,06 | −0,44 ±0,16 | −1,47 ±0,31 | 2,0% |
+| Command Tower | −1,80 ±0,27 | −0,97 ±0,20 | −0,40 ±0,13 | +0,05 ±0,04 | −0,42 ±0,18 | −1,22 ±0,26 | 2,3% |
+| **controle (rock)** Arcane Signet | −4,77 ±0,47 | −0,72 ±0,23 | +0,05 ±0,14 | −0,10 ±0,10 | −0,99 ±0,26 | −2,46 ±0,51 | 2,3% |
+| **controle (rock)** Fellwar Stone | −4,29 ±0,45 | −0,64 ±0,22 | +0,00 ±0,14 | −0,08 ±0,08 | −0,78 ±0,24 | −2,27 ±0,43 | 1,8% |
+
+Linhas omitidas por serem terrenos que o dono explicitou manter ou cuja habilidade o simulador não modela (ver abaixo): Fountainport, Susur Secundi, Myriad Landscape (os números estão em `resumos/ab_powerdepot_10000_early_all.txt`).
+**Leitura:** (a) o Depot é **decisivo para conjurar o comandante em 1,6–2,3% das partidas** (2,4–4,2% com casamento estrito de cor); (b) no lugar de um **básico** ele **atrasa** o comandante no T3 (−1,1 a −1,8pp, o custo do terreno tapped), empata em T4, ganha no T5 (+0,4 a +0,6pp), reduz as partidas "nunca conjurado" (−0,3pp) e o win sobe +0,3 a +0,4pp, mas o dano cai −0,5 a −0,7; (c) no lugar de um **dual tapped** (Sunlit Marsh, Rocky Tar Pit, Smoldering Marsh) o custo de tempo some (T3 ≈ 0), o T5 sobe +0,3 e o win +0,25 a +0,31pp (IC ±0,15), dano ≈ 0; (d) no lugar de um **fixador untapped** (Command Tower, as duas Orchards, Plateau) é pior (win −0,3 a −0,6pp, dano −0,9 a −1,5), e no lugar de **fetches/Nomad Outpost** ligeiramente pior (win −0,15 a −0,23pp); (e) os controles doem (rocks: −4,3 a −4,8pp no T3, win −0,8 a −1,0pp), então o Depot **não** substitui rampa. Os efeitos são pequenos (≤0,6pp de win), na mesma ordem do ruído de um A/B desse tamanho.
+**Sensibilidades (resumos e brutos na pasta; direção idêntica):** piloto original do simulador (`core`: o Depot só perde tempo, −2,0 a −2,4pp no T3 por jogar terreno tapped fora de hora, e o ganho do T5 e de "nunca" se mantém); só o Depot jogado cedo (`early`; favorece o Depot frente a terrenos tapped que o piloto joga em ordem arbitrária: Myriad Landscape +1,3 no T3, Susur +1,2); **Depot sobrando (≥7 terrenos) como combustível** de Welder/Engineer/Trash (+0,05 a +0,14pp de win sobre `early_all`: Plains +0,53, Sunlit Marsh +0,36, Rocky Tar Pit +0,45, Smoldering Marsh +0,38); **casamento estrito de cor** (cada fonte paga um pip; a base cai para 79,8%/87,4% no T4/T5 e o Depot decide em até 4,2% das partidas, mesmas conclusões).
+
+### O que a medição NÃO diz (Regra #5)
+- **Dois dos três melhores slots do simulador são terrenos que o dono quis manter ou que o `.py` modela de forma incompleta:** Susur Secundi e Fountainport foram mantidos por pedido explícito (`lista.md`); a **habilidade do Myriad Landscape** ({2},{T}, sacrifique: até dois básicos que compartilham tipo, para o campo tapped; +1 terreno e fixa uma cor) **não está no simulador** e as fetches são fontes fixas já em campo. Qualquer ganho do Depot contra esses slots é inflado por isso. **Não** leia a tabela como "troque o Myriad Landscape".
+- **Modular, Pia's Revolution devolvendo o Depot à mão (replay como terreno), Ultron copiando o Depot por {2} e o Depot como combustível de Daretti/Osgir/Tarrian's Journal/Metalwork Colossus** não estão modelados (ou só em `fodder7`, parcial): o simulador é piso aqui.
+- **Exotic Orchard** conta como fonte de W/B/R no goldfish (o oráculo depende de terrenos de oponente): a base é otimista para a fixação, o que **subestima** o valor do Depot.
+- Efeito contra oponentes reais (remoção de terreno-artefato, Vandalblast/hate de artefato batendo no Depot): estrutural, não medido.
+
+### Achados laterais do simulador (não corrigidos nesta rodada)
+- **[Corrigido ainda em 2026-10-03: ver a seção acima.]** **O piloto original não joga terreno tapped no T1/T2.** Com `early_all` (na base inteira, sem Depot) o comandante conjurado até T4 sobe de **77,8% para 82,6%** e o dano médio de **83,4 para 85,1**. É limite do simulador, não do deck: um jogador joga o tapped quando não há jogada.
+- **[Myriad corrigido ainda em 2026-10-03: ver a seção acima; as fetches seguem simplificadas.]** **A habilidade do Myriad Landscape não é modelada** (e as fetches são simplificadas): Regra #1, gap a corrigir.
+
+**Escopo verificado nesta rodada:** oráculo + 4 rulings do Depot e rulings de Megatron/Pia's Revolution/Scrap Trawler/Goblin Welder/Warstorm Surge; enumeração por script das 85 entradas distintas de `lista.md` (artefatos com pip colorido, leitores de "artifact", artefatos-criatura, terrenos, habilidades de artefato com mana colorido); Spellbook antes/depois em 19 trocas de terreno + 2 controles positivos; A/B pareado de 21 trocas (19 terrenos + 2 rocks de controle) em 5 políticas de jogada e 2 regras de cor; bit-identidade do harness contra o simulador original sem patch (300/300 em 123 campos, nas 3 políticas que não alteram a base); tabelas refeitas dos `.json.xz` byte a byte (8/8).
+**Não verificado:** oponente real; Modular, Pia's Revolution, Ultron e saídas de sacrifício com o Depot na linha deliberada; o Depot como fonte de mana para habilidades de artefato (nenhuma da lista precisa); sequenciamento humano de terrenos além de "tapped primeiro no T1/T2"; auditoria carta-a-carta do `.py` (a carta não está na lista).
+
+---
+
+## Inevitable Defeat — avaliação como possível inclusão — 2026-10-03
+
+**Pedido:** *"Faça o mesmo para Inevitable Defeat como possível inclusão nos meus dois decks Mardu: Megatron e Vihaan."* (a parte do Vihaan está em `vihaan-goldwaker-mardu/goldfish-log.md`).
+Regras #4/#5: oráculo e rulings ao vivo, motores e combos do deck, Commander Spellbook antes/depois com controle positivo, enumeração por script, e só então o simulador como apoio.
+
+**Oráculo (Scryfall ao vivo, 2026-10-03; salvo em `scryfall-cache/oracle-cache.json`):** {1}{R}{W}{B}, Instant (Tarkir: Dragonstorm, 2025-04-11, legal em Commander, não é Game Changer, ~US$0,77). *This spell can't be countered. Exile target nonland permanent. Its controller loses 3 life and you gain 3 life.*
+**Ruling (2025-04-04, único):** se o alvo for ilegal na resolução, a magia não resolve e ninguém ganha nem perde vida.
+
+### O que a carta toca nos motores reais do Megatron
+
+- **Flip do Megatron ({C} = vida perdida pelos oponentes no turno):** os 3 de vida entram na conta do gatilho de pós-combate. Só vale se a Defeat resolver **antes** do pós-combate do turno em que o Megatron atacou e converteu. Ordem de fases conferida em `play_turn` (Regra #6): `main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → end_step`; a mana do flip é gastável no 2º main.
+- **Não é artefato, não entra em campo:** não dispara Ultron, não reduz Metalwork Colossus, não é alvo de Goblin Welder/Engineer/Trash for Treasure, não alimenta o flip como combustível. Nenhum dos motores de artefato do deck vê a carta.
+- **Cobertura de interação (oráculo das cartas da lista, `resumos/enumeracao.txt`):** Path/Swords só pegam criatura; Vandalblast só artefato (sorcery); Generous Gift e Chaos Warp são os únicos instants que pegam qualquer permanente (Gift dá um Elefante 3/3 ao dono; Chaos Warp é aleatório e pode devolver uma permanente); Summon: Bahamut (caps. I/II) e Cityscape Leveler (cast/ataque) destroem "up to one target nonland permanent" mas não são instants. A Defeat é a **única** resposta em instant, determinística, sem contrapartida pro oponente, e não anulável por contramágica.
+- **Cor:** R+W+B é exatamente a identidade do comandante. Medido no simulador (que modela pips): P(R+W+B em campo e ≥4 mana) por T4/T5/T8 = 80,3% / 89,8% / 96,1%, contra 77,8% / 88,8% / 95,9% de Megatron conjurado. A Defeat é conjurável quase sempre que o comandante já foi.
+- **Combos (Commander Spellbook, `find-my-combos`, antes e depois de cada troca):** base = 2 combos (Blightsteel Colossus + Chandra's Ignition; Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber). Defeat sem cortar: 0 combos novos. Controles positivos funcionaram: cortar Chandra's Ignition remove o 1º combo; cortar Genesis Chamber remove o 2º. **Nenhuma das 13 candidatas testadas pertence a combo.** Cortar Blasphemous Act remove 4 "quase combos" (peças faltando) e Vandalblast 1.
+
+### Medição no simulador (apoio; N=10.000 sementes 3.000.000+i pareadas, 8 turnos, troca posicional)
+
+Defeat conjurada em ~18,5% das partidas (turno médio 6,1; a cor deixa 3,9% das partidas sem R+W+B até T8). Diferença pareada (Defeat − base), IC95%:
+
+| Defeat entra no lugar de | win (pp) | dano proxy | mana convertida | spells de interação |
+|---|---|---|---|---|
+| Chaos Warp | −0,01 ±0,11 | +0,58 ±0,20 | +0,12 ±0,17 | −0,01 |
+| Generous Gift | −0,11 ±0,13 | +0,57 ±0,17 | +0,20 ±0,15 | −0,01 |
+| Path to Exile | −0,20 ±0,11 | −0,27 ±0,29 | −0,53 ±0,26 | −0,03 |
+| Swords to Plowshares | −0,15 ±0,13 | −0,10 ±0,21 | −0,49 ±0,19 | −0,03 |
+| Vandalblast | −0,03 ±0,14 | −0,08 ±0,21 | −0,35 ±0,18 | −0,03 |
+| Heartless Conscription | −0,25 ±0,13 | −0,31 ±0,28 | −0,59 ±0,25 | +0,17 |
+| Decree of Pain | −0,22 ±0,11 | −0,33 ±0,19 | −0,66 ±0,17 | +0,15 |
+| Blasphemous Act | −0,27 ±0,13 | −0,38 ±0,24 | −0,66 ±0,19 | +0,16 |
+| Clever Concealment | −0,32 ±0,13 | −0,69 ±0,25 | −0,94 ±0,22 | +0,14 |
+| Pia's Revolution | −0,30 ±0,14 | −1,39 ±0,32 | −1,46 ±0,27 | +0,11 |
+| Tarrian's Journal | −0,72 ±0,19 | −0,80 ±0,35 | −1,11 ±0,34 | +0,11 |
+| Black Market Connections | −0,73 ±0,18 | −2,98 ±0,37 | −2,76 ±0,32 | +0,03 |
+| Scarecrone | −1,04 ±0,21 | −1,28 ±0,27 | −1,68 ±0,24 | +0,13 |
+| **controle** Arcane Signet | −3,11 ±0,37 | −4,37 ±0,54 | −4,54 ±0,49 | +0,04 |
+| **controle** Fellwar Stone | −2,61 ±0,34 | −3,95 ±0,48 | −4,29 ±0,44 | +0,04 |
+
+Base: win 83,8%, dano proxy 83,4, mana convertida 70,25. Os controles doem (rocks de mana: −2,6 a −3,1pp de win), como esperado; as demais variações ficam em ±1 de dano.
+- **Quanto a Defeat realmente alimenta o flip:** em 6,5% das partidas (35% das vezes em que é conjurada) ela é lançada num turno em que o Megatron converte no pós-combate, e rende em média **0,20 {C} por partida**, contra 70 {C} de mana de flip por partida. Pequeno no agregado; é o piso, porque o simulador joga a Defeat quando "dá", não na linha deliberada (main 1, antes do ataque).
+- **O dano proxy da Defeat é só o dreno dela:** 3 × 18,7% = 0,56, igual ao +0,58 de Chaos Warp→Defeat. Ou seja, o simulador não vê nenhum outro efeito (e não pode: exílio de permanente de oponente é 📊).
+
+### O que a medição NÃO diz (Regra #5)
+
+- Com a "Blank Card" (inconjurável, **instantâneo**) no lugar de uma interação o dano **sobe** +0,9 a +1,8: o simulador premia não gastar mana em interação (goldfish sem oponente). O primeiro lote usou a Blank como artefato MV 99, que Welder/Sneak Attack/Anrakyr traziam ao campo e o Megatron sacrificava como combustível (+9 a +11 de dano): lote **superado e mantido** em `superado-blank-artefato/`.
+- Exílio, contramágica, alvo ilegal (ruling) e valor contra permanentes de oponente são 📊 estruturais: o goldfish não tem permanente de oponente. A medição só confirma que a carta **não quebra** o plano e que ela cabe no custo/cor do deck.
+
+**Escopo verificado nesta rodada:** oráculo + ruling (1); `play_turn` (ordem de fases); enumeração por script sobre as 85 entradas distintas de `lista.md` (oráculo do cache; `resumos/enumeracao.txt`); Spellbook antes/depois em 13 trocas candidatas + 2 controles positivos; castabilidade de cor medida no simulador (pips); A/B pareado de 15 trocas + 4 controles "Blank"; bit-identidade do harness contra o simulador original sem patch (300/300 em 123 campos do `GameState`); tabelas refeitas dos `.json.xz` byte a byte (`cmp`).
+**Não verificado:** comportamento contra oponentes reais (remoção, contramágica, bloqueio); interação da Defeat com a mesa de 3 oponentes (alvos legais/ilegais); linha deliberada "Defeat no main 1 para alimentar o flip" (o simulador não escolhe essa linha); classes da taxonomia da Regra #1 além da castabilidade e dos gatilhos de fase relevantes (a carta não está na lista, então não houve auditoria carta-a-carta do `.py`).
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## CR 903.9a: comandante dispara gatilhos de morte de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md`.
+
+**Achado:** CR 903.9a (cemitério/exílio) é ação baseada em estado, não
+substituição — o comandante morre de verdade primeiro (Scrap
+Trawler/Rakdos disparam), só depois vai pra zona de comando por
+escolha do dono. Pia's Revolution/emblema do Daretti não agem sobre o
+comandante (timing real: SBA acontece antes do trigger resolver).
+
+**Resultado:** modo padrão diverge em 0,10% das seeds (5.000 testadas)
+— só quando Chandra's Ignition sacrifica o próprio comandante via
+combo. `recursion_events_total` médio: 2,883 → 2,884.
+
+**Validação:** regressão de 20.000 partidas nos 2 modos, 0 exceções +
+5 testes dirigidos.
+
+---
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos
+completos em `checklist-oraculo.md`.
+
+**Achado real:** Megatron é artefato em QUALQUER face (confirmado via
+Scryfall) — um wipe de artefato a alcança mesmo na face Vehicle, ao
+contrário do wipe de criatura (que só a alcança na face Tyrant).
+
+**Correção de design no mesmo dia:** 1ª versão implementou os 3 tipos
+(criatura/artefato/encantamento) como rolagens INDEPENDENTES — usuário
+apontou que isso permite (raramente) 2 sweepers no mesmo turno de
+oponente, irreal, e que os 3 tipos não são igualmente prováveis
+("wipes de criaturas são muito mais comuns"). Redesenhado pra 1 rolagem
+"algum wipe acontece" + escolha ponderada de UM tipo só (pesos
+0.4/0.2/0.15, criatura/artefato/encantamento). Detalhes completos em
+`checklist-oraculo.md`.
+
+**Resultado (A/B 2000 jogos mesma seed_base, design unificado final):**
+% de jogos com pelo menos 1 wipe de qualquer tipo sobe de 35,5% pra
+62,9% (antes = commit `8b84daf`, só wipe de criatura). Avg wipes totais
+por jogo: 0,402 → 0,871. 34,1% dos jogos "depois" sofrem pelo menos 1
+artifact wipe, 5,9% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (3.000
+seeds) + regressão de 20.000 partidas, 0 exceções + 5 testes dirigidos
+confirmando no máximo 1 tipo por chamada, distribuição ponderada
+correta, exceção de face do Megatron, e Blightsteel Colossus (artifact
+creature via tag) tratado corretamente.
+
+---
+
+## Bug de design: modelo assumia 100% da mesa mirando em mim, sempre — 2026-09-20
+
+**Gatilho:** usuário perguntou direto: *"se sempre for 3 contra 1, aí
+não consigo fazer nada, nunca!"* — medição real confirmou: 78-88% das
+rodadas nos 3 decks tinham pelo menos 1 evento de interação contra mim,
+quase o dobro da calibração original (48,1% hipotético com 1 rolagem
+agregada por rodada). Causa: a correção de orquestração de turno desta
+sessão passou a rolar `interaction_chance()` 3x por rodada (1x por
+oponente) sem escala nenhuma. Detalhes completos em
+`checklist-oraculo.md`.
+
+**Corrigido (escolha do usuário entre 3 opções):** gate explícito
+`OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS` — cada turno de oponente
+só rola as 6 categorias de interação se passar primeiro nesse gate
+(representa a chance real desse oponente específico estar de olho em
+mim, e não ocupado com o próprio board ou outro oponente).
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques sofridos 3,16→1,21,
+vida final média 33,76→36,56, rodadas com zero interação 20,8%→57,9%.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds) + regressão
+de 20.000 partidas, 0 exceções, nos 3 decks.
+
+---
+
+## Bug de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
+
+**Gatilho:** usuário apontou que a correção anterior (wipe/ataque
+mutuamente exclusivos só no MESMO turno de oponente) não bastava: *"se
+jogador A faz wipe, jogador C não tem como atacar até voltar ao turno
+do jogador A, a não ser no caso de haste!"* — um board wipe é simétrico,
+então limpa as criaturas de TODOS os oponentes na mesa, não só as do
+oponente que o conjurou. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**Corrigido:** novo flag `state.wiped_this_round`, ligado quando
+qualquer wipe dispara na rodada e resetado no início de cada rodada
+nova. `try_smart_opponent_attack()` reduz a própria chance pra
+`POST_WIPE_ATTACK_HASTE_FACTOR = 0.15` (nunca zero — haste continua
+fisicamente possível, Regra #1) sempre que o flag estiver ligado,
+cobrindo tanto o turno do próprio wiper quanto qualquer oponente
+posterior na mesma rodada. Mesma correção aplicada no Ur-Dragon e Hei
+Bai.
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques de oponente sofridos
+3,16→3,03, vida final média 33,76→33,94 (menos dano recebido, como
+esperado — menos oponentes conseguem atacar de verdade logo após um
+wipe simétrico).
+
+**Validação:** teste dirigido (20.000 rolagens, taxa pós-wipe caiu pra
+~13,5% da taxa base, ~ o fator 0,15 esperado) + teste dirigido do flag
+sendo setado/resetado corretamente + regressão de 20.000 partidas, 0
+exceções + modo padrão confirmado 100% bit-idêntico (5.000 seeds).
+
+---
+
+## Bug de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** usuário apontou que board wipe é sorcery (main phase) e
+ataque vem de criatura — se o wipe for simétrico, o mesmo oponente não
+ataca no mesmo turno em que wipou. Achado real de Regra #6 (bug de
+orquestração, não pego em auditoria carta-a-carta). Detalhes técnicos
+completos em `checklist-oraculo.md`.
+
+**Corrigido:** `try_smart_opponent_turn()` simula o turno de 1 oponente
+por vez (3 por rodada, `NUM_OPPONENTS`), com wipe e ataque agora
+mutuamente exclusivos dentro do MESMO turno de oponente — mas o efeito
+do wipe continua valendo pro ataque de um oponente seguinte na mesma
+rodada.
+
+**Resultado (A/B mesma seed, modelo antigo vs. novo):** dano proxy no
+modo resiliência 63,57→48,90 (mais pressão real, já que agora são 3
+rolagens independentes por rodada em vez de 1). Mesma correção
+aplicada no Ur-Dragon e Hei Bai.
+
+**Validação:** teste dirigido (2000 seeds, exclusão mútua confirmada
+100%) + regressão de 20.000 partidas, 0 exceções + modo padrão
+confirmado intocado.
+
+---
+
+## Comparativo antes/depois das extensões de resiliência desta sessão — 2026-09-20
+
+**Gatilho:** mesmo comparativo já feito pro Ur-Dragon e Hei Bai, usando
+`megatron_goldfish_v1_original.py` (commit `82dc479`) como "antes".
+Detalhes completos em `checklist-oraculo.md`.
+
+**Diferente dos outros 2 decks, o goldfish padrão aqui NÃO é
+bit-idêntico** — o fix central do Blightsteel Colossus toca uma função
+usada pelo `simulate_one`/`run_batch` normal também (correção de bug
+real já validada, não regressão): dano proxy padrão 83,80→82,45.
+
+**Resultado (modo resiliência, 3 categorias antigas → 7 atuais):** dano
+proxy 78,02→63,57 (mais um terço de queda com as 4 categorias novas
+por cima), bloqueios com sucesso 0,67→0,44 (board wipe limpa
+bloqueadores antes do ataque). Tabela completa em
+`checklist-oraculo.md`.
+
+---
+
+## Modo de resiliência ganha graveyard hate + fix central: Blightsteel Colossus indo pro cemitério errado em 7 pontos — 2026-09-20
+
+**Gatilho:** usuário separou graveyard hate real em 2 modelos (mass
+exile estilo Bojuka Bog vs. single-exile estilo Scavenging Ooze/Cease)
+e apontou que o mass exile só pode acontecer 1x/partida ("se o
+oponente gastar o Bojuka bog no 4º turno, não tem mais como repetir
+isso"). Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado real mais importante:** validando o graveyard snipe novo, o
+relatório mostrou "Blightsteel Colossus sniped do cemitério" — estado
+impossível pelo oráculo real dele ("would be put into a graveyard from
+anywhere, shuffle into library instead"). Achei **7 pontos** no arquivo
+que mandavam carta pro cemitério sem passar pelo redirect (Melded
+Moxite, Faithless Looting, limite de mão, Daretti +2, Goblin Engineer,
+Saheeli's Directive/mill, e o discard aleatório do modo de resiliência
+de ontem) — 1 deles (`.extend()` de mill) nem apareceu no grep de texto,
+só foi achado instrumentando a lista do cemitério em runtime.
+
+**Resultado (A/B 2000 jogos mesma seed, modo padrão):** o bug era
+alcançável em 99/2000 partidas (4,95%) antes do fix, 0/2000 depois.
+
+**Validação:** testes dirigidos (graveyard hate + os 3 pontos do fix
+de Blightsteel, com biblioteca de tamanho realista) + varredura de
+runtime com lista instrumentada (3000 seeds, 0 ocorrências) +
+regressão de 20.000 partidas em CADA modo (padrão e resiliência), 0
+exceções, 0 ocorrências do bug nos dois.
+
+---
+
+## Modo de resiliência ganha counterspell — última categoria do Archidekt implementada — 2026-09-19
+
+**Gatilho:** 4ª e última categoria pendente do simulador de interação
+do Archidekt. Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Diferente das outras 3 (que reagem fora do meu turno), o counter
+intercepta a conjuração do Megatron no exato momento do cast** — mexeu
+em `cast_megatron()`, a mesma função do goldfish padrão, então validei
+com 5.000 seeds de equivalência bit-a-bit confirmando 0 impacto no modo
+sem interação antes de considerar pronto.
+
+**Resultado (A/B 2000 jogos mesma seed):** 0,08 counters/partida
+(chance baixa, coerente com Megatron geralmente saindo cedo, turno 3-4,
+janela pequena pra interação escalar). Megatron nunca resolve em 8
+turnos em 6,2% dos jogos no modo resiliência (métrica nova).
+
+**Validação:** 5 testes unitários + 5.000 seeds de equivalência
+bit-a-bit do modo padrão (0 diferenças) + smoke test + A/B 2000 jogos +
+regressão de 20.000 partidas em cada modo, 0 exceções.
+
+**As 4 categorias do Archidekt (ataque, remoção, discard, counterspell)
+estão todas implementadas** no modo de resiliência opcional.
+
+---
+
+## Modo de resiliência ganha board wipe — 2026-09-19
+
+**Gatilho:** 2ª categoria pendente do simulador de interação do
+Archidekt (ordem combinada: discard > board wipe > counterspell).
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado de regra real:** Megatron na face Vehicle (Destructive Force)
+só é criatura durante O MEU turno ("Living metal") — como o modo de
+resiliência representa interação FORA do meu turno, ele fica imune a
+um wipe nessa face (mesma checagem já usada pro bloqueio desde
+2026-09-16). Na face Tyrant continua sendo alvo legal normal.
+
+**Resultado (A/B 2000 jogos mesma seed):** 0,46 wipes/partida, mata em
+média 3,90 criaturas quando dispara. Dano proxy caiu mais (74,91→66,73)
+e bloqueios com sucesso despencaram (0,64→0,46, já que o wipe some com
+os bloqueadores antes do ataque rolar) — resiliência ficou visivelmente
+mais dura.
+
+**Validação:** 6 testes unitários (incluindo o caso crítico
+Vehicle-Megatron imune) + smoke test + A/B 2000 jogos + regressão de
+20.000 partidas, 0 exceções. Goldfish padrão continua intocado.
+
+---
+
+## Modo de resiliência estendido: discard/disrupção de mão aleatória — 2026-09-19
+
+**Gatilho:** usuário pediu pra implementar a 3ª categoria do simulador
+de interação do Archidekt (ataque e remoção já existiam) — discard,
+"aleatoriamente como no modelo do Archidekt". Motivado pela própria
+Partida #1 abaixo, que já tinha exposto esse buraco (mão inteira
+descartada por um Jace's Archivist do oponente). Detalhes técnicos
+completos em `checklist-oraculo.md`.
+
+**Resultado (A/B 2000 jogos mesma seed):** descarte aleatório reduz
+levemente dano proxy (78,02→74,91) e cartas extra compradas
+(16,07→15,32) — direção esperada, menos board = menos gatilho pras
+outras 2 categorias de interação também. Avg 1,23 descartes forçados
+por partida.
+
+**Validação:** 4 testes unitários + smoke test + A/B 2000 jogos +
+regressão de 20.000 partidas, 0 exceções. Confirmado que o goldfish
+padrão (sem modo de resiliência) fica 100% intocado.
+
+---
+
+## Partida #1 — 2026-09-18
+
+- **Formato do teste:** partida real com pelo menos 1 oponente ativo (não
+  é goldfish 100% solo) — o oponente interagiu diretamente uma vez (ver
+  Turno 2 abaixo), e teve presença de board rastreada em 3 dos 6 turnos
+  (`opponentsCards`: Jace's Archivist T2, Grim Hireling T4, Zombie Rogue
+  T5), sem mais detalhes registrados sobre o board dele.
+- **Mão inicial (mulligan até):** keep na mão inicial de 7, sem mulligan
+  ("Mão inicial boa para teste, vou dar keep") — Talisman of Indulgence,
+  Plains, Myr Retriever, Feldon of the Third Path, Swamp, Terramorphic
+  Expanse, Metalwork Colossus.
+- **Turno da primeira jogada relevante:** Turno 1 — Terramorphic Expanse
+  jogado e sacrificado pela própria habilidade, busca Mountain (tapped).
+- **Turno do primeiro ataque/combo:** Turno 2 — Megatron, Tyrant
+  conjurado do zona de comando (4 mana: Plains+Swamp+Mountain+Talisman
+  of Indulgence). Logo em seguida, o oponente forçou descarte da mão
+  inteira (6 cartas: Melded Moxite, Noxious Gearhulk, Lightning Greaves,
+  Myr Retriever, Feldon of the Third Path, Metalwork Colossus) e compra
+  de 6 novas (Faithless Looting, Combustible Gearhulk, Forbidden
+  Orchard, Bygone Colossus, Brass's Tunnel-Grinder // Tecutlan, Sunlit
+  Marsh) — usuário confirmou depois: interação do oponente, provável
+  Jace's Archivist ("Whenever you draw your second card each turn, you
+  may discard your hand. If you do, draw seven cards" — o efeito real é
+  do CONTROLADOR do Jace's Archivist, não teria alvo direto na minha mão;
+  registrado como relatado pelo usuário, sem certeza 100% do texto exato
+  do lado do oponente). Perdeu Myr Retriever/Feldon/Metalwork Colossus
+  (peças de recursão/reanimação) e Lightning Greaves antes de serem
+  usadas, mas o descarte forçado também encheu o cemitério de fodder pro
+  toolbox de solda mais tarde.
+- **Curva de mana observada:** T1 1 terra (Mountain via Terramorphic),
+  T2 2 mana + Talisman of Indulgence, T3 4 mana + Megatron conjurado, T4
+  5 mana (+Arcane Signet), T5 mana suficiente pra Bygone Colossus via
+  Warp {3} + Steel Seraph + Scrap Welder no mesmo turno, T6 mana
+  suficiente pra Cursed Mirror + Blightsteel Colossus.
+- **Bombas/peças-chave puxadas:** Megatron (T2), Bygone Colossus via
+  Warp com haste (T4, atacou e depois saiu de campo — anotado no app
+  como indo pro cemitério, mas a regra real do Warp é exílio, mesma
+  ruling confirmada em 2026-09-15; possível só registro manual errado no
+  app, não misplay — não afeta o resultado da partida), Steel Seraph
+  (T4, concede voar+vínculo-vital pras minhas criaturas de poder 4+,
+  incluindo o próprio Megatron), Cursed Mirror copiando o Steel Seraph
+  (T5, não o Megatron — bate com a regra de lendário corrigida no
+  simulador em 2026-09-18), Brass's Tunnel-Grinder acumulou 3 contadores
+  Generic e transformou em Tecutlan, the Searing Rift (T5), Blightsteel
+  Colossus (T5, fica com doença de invocação até T6).
+- **Removals sofridos/enviados:** nenhum removal direto relatado —
+  Combustible Gearhulk foi sacrificado no T6 (provável fuel do próprio
+  gatilho de ataque do Megatron, "sacrifice another artifact... damage
+  equal to its mana value").
+- **Resultado:** vitória.
+- **Turno de fim de jogo:** Turno 6 — Blightsteel Colossus (11 de poder,
+  Infect) atacou sem mais doença de invocação, já letal sozinho por
+  veneno (11 ≥ 10). No mesmo turno, Chandra's Ignition também foi
+  conjurada tendo Blightsteel Colossus como criatura-alvo, dano extra de
+  veneno como backup/confirmação do combo. Bate exatamente com os 2
+  caminhos que o simulador já modela pra `blightsteel_poison_win`
+  (ataque OU Chandra's Ignition, achado real 2026-09-17) — boa validação
+  real de uma partida manual pra essa combinação.
+- **O que funcionou bem:** Megatron saiu cedo (T2) e converteu/atacou
+  todo turno a partir do T3; Steel Seraph deu voar+vínculo-vital de
+  graça pro time; Brass's Tunnel-Grinder transformou a tempo de ajudar;
+  Cursed Mirror escolheu o alvo certo (não-lendário) sozinho, sem cair
+  na armadilha da regra de lendário; fechou cedo (T6) com a linha
+  Blightsteel Colossus + Chandra's Ignition, redundante o suficiente pra
+  não depender de bloqueio real do oponente.
+- **O que travou o deck:** o descarte forçado do oponente no T2 custou 3
+  peças de recursão (Myr Retriever/Feldon/Metalwork Colossus) antes de
+  qualquer uma delas ser jogada — não impediu a vitória, mas é uma
+  fraqueza real contra decks com discard/wheel adversário (não modelada
+  no goldfish solo, que não tem oponente real).
+- **Ajustes a considerar:** nenhum ajuste de lista sugerido pelo usuário
+  nesta partida — registro é só de validação/histórico.
 
 ---
 

@@ -1,0 +1,7 @@
+Vihaan base N=6000: P(>=4 de mana e fonte de B) até o turno T (B_LANDS do harness + Arcane Signet + Treasure)
+<=T3   16.4%
+<=T4   77.4%
+<=T5   89.5%
+<=T6   93.4%
+<=T8   97.4%
+nunca até T8: 2.6% | turno médio quando acontece: 4.10

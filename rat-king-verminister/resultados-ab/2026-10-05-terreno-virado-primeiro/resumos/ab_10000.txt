@@ -1,0 +1,19 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7200 (72.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8447       5.8470      +0.0023 ±0.0038  
+  *len_tapped_lands_this_turn                   0.2007       0.1951      -0.0056 ±0.0029  
+  *rat_tokens                                   3.2757       3.3417      +0.0660 ±0.0548  
+  *len_battlefield                             16.1854      16.2165      +0.0311 ±0.0261  
+  *tokens_created_total                         6.1467       6.2123      +0.0656 ±0.0580  
+  *len_creature_cast_turn                       4.5104       4.5174      +0.0070 ±0.0065  
+  *mercenary_tokens                             0.1597       0.1617      +0.0020 ±0.0020  
+  *mana_spent_this_turn                         7.4141       7.4500      +0.0359 ±0.0358  
+   creatures_died_this_turn                     1.8417       1.8555      +0.0138 ±0.0139  
+   treasure_tokens                              0.9636       0.9737      +0.0101 ±0.0102  
+   soul_stone_harnessed                         0.0546       0.0538      -0.0008 ±0.0009  
+   library_emptied                              0.0020       0.0023      +0.0003 ±0.0003  
+   tutors_used_total                            0.9225       0.9053      -0.0172 ±0.0211  
+   cards_drawn_extra                            2.9853       3.0050      +0.0197 ±0.0277  
+   len_tapped_creatures_this_turn               0.7999       0.8027      +0.0028 ±0.0040  

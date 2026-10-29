@@ -1,0 +1,383 @@
+{
+ "deck": "lorwyn-eclipsed-blight-curse",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Auntie Ool, Cursewretch",
+   "incluidos": {
+    "Blowfly Infestation + Flourishing Defenses": {
+     "id": "1084-4994",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Blowfly Infestation",
+      "Flourishing Defenses"
+     ],
+     "prerequisitos": ""
+    },
+    "Blowfly Infestation + Hapatra, Vizier of Poisons": {
+     "id": "2228-4994",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ],
+     "usa": [
+      "Blowfly Infestation",
+      "Hapatra, Vizier of Poisons"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Blowfly Infestation + Nest of Scarabs": {
+     "id": "2760-4994",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Vorinclex, Monstrous Raider + Vraska, Betrayal's Sting": {
+     "id": "1529-1887",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game"
+     ]
+    },
+    "Flourishing Defenses + High Perfect Morcant": {
+     "id": "1084-7151",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite proliferate"
+     ]
+    },
+    "Devoted Druid + Hazel's Brewmaster": {
+     "id": "4762-5856",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Innkeeper's Talent + Vraska, Betrayal's Sting": {
+     "id": "1529-5902",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game"
+     ]
+    },
+    "Devoted Druid + Tyvar, the Pummeler": {
+     "id": "4762-6189",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creatures you control until end of turn"
+     ]
+    },
+    "Bloodletter of Aclazotz + Tree of Perdition": {
+     "id": "2615-5342",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "All Will Be One + Everlasting Torment": {
+     "id": "691-2390",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy any number of creatures opponents control",
+      "Destroy any number of creatures opponents control whenever you put a counter on a permanent or player",
+      "Infinite -1/-1 counters on creatures opponents control"
+     ]
+    },
+    "Devoted Druid + Mikaeus, the Unhallowed": {
+     "id": "628-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Tree of Perdition + Wound Reflection": {
+     "id": "2615-4475",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Devoted Druid + Quillspike": {
+     "id": "75-4762",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Grave Venerations + Hapatra, Vizier of Poisons + Yawgmoth, Thran Physician": {
+     "id": "2228-4279-7192",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy all creatures opponents control",
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Lock"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Devoted Druid": {
+     "id": "4762-5455",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana",
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Flourishing Defenses + Grave Venerations + Yawgmoth, Thran Physician": {
+     "id": "1084-4279-7192",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy all creatures opponents control",
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Lock"
+     ]
+    },
+    "Soul Immolation + Tree of Perdition": {
+     "id": "2615-7224",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite damage",
+      "Target opponent loses the game"
+     ]
+    },
+    "Brash Taunter + Fire Covenant": {
+     "id": "220-1203",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite damage to one opponent"
+     ]
+    },
+    "Tree of Perdition + Triskaidekaphobia": {
+     "id": "680-2615",
+     "bracketTag": "R",
+     "produz": [
+      "Target player loses the game"
+     ]
+    },
+    "Devoted Druid + Luxior, Giada's Gift": {
+     "id": "3774-4762",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Devoted Druid + Haldir, Lórien Lieutenant": {
+     "id": "4762-6315",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinite power and toughness for certain creatures until end of turn"
+     ]
+    },
+    "Archfiend of Despair + Tree of Perdition": {
+     "id": "2607-2615",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Devoted Druid + Hapatra, Vizier of Poisons + Ivy Lane Denizen": {
+     "id": "2228-2850-4762",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite green mana"
+     ]
+    },
+    "Devoted Druid + Flourishing Defenses + Ivy Lane Denizen": {
+     "id": "1084-2850-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite green mana"
+     ]
+    },
+    "Fire Covenant + Screaming Nemesis": {
+     "id": "1203-5759",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite damage to one opponent"
+     ]
+    },
+    "Fire Covenant + Stuffy Doll": {
+     "id": "1203-3799",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite damage to target player"
+     ]
+    },
+    "Fire Covenant + Wrathful Red Dragon": {
+     "id": "1203-3901",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite damage to one opponent"
+     ]
+    },
+    "Tree of Perdition + Warlock Class": {
+     "id": "1642-2615",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Channeler Initiate + Devoted Druid + Necrotic Ooze": {
+     "id": "1656-2987-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Hapatra, Vizier of Poisons + Host of the Hereafter": {
+     "id": "2228-6854",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Blitzwing, Cruel Tormentor // Blitzwing, Adaptive Assailant + Tree of Perdition": {
+     "id": "2615-5008",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Devoted Druid + Hexavus": {
+     "id": "2028-4762",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Fire Covenant + Imodane, the Pyrohammer": {
+     "id": "235-1203",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite damage"
+     ]
+    },
+    "Flourishing Defenses + Host of the Hereafter": {
+     "id": "1084-6854",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Fire Covenant + Mogg Maniac": {
+     "id": "593-1203",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite damage to one opponent"
+     ]
+    },
+    "Devoted Druid + Grim Poppet + Necrotic Ooze": {
+     "id": "1656-3108-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite -1/-1 counters",
+      "Infinite green mana"
+     ]
+    },
+    "Fire Covenant + Ill-Tempered Loner // Howlpack Avenger": {
+     "id": "1203-3417",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite damage to one opponent"
+     ]
+    },
+    "Fire Covenant + Spiteful Sliver": {
+     "id": "1203-2613",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite damage to target player"
+     ]
+    },
+    "Donna Noble + Fire Covenant": {
+     "id": "918-1203",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite damage to one opponent"
+     ]
+    },
+    "Fire Covenant + Wrathful Raptors": {
+     "id": "1203-7167",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite damage to one opponent"
+     ]
+    },
+    "Devoted Druid + Elegant Entourage + Flourishing Defenses": {
+     "id": "1084-4762-7503",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Devoted Druid + Elegant Entourage + Hapatra, Vizier of Poisons": {
+     "id": "2228-4762-7503",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Blowfly Infestation + Flourishing Defenses",
+      "relevant": false,
+      "borderlineRelevant": false,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Blowfly Infestation + Hapatra, Vizier of Poisons",
+      "relevant": false,
+      "borderlineRelevant": false,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

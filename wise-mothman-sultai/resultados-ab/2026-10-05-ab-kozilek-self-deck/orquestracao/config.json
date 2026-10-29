@@ -1,0 +1,140 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "self_lost",
+  "decked",
+  "died_life",
+  "cleared_T8",
+  "cleared_T10",
+  "opps_eliminated_total",
+  "library_min",
+  "library_at_end",
+  "kozilek_shuffles_total",
+  "kozilek_cast_turn__nunca",
+  "draws_total",
+  "cards_milled_self_total",
+  "turn_library_emptied__nunca",
+  "decked_turn__nunca",
+  "decked_turn__ate_T6",
+  "life_min",
+  "self_mill_blocked_total"
+ ],
+ "variantes": {
+  "base": {},
+  "K_sem_embaralhar": {
+   "KOZILEK_SHUFFLE_ENABLED": false
+  },
+  "K_cortado_por_forest": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Forest"
+    ]
+   ]
+  },
+  "guarda_desligada": {
+   "SELF_MILL_GUARD_ENABLED": false
+  },
+  "guarda_desligada+K_sem_embaralhar": {
+   "SELF_MILL_GUARD_ENABLED": false,
+   "KOZILEK_SHUFFLE_ENABLED": false
+  },
+  "guarda_desligada+K_cortado_por_forest": {
+   "SELF_MILL_GUARD_ENABLED": false,
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Forest"
+    ]
+   ]
+  },
+  "reserva_0": {
+   "SELF_MILL_RESERVE": 0
+  },
+  "reserva_0+K_sem_embaralhar": {
+   "SELF_MILL_RESERVE": 0,
+   "KOZILEK_SHUFFLE_ENABLED": false
+  },
+  "reserva_0+K_cortado_por_forest": {
+   "SELF_MILL_RESERVE": 0,
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Forest"
+    ]
+   ]
+  },
+  "reserva_16": {
+   "SELF_MILL_RESERVE": 16
+  },
+  "orb_sem_limite": {
+   "ORB_CAST_MIN_LIBRARY": 0
+  },
+  "orb_sem_limite+K_sem_embaralhar": {
+   "ORB_CAST_MIN_LIBRARY": 0,
+   "KOZILEK_SHUFFLE_ENABLED": false
+  },
+  "orb_sem_limite+K_cortado_por_forest": {
+   "ORB_CAST_MIN_LIBRARY": 0,
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Forest"
+    ]
+   ]
+  },
+  "palantir_sempre_recusa": {
+   "PALANTIR_OPP_LETS_DRAW": 0.0
+  },
+  "palantir_sempre_recusa+K_sem_embaralhar": {
+   "PALANTIR_OPP_LETS_DRAW": 0.0,
+   "KOZILEK_SHUFFLE_ENABLED": false
+  },
+  "palantir_sempre_recusa+K_cortado_por_forest": {
+   "PALANTIR_OPP_LETS_DRAW": 0.0,
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Forest"
+    ]
+   ]
+  },
+  "palantir_sempre_recusa+guarda_desligada": {
+   "PALANTIR_OPP_LETS_DRAW": 0.0,
+   "SELF_MILL_GUARD_ENABLED": false
+  },
+  "palantir_sempre_recusa+guarda_desligada+K_sem_embaralhar": {
+   "PALANTIR_OPP_LETS_DRAW": 0.0,
+   "SELF_MILL_GUARD_ENABLED": false,
+   "KOZILEK_SHUFFLE_ENABLED": false
+  },
+  "palantir_sempre_recusa+guarda_desligada+K_cortado_por_forest": {
+   "PALANTIR_OPP_LETS_DRAW": 0.0,
+   "SELF_MILL_GUARD_ENABLED": false,
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Forest"
+    ]
+   ]
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "K_sem_embaralhar",
+  "K_cortado_por_forest",
+  "guarda_desligada",
+  "guarda_desligada+K_sem_embaralhar",
+  "guarda_desligada+K_cortado_por_forest",
+  "palantir_sempre_recusa+guarda_desligada",
+  "palantir_sempre_recusa+guarda_desligada+K_sem_embaralhar",
+  "palantir_sempre_recusa+guarda_desligada+K_cortado_por_forest"
+ ],
+ "regressao": [
+  "guarda_desligada",
+  "reserva_0",
+  "orb_sem_limite",
+  "palantir_sempre_recusa+guarda_desligada+K_cortado_por_forest"
+ ]
+}

@@ -1,0 +1,102 @@
+{
+ "Beast Whisperer": {
+  "name": "Beast Whisperer",
+  "mana_cost": "{2}{G}{G}",
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "Whenever you cast a creature spell, draw a card.",
+  "flavor_name": null,
+  "usd": "9.41",
+  "usd_foil": null,
+  "eur": "6.90",
+  "commander": "legal",
+  "ci": [
+   "G"
+  ],
+  "oracle_id": "5da7eea8-bb9e-47ce-a554-8a1ee058bd7a",
+  "set": "Ravnica: Clue Edition"
+ },
+ "Devoted Druid": {
+  "name": "Devoted Druid",
+  "mana_cost": "{1}{G}",
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "{T}: Add {G}.\nPut a -1/-1 counter on this creature: Untap this creature.",
+  "flavor_name": null,
+  "usd": "1.47",
+  "usd_foil": null,
+  "eur": "1.07",
+  "commander": "legal",
+  "ci": [
+   "G"
+  ],
+  "oracle_id": "cb814e16-acf7-41d5-a357-1323dcc369f3",
+  "set": "Lorwyn Eclipsed Commander"
+ },
+ "Maralen, Fae Ascendant": {
+  "name": "Maralen, Fae Ascendant",
+  "mana_cost": "{2}{B}{G}{U}",
+  "type_line": "Legendary Creature — Elf Faerie Noble",
+  "oracle_text": "Flying\nWhenever Maralen or another Elf or Faerie you control enters, exile the top two cards of target opponent's library.\nOnce each turn, you may cast a spell with mana value less than or equal to the number of Elves and Faeries you control from among cards exiled with Maralen this turn without paying its mana cost.",
+  "flavor_name": null,
+  "usd": "0.30",
+  "usd_foil": "0.57",
+  "eur": "0.34",
+  "commander": "legal",
+  "ci": [
+   "B",
+   "G",
+   "U"
+  ],
+  "oracle_id": "114e1d2c-cefc-4e2a-922e-3b2ceed1871d",
+  "set": "Lorwyn Eclipsed"
+ },
+ "Buried Alive": {
+  "name": "Buried Alive",
+  "mana_cost": "{2}{B}",
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for up to three creature cards, put them into your graveyard, then shuffle.",
+  "flavor_name": null,
+  "usd": "2.69",
+  "usd_foil": "3.92",
+  "eur": "1.35",
+  "commander": "legal",
+  "ci": [
+   "B"
+  ],
+  "oracle_id": "8203c621-a1a0-4865-8c9a-0d4064c86107",
+  "set": "Modern Horizons 3"
+ },
+ "Deadly Rollick": {
+  "name": "Deadly Rollick",
+  "mana_cost": "{3}{B}",
+  "type_line": "Instant",
+  "oracle_text": "If you control a commander, you may cast this spell without paying its mana cost.\nExile target creature.",
+  "flavor_name": null,
+  "usd": "27.91",
+  "usd_foil": "35.14",
+  "eur": "24.38",
+  "commander": "legal",
+  "ci": [
+   "B"
+  ],
+  "oracle_id": "0456ec64-2c81-4763-a352-8ff64a4c3d6b",
+  "set": "Commander Masters"
+ },
+ "Awaken the Honored Dead": {
+  "name": "Awaken the Honored Dead",
+  "mana_cost": "{B}{G}{U}",
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Destroy target nonland permanent.\nII — Mill three cards.\nIII — You may discard a card. When you do, return target creature or land card from your graveyard to your hand.",
+  "flavor_name": null,
+  "usd": "0.44",
+  "usd_foil": "0.59",
+  "eur": "0.38",
+  "commander": "legal",
+  "ci": [
+   "B",
+   "G",
+   "U"
+  ],
+  "oracle_id": "5f694917-f434-4459-bc86-caf9ac1c80e7",
+  "set": "Tarkir: Dragonstorm"
+ }
+}

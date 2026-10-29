@@ -1,0 +1,21 @@
+N=5000 partidas (padrao, sementes 3000000..3004999); 59968 estados (turno >= 3, 1a e 2a main).
+
+efeito unilateral                                                                         %mana  %mana+cor
+Vona's Hunger (instantanea; 'metade' com 10+ permanentes)                                 62.5%      61.6%
+Crackling Doom (instantanea; 2 de dano a cada oponente + o de maior poder)                62.5%      53.9%
+Rush of Dread (so' 1 oponente alvo; metade das criaturas, modo +{1})                      49.3%      46.6%
+Make an Example (eu escolho a pilha de cada oponente)                                     49.3%      48.9%
+Syphon Flesh (cada outro jogador sacrifica 1; eu ganho um Zumbi por criatura)             37.3%      37.3%
+Perilous Predicament (instantanea; 1 artefato-criatura + 1 nao-artefato por oponente)     37.3%      37.3%
+Blasphemous Act (referencia: custo REDUZIDO pelas criaturas MINHAS)                       32.8%      32.6%
+
+Condicao 'ascend' do Vona's Hunger (10 ou mais permanentes meus, contando terrenos, fichas, Treasures, Clues e Foods), por turno:
+turno       estados     %>=10 perm  permanentes (media)
+3             10000           0.1%                 4.08
+4             10000           2.9%                 6.07
+5             10000          28.8%                 8.58
+6             10000          70.8%                11.64
+7              9994          88.7%                15.46
+8              9974          93.5%                20.37
+
+Vona's Hunger no modo METADE (10+ permanentes) E conjuravel por mana+cor, % de todos os estados: 33.6%

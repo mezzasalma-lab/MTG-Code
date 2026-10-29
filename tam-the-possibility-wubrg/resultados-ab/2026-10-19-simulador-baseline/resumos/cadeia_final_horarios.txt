@@ -1,0 +1,6 @@
+reg_ini 00:14:32
+reg_fim 00:23:56
+cons_fim 00:33:08
+ab_fim 00:43:19
+ghost_fim 00:45:01
+det_fim 00:46:55

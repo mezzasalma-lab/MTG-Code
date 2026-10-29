@@ -1,0 +1,59 @@
+== (1) ENTRADA: terreno x oraculo (T1, 40 de vida, 3 oponentes, campo vazio)
+  Baxter Building              [baxter   ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Boseiju, Who Endures         [boseiju  ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Bountiful Promenade          [slow     ] sim: desvirado                          oraculo: This land enters tapped unless you have two or more opponents.
+  Breeding Pool                [shock    ] sim: desvirado, vida 38                 oraculo: As this land enters, you may pay 2 life. If you don't, it enters tapped.
+  City of Brass                [city     ] sim: desvirado                          oraculo: Whenever this land becomes tapped, it deals 1 damage to you.
+  Command Tower                [tower    ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Exotic Orchard               [orchard  ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Fire-Lit Thicket             [filter   ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Flooded Grove                [filter   ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Great Hall of the Citadel    [greathall] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Hallowed Fountain            [shock    ] sim: desvirado, vida 38                 oraculo: As this land enters, you may pay 2 life. If you don't, it enters tapped.
+  Indatha Triome               [triome   ] sim: virado                             oraculo: This land enters tapped.
+  Jetmir's Garden              [triome   ] sim: virado                             oraculo: This land enters tapped.
+  Ketria Triome                [triome   ] sim: virado                             oraculo: This land enters tapped.
+  Misty Rainforest             [fetch    ] sim: NAO ENTROU (fetch sacrificada)     oraculo: (nada sobre entrar virado)
+  Mossfire Valley              [pay1     ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Overflowing Basin            [pay1     ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Overgrown Tomb               [shock    ] sim: desvirado, vida 38                 oraculo: As this land enters, you may pay 2 life. If you don't, it enters tapped.
+  Plaza of Heroes              [plaza    ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Rejuvenating Springs         [slow     ] sim: desvirado                          oraculo: This land enters tapped unless you have two or more opponents.
+  Spara's Headquarters         [triome   ] sim: virado                             oraculo: This land enters tapped.
+  Spire Garden                 [slow     ] sim: desvirado                          oraculo: This land enters tapped unless you have two or more opponents.
+  Starting Town                [town     ] sim: desvirado                          oraculo: This land enters tapped unless it's your first, second, or third turn of the game.
+  Steam Vents                  [shock    ] sim: desvirado, vida 38                 oraculo: As this land enters, you may pay 2 life. If you don't, it enters tapped.
+  Stomping Ground              [shock    ] sim: desvirado, vida 38                 oraculo: As this land enters, you may pay 2 life. If you don't, it enters tapped.
+  Temple Garden                [shock    ] sim: desvirado, vida 38                 oraculo: As this land enters, you may pay 2 life. If you don't, it enters tapped.
+  The World Tree               [worldtree] sim: virado                             oraculo: This land enters tapped.
+  Twilight Mire                [filter   ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Undergrowth Stadium          [slow     ] sim: desvirado                          oraculo: This land enters tapped unless you have two or more opponents.
+  Verdant Catacombs            [fetch    ] sim: NAO ENTROU (fetch sacrificada)     oraculo: (nada sobre entrar virado)
+  Watery Grave                 [shock    ] sim: desvirado, vida 38                 oraculo: As this land enters, you may pay 2 life. If you don't, it enters tapped.
+  Windswept Heath              [fetch    ] sim: NAO ENTROU (fetch sacrificada)     oraculo: (nada sobre entrar virado)
+  Wooded Bastion               [filter   ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Wooded Foothills             [fetch    ] sim: NAO ENTROU (fetch sacrificada)     oraculo: (nada sobre entrar virado)
+  Yavimaya, Cradle of Growth   [yavimaya ] sim: desvirado                          oraculo: (nada sobre entrar virado)
+  Zagoth Triome                [triome   ] sim: virado                             oraculo: This land enters tapped.
+   (lido a mao: triomes virados; choques 'pay 2 life' -> desvirado com 38; lentos 'two or more opponents' -> desvirado com 3 oponentes; Starting Town 'first, second or third turn' -> desvirado no T1; os demais desvirados)
+
+== (2) FETCH: sacrificada + 1 de vida + busca real + conjunto de alvos == subtipos do oraculo
+  Misty Rainforest     tipos ['Forest', 'Island']: em campo=False cemiterio=True vida 40->39 biblioteca 98->97 buscou=['Zagoth Triome']
+      alvos do simulador == subtipos do oraculo? True (12 terrenos)  -> OK
+  Verdant Catacombs    tipos ['Swamp', 'Forest']: em campo=False cemiterio=True vida 40->39 biblioteca 98->97 buscou=['Zagoth Triome']
+      alvos do simulador == subtipos do oraculo? True (10 terrenos)  -> OK
+  Windswept Heath      tipos ['Forest', 'Plains']: em campo=False cemiterio=True vida 40->39 biblioteca 98->97 buscou=['Zagoth Triome']
+      alvos do simulador == subtipos do oraculo? True (10 terrenos)  -> OK
+  Wooded Foothills     tipos ['Mountain', 'Forest']: em campo=False cemiterio=True vida 40->39 biblioteca 98->97 buscou=['Zagoth Triome']
+      alvos do simulador == subtipos do oraculo? True (10 terrenos)  -> OK
+
+== (3) TERRENO NAO E' MAGIA: contadores de magia antes/depois de jogar um terreno comum
+  Command Tower        contadores iguais: True  ({'spells_cast_this_turn': 0, 'noncreature_spells_this_turn': 0} -> {'spells_cast_this_turn': 0, 'noncreature_spells_this_turn': 0})
+  City of Brass        contadores iguais: True  ({'spells_cast_this_turn': 0, 'noncreature_spells_this_turn': 0} -> {'spells_cast_this_turn': 0, 'noncreature_spells_this_turn': 0})
+  Plaza of Heroes      contadores iguais: True  ({'spells_cast_this_turn': 0, 'noncreature_spells_this_turn': 0} -> {'spells_cast_this_turn': 0, 'noncreature_spells_this_turn': 0})
+
+== (4) LANDFALL: cartas da lista com gatilho de entrada/jogada de terreno (oraculo)
+  total de cartas com gatilho de terreno: 0 (o simulador declara N/A em `land_enters`; `audit_landfall_ordem.py` fica sem candidato)
+  cartas que mudam as jogadas de terreno por turno ('additional land'): ['Way of the Paradox'] -> tratadas por `extra_land_drops` -> `land_drops_available` (teste dirigido: tam-the-possibility-wubrg/testes/t_manual1.py, 'Manual #1 T7')
+
+FALHAS: nenhuma

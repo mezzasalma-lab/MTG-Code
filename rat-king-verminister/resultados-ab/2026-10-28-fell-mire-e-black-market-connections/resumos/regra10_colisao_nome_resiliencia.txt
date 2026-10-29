@@ -1,0 +1,1 @@
+rat-king-verminister resiliencia N=400: marcacoes=598 colisoes_por_nome=0 partidas_com_colisao=0 nomes={}

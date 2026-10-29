@@ -1,0 +1,380 @@
+{
+ "deck": "edge-of-eternities-counter-intelligence",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Inspirit, Flagship Vessel",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Felidar Guardian + Phyrexian Metamorph": {
+     "id": "2781-3734",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Inspirit, Flagship Vessel + Kilo, Apogee Mind + Magistrate's Scepter": {
+     "id": "3609-6702-6750",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Magistrate's Scepter + Resourceful Defense": {
+     "id": "3609-4153--126",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Magistrate's Scepter + Moxite Refinery": {
+     "id": "3609-6881--127",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Aetherflux Reservoir + Cyberdrive Awakener": {
+     "id": "2734-4740",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Emry, Lurker of the Loch + Mindslaver": {
+     "id": "1167-1329",
+     "bracketTag": "S",
+     "produz": [
+      "You control one opponent on each of their turns",
+      "Lock"
+     ]
+    },
+    "Darksteel Reactor + Dawnsire, Sunstar Dreadnought + Resourceful Defense": {
+     "id": "4153-4873-6758",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game"
+     ]
+    },
+    "Coretapper + Inspirit, Flagship Vessel + Magistrate's Scepter": {
+     "id": "3492-3609-6750",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Crystalline Crawler + Freed from the Real + Steel Overseer": {
+     "id": "1102-2060-4222",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Aura of Dominion + Kilo, Apogee Mind + Pentad Prism": {
+     "id": "725-971-6702",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite proliferate"
+     ]
+    },
+    "Coretapper + Emry, Lurker of the Loch + Magistrate's Scepter": {
+     "id": "1329-3492-3609",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Aura of Dominion + Crystalline Crawler + Kilo, Apogee Mind": {
+     "id": "725-2060-6702",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite proliferate"
+     ]
+    },
+    "Cyberdrive Awakener + Freed from the Real + Solar Array": {
+     "id": "2734-4222-6788",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite charge counters on artifacts you cast",
+      "Infinite +1/+1 counters on artifact creatures you cast"
+     ]
+    },
+    "Crystalline Crawler + Pemmin's Aura + Steel Overseer": {
+     "id": "1102-2060-3525",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Deepglow Skate + Myojin of Cryptic Dreams": {
+     "id": "1437-2431",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite proliferate"
+     ]
+    },
+    "Cyberdrive Awakener + Pemmin's Aura + Solar Array": {
+     "id": "2734-3525-6788",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite charge counters on artifacts you cast",
+      "Infinite +1/+1 counters on artifact creatures you cast"
+     ]
+    },
+    "Etherium Sculptor + Jhoira, Weatherlight Captain + Sol Ring + Words of Wind": {
+     "id": "1690-1976-2538-5034",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite storm count",
+      "Return all permanents opponents control to their owner's hand",
+      "Infinite creature LTB"
+     ]
+    },
+    "Astral Cornucopia + Filigree Sages": {
+     "id": "2544-2593",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana artifacts you control can produce",
+      "Infinite untap of artifacts you control"
+     ]
+    },
+    "Enthusiastic Mechanaut + Jhoira, Weatherlight Captain + Sol Ring + Words of Wind": {
+     "id": "1690-2538-4908-5034",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite storm count",
+      "Return all permanents opponents control to their owner's hand",
+      "Infinite creature LTB"
+     ]
+    },
+    "Empowered Autogenerator + Filigree Sages": {
+     "id": "198-2544",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana artifacts you control can produce",
+      "Infinite untap of artifacts you control"
+     ]
+    },
+    "Darksteel Reactor + Eternity Vessel + Resourceful Defense": {
+     "id": "1870-4153-4873",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game"
+     ]
+    },
+    "Cloud Key + Jhoira, Weatherlight Captain + Sol Ring + Words of Wind": {
+     "id": "1690-2146-2538-5034",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite storm count",
+      "Return all permanents opponents control to their owner's hand",
+      "Infinite creature LTB"
+     ]
+    },
+    "Insight Engine + Mind Over Matter": {
+     "id": "4067-6764",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-discard triggers",
+      "Infinite draw triggers",
+      "Infinite looting"
+     ]
+    },
+    "Emry, Lurker of the Loch + Hangarback Walker + Intruder Alarm": {
+     "id": "1329-1636-2363",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Blazing Sunsteel + The Mycosynth Gardens": {
+     "id": "514-2723",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Mirror-Mad Phantasm + Phyrexian Metamorph": {
+     "id": "2084-3734",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Cyberdrive Awakener + Everflowing Chalice + Voltaic Construct": {
+     "id": "1978-2734-4563",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite mana artifacts you control can produce",
+      "Infinite untap of artifacts you control"
+     ]
+    },
+    "Leonin Relic-Warder + Phyrexian Metamorph": {
+     "id": "3734-5276",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Astral Cornucopia + Cyberdrive Awakener + Voltaic Construct": {
+     "id": "1978-2593-2734",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana artifacts you control can produce",
+      "Infinite untap of artifacts you control"
+     ]
+    },
+    "Blazing Sunsteel + Phyrexian Metamorph": {
+     "id": "2723-3734",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Enduring Renewal + Hangarback Walker": {
+     "id": "678-2363",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Phyrexian Metamorph + Wispweaver Angel": {
+     "id": "1621-3734",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Kilo, Apogee Mind + Magosi, the Waterveil + Resourceful Defense": {
+     "id": "757-4153-6702",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Cyberdrive Awakener + Empowered Autogenerator + Voltaic Construct": {
+     "id": "198-1978-2734",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana artifacts you control can produce",
+      "Infinite untap of artifacts you control"
+     ]
+    },
+    "Crystalline Crawler + Drafna, Founder of Lat-Nam + Lux Artillery": {
+     "id": "1034-2060-4331",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Delaying Shield + Resourceful Defense": {
+     "id": "1761-4153",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Emry, Lurker of the Loch + Hangarback Walker + Thornbite Staff": {
+     "id": "1329-2178-2363",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Crystalline Crawler + Deadeye Navigator + Deepglow Skate": {
+     "id": "1409-2060-2431",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite blinking",
+      "Infinite colored mana"
+     ]
+    },
+    "Alibou, Ancient Witness + Breath of Fury + Threefold Thunderhulk": {
+     "id": "3259-5359-7295",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite combat damage"
+     ]
+    },
+    "Crystalline Crawler + Lux Artillery + Meticulous Excavation": {
+     "id": "1034-1350-2060",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Hullbreaker Horror": {
+     "id": "513--62",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite storm count"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

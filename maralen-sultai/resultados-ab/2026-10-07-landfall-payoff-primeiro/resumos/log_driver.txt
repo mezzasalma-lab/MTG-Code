@@ -1,0 +1,139 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: LANDFALL_PAYOFF_FIRST=True
+Bit-identidade: arquivo vivo com as chaves {'LANDFALL_PAYOFF_FIRST': False} == snapshot codigo/maralen_goldfish_v1_ANTES_aaf2c2b.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['payoff_first_casts'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1705 (85.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.1910       6.2140      +0.0230 ±0.0160  
+  *landfall_elf_tokens_total                    0.2820       0.3790      +0.0970 ±0.0198  
+  *landfall_counters_total                      0.3285       0.4490      +0.1205 ±0.0238  
+  *tokens_created_total                      1027.9370     923.0370    -104.9000 ±100.3345
+  *elf_tokens                                1026.4780     921.5825    -104.8955 ±100.3348
+   ramp_pieces_cast_total                       4.9185       4.9455      +0.0270 ±0.0321  
+   staff_infinite_draws                         1.5980       1.6860      +0.0880 ±0.1136  
+   infinite_combo_turn__nunca                   0.8445       0.8445      +0.0000 ±0.0052  
+   infinite_combo_turn__ate_T4                  0.0025       0.0030      +0.0005 ±0.0010  
+   infinite_combo_turn__ate_T5                  0.0155       0.0165      +0.0010 ±0.0020  
+   infinite_combo_turn__ate_T6                  0.0450       0.0455      +0.0005 ±0.0022  
+  *cards_exiled_total                          22.9250      23.1545      +0.2295 ±0.0992  
+  *maralen_triggers_total                      12.6085      12.7785      +0.1700 ±0.0791  
+  *len_library                                 52.6770      52.3120      -0.3650 ±0.1938  
+  *library_emptied                              0.0995       0.1060      +0.0065 ±0.0040  
+  *black_market_mercenaries_total               0.4695       0.4795      +0.0100 ±0.0065  
+  *black_market_treasures_total                 0.4695       0.4795      +0.0100 ±0.0065  
+  *len_battlefield                             21.3365      21.4655      +0.1290 ±0.0857  
+  *interaction_spells_cast_total                2.4445       2.4725      +0.0280 ±0.0188  
+  *len_creature_cast_turn                      11.3830      11.4735      +0.0905 ±0.0619  
+  *life                                        35.7240      35.6685      -0.0555 ±0.0401  
+  *len_graveyard                                2.9990       3.0270      +0.0280 ±0.0203  
+  *len_exile_maralen                            6.1590       6.2380      +0.0790 ±0.0681  
+   len_tapped_lands_this_turn                   0.1945       0.1890      -0.0055 ±0.0060  
+   cards_drawn_extra                            7.5015       7.6380      +0.1365 ±0.1488  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1773 (88.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8820       5.8940      +0.0120 ±0.0122  
+  *landfall_elf_tokens_total                    0.1085       0.1755      +0.0670 ±0.0160  
+  *landfall_counters_total                      0.1230       0.2250      +0.1020 ±0.0209  
+   tokens_created_total                       236.7930     226.8670      -9.9260 ±33.9499 
+   elf_tokens                                 155.4415     155.4735      +0.0320 ±27.7255 
+   ramp_pieces_cast_total                       3.6870       3.7060      +0.0190 ±0.0229  
+   staff_infinite_draws                         0.4825       0.5250      +0.0425 ±0.0828  
+   commander_cast_turn__ate_T4                  0.4035       0.4040      +0.0005 ±0.0010  
+  *commander_cast_turn__ate_T5                  0.7680       0.7655      -0.0025 ±0.0022  
+   commander_cast_turn__ate_T6                  0.8765       0.8750      -0.0015 ±0.0017  
+   infinite_combo_turn__nunca                   0.9365       0.9365      +0.0000 ±0.0031  
+   infinite_combo_turn__ate_T5                  0.0095       0.0105      +0.0010 ±0.0014  
+   infinite_combo_turn__ate_T6                  0.0230       0.0235      +0.0005 ±0.0010  
+  *len_smart_counter_log                        0.1260       0.1150      -0.0110 ±0.0050  
+  *smart_counters_total                         0.1260       0.1150      -0.0110 ±0.0050  
+  *len_library                                 66.2075      65.9365      -0.2710 ±0.1536  
+  *marwyn_power                                 1.5725       1.6320      +0.0595 ±0.0342  
+  *maralen_triggers_total                       7.5805       7.6735      +0.0930 ±0.0559  
+  *cards_exiled_total                          14.6890      14.8190      +0.1300 ±0.0812  
+  *commander_cast_count                         1.4920       1.4815      -0.0105 ±0.0068  
+  *len_creature_cast_turn                       8.2875       8.3515      +0.0640 ±0.0439  
+  *library_emptied                              0.0160       0.0195      +0.0035 ±0.0026  
+  *cards_drawn_extra                            2.5680       2.7065      +0.1385 ±0.1051  
+  *len_smart_attack_log                         1.2445       1.2605      +0.0160 ±0.0123  
+  *smart_attacks_taken_total                    1.2445       1.2605      +0.0160 ±0.0123  
+  *life                                        35.4490      35.3985      -0.0505 ±0.0415  
+  *bounce_untap_bonus_this_turn                86.5925      86.7135      +0.1210 ±0.1031  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8385 (83.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.1536       6.1692      +0.0156 ±0.0070  
+  *landfall_elf_tokens_total                    0.2501       0.3562      +0.1061 ±0.0094  
+  *landfall_counters_total                      0.3292       0.4500      +0.1208 ±0.0104  
+   tokens_created_total                      1002.8867    1030.9947     +28.1080 ±42.2181 
+   elf_tokens                                1001.4788    1029.5888     +28.1100 ±42.2172 
+   ramp_pieces_cast_total                       5.0055       5.0103      +0.0048 ±0.0171  
+   staff_infinite_draws                         2.1122       2.1231      +0.0109 ±0.0698  
+   commander_cast_turn__ate_T4                  0.4937       0.4938      +0.0001 ±0.0002  
+   infinite_combo_turn__nunca                   0.8396       0.8397      +0.0001 ±0.0024  
+  *infinite_combo_turn__ate_T4                  0.0031       0.0036      +0.0005 ±0.0004  
+   infinite_combo_turn__ate_T5                  0.0198       0.0201      +0.0003 ±0.0006  
+   infinite_combo_turn__ate_T6                  0.0490       0.0494      +0.0004 ±0.0009  
+  *cards_exiled_total                          23.2003      23.3726      +0.1723 ±0.0597  
+  *maralen_triggers_total                      12.8792      13.0164      +0.1372 ±0.0476  
+  *marwyn_power                                 2.6000       2.6741      +0.0741 ±0.0268  
+  *len_library                                 52.0717      51.8431      -0.2286 ±0.1049  
+  *itlimoc_transform_turn__ate_T5               0.0684       0.0696      +0.0012 ±0.0008  
+  *library_emptied                              0.1048       0.1077      +0.0029 ±0.0020  
+  *itlimoc_transform_turn__ate_T6               0.1310       0.1328      +0.0018 ±0.0013  
+  *len_battlefield                             21.3383      21.3980      +0.0597 ±0.0435  
+  *black_market_mercenaries_total               0.4686       0.4727      +0.0041 ±0.0030  
+  *black_market_treasures_total                 0.4686       0.4727      +0.0041 ±0.0030  
+  *interaction_spells_cast_total                2.4983       2.5116      +0.0133 ±0.0104  
+  *life                                        35.7805      35.7579      -0.0226 ±0.0190  
+  *len_graveyard                                3.0668       3.0799      +0.0131 ±0.0112  
+  *warmaster_used_this_turn                     0.1961       0.1990      +0.0029 ±0.0026  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8828 (88.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           5.8224       5.8342      +0.0118 ±0.0051  
+  *landfall_elf_tokens_total                    0.0898       0.1656      +0.0758 ±0.0071  
+  *landfall_counters_total                      0.1256       0.2118      +0.0862 ±0.0080  
+   tokens_created_total                       254.7245     258.8006      +4.0761 ±17.0867 
+   elf_tokens                                 140.3941     146.4313      +6.0372 ±13.8586 
+   ramp_pieces_cast_total                       3.7247       3.7300      +0.0053 ±0.0112  
+   staff_infinite_draws                         0.5745       0.5964      +0.0219 ±0.0446  
+   commander_cast_turn__nunca                   0.0476       0.0478      +0.0002 ±0.0004  
+   commander_cast_turn__ate_T3                  0.1400       0.1399      -0.0001 ±0.0002  
+   commander_cast_turn__ate_T4                  0.4176       0.4180      +0.0004 ±0.0006  
+   commander_cast_turn__ate_T5                  0.7584       0.7582      -0.0002 ±0.0006  
+   commander_cast_turn__ate_T6                  0.8747       0.8753      +0.0006 ±0.0007  
+   infinite_combo_turn__nunca                   0.9430       0.9429      -0.0001 ±0.0015  
+   infinite_combo_turn__ate_T4                  0.0024       0.0027      +0.0003 ±0.0003  
+   infinite_combo_turn__ate_T5                  0.0113       0.0117      +0.0004 ±0.0006  
+  *infinite_combo_turn__ate_T6                  0.0234       0.0241      +0.0007 ±0.0006  
+  *len_smart_counter_log                        0.1327       0.1186      -0.0141 ±0.0028  
+  *smart_counters_total                         0.1327       0.1186      -0.0141 ±0.0028  
+  *commander_cast_count                         1.4974       1.4837      -0.0137 ±0.0037  
+  *cards_exiled_total                          14.6914      14.7956      +0.1042 ±0.0395  
+  *marwyn_power                                 1.5909       1.6284      +0.0375 ±0.0153  
+  *maralen_triggers_total                       7.6161       7.6829      +0.0668 ±0.0284  
+  *len_library                                 66.1662      65.9999      -0.1663 ±0.0721  
+  *len_graveyard                                6.0639       6.0991      +0.0352 ±0.0255  
+  *len_smart_wipe_log                           0.8227       0.8265      +0.0038 ±0.0028  
+  *smart_wipes_total                            0.8227       0.8265      +0.0038 ±0.0028  
+  *maralen_free_cast_used_this_turn             0.5097       0.5056      -0.0041 ±0.0032  
+  *roaming_throne_doubles_total                 0.5320       0.5472      +0.0152 ±0.0119  
+  *itlimoc_transform_turn__ate_T6               0.0882       0.0895      +0.0013 ±0.0010  
+  *len_creature_cast_turn                       8.2744       8.3003      +0.0259 ±0.0215  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

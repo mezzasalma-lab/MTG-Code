@@ -1,0 +1,6 @@
+feito padrao base
+feito padrao sem_habilidade
+feito resiliencia base
+feito resiliencia sem_habilidade
+fim
+rc=0 14:13:29

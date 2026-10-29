@@ -1,0 +1,15 @@
+base                                         main= 99 incluidos=  2 quase= 134 id=BGU
+S1 Evolution Sage <- Cold-Eyed Selkie        main= 99 incluidos=  2 quase= 134 id=BGU
+S2 Mutational Advantage <- Negate            main= 99 incluidos=  2 quase= 134 id=BGU
+S3 Karn's Bastion <- Swarmyard               main= 99 incluidos=  2 quase= 134 id=BGU
+S4 Bruvac <- Soul-Guide Lantern              main= 99 incluidos=  2 quase= 143 id=BGU
+S5 The Master of Lake-town <- Kozilek        main= 99 incluidos=  3 quase= 133 id=BGU
+S6 Garruk's Uprising <- An Offer You Can't Refuse main= 99 incluidos=  2 quase= 134 id=BGU
+PACOTE 1 (S1..S6 juntas)                     main= 99 incluidos=  3 quase= 142 id=BGU
+T2a Lo and Li <- Bojuka Bog                  main= 99 incluidos=  2 quase= 134 id=BGU
+T2b Terrasymbiosis <- Yavimaya Hollow        main= 99 incluidos=  2 quase= 135 id=BGU
+T2c Corpsejack Menace <- Strip Mine          main= 99 incluidos=  2 quase= 136 id=BGU
+T2d Contentious Plan <- Heroic Intervention  main= 99 incluidos=  2 quase= 134 id=BGU
+T2e Opulent Palace <- Bojuka Bog             main= 99 incluidos=  2 quase= 134 id=BGU
+CONTROLE (corte de peca de combo): Mindcrank <- Evolution Sage main= 99 incluidos=  1 quase= 134 id=BGU
+CONTROLE (corte de peca de combo): Glen Elendra Archmage <- Evolution Sage main= 99 incluidos=  1 quase= 103 id=BGU

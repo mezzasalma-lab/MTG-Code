@@ -1,0 +1,12 @@
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  smoke.txt
+IGUAL  testes_dirigidos.txt
+IGUAL  bitident_flags_off_20000.txt
+IGUAL  regressao_20000.txt
+7/7 saidas byte a byte iguais
+
+real	0m58.134s
+user	1m47.485s
+sys	0m0.181s

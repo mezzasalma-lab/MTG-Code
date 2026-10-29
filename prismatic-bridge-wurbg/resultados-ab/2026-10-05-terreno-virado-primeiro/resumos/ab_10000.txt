@@ -1,0 +1,19 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9692 (96.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2391       6.2397      +0.0006 ±0.0029  
+  *bridge_first_cast_turn__ate_T5               0.6855       0.6907      +0.0052 ±0.0017  
+  *bridge_first_cast_turn__ate_T4               0.3459       0.3510      +0.0051 ±0.0017  
+  *interaction_spells_cast_total                2.6069       2.6256      +0.0187 ±0.0080  
+  *turns_with_ult                               0.5370       0.5421      +0.0051 ±0.0023  
+  *late_pw_activations_total                    2.2397       2.2580      +0.0183 ±0.0090  
+  *pw_activations_total                        10.6675      10.7688      +0.1013 ±0.0509  
+  *first_pw_hit_turn__ate_T6                    0.3668       0.3695      +0.0027 ±0.0015  
+  *pw_removal_proxy_total                       0.9767       0.9845      +0.0078 ±0.0044  
+  *pw_deaths_total                              0.6320       0.6378      +0.0058 ±0.0034  
+  *first_ult_turn__nunca                        0.6336       0.6310      -0.0026 ±0.0015  
+  *pw_recursion_total                           0.2372       0.2424      +0.0052 ±0.0031  
+  *first_pw_hit_turn__ate_T5                    0.1647       0.1668      +0.0021 ±0.0013  
+  *bridge_cast_turn__ate_T5                     0.2911       0.2941      +0.0030 ±0.0018  
+  *planeswalkers_in_play_end                    2.9696       2.9870      +0.0174 ±0.0108  

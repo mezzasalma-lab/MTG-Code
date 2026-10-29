@@ -1,0 +1,8 @@
+Megatron base N=10000 (sem Defeat na lista)
+turno  P(R+W+B em campo e >=4 mana)  P(Megatron conjurado)
+<=T3    43.9%                         31.3%
+<=T4    80.3%                         77.8%
+<=T5    89.8%                         88.8%
+<=T6    92.6%                         92.0%
+<=T8    96.1%                         95.9%
+nunca até T8: 3.9% | turno médio quando acontece: 3.74

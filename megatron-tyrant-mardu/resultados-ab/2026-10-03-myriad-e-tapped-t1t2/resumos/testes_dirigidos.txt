@@ -1,0 +1,51 @@
+PASS - M1 ativa com remaining=3 (Myriad + 2 terrenos, nada gasto) 
+PASS - M1 Myriad saiu do campo e foi pro cemiterio (sacrificio) 
+PASS - M1 2 basicos entraram, mesmo tipo 
+PASS - M1 tipo escolhido = Plains (unica cor sem fonte: W) 
+PASS - M1 biblioteca perdeu exatamente 2 Plains 
+PASS - M1 shuffle de verdade (mesmo multiset, ordem diferente da sem-shuffle) 
+PASS - M1 gastou 3 de mana (2 de custo + o {C} do proprio Myriad tapado) 
+PASS - M1 contador de basicos buscados = 2 
+PASS - M2 nao ativa no turno em que entrou (entra tapped, nao paga o {T}) 
+PASS - M3 remaining=2 NAO ativa 
+PASS - M3 remaining=3 ativa 
+PASS - M4 W/B/R todos com fonte: escolhe o tipo de MENOS fontes (Plains: 1 fonte) 
+PASS - M4 falta so' R -> Mountain 
+PASS - M4 falta so' B -> Swamp 
+PASS - M5 so' 1 Plains na biblioteca e W falta: busca 1 (ruling: pode achar so' um) 
+PASS - M6 sem basico na biblioteca: nao sacrifica 
+PASS - M7 info: cartas da lista com pip duplo (afetam 'wanted') 
+PASS - M8 state.rng None: ativa sem excecao 
+PASS - M9 MYRIAD_ABILITY_ENABLED=False: inerte 
+PASS - M10 Myriad sacrificado conta como descend: +1 bore counter no Tunnel-Grinder 
+PASS - M11 play_turn completo (comandante ja em campo, mao vazia): Myriad ativa no fim do turno 
+PASS - M12 (2.000 jogos) ativou so' com remaining>=3 
+PASS - M12 (2.000 jogos) nunca ativou no turno em que o Myriad entrou 
+PASS - M12 (2.000 jogos) nunca ativou sem o Myriad em campo 
+PASS - M12 (2.000 jogos) toda vez que podia (em campo, nao entrou agora, remaining>=3, basico na biblioteca), ativou 
+PASS - M12 (2.000 jogos) amostra nao-vazia: houve chamadas com condicoes satisfeitas 
+PASS - M13 play_turn completo: com a habilidade, bore counter do Tunnel-Grinder = 1 (descend via Myriad); sem, = 0 
+PASS - M14 turno seguinte: os basicos buscados rendem mana (total_mana >= terrenos - 1 jogado tapped) 
+PASS - T1 [Plains, Evolving Wilds], sem spell: joga o TAPPED 
+PASS - T1 com Sol Ring na mao: joga o UNTAPPED (tapped custaria o Sol Ring) 
+PASS - T1 [Swamp, Sunlit Marsh]: tapped primeiro 
+PASS - T1 [Plains, Myriad Landscape]: Myriad (tapped) primeiro 
+PASS - T2 com Mind Stone ({2}) na mao e 1 terreno em campo: untapped (senao perde o Mind Stone) 
+PASS - T2 sem jogada de 2: tapped 
+PASS - T2 Sol Ring + Mind Stone: tapped basta (Sol Ring {1} paga com 1 untapped e libera +2 pro Mind Stone) 
+PASS - T3: comportamento ORIGINAL (nao forca tapped; ordena so' por cor faltante) 
+PASS - flag TAPPED_LAND_FIRST_ENABLED=False: escolha = a de antes (ordem por cor faltante) 
+PASS - T1 so' tapped na mao: joga um deles normalmente 
+PASS - T1 so' untapped na mao: comportamento original 
+PASS - land_enters_tapped: Smoldering Marsh com 2 basicos = untapped 
+PASS - land_enters_tapped: Smoldering Marsh com 1 basico = tapped 
+PASS - land_enters_tapped: Badlands/Command Tower/Shadowblood Ridge = untapped 
+PASS - flag SKIP_IF_LOSES_PLAY=False (politica cega): joga o tapped mesmo com Sol Ring na mao 
+PASS - T1 com so' Swords na mao (instant, proxy de interacao): tapped mesmo assim 
+PASS - T1 com Faithless Looting ({R}): tapped mesmo assim (filtragem nao e' desenvolvimento) 
+PASS - T1 com Goblin Welder ({R}, criatura MV1, permanente): untapped (tapped custaria o cast) 
+PASS - dry_run_mana_spent nao muta o estado 
+PASS - dry-run T2 Sol Ring+Mind Stone: untapped gasta 3, tapped tambem 3 
+PASS - dry-run T2 so' Mind Stone: untapped gasta 2, tapped 0 
+
+49/49 testes passaram

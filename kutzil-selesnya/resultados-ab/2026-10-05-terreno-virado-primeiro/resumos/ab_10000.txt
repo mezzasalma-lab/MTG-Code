@@ -1,0 +1,20 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6782 (67.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T3                  0.7983       0.8035      +0.0052 ±0.0044  
+   commander_cast_turn__ate_T4                  0.9152       0.9150      -0.0002 ±0.0004  
+  *commander_uid                                5.2677       5.3689      +0.1012 ±0.0121  
+  *warp_plot_free_casts_total                   0.0511       0.0598      +0.0087 ±0.0022  
+  *recursion_events_total                       0.0434       0.0515      +0.0081 ±0.0022  
+  *interaction_plays                            1.1827       1.2043      +0.0216 ±0.0061  
+  *saddle_activations_total                     0.9768       0.9863      +0.0095 ±0.0038  
+  *len_hand                                     3.2700       3.2492      -0.0208 ±0.0092  
+  *proxy_damage_total                         136.1272     138.4894      +2.3622 ±1.4321  
+  *restoration_seminar_active                   0.0590       0.0608      +0.0018 ±0.0014  
+  *next_uid                                    18.6979      18.7242      +0.0263 ±0.0199  
+  *cards_drawn_extra                           14.0432      14.0625      +0.0193 ±0.0152  
+  *counters_placed_total                       64.4833      65.8685      +1.3852 ±1.1031  
+  *len_library                                 76.0629      76.0373      -0.0256 ±0.0207  
+  *len_graveyard                                0.1427       0.1460      +0.0033 ±0.0027  
+   len_exile_warp                               0.0105       0.0112      +0.0007 ±0.0007  

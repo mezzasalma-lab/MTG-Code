@@ -1,0 +1,199 @@
+{
+ "reconhece": {
+  "Agadeem's Awakening // Agadeem, the Undercrypt": "Agadeem's Awakening // Agadeem, the Undercrypt",
+  "Agatha's Soul Cauldron": "Agatha's Soul Cauldron",
+  "Altar of Dementia": "Altar of Dementia",
+  "Altar of the Brood": "Altar of the Brood",
+  "An Offer You Can't Refuse": "An Offer You Can't Refuse",
+  "Angel of Suffering": "Angel of Suffering",
+  "Arcane Denial": "Arcane Denial",
+  "Ashiok, Dream Render": "Ashiok, Dream Render",
+  "Basking Broodscale": "Basking Broodscale",
+  "Bloodchief Ascension": "Bloodchief Ascension",
+  "Bojuka Bog": "Bojuka Bog",
+  "Boseiju, Who Endures": "Boseiju, Who Endures",
+  "Bramble Familiar // Fetch Quest": "Bramble Familiar // Fetch Quest",
+  "Branching Evolution": "Branching Evolution",
+  "Breeding Pool": "Breeding Pool",
+  "Cankerbloom": "Cankerbloom",
+  "Cold-Eyed Selkie": "Cold-Eyed Selkie",
+  "Command Tower": "Command Tower",
+  "Danny Pink": "Danny Pink",
+  "Deepmuck Desperado": "Deepmuck Desperado",
+  "Demonic Consultation": "Demonic Consultation",
+  "Didn't Say Please": "Didn't Say Please",
+  "Evolution Witness": "Evolution Witness",
+  "Fabled Passage": "Fabled Passage",
+  "Fathom Mage": "Fathom Mage",
+  "Fierce Guardianship": "Fierce Guardianship",
+  "Fractured Sanity": "Fractured Sanity",
+  "Freestrider Lookout": "Freestrider Lookout",
+  "Generous Patron": "Generous Patron",
+  "Glen Elendra Archmage": "Glen Elendra Archmage",
+  "Gyre Sage": "Gyre Sage",
+  "Hardened Scales": "Hardened Scales",
+  "Hedge Shredder": "Hedge Shredder",
+  "Herd Baloth": "Herd Baloth",
+  "Heroic Intervention": "Heroic Intervention",
+  "Hollowmurk Siege": "Hollowmurk Siege",
+  "Icetill Explorer": "Icetill Explorer",
+  "Inexorable Tide": "Inexorable Tide",
+  "Kami of Whispered Hopes": "Kami of Whispered Hopes",
+  "Kodama of the West Tree": "Kodama of the West Tree",
+  "Kozilek, Butcher of Truth": "Kozilek, Butcher of Truth",
+  "Loading Zone": "Loading Zone",
+  "Memory Erosion": "Memory Erosion",
+  "Mesmeric Orb": "Mesmeric Orb",
+  "Minamo, School at Water's Edge": "Minamo, School at Water's Edge",
+  "Mindcrank": "Mindcrank",
+  "Mirelurk Queen": "Mirelurk Queen",
+  "Misty Rainforest": "Misty Rainforest",
+  "Morphic Pool": "Morphic Pool",
+  "Muldrotha, the Gravetide": "Muldrotha, the Gravetide",
+  "Nature's Lore": "Nature's Lore",
+  "Negate": "Negate",
+  "Nuclear Fallout": "Nuclear Fallout",
+  "Ouroboroid": "Ouroboroid",
+  "Overgrown Tomb": "Overgrown Tomb",
+  "Palantír of Orthanc": "Palantír of Orthanc",
+  "Plaza of Heroes": "Plaza of Heroes",
+  "Polluted Delta": "Polluted Delta",
+  "Pollywog Prodigy": "Pollywog Prodigy",
+  "Psychic Corrosion": "Psychic Corrosion",
+  "Rampant Frogantua": "Rampant Frogantua",
+  "Rejuvenating Springs": "Rejuvenating Springs",
+  "Repulsive Mutation": "Repulsive Mutation",
+  "Ruin Crab": "Ruin Crab",
+  "Screeching Scorchbeast": "Screeching Scorchbeast",
+  "Shifting Woodland": "Shifting Woodland",
+  "Six": "Six",
+  "Smuggler's Surprise": "Smuggler's Surprise",
+  "Sol Ring": "Sol Ring",
+  "Soul-Guide Lantern": "Soul-Guide Lantern",
+  "Strip Mine": "Strip Mine",
+  "Swarmyard": "Swarmyard",
+  "Swiftfoot Boots": "Swiftfoot Boots",
+  "Syr Konrad, the Grim": "Syr Konrad, the Grim",
+  "Takenuma, Abandoned Mire": "Takenuma, Abandoned Mire",
+  "Tear Asunder": "Tear Asunder",
+  "Thassa's Oracle": "Thassa's Oracle",
+  "The Earth Crystal": "The Earth Crystal",
+  "The Gitrog Monster": "The Gitrog Monster",
+  "The Great Henge": "The Great Henge",
+  "The Wise Mothman": "The Wise Mothman",
+  "Three Visits": "Three Visits",
+  "Toxic Deluge": "Toxic Deluge",
+  "Undead Alchemist": "Undead Alchemist",
+  "Undergrowth Stadium": "Undergrowth Stadium",
+  "Urza's Saga": "Urza's Saga",
+  "V.A.T.S.": "V.A.T.S.",
+  "Verdant Catacombs": "Verdant Catacombs",
+  "Walking Ballista": "Walking Ballista",
+  "Waterlogged Grove": "Waterlogged Grove",
+  "Watery Grave": "Watery Grave",
+  "Wave Goodbye": "Wave Goodbye",
+  "Winding Constrictor": "Winding Constrictor",
+  "Yavimaya Hollow": "Yavimaya Hollow",
+  "Zagoth Triome": "Zagoth Triome",
+  "Zellix, Sanity Flayer": "Zellix, Sanity Flayer"
+ },
+ "nao_reconhecidos": [],
+ "base": {
+  "incluidos": {
+   "Bloodchief Ascension + Mindcrank": {
+    "produz": [
+     "Infinite mill",
+     "Near-infinite lifegain",
+     "Near-infinite lifegain triggers",
+     "Near-infinite lifeloss"
+    ],
+    "id": "936-1290",
+    "bracket": "S",
+    "popularidade": 62879
+   },
+   "Altar of Dementia + The Great Henge": {
+    "produz": [
+     "Infinite self-mill",
+     "Infinite creature ETB",
+     "Infinite creature LTB",
+     "Infinite death triggers"
+    ],
+    "id": "3139-5256--5",
+    "bracket": "E",
+    "popularidade": 8856
+   }
+  },
+  "quase_n": 134
+ },
+ "por_carta": {
+  "Fractured Sanity": {
+   "novos": {},
+   "sumiram": [],
+   "quase_novos_com_a_peca": [
+    "Doomsday Excruciator + Fractured Sanity"
+   ],
+   "quase_novos_n": 1
+  },
+  "Screeching Scorchbeast": {
+   "novos": {},
+   "sumiram": [],
+   "quase_novos_com_a_peca": [],
+   "quase_novos_n": 0
+  },
+  "Inexorable Tide": {
+   "novos": {},
+   "sumiram": [],
+   "quase_novos_com_a_peca": [
+    "Evolution Witness + Inexorable Tide"
+   ],
+   "quase_novos_n": 1
+  },
+  "Branching Evolution": {
+   "novos": {},
+   "sumiram": [],
+   "quase_novos_com_a_peca": [
+    "Branching Evolution + Rite of Passage + Walking Ballista",
+    "Branching Evolution + Vigor + Walking Ballista"
+   ],
+   "quase_novos_n": 2
+  },
+  "Loading Zone": {
+   "novos": {},
+   "sumiram": [],
+   "quase_novos_com_a_peca": [
+    "Loading Zone + Rite of Passage + Walking Ballista",
+    "Loading Zone + Strength of Will + Walking Ballista",
+    "Loading Zone + Vigor + Walking Ballista"
+   ],
+   "quase_novos_n": 3
+  },
+  "The Earth Crystal": {
+   "novos": {},
+   "sumiram": [],
+   "quase_novos_com_a_peca": [
+    "Rite of Passage + The Earth Crystal + Walking Ballista",
+    "The Earth Crystal + Vigor + Walking Ballista"
+   ],
+   "quase_novos_n": 2
+  },
+  "as_seis_juntas": {
+   "novos": {},
+   "sumiram": [],
+   "quase_novos_com_a_peca": [
+    "Branching Evolution + Rite of Passage + Walking Ballista",
+    "Branching Evolution + Vigor + Walking Ballista",
+    "Doomsday Excruciator + Fractured Sanity",
+    "Evolution Witness + Inexorable Tide",
+    "Loading Zone + Rite of Passage + Walking Ballista",
+    "Loading Zone + Strength of Will + Walking Ballista",
+    "Loading Zone + Vigor + Walking Ballista",
+    "Rite of Passage + The Earth Crystal + Walking Ballista",
+    "The Earth Crystal + Vigor + Walking Ballista"
+   ],
+   "quase_novos_n": 9
+  }
+ },
+ "controle_positivo_thassa_consultation": true,
+ "controle_de_corte_ascension_mindcrank_sumiu": true,
+ "base_tem_ascension_mindcrank": true
+}

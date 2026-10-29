@@ -1,0 +1,13 @@
+base                                     cartas=99 combos=12 quase-combos=92
+Sisay no lugar da Arena Rector           cartas=99 combos=12 quase-combos=94
+   combos novos: [] | removidos: []
+   quase-combos novos: 2 | removidos: 0
+Tam no lugar da Arena Rector             cartas=99 combos=12 quase-combos=92
+   combos novos: [] | removidos: []
+   quase-combos novos: 0 | removidos: 0
+sem a Arena Rector (99 - 1)              cartas=98 combos=12 quase-combos=92
+   combos novos: [] | removidos: []
+   quase-combos novos: 0 | removidos: 0
+CONTROLE positivo: sem The Chain Veil    cartas=98 combos=8 quase-combos=87
+   combos novos: [] | removidos: [('Aminatou, the Fateshifter', 'Nicol Bolas, Dragon-God', 'The Chain Veil'), ('Carth the Lion', 'Teferi, Temporal Archmage', 'The Chain Veil'), ('Teferi, Temporal Archmage', 'The Chain Veil'), ('Teferi, Who Slows the Sunset', 'The Chain Veil')]
+   quase-combos novos: 4 | removidos: 9

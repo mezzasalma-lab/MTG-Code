@@ -1,0 +1,345 @@
+{
+ "Fractured Sanity": {
+  "card": {
+   "name": "Fractured Sanity",
+   "flavor_name": null,
+   "mana_cost": "{U}{U}{U}",
+   "type_line": "Sorcery",
+   "oracle_text": "Each opponent mills fourteen cards.\nCycling {1}{U} ({1}{U}, Discard this card: Draw a card.)\nWhen you cycle this card, each opponent mills four cards.",
+   "power": null,
+   "toughness": null,
+   "keywords": [
+    "Mill",
+    "Cycling"
+   ],
+   "set": "mh2",
+   "collector_number": "44",
+   "game_changer": false
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "cf32524e-0df9-4af8-9371-84feeb0a86c6",
+    "source": "wotc",
+    "published_at": "2021-06-18",
+    "comment": "Some cards with cycling have an ability that triggers when you cycle them, and some cards have an ability that triggers whenever you cycle any card. These triggered abilities resolve before you draw from the cycling ability."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "cf32524e-0df9-4af8-9371-84feeb0a86c6",
+    "source": "wotc",
+    "published_at": "2021-06-18",
+    "comment": "Triggered abilities from cycling a card and the cycling ability itself aren't spells. Effects that interact with spells (such as that of Cancel) won't affect them."
+   }
+  ]
+ },
+ "Screeching Scorchbeast": {
+  "card": {
+   "name": "Screeching Scorchbeast",
+   "flavor_name": null,
+   "mana_cost": "{4}{B}{B}",
+   "type_line": "Creature — Bat Mutant",
+   "oracle_text": "Flying, menace\nWhenever this creature attacks, each player gets two rad counters.\nWhenever one or more nonland cards are milled, you may create that many 2/2 black Zombie Mutant creature tokens. Do this only once each turn.",
+   "power": "5",
+   "toughness": "5",
+   "keywords": [
+    "Flying",
+    "Menace"
+   ],
+   "set": "pip",
+   "collector_number": "49",
+   "game_changer": false
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "Any effects (such as proliferate) that interact with counters a player gets, has, or loses can interact with rad counters."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "The cards are milled all at once, which means abilities that trigger “whenever one or more nonland cards are milled” will trigger exactly once as long as at least one nonland card was milled."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "If a player has fewer cards remaining in their library than the number of rad counters they have when the triggered ability resolves, they’ll mill as many cards as they can."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "If more than one player is instructed to mill at the same time (by the activated ability of Raul, Trouble Shooter, for example), as long as at least one nonland card is milled, Screeching Scorchbeast’s last ability will trigger just once."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "“Do this only once each turn” lets you choose whether or not to create the appropriate number of 2/2 black Zombie Mutant creature tokens as the triggered ability resolves. If you choose not to create tokens, the ability will trigger again the next time the condition is met. Once you choose to do so, the ability will no longer trigger for the rest of the turn."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "Rad counters are a kind of counter that a player may have. They’re not associated with any specific permanents."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "Keep track of how many rad counters each player has. Potential ways to track this include writing them down on paper or using dice, but any method that is clear and mutually agreeable is fine."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "Rad counters don’t go away as steps, phases, or turns end. They only go away when an effect instructs a player to remove rad counters from themselves."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "There is an inherent triggered ability associated with having rad counters. This triggered ability has no source and is controlled by the active player. The full text of this ability is “At the beginning of the precombat main phase of a player with rad counters, that player mills cards equal to the number of rad counters they have. For each nonland card milled this way, that player loses 1 life and removes one rad counter from themselves.”"
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+    "source": "wotc",
+    "published_at": "2024-03-08",
+    "comment": "In a game using the shared team turns option, such as an Archenemy or Two-Headed Giant game, the inherent triggered ability associated with rad counters triggers once for each player on the active team that has rad counters. Each instance of that ability is controlled by one of those players."
+   }
+  ]
+ },
+ "Inexorable Tide": {
+  "card": {
+   "name": "Inexorable Tide",
+   "flavor_name": null,
+   "mana_cost": "{3}{U}{U}",
+   "type_line": "Enchantment",
+   "oracle_text": "Whenever you cast a spell, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+   "power": null,
+   "toughness": null,
+   "keywords": [
+    "Proliferate"
+   ],
+   "set": "fic",
+   "collector_number": "265",
+   "game_changer": false
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "40ec0a47-badf-4074-b0a8-749bb7c17b95",
+    "source": "wotc",
+    "published_at": "2023-02-04",
+    "comment": "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can't have it get just one kind of counter it already has and not the others."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "40ec0a47-badf-4074-b0a8-749bb7c17b95",
+    "source": "wotc",
+    "published_at": "2023-02-04",
+    "comment": "If a permanent ever has both +1/+1 counters and -1/-1 counters on it at the same time, they're removed in pairs as a state-based action so that the permanent has only one of those kinds of counters on it."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "40ec0a47-badf-4074-b0a8-749bb7c17b95",
+    "source": "wotc",
+    "published_at": "2023-02-04",
+    "comment": "To proliferate, you can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can't choose cards in any zone other than the battlefield, even if they have counters on them."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "40ec0a47-badf-4074-b0a8-749bb7c17b95",
+    "source": "wotc",
+    "published_at": "2023-02-04",
+    "comment": "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it's too late for anyone to respond."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "40ec0a47-badf-4074-b0a8-749bb7c17b95",
+    "source": "wotc",
+    "published_at": "2023-02-04",
+    "comment": "An ability that triggers \"Whenever you proliferate\" triggers even if you chose no permanents or players while doing so."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "40ec0a47-badf-4074-b0a8-749bb7c17b95",
+    "source": "wotc",
+    "published_at": "2023-02-04",
+    "comment": "You don't have to choose every permanent or player that has a counter, only the ones you want to add another counter to. Since \"any number\" includes zero, you don't have to choose any permanents at all, and you don't have to choose any players at all."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "40ec0a47-badf-4074-b0a8-749bb7c17b95",
+    "source": "wotc",
+    "published_at": "2011-01-01",
+    "comment": "Whenever you cast a spell, Inexorable Tide's ability triggers and goes on the stack on top of it. It will resolve (and you'll proliferate) before the spell resolves."
+   }
+  ]
+ },
+ "Branching Evolution": {
+  "card": {
+   "name": "Branching Evolution",
+   "flavor_name": null,
+   "mana_cost": "{2}{G}",
+   "type_line": "Enchantment",
+   "oracle_text": "If one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on that creature instead.",
+   "power": null,
+   "toughness": null,
+   "keywords": [],
+   "set": "mh3",
+   "collector_number": "285",
+   "game_changer": false
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "28fe909b-06e0-424c-9f75-c824a25f5865",
+    "source": "wotc",
+    "published_at": "2020-06-23",
+    "comment": "If a creature you control would enter the battlefield with a number of +1/+1 counters on it, it enters with twice that many instead."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "28fe909b-06e0-424c-9f75-c824a25f5865",
+    "source": "wotc",
+    "published_at": "2020-06-23",
+    "comment": "If you control two Branching Evolutions, the number of +1/+1 counters put on a creature is four times the original number. Three Branching Evolutions multiplies the original number by eight, and so on."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "28fe909b-06e0-424c-9f75-c824a25f5865",
+    "source": "wotc",
+    "published_at": "2020-06-23",
+    "comment": "If two or more effects attempt to modify how many counters would be put onto a creature you control, you choose the order to apply those effects, no matter who controls the sources of those effects."
+   }
+  ]
+ },
+ "Loading Zone": {
+  "card": {
+   "name": "Loading Zone",
+   "flavor_name": null,
+   "mana_cost": "{3}{G}",
+   "type_line": "Enchantment",
+   "oracle_text": "If one or more counters would be put on a creature, Spacecraft, or Planet you control, twice that many of each of those kinds of counters are put on it instead.\nWarp {G} (You may cast this card from your hand for its warp cost. Exile this enchantment at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+   "power": null,
+   "toughness": null,
+   "keywords": [
+    "Warp"
+   ],
+   "set": "eoe",
+   "collector_number": "196",
+   "game_changer": false
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "16156274-8dc0-439c-94c4-e8c89bbb5687",
+    "source": "wotc",
+    "published_at": "2025-07-25",
+    "comment": "If a creature, Spacecraft, or Planet you control would enter the battlefield with a number of counters on it, it enters with twice that many instead."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "16156274-8dc0-439c-94c4-e8c89bbb5687",
+    "source": "wotc",
+    "published_at": "2025-07-25",
+    "comment": "If you control two Loading Zones, the number of counters put on a creature, Spacecraft, or Planet you control is four times the original number. Three Loading Zones multiplies the original number by eight, and so on."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "16156274-8dc0-439c-94c4-e8c89bbb5687",
+    "source": "wotc",
+    "published_at": "2025-07-25",
+    "comment": "If two or more effects attempt to modify how many counters would be put onto a permanent you control, you choose the order to apply those effects, no matter who controls the sources of those effects."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "16156274-8dc0-439c-94c4-e8c89bbb5687",
+    "source": "wotc",
+    "published_at": "2025-07-25",
+    "comment": "The Loading Zone is for immediate loading and unloading only. There is no stopping in the Loading Zone. (Especially not if it was warped.)"
+   }
+  ]
+ },
+ "The Earth Crystal": {
+  "card": {
+   "name": "The Earth Crystal",
+   "flavor_name": null,
+   "mana_cost": "{2}{G}{G}",
+   "type_line": "Legendary Artifact",
+   "oracle_text": "Green spells you cast cost {1} less to cast.\nIf one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on that creature instead.\n{4}{G}{G}, {T}: Distribute two +1/+1 counters among one or two target creatures you control.",
+   "power": null,
+   "toughness": null,
+   "keywords": [],
+   "set": "fin",
+   "collector_number": "184",
+   "game_changer": false
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If two or more effects attempt to modify how many counters would be put onto a creature you control, you choose the order to apply those effects, no matter who controls the sources of those effects."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "The cost reduction applies only to generic mana in the total cost of green spells you cast."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If one of the creatures is an illegal target and the other one isn't as The Earth Crystal's last ability tries to resolve, the original distribution of counters applies and the counter that would have been put on the illegal target is lost. It won't be put on the remaining legal target instead."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If a creature you control would enter the battlefield with a number of +1/+1 counters on it, it enters with twice that many instead."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying (such as a flashback cost), add any cost increases (such as kicker costs), then apply any cost reductions (such as that of The Earth Crystal's first ability). The mana value of the spell is determined by only its mana cost, no matter what the total cost to cast that spell was."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If the rare case where you control two of The Earth Crystal, the number of +1/+1 counters put on a creature is four times the original number. Three of The Earth Crystal multiplies the original number by eight, and so on."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "You choose how many targets The Earth Crystal's last ability has and how the counters are distributed as you activate it. Each target must receive at least one counter. This means, for example, that you can't target two creatures and assign them two and zero counters respectively."
+   }
+  ]
+ }
+}

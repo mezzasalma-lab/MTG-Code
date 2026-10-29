@@ -1,0 +1,67 @@
+cartas na lista: 99
+base                               n=99 incluidos=2 quase=27 id=RWB
++Power Depot (sem cortar)          n=100 incluidos=2 quase=27 id=RWB
+   novos incluidos: [] | novos quase: 0
+-Plains +Power Depot               n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Swamp +Power Depot                n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Mountain +Power Depot             n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Fountainport +Power Depot         n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Myriad Landscape +Power Depot     n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Susur Secundi, Void Altar +Power Depot n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Evolving Wilds +Power Depot       n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Terramorphic Expanse +Power Depot n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Rocky Tar Pit +Power Depot        n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Sunlit Marsh +Power Depot         n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Nomad Outpost +Power Depot        n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Smoldering Marsh +Power Depot     n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Shadowblood Ridge +Power Depot    n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Exotic Orchard +Power Depot       n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Forbidden Orchard +Power Depot    n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Scrubland +Power Depot            n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Plateau +Power Depot              n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Badlands +Power Depot             n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Command Tower +Power Depot        n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Chandra's Ignition +Power Depot   n=99 incluidos=1 quase=24 id=RWB
+   incluidos que SUMIRAM: [('Blightsteel Colossus', "Chandra's Ignition")] | NOVOS: []
+   quase sumiram: 4 | quase novos: 1
+-Genesis Chamber +Power Depot      n=99 incluidos=1 quase=28 id=RWB
+   incluidos que SUMIRAM: [('Cursed Mirror', 'Daretti, Rocketeer Engineer', 'Genesis Chamber')] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1

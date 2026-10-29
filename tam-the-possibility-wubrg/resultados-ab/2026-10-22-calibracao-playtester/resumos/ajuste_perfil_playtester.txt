@@ -1,0 +1,11 @@
+perfil=playtester N=2000 modo resiliencia, 12 turnos (sim: tam-the-possibility-wubrg)
+criaturas de oponente em campo (soma dos 3, fim do turno): observado nos logs (cartas de criatura vistas, cumulativo, sem mortes): T5 1.0 | T8 2.1 | T10 2.4
+   T 5:  0.89 (IC95%  0.85- 0.93)
+   T 8:  1.12 (IC95%  1.07- 1.18)
+   T10:  1.07 (IC95%  0.99- 1.14)
+eventos de interacao por partida (sim: T3-T12; observado: 9 turnos T4-T12 dos 5 logs, IC95% de Poisson; o descarte observado e' o Junji: 1 evento INFERIDO, IC nao informativo)
+   remocao_pontual  sim  0.95 ( 0.91- 0.99) | observado 1.45 (0.47-3.39) | sim dentro do IC observado: sim
+   anulacao         sim  0.94 ( 0.89- 0.99) | observado 0.58 (0.07-2.10) | sim dentro do IC observado: sim
+   efeito_em_massa  sim  1.07 ( 1.02- 1.12) | observado 1.45 (0.47-3.39) | sim dentro do IC observado: sim
+   descarte         sim  0.86 ( 0.82- 0.90) | observado 0.29 (0.00-1.60) | sim dentro do IC observado: sim
+   total nao-criatura sim  3.82 ( 3.71- 3.93) | observado 3.77 (2.00-6.42)

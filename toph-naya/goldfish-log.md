@@ -1,6 +1,379 @@
 # Goldfish Log — Toph (Naya)
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O payoff entra antes do terreno em **56,9%** das partidas (0,87 por partida no padrão, 0,73 na resiliência). Efeito moderado e na direção esperada: **+0,26 gatilhos de landfall por partida (+1,7%)**, **+0,23 magias conjuradas**, e a fração de partidas que **nunca** chega ao dano letal-proxy cai de 74,0% para 70,6% (**−3,4 pontos ± 0,4**); o comandante sai um pouco mais cedo (T4 +0,4 ponto, T5 +1,1 na resiliência).
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `landfall_triggers_fired` | 15.255 -> 15.518 (+0.262 ± 0.087) * | 12.922 -> 13.142 (+0.220 ± 0.064) * |
+| `spells_cast_total` | 11.378 -> 11.612 (+0.234 ± 0.043) * | 9.945 -> 10.120 (+0.175 ± 0.033) * |
+| `lethal_turn__nunca` | 0.740 -> 0.706 (-0.034 ± 0.004) * | 0.880 -> 0.851 (-0.028 ± 0.004) * |
+| `lethal_turn__ate_T6` | 0.008 -> 0.013 (+0.005 ± 0.002) * | 0.005 -> 0.008 (+0.003 ± 0.001) * |
+| `commander_cast_turn__ate_T3` | 0.144 -> 0.144 (+0.000 ± 0.001) | 0.134 -> 0.134 (+0.000 ± 0.001) |
+| `commander_cast_turn__ate_T4` | 0.539 -> 0.543 (+0.004 ± 0.002) * | 0.483 -> 0.489 (+0.005 ± 0.002) * |
+| `commander_cast_turn__ate_T5` | - | 0.684 -> 0.695 (+0.011 ± 0.003) * |
+| partidas com resultado idêntico ao da base | 43.1% | 48.4% |
+
+**Validação:** testes dirigidos 67/67 (61 anteriores + 6 novos); bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
+
+---
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 12,6% → 14,4% (+1,78 ± 0,33 pp), até T4 +4,91 ± 0,55 pp, até T5 +1,82 ± 0,38 pp, comandante que nunca entra -0,08 ± 0,12 pp. Modo resiliência: comandante em campo até T3 11,7% → 13,4% (+1,64 ± 0,32 pp), até T4 +4,68 ± 0,56 pp, até T5 +2,04 ± 0,46 pp, comandante que nunca entra -0,14 ± 0,23 pp. A correção joga o terreno virado primeiro em média 0,44 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,36 vez(es) por partida (teria custado uma jogada).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `pick_land_to_play` continua escolhendo fetchland SEMPRE primeiro (2 landfalls: a fetch e o terreno buscado): o terreno virado primeiro só entra no desempate entre os demais. Bounceland sem outro terreno em campo não é candidato (devolveria a si mesmo). `tapped_now` foi extraído para `_land_tapped_now` (mesma regra) pra o ensaio usar.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6031 (60.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0484       0.0476      -0.0008 ±0.0012  
+  *commander_cast_turn__ate_T3                  0.1263       0.1441      +0.0178 ±0.0033  
+  *commander_cast_turn__ate_T4                  0.4900       0.5391      +0.0491 ±0.0055  
+  *commander_cast_turn__ate_T5                  0.7373       0.7555      +0.0182 ±0.0038  
+  *attacks_total                                4.5931       4.6745      +0.0814 ±0.0093  
+  *first_finisher_turn__ate_T6                  0.3769       0.3953      +0.0184 ±0.0035  
+  *lethal_turn__nunca                           0.7569       0.7396      -0.0173 ±0.0039  
+  *urza_saga_chapter2_tokens                    0.1881       0.2026      +0.0145 ±0.0035  
+  *earthbend_applications                       6.3734       6.4999      +0.1265 ±0.0316  
+  *first_finisher_turn__ate_T5                  0.1942       0.2060      +0.0118 ±0.0031  
+  *landfall_triggers_fired                     15.0311      15.2555      +0.2244 ±0.0642  
+  *len_names_cache                             18.5404      18.6903      +0.1499 ±0.0458  
+  *spells_cast_total                           11.2779      11.3776      +0.0997 ±0.0312  
+  *sword_untaps                                 0.2572       0.2726      +0.0154 ±0.0055  
+  *first_finisher_turn__ate_T4                  0.0839       0.0904      +0.0065 ±0.0023  
+  *next_uid                                    48.0013      49.1781      +1.1768 ±0.4209  
+  *first_finisher_turn__ate_T3                  0.0340       0.0392      +0.0052 ±0.0019  
+  *lander_activations                           0.6022       0.6234      +0.0212 ±0.0077
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6032 (60.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0871       0.0857      -0.0014 ±0.0023  
+  *commander_cast_turn__ate_T3                  0.1172       0.1336      +0.0164 ±0.0032  
+  *commander_cast_turn__ate_T4                  0.4367       0.4835      +0.0468 ±0.0056  
+  *commander_cast_turn__ate_T5                  0.6639       0.6843      +0.0204 ±0.0046  
+  *attacks_total                                4.1703       4.2543      +0.0840 ±0.0117  
+  *urza_saga_chapter2_tokens                    0.1761       0.1903      +0.0142 ±0.0035  
+  *first_finisher_turn__ate_T6                  0.3136       0.3278      +0.0142 ±0.0037  
+  *first_finisher_turn__ate_T5                  0.1731       0.1831      +0.0100 ±0.0031  
+  *first_finisher_turn__ate_T4                  0.0804       0.0876      +0.0072 ±0.0024  
+  *first_finisher_turn__ate_T3                  0.0339       0.0391      +0.0052 ±0.0019  
+  *landfall_triggers_fired                     12.7723      12.9223      +0.1500 ±0.0579  
+  *earthbend_applications                       5.1902       5.2883      +0.0981 ±0.0404  
+  *spells_cast_total                            9.8796       9.9449      +0.0653 ±0.0278  
+  *lethal_turn__nunca                           0.8873       0.8796      -0.0077 ±0.0034  
+  *commander_cast_turn__ate_T6                  0.7974       0.8053      +0.0079 ±0.0035  
+  *commander_damage_dealt                      56.4611      56.7413      +0.2802 ±0.1280  
+  *mana_spent_total                            35.7732      36.2308      +0.4576 ±0.2123  
+  *talon_gates_protections                      0.0250       0.0208      -0.0042 ±0.0020
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `toph_goldfish_v1_ANTES_7918e0b.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Ensaio em Toph:** `play_land` faz parte de `main_phase(first=True)`, então o ensaio roda a fase inteira com o terreno imposto.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## Mulligan com escolha do fundo (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. Comandante em campo até T4: 47,5% → 49,0% (+1,50 ± 0,35 pp); até T5 +1,75 ± 0,37 pp; nunca em 8 turnos 6,1% → 4,8% (−1,25 ± 0,24 pp); magias conjuradas no jogo +0,21 ± 0,03 (N=10.000, padrão; resiliência com o mesmo sinal: +1,39 ± 0,35 pp até T4).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7579 (75.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0609       0.0484      -0.0125 ±0.0024  
+  *commander_cast_turn__ate_T3                  0.1217       0.1263      +0.0046 ±0.0022  
+  *commander_cast_turn__ate_T4                  0.4750       0.4900      +0.0150 ±0.0035  
+  *commander_cast_turn__ate_T5                  0.7198       0.7373      +0.0175 ±0.0037  
+  *attacks_total                                4.5203       4.5931      +0.0728 ±0.0109  
+  *len_names_cache                             18.2112      18.5404      +0.3292 ±0.0520  
+  *spells_cast_total                           11.0676      11.2779      +0.2103 ±0.0347  
+  *commander_cast_count                         0.9391       0.9516      +0.0125 ±0.0024  
+  *commander_in_play                            0.9391       0.9516      +0.0125 ±0.0024  
+  *commander_cast_turn__ate_T6                  0.8389       0.8555      +0.0166 ±0.0032  
+  *len_hand                                     2.7778       2.6991      -0.0787 ±0.0162  
+  *landfall_triggers_fired                     14.6789      15.0311      +0.3522 ±0.0736  
+  *len_earthbend_by_source                      2.4277       2.4686      +0.0409 ±0.0098  
+  *earthbend_applications                       6.2148       6.3734      +0.1586 ±0.0383  
+  *len_library                                 76.3280      76.0229      -0.3051 ±0.0738  
+  *mana_spent_total                            45.2311      46.5321      +1.3010 ±0.3418  
+  *interaction_plays                            0.5217       0.5354      +0.0137 ±0.0038  
+  *bf_version                                  68.5757      70.7162      +2.1405 ±0.6305
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7565 (75.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1011       0.0871      -0.0140 ±0.0031  
+  *commander_cast_turn__ate_T3                  0.1135       0.1172      +0.0037 ±0.0021  
+  *commander_cast_turn__ate_T4                  0.4228       0.4367      +0.0139 ±0.0035  
+  *commander_cast_turn__ate_T5                  0.6472       0.6639      +0.0167 ±0.0039  
+  *spells_cast_total                            9.7215       9.8796      +0.1581 ±0.0248  
+  *len_hand                                     2.2382       2.1379      -0.1003 ±0.0172  
+  *attacks_total                                4.0989       4.1703      +0.0714 ±0.0124  
+  *commander_cast_turn__ate_T6                  0.7789       0.7974      +0.0185 ±0.0036  
+  *len_names_cache                             13.1953      13.3753      +0.1800 ±0.0366  
+  *landfall_triggers_fired                     12.5692      12.7723      +0.2031 ±0.0416  
+  *mana_spent_total                            35.1089      35.7732      +0.6643 ±0.1403  
+  *earthbend_applications                       5.0881       5.1902      +0.1021 ±0.0232  
+  *commander_cast_count                         1.2168       1.2393      +0.0225 ±0.0052  
+  *len_earthbend_by_source                      2.0502       2.0818      +0.0316 ±0.0083  
+  *commander_in_play                            0.7344       0.7486      +0.0142 ±0.0045  
+  *commander_damage_dealt                      56.2326      56.4611      +0.2285 ±0.0736  
+  *motor16_recursions                           2.4573       2.5107      +0.0534 ±0.0189  
+  *interaction_plays                            0.5041       0.5145      +0.0104 ±0.0039
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o comandante do Toph custa caro e o deck tem muitos terrenos que entram virados; devolver uma carta sorteada era mais provável de custar uma peça de ramp (Sol Ring, Arcane Signet, Lotus Cobra, Unstable Obelisk, que a escolha protege) do que de devolver o terreno que sobrava.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `toph_goldfish_v1_ANTES_7d96a1e.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** o invariante "carta acima do número no baralho" dispara em 5.829/20.000 partidas (padrão) e 2.957 (resiliência), **igual** com a chave desligada (5.684 e 2.898). Conferido por script em 300 partidas: 91 violam com fichas contadas e **0** contando só permanentes não-ficha (`Permanent.is_token`): são fichas-cópia com o mesmo nome (Scute Swarm: "create a token that's a copy"; Sol Ring, Skullclamp… via cópias), esperadas pelo oráculo, não carta duplicada. 0 exceções em 20.000 × 2 modos × 2 configurações.
+
+---
+
+## Varredura de TUDO + reescrita do motor — 2026-09-26/28
+
+**Pedido:** *"Faz a varredura completa de TUDO do deck da Toph"*. Achados
+e tabela cláusula-a-cláusula em `checklist-oraculo.md`; o escopo
+verificado e o não verificado estão lá (Regra #7).
+
+### Antes/depois (2.000 seeds, 9.000.000+, 8 turnos, mesma seed)
+
+| Métrica | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Turno médio da Toph (9 = nunca) | 3,70 | 5,05 | 3,89 | 5,32 |
+| Toph nunca conjurada até T8 | 2,7% | 6,8% | 4,3% | 9,8% |
+| Terrenos em campo no T8 (incl. artefato/criatura-terreno) | 12,43 | 13,96 | 9,86 | 10,01 |
+| Aplicações de earthbend | 6,93 | 5,91 | 6,15 | 4,95 |
+| Recorrências Motor #16 | 1,33 | 1,77 | 2,66 | 2,46 |
+| Gatilhos de landfall | 12,89 | 14,32 | 12,35 | 12,67 |
+| Cartas extras compradas | 3,76 | 4,48 | 3,11 | 2,82 |
+| Fichas criadas | 16,08 | 24,26 | 12,68 | 16,68 |
+| Compras via Skullclamp | 0,03 | 0,75 | 0,07 | 0,34 |
+| Cheats do Kodama | 0,04 | 0,26 | 0,02 | 0,13 |
+| Mana extra **gastável** (Cobra/Nissa/KCI) | 2,97 (não gastável) | 5,83 | 2,21 (não gastável) | 3,06 |
+| Mágicas conjuradas / mana gasta (métrica nova) | — | 10,9 / 43,3 | — | 9,7 / 34,9 |
+| Dano na mesa, mediana (combate + Tannuk) | — | 61 | — | 33 |
+| Letal proxy (≥120 na mesa) até T6 / T8 | — | 0,8% / 23,6% | — | 0,5% / 11,4% |
+| Vitória por dano de comandante (21+) | — | 6,6% | — | 4,4% |
+| Vida final, mediana | 36,4 (média) | 39 | 35,6 (média) | 38 |
+| Partidas que batem no teto de 250 permanentes | — | 6,0% | — | 3,9% |
+| Respostas de proteção que salvaram algo (resiliência) | — | — | — | 0,045/partida |
+
+As médias de vida e de dano explodem (vida média ~10^6 no padrão). Isso é
+o turno de combo real do deck: Scute Swarm com 6+ terrenos gera cópias de
+valor de mana 3, cada cópia dispara o Kodama, que põe cartas da mão, e o
+Skullclamp nas fichas 1/1 compra o deck. Felidar, Mossborn, Bristly Bill e
+Earth Kingdom General escalam os contadores. Traço por turno da seed
+9.000.247 conferido: tudo segue o oráculo. Por isso só as medianas e as
+métricas limitadas acima servem pra comparar.
+
+**Leitura:**
+- A Toph sai **1,3 turno mais tarde**. Não é piora do deck, é correção:
+  - o custo real é 4, não 3;
+  - ela precisa de {R}{G}{W} de fontes diferentes.
+- Diagnóstico de 300 partidas em que ela não saiu até o T5:
+  - 41% têm 4+ fontes mas falta W ou R (várias vezes o Command Tower é a
+    única fonte das duas);
+  - 23% têm menos de 4 fontes;
+  - o resto é terreno que entrou tapped naquele turno.
+- **O deck tem pouca fonte de W e de R.** É um achado sobre a lista, não
+  sobre o simulador. Fica pra conversa de construção, sem mudar a
+  `lista.md` agora.
+- Earthbend cai (−1,0) porque a Toph chega mais tarde (o end step dela é
+  a maior fonte). Fichas (+51%), compras e Kodama sobem porque as fichas
+  agora são permanentes que interagem com o resto do deck.
+
+### Validação
+
+- Smoke: 99 cartas, 0 desconhecidas.
+- 61 testes dirigidos (`test_toph_goldfish.py`), 61/61.
+- 2k antes/depois (tabela acima).
+- 20.000 + 20.000 partidas de regressão (seeds 9.300.000+), 0 exceções.
+  Números por fatia no commit.
+- Traço manual de 5 partidas com a Toph atrasada e da seed explosiva.
+
+---
+
+## CR 903.9a/903.9b: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** diferente dos outros 8 decks, este já tinha um chokepoint
+central real (`leave_battlefield`, 17+ call sites) — uma 1ª correção
+só em `remove_permanent()` (2 desses call sites) ficou incompleta: a
+regressão de 20k acusou comandante preso no cemitério (Skullclamp SBA
+chama `leave_battlefield` direto) e, depois de mover o fix pro
+chokepoint certo, MAIS uma 2ª via achada (bounceland Gruul Turf/
+Selesnya Sanctuary bounca o comandante pra mão direto, sem passar por
+`leave_battlefield` nenhuma). As 2 corrigidas na mesma rodada.
+
+**Resultado:** modo padrão diverge em 0,05% das seeds (10/20.000) —
+Skullclamp SBA/bounceland agora afetam o comandante corretamente.
+Métricas agregadas (skullclamp_draws/motor16_recursions/
+commander_cast_count/ozolith_*) idênticas em 10k amostras (efeito raro
+demais pra mover a média); fração de partidas terminando com o
+comandante fora de campo subiu de 0,0237→0,0239 (bugs de sincronização
+corrigidos).
+
+**Validação:** regressão de 20.000 partidas nos 2 modos (rodada de novo
+após cada correção), 0 exceções, 0 comandantes presos no cemitério, 0
+presos na mão, 0 flags dessincronizadas + 5 testes dirigidos.
+
+---
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (unificado — 1 rolagem "algum
+wipe acontece" + escolha ponderada de 1 tipo só, pesos 0.4/0.2/0.15),
+usando os checadores dinâmicos já existentes (`is_creature_type`/
+`is_artifact`/`is_enchantment`, todos `(p, state)` — respeitam earthbend
+real, Mycosynth Lattice, Liquimetal).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 35,0% pra 56,2% (antes = commit
+`ed65d72`, só wipe de criatura). Avg wipes totais por jogo: 0,416 →
+0,793. 20,2% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+8,6% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `ed65d72`
+(2.000 seeds) + regressão de 20.000 partidas, 0 exceções.
+
+---
+
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "Agora repita este processo para a Toph" — mesmo modo já
+validado em Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek, este deck nunca
+tinha nenhuma extensão de resiliência antes. Detalhes técnicos completos
+em `checklist-oraculo.md`.
+
+**Deck estruturalmente mais maduro dos 6 portados** — já tinha
+`leave_battlefield()` (chokepoint real de morte, com Ozolith/Skullclamp/
+Motor#16 já tratados), `state.life_total` (começa em 40) e a taxa de
+comandante (`commander_cast_count`/`commander_effective_mv`) — nenhum
+precisou ser criado do zero, `remove_permanent()` só tratou o caso
+específico do comandante (CR 903.9) e delegou o resto.
+
+**Implementado (7 categorias, design final direto):** ataque sem
+bloqueio, remoção curada (`INTERACTION_ENGINE_PRIORITY`), discard
+aleatório, board wipe, graveyard hate (mass exile + exílio único),
+counterspell no cast do comandante — operando sobre objetos `Permanent`
+(não strings) por causa de earthbend dinâmico.
+
+**Achado real:** Motor#16 (recursão earthbend) dispara pra QUALQUER
+morte real, incluindo a causada por remoção/wipe de oponente — métrica
+sobe (1,29→2,32) em vez de cair como as outras, comportamento correto
+(mais eventos de morte alimentando um motor que já reage à causa
+agnosticamente).
+
+**Resultado (`run_batch_with_interaction`, 2000 jogos):** avg ataques
+sofridos 1,03, avg board wipes 0,40 (34,5% das partidas), avg
+counterspells 0,10, avg vida final 35,43, Toph recastada após remoção
+em 28,2% das partidas.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds, 36 métricas
+por seed) + regressão de 20.000 partidas em modo resiliência, 0
+exceções + testes dirigidos (comandante→zona de comando, custo de
+recast, Ozolith reciclando contador de morte causada por oponente,
+token `Permanent` real removido, taxa pós-wipe ~0,15x, recast completo
+end-to-end).
+
+**Comparativo completo antes/depois (2000 jogos, mesma seed):**
+
+| Métrica | Antes (padrão) | Depois (resiliência) |
+|---|---|---|
+| Toph nunca conjurada em 8 turnos | 1,8% | 3,1% |
+| Turno médio de conjuração | 3,55 | 3,66 |
+| Avg aplicações de earthbend | 7,00 | 6,34 |
+| Avg recursões via Motor#16 | 1,29 | 2,32 |
+| Avg gatilhos de landfall | 12,81 | 12,23 |
+| Avg cartas compradas extra | 3,77 | 3,20 |
+| Avg tokens criados | 13,92 | 11,94 |
+| Avg vida ganha (life_gained) | 1,50 | 1,25 |
+| Avg movimentos via Ozolith | 0,35 | 0,56 |
+| Avg compras via Skullclamp | 0,03 | 0,04 |
+| Avg reanimações via Conduit of Worlds | 0,03 | 0,03 |
+| Finisher resolvido | 60,2% | 51,5% |
 
 ---
 

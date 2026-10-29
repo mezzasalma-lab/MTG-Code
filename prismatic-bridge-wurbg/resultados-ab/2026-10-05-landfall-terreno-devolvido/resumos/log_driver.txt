@@ -1,0 +1,91 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: LAND_ENTER_TRIGGERS_ALL_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'LAND_ENTER_TRIGGERS_ALL_ENABLED': False} == snapshot codigo/prismatic_bridge_goldfish_v1_ANTES_2c2da70.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['returned_land_landfall_total', 'evolution_sage_proliferates'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1979 (99.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *all_will_be_one_triggers_total             554.5355     560.8690      +6.3335 ±5.0117  
+   planeswalkers_in_play_end                    2.9735       2.9755      +0.0020 ±0.0031  
+   pw_ultimates_used_total                      2.3780       2.3875      +0.0095 ±0.0152  
+   pw_activations_total                        10.8900      10.9060      +0.0160 ±0.0268  
+   all_will_be_one_face_damage_total      14503919998956.9531 14504371782007.9414 +451783050.9875 ±885482663.9798
+   pw_draws_total                               7.3140       7.3185      +0.0045 ±0.0088  
+   pw_life_gained_total                         3.8050       3.8140      +0.0090 ±0.0176  
+   pw_life_lost_opponent_total                  1.1280       1.1370      +0.0090 ±0.0176  
+   interaction_spells_cast_total                2.6415       2.6425      +0.0010 ±0.0020  
+   late_pw_activations_total                    2.2880       2.2885      +0.0005 ±0.0010  
+   opp_eliminated_total                         0.2295       0.2300      +0.0005 ±0.0010  
+   pw_deaths_total                              0.6415       0.6410      -0.0005 ±0.0010  
+   pw_wipe_proxy_total                          0.3080       0.3150      +0.0070 ±0.0137  
+   board_cap_hits_total                        31.5365      31.5380      +0.0015 ±0.0029  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1990 (99.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   evolution_sage_proliferates                  0.7290       0.7510      +0.0220 ±0.0290  
+   face_combat_damage_total                    15.5110      15.5100      -0.0010 ±0.0014  
+   opp_attacks_on_pw_total                      2.4445       2.4455      +0.0010 ±0.0014  
+   pw_combat_damage_total                       2.5835       2.5845      +0.0010 ±0.0014  
+   len_hand                                     5.3820       5.3835      +0.0015 ±0.0022  
+   mana_held_back                               6.6575       6.6635      +0.0060 ±0.0093  
+   len_graveyard                                4.3220       4.3170      -0.0050 ±0.0080  
+   life                                   500000006856.5775 500000006856.5900      +0.0125 ±0.0226  
+   all_will_be_one_triggers_total             154.5775     155.2660      +0.6885 ±1.2734  
+   ichormoon_counters_total                     1.1425       1.1335      -0.0090 ±0.0176  
+   legend_rule_total                            6.2675       6.2925      +0.0250 ±0.0490  
+   len_activations_this_turn                    4.8255       4.8305      +0.0050 ±0.0098  
+   mana_spent_this_turn                         4.2890       4.2865      -0.0025 ±0.0049  
+   oath_etbs_total                              0.4970       0.5015      +0.0045 ±0.0088  
+   pw_activations_total                         9.5040       9.5095      +0.0055 ±0.0108  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9914 (99.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2397       6.2397      +0.0000 ±0.0003  
+  *pw_deaths_total                              0.6378       0.6357      -0.0021 ±0.0016  
+  *planeswalkers_in_play_end                    2.9870       2.9886      +0.0016 ±0.0013  
+   pw_tokens_created_total                      2.0901       2.0867      -0.0034 ±0.0045  
+   opp_eliminated_total                         0.2193       0.2195      +0.0002 ±0.0003  
+   pw_recursion_total                           0.2424       0.2422      -0.0002 ±0.0003  
+   urza_extra_lore_total                        0.0391       0.0389      -0.0002 ±0.0003  
+   urza_chapter_end                             0.2546       0.2540      -0.0006 ±0.0008  
+   board_cap_hits_total                        28.8477      28.7583      -0.0894 ±0.1680  
+   bridge_cast_turn__ate_T4                     0.1055       0.1056      +0.0001 ±0.0002  
+   bridge_cast_turn__ate_T5                     0.2941       0.2942      +0.0001 ±0.0002  
+   bridge_in_play_end                           0.7135       0.7134      -0.0001 ±0.0002  
+   carth_tutors_total                           0.3899       0.3897      -0.0002 ±0.0004  
+   protectors_removed_count                     0.0534       0.0535      +0.0001 ±0.0002  
+   removal_attempts_total                       0.8845       0.8846      +0.0001 ±0.0002  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9930 (99.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *evolution_sage_proliferates                  0.7161       0.7376      +0.0215 ±0.0061  
+   lands_played_total                           6.1453       6.1452      -0.0001 ±0.0002  
+  *all_will_be_one_triggers_total             251.8471     254.9136      +3.0665 ±1.7638  
+  *len_graveyard                                4.4731       4.4719      -0.0012 ±0.0010  
+  *pw_turns_alive_total                         6.3661       6.3671      +0.0010 ±0.0010  
+   len_token_counters                           0.7839       0.7842      +0.0003 ±0.0003  
+   oko_minus5_total                             0.2050       0.2053      +0.0003 ±0.0003  
+   discards_total                               0.2638       0.2633      -0.0005 ±0.0006  
+   len_pw_activated_this_turn                   2.7711       2.7715      +0.0004 ±0.0005  
+   pw_deaths_total                              1.3050       1.3044      -0.0006 ±0.0008  
+   elspeth_emblem                               0.2086       0.2088      +0.0002 ±0.0003  
+   pw_recursion_total                           0.2619       0.2617      -0.0002 ±0.0003  
+   pw_activations_total                         9.2390       9.2399      +0.0009 ±0.0013  
+   len_new_tokens_this_turn                     0.5635       0.5641      +0.0006 ±0.0009  
+   len_loyalty                                  2.4919       2.4925      +0.0006 ±0.0009  
+   len_activations_this_turn                    4.6930       4.6939      +0.0009 ±0.0014  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

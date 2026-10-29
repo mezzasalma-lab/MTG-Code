@@ -1,0 +1,186 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_Toxic Deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Undead Alchemist": {
+   "SWAPS": [
+    [
+     "Undead Alchemist",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Undergrowth Stadium": {
+   "SWAPS": [
+    [
+     "Undergrowth Stadium",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Urza's Saga": {
+   "SWAPS": [
+    [
+     "Urza's Saga",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_V.A.T.S.": {
+   "SWAPS": [
+    [
+     "V.A.T.S.",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Verdant Catacombs": {
+   "SWAPS": [
+    [
+     "Verdant Catacombs",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Walking Ballista": {
+   "SWAPS": [
+    [
+     "Walking Ballista",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Waterlogged Grove": {
+   "SWAPS": [
+    [
+     "Waterlogged Grove",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Watery Grave": {
+   "SWAPS": [
+    [
+     "Watery Grave",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Wave Goodbye": {
+   "SWAPS": [
+    [
+     "Wave Goodbye",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Winding Constrictor": {
+   "SWAPS": [
+    [
+     "Winding Constrictor",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Yavimaya Hollow": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Zagoth Triome": {
+   "SWAPS": [
+    [
+     "Zagoth Triome",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Zellix, Sanity Flayer": {
+   "SWAPS": [
+    [
+     "Zellix, Sanity Flayer",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_Toxic Deluge",
+  "cut_Undead Alchemist",
+  "cut_Undergrowth Stadium",
+  "cut_Urza's Saga",
+  "cut_V.A.T.S.",
+  "cut_Verdant Catacombs",
+  "cut_Walking Ballista",
+  "cut_Waterlogged Grove",
+  "cut_Watery Grave",
+  "cut_Wave Goodbye",
+  "cut_Winding Constrictor",
+  "cut_Yavimaya Hollow",
+  "cut_Zagoth Triome",
+  "cut_Zellix, Sanity Flayer"
+ ],
+ "regressao": []
+}

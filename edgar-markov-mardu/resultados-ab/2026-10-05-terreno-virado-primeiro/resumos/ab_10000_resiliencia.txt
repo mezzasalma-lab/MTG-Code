@@ -1,0 +1,48 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8056 (80.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2200       6.2213      +0.0013 ±0.0026  
+   commander_cast_turn__nunca                   0.3165       0.3175      +0.0010 ±0.0021  
+   commander_cast_turn__ate_T3                  0.0040       0.0042      +0.0002 ±0.0004  
+   commander_cast_turn__ate_T4                  0.0425       0.0431      +0.0006 ±0.0008  
+   commander_cast_turn__ate_T5                  0.1148       0.1155      +0.0007 ±0.0013  
+  *eminence_tokens_created                      2.6980       2.7155      +0.0175 ±0.0050  
+  *drain_total                                  4.4098       4.4875      +0.0777 ±0.0235  
+  *lifegain_total                               3.0470       3.0999      +0.0529 ±0.0200  
+  *death_trigger_events                         2.5198       2.5557      +0.0359 ±0.0142  
+  *creatures_sacrificed_total                   2.1440       2.1581      +0.0141 ±0.0060  
+  *purphoros_damage_total                       0.2930       0.3074      +0.0144 ±0.0063  
+  *len_library                                 82.2039      82.1827      -0.0212 ±0.0095  
+  *pw_activations_total                         0.5088       0.5168      +0.0080 ±0.0037  
+  *urzas_saga_entered_turn__ate_T3              0.0683       0.0663      -0.0020 ±0.0010  
+  *len_hand                                     2.9911       2.9746      -0.0165 ±0.0089  
+  *voldaren_estate_blood_tokens                 0.2366       0.2411      +0.0045 ±0.0024  
+  *ramp_pieces_cast                             0.6143       0.6164      +0.0021 ±0.0012  
+  *late_pw_activations_total                    0.1845       0.1865      +0.0020 ±0.0011  
+  *unholy_annex_draws                           0.4982       0.5039      +0.0057 ±0.0033  
+
+[so_terreno - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8056 (80.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2200       6.2213      +0.0013 ±0.0026  
+   commander_cast_turn__nunca                   0.3165       0.3175      +0.0010 ±0.0021  
+   commander_cast_turn__ate_T3                  0.0040       0.0042      +0.0002 ±0.0004  
+   commander_cast_turn__ate_T4                  0.0425       0.0431      +0.0006 ±0.0008  
+   commander_cast_turn__ate_T5                  0.1148       0.1155      +0.0007 ±0.0013  
+  *eminence_tokens_created                      2.6980       2.7155      +0.0175 ±0.0050  
+  *drain_total                                  4.4098       4.4875      +0.0777 ±0.0235  
+  *lifegain_total                               3.0470       3.0999      +0.0529 ±0.0200  
+  *death_trigger_events                         2.5198       2.5557      +0.0359 ±0.0142  
+  *creatures_sacrificed_total                   2.1440       2.1581      +0.0141 ±0.0060  
+  *purphoros_damage_total                       0.2930       0.3074      +0.0144 ±0.0063  
+  *len_library                                 82.2039      82.1827      -0.0212 ±0.0095  
+  *pw_activations_total                         0.5088       0.5168      +0.0080 ±0.0037  
+  *urzas_saga_entered_turn__ate_T3              0.0683       0.0663      -0.0020 ±0.0010  
+  *len_hand                                     2.9911       2.9746      -0.0165 ±0.0089  
+  *voldaren_estate_blood_tokens                 0.2366       0.2411      +0.0045 ±0.0024  
+  *ramp_pieces_cast                             0.6143       0.6164      +0.0021 ±0.0012  
+  *late_pw_activations_total                    0.1845       0.1865      +0.0020 ±0.0011  
+  *unholy_annex_draws                           0.4982       0.5039      +0.0057 ±0.0033  
+
+[so_ordem_set - antes] N=10000 | partidas com resultado IDENTICO ao da base: 10000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)

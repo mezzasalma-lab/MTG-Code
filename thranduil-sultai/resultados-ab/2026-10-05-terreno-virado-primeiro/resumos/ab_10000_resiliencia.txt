@@ -1,0 +1,63 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7316 (73.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.5178       6.5195      +0.0017 ±0.0084  
+   commander_cast_turn__nunca                   0.0690       0.0698      +0.0008 ±0.0019  
+   commander_cast_turn__ate_T3                  0.0556       0.0574      +0.0018 ±0.0019  
+  *commander_cast_turn__ate_T4                  0.2825       0.2882      +0.0057 ±0.0039  
+   commander_cast_turn__ate_T5                  0.5146       0.5164      +0.0018 ±0.0045  
+  *spells_cast                                  9.9772      10.0314      +0.0542 ±0.0198  
+  *edric_death_turn__ate_T4                     0.0305       0.0333      +0.0028 ±0.0012  
+  *len_creature_cast_turn                       7.6709       7.7162      +0.0453 ±0.0199  
+  *finisher_turn__ate_T6                        0.1107       0.1165      +0.0058 ±0.0026  
+  *first_blue_screw_turn__ate_T6                0.0494       0.0516      +0.0022 ±0.0012  
+  *edric_death_turn__ate_T6                     0.0820       0.0849      +0.0029 ±0.0016  
+  *first_blue_screw_turn__ate_T3                0.0151       0.0169      +0.0018 ±0.0010  
+  *cards_milled_total                           4.8322       4.9058      +0.0736 ±0.0411  
+  *first_blue_screw_turn__ate_T5                0.0452       0.0473      +0.0021 ±0.0012  
+  *edric_death_turn__ate_T5                     0.0570       0.0593      +0.0023 ±0.0013  
+  *commander_in_play                            0.6506       0.6430      -0.0076 ±0.0044  
+  *first_blue_screw_turn__ate_T4                0.0338       0.0357      +0.0019 ±0.0011  
+  *takenuma_channel_activations                 0.0911       0.0949      +0.0038 ±0.0023  
+  *edric_death_turn__ate_T3                     0.0134       0.0150      +0.0016 ±0.0010  
+
+[so_terreno - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7411 (74.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.5178       6.5194      +0.0016 ±0.0084  
+   commander_cast_turn__nunca                   0.0690       0.0698      +0.0008 ±0.0019  
+   commander_cast_turn__ate_T3                  0.0556       0.0574      +0.0018 ±0.0019  
+  *commander_cast_turn__ate_T4                  0.2825       0.2882      +0.0057 ±0.0039  
+   commander_cast_turn__ate_T5                  0.5146       0.5164      +0.0018 ±0.0045  
+  *spells_cast                                  9.9772      10.0311      +0.0539 ±0.0198  
+  *edric_death_turn__ate_T4                     0.0305       0.0333      +0.0028 ±0.0012  
+  *len_creature_cast_turn                       7.6709       7.7161      +0.0452 ±0.0199  
+  *finisher_turn__ate_T6                        0.1107       0.1165      +0.0058 ±0.0026  
+  *cards_milled_total                           4.8322       4.9070      +0.0748 ±0.0410  
+  *first_blue_screw_turn__ate_T6                0.0494       0.0516      +0.0022 ±0.0012  
+  *edric_death_turn__ate_T6                     0.0820       0.0849      +0.0029 ±0.0016  
+  *first_blue_screw_turn__ate_T3                0.0151       0.0169      +0.0018 ±0.0010  
+  *first_blue_screw_turn__ate_T5                0.0452       0.0473      +0.0021 ±0.0012  
+  *edric_death_turn__ate_T5                     0.0570       0.0593      +0.0023 ±0.0013  
+  *commander_in_play                            0.6506       0.6430      -0.0076 ±0.0044  
+  *first_blue_screw_turn__ate_T4                0.0338       0.0357      +0.0019 ±0.0011  
+  *takenuma_channel_activations                 0.0911       0.0949      +0.0038 ±0.0023  
+  *edric_death_turn__ate_T3                     0.0134       0.0150      +0.0016 ±0.0010  
+
+[so_ordem_set - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9877 (98.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.5178       6.5179      +0.0001 ±0.0002  
+   len_battlefield                             11.7675      11.7678      +0.0003 ±0.0003  
+   len_finishers_activated                      0.6967       0.6965      -0.0002 ±0.0003  
+   ramp_pieces_in_play                          3.1099       3.1101      +0.0002 ±0.0003  
+   spells_cast                                  9.9772       9.9774      +0.0002 ±0.0003  
+   thranduil_gy_ability_borrows                 0.2292       0.2289      -0.0003 ±0.0004  
+   cards_discarded_to_hand_size                 1.0106       1.0102      -0.0004 ±0.0006  
+   mana_spent_this_turn                         7.3115       7.3104      -0.0011 ±0.0018  
+   len_library                                 72.1002      72.1018      +0.0016 ±0.0026  
+   len_graveyard                                9.8539       9.8526      -0.0013 ±0.0023  
+   cards_milled_total                           4.8322       4.8310      -0.0012 ±0.0022  
+   combat_damage_draws                          1.3877       1.3876      -0.0001 ±0.0002  
+   elrond_draws                                 0.0770       0.0769      -0.0001 ±0.0002  
+   elrond_triggered_this_turn                   0.0336       0.0335      -0.0001 ±0.0002  
+   elves_milled_to_gy                           0.7956       0.7952      -0.0004 ±0.0008  

@@ -1,0 +1,158 @@
+{
+ "sim": "resultados-ab/2026-10-08-pacote-e-interacao/codigo/mothman_goldfish_v1_estado_2026-10-08.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "opps_eliminated_total",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "counters_placed_total",
+  "cards_milled_opp_total",
+  "cards_milled_self_total",
+  "library_min",
+  "draws_total",
+  "counterspells_cast",
+  "opp_spells_countered_total",
+  "protection_used_total",
+  "commander_countered_total",
+  "smart_removals_total",
+  "smart_wipes_total",
+  "smart_artifact_wipes_total",
+  "smart_enchantment_wipes_total",
+  "wipes_cast"
+ ],
+ "compacto": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "counterspells_cast",
+  "protection_used_total",
+  "smart_removals_total",
+  "smart_wipes_total",
+  "proliferates_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total"
+ ],
+ "variantes": {
+  "base": {},
+  "h__offer": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "b__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "p1_offer_negate": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "p2_offer_dsp": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Didn't Say Please",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "p3_offer_wave": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Wave Goodbye",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "p4_offer_deluge": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Toxic Deluge",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "p5_offer_tear": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Tear Asunder",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "p6_offer_arcane": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Arcane Denial",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "h__offer",
+  "b__negate",
+  "p1_offer_negate",
+  "p2_offer_dsp",
+  "p3_offer_wave",
+  "p4_offer_deluge",
+  "p5_offer_tear",
+  "p6_offer_arcane"
+ ],
+ "regressao": [
+  "p1_offer_negate",
+  "p3_offer_wave"
+ ]
+}
