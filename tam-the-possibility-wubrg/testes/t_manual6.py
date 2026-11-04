@@ -1,5 +1,5 @@
 """Cada clausula operacional do relato do usuario (goldfish manual #6, 2026-10-23; 11 blocos T1..T11, com foto da mao inicial) e' uma afirmacao testavel sobre o simulador (CLAUDE.md Regra #6).
-Respostas do usuario de 2026-10-28 em `resultados-ab/2026-10-23-goldfish-manual-6/dados/respostas_usuario_2026-10-28.txt`: 2 e 7 CONFIRMADAS (a 7 foi relida em 2026-10-29: o turno extra do Oko FOI jogado a mao, ver o teste da duvida 6); 3 ("Lurker") e 9 respondidas; 1 e 6 "nao me lembro" (a 6 se explica pelo log); 4 respondida com uma
+Respostas do usuario de 2026-10-28 em `resultados-ab/2026-10-23-goldfish-manual-6/dados/respostas_usuario_2026-10-28.txt`: 2 e 7 CONFIRMADAS (a 7 foi relida em 2026-10-29: o turno extra do Oko FOI jogado a mao, ver o teste da duvida 6); 3 ("Lurker") e 9 respondidas; 1 e 6 "nao me lembro" (a 6 se explica pelo log e foi confirmada em 2026-11-04); 4 respondida com uma
 explicacao que o proprio log refuta para o T9 (o Gauntlet so' entra no T10 e o Flux Channeler no T11). Estes testes reproduzem as jogadas PELAS REGRAS (oraculo do cache do Scryfall), nao a leitura do usuario.
 Os testes M6-T9 e M6-T4b documentam DIVERGENCIAS entre o relato e as regras (o simulador esta certo nos dois: a Tam proliferaria 4 vezes; o Oko do T4 nao cabe no mana)."""
 from harness import *
@@ -223,7 +223,7 @@ def _inicios_de_turno_no_bruto():
     return log, out
 
 
-@test("Manual #6 T11 (duvida 6, INFERENCIA DO LOG, nao resposta do usuario): o bloco T11 tem DOIS inicios de turno (desvirar tudo + `library -> hand`): o 1o abre o bloco (Kiora) e o 2o (7 permanentes desvirados) termina no Dack Fayden. Nenhum outro bloco tem uma 2a corrida >= 5. O Dack e' a compra do 2o inicio, nao de um efeito de carta")
+@test("Manual #6 T11 (duvida 6: turno extra do Oko jogado a mao, inferido do log e CONFIRMADO pelo usuario em 2026-11-04): o bloco T11 tem DOIS inicios de turno (desvirar tudo + `library -> hand`): o 1o abre o bloco (Kiora) e o 2o (7 permanentes desvirados) termina no Dack Fayden. Nenhum outro bloco tem uma 2a corrida >= 5. O Dack e' a compra do 2o inicio, nao de um efeito de carta")
 def _():
     log, ini = _inicios_de_turno_no_bruto()
     for b in range(2, 12):                                # todo bloco T2..T11 abre com desvirar + compra no indice 0

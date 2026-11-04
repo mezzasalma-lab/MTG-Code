@@ -85,6 +85,11 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 - `references/user-standing-rules.md` §21 ganha o item (d) no bullet do Rat King/Tam #6 (**resposta do usuário que afirma o que ele NÃO fez se confere contra o bruto**: o turno extra do Oko foi jogado à mão e eu li o contrário) e um bullet novo da rodada 6 do Rat King (revisão de código: apontamento de revisor é hipótese; medir a correção; correção latente; `det_check.sh` de dentro da pasta dos scripts). `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`) ganha, na Regra #10, as classes (l) métrica líquida no ensaio a seco, (m) duas funções da mesma política com definições diferentes de "terreno" e (n) gatilho compartilhado fora de um ponto de morte, mais o exemplo do `det_check.sh` vácuo. `mtg-commander/references/protocolo-de-avaliacao.md` §8 ganha 3 linhas no checklist de erros. `goldfish-sim-card-rules.md` e `pod-simulator-design.md` não mudaram. `mtg-commander.zip` e `SHA256SUMS` refeitos.
 - **Como foi feito (Regra #9):** `user-standing-rules.md` copiado do repositório; `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
 
+## O que mudou na atualização de 2026-11-04 (confirmação do usuário no Tam #6)
+
+- `references/user-standing-rules.md` §21, item (d) do bullet do Rat King/Tam #6: acrescenta que o usuário **confirmou em 2026-11-04** (*"No TAM #6 sim, foi jogado na mão sem mudar o turno"*) o que o bruto mostrava, e que a leitura errada era a minha. Só esse espelho mudou; `mtg-commander.zip` e `SHA256SUMS` refeitos.
+- **Como foi feito (Regra #9):** espelho copiado do repositório; este README editado **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup`. A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
+
 ## Como restaurar / reinstalar
 
 1. **Claude Code (pasta de skills):** copie `skills-backup/mtg-commander/` inteira para `~/.claude/skills/mtg-commander/`.

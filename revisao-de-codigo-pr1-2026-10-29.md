@@ -15,7 +15,7 @@ O PR tem 289 commits, 3.826 arquivos e ~1.060 arquivos `.py` novos (431 mil linh
 
 | # | apontamento | verificação | decisão |
 |---|---|---|---|
-| 1 | O LEIAME/log dizem que o turno extra do Oko NÃO foi jogado e que o Dack Fayden "não tem fonte no log", mas o bloco T11 tem um 2º início de turno | Conferi no bruto (`goldfish_manual_6_bruto.json`): todo bloco T2–T11 abre com *desvirar tudo + `library → hand`* no índice 0; **só o T11 tem uma 2ª corrida de desvirar ≥ 5** (7 permanentes, eventos 54–60), seguida da compra do Dack (evento 63). Eu tinha lido *"só não usei o botão de passar turno"* ao contrário | **Corrigido** (LEIAME linhas 6 e 7, goldfish-log, checklist, regras, teste). **É inferência do log, não resposta dele: falta ele confirmar.** |
+| 1 | O LEIAME/log dizem que o turno extra do Oko NÃO foi jogado e que o Dack Fayden "não tem fonte no log", mas o bloco T11 tem um 2º início de turno | Conferi no bruto (`goldfish_manual_6_bruto.json`): todo bloco T2–T11 abre com *desvirar tudo + `library → hand`* no índice 0; **só o T11 tem uma 2ª corrida de desvirar ≥ 5** (7 permanentes, eventos 54–60), seguida da compra do Dack (evento 63). Eu tinha lido *"só não usei o botão de passar turno"* ao contrário | **Corrigido** (LEIAME linhas 6 e 7, goldfish-log, checklist, regras, teste). **Era inferência do log; o usuário confirmou em 2026-11-04.** |
 | 2 | O teste da dúvida 6 tinha uma asserção sem relação com a ordem e documentava a conclusão errada | Confirmado | Teste refeito: lê as corridas de desvirar do bruto; **controle de corte** (removendo os eventos 54–62 o teste falha) |
 | 3 | O teste do Prismari (T8) só checava P/T estático | Confirmado | Refeito: remove o Lurker (`remove_permanent`) e confere que a ficha de Jace (L2) sobrevive; controle com a ficha em L0 |
 | 4 | goldfish-log do Tam com seções fora de ordem (9, 11, 10) e a pasta nova sem link no topo (Regra #8, item 7) | Confirmado | §11 movido para depois do §10; link no topo |
@@ -41,6 +41,6 @@ Validação da rodada 6: bit-idêntico com as 3 chaves desligadas (20.000 × 2 m
 - **Não reexecutei** as verificações dos outros decks. Os 13 simuladores com a função `_tl_dry_run_mv` seguem sem medição do comandante até T2; a classe (l) (métrica líquida no ensaio) só vale onde o ensaio usa o mana líquido, hoje só o Rat King.
 - A revisão automática acha o que está no diff que ela lê; não substitui as auditorias por classe da Regra #10, que não foram repetidas neste ciclo (exceto as citadas acima).
 
-## Pergunta em aberto para o usuário
+## Pergunta que estava em aberto (respondida em 2026-11-04)
 
-No Tam #6, o turno extra do Oko (`−12` do Gauntlet) foi jogado **à mão dentro do bloco T11**, sem apertar o botão de passar turno? É o que o log mostra (2º início de turno, com compra do Dack Fayden), mas só você pode confirmar.
+No Tam #6, o turno extra do Oko (`−12` do Gauntlet) foi jogado **à mão dentro do bloco T11**, sem apertar o botão de passar turno? Era o que o log mostrava (2º início de turno, com compra do Dack Fayden). **Resposta do usuário em 2026-11-04: *"No TAM #6 sim, foi jogado na mão sem mudar o turno"*. A inferência virou fato.**
