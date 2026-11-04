@@ -1,0 +1,584 @@
+{
+ "data": "2026-11-04",
+ "reconhece": {
+  "Agadeem's Awakening // Agadeem, the Undercrypt": "Agadeem's Awakening // Agadeem, the Undercrypt",
+  "Anguished Unmaking": "Anguished Unmaking",
+  "Anointed Procession": "Anointed Procession",
+  "Arcane Signet": "Arcane Signet",
+  "Arid Mesa": "Arid Mesa",
+  "Ashnod's Altar": "Ashnod's Altar",
+  "Bartolomé del Presidio": "Bartolomé del Presidio",
+  "Basalt Monolith": "Basalt Monolith",
+  "Bastion of Remembrance": "Bastion of Remembrance",
+  "Battlefield Forge": "Battlefield Forge",
+  "Black Market Connections": "Black Market Connections",
+  "Blackcleave Cliffs": "Blackcleave Cliffs",
+  "Blazemire Verge": "Blazemire Verge",
+  "Blood Artist": "Blood Artist",
+  "Blood Crypt": "Blood Crypt",
+  "Bloodletter of Aclazotz": "Bloodletter of Aclazotz",
+  "Bloodline Bidding": "Bloodline Bidding",
+  "Bloodline Recollector // Ancestral Craving": "Bloodline Recollector // Ancestral Craving",
+  "Bloodstained Mire": "Bloodstained Mire",
+  "Bloodthirsty Conqueror": "Bloodthirsty Conqueror",
+  "Cabal Coffers": "Cabal Coffers",
+  "Call the Coppercoats": "Call the Coppercoats",
+  "Caretaker's Talent": "Caretaker's Talent",
+  "Cavern of Souls": "Cavern of Souls",
+  "Champion of Dusk": "Champion of Dusk",
+  "Charismatic Conqueror": "Charismatic Conqueror",
+  "City of Brass": "City of Brass",
+  "Clavileño, First of the Blessed": "Clavileño, First of the Blessed",
+  "Clever Concealment": "Clever Concealment",
+  "Command Tower": "Command Tower",
+  "Cordial Vampire": "Cordial Vampire",
+  "Cruel Celebrant": "Cruel Celebrant",
+  "Diabolic Intent": "Diabolic Intent",
+  "Edgar Markov": "Edgar Markov",
+  "Elenda, the Dusk Rose": "Elenda, the Dusk Rose",
+  "Elspeth, Storm Slayer": "Elspeth, Storm Slayer",
+  "Emeritus of Woe // Demonic Tutor": "Emeritus of Woe // Demonic Tutor",
+  "Enduring Tenacity": "Enduring Tenacity",
+  "Exquisite Blood": "Exquisite Blood",
+  "Fell the Profane // Fell Mire": "Fell the Profane // Fell Mire",
+  "Fetid Heath": "Fetid Heath",
+  "Fountainport": "Fountainport",
+  "Funeral Room // Awakening Hall": "Funeral Room // Awakening Hall",
+  "Get Lost": "Get Lost",
+  "Goblin Bombardment": "Goblin Bombardment",
+  "Godless Shrine": "Godless Shrine",
+  "Haunted Ridge": "Haunted Ridge",
+  "Indulgent Aristocrat": "Indulgent Aristocrat",
+  "Legion's Landing // Adanto, the First Fort": "Legion's Landing // Adanto, the First Fort",
+  "Luxury Suite": "Luxury Suite",
+  "Mana Confluence": "Mana Confluence",
+  "Marsh Flats": "Marsh Flats",
+  "Minas Tirith": "Minas Tirith",
+  "Mind Stone": "Mind Stone",
+  "Mondrak, Glory Dominus": "Mondrak, Glory Dominus",
+  "Nullpriest of Oblivion": "Nullpriest of Oblivion",
+  "Ojer Taq, Deepest Foundation // Temple of Civilization": "Ojer Taq, Deepest Foundation // Temple of Civilization",
+  "Ophiomancer": "Ophiomancer",
+  "Path to Exile": "Path to Exile",
+  "Phyrexian Altar": "Phyrexian Altar",
+  "Phyrexian Tower": "Phyrexian Tower",
+  "Pitiless Plunderer": "Pitiless Plunderer",
+  "Plains": "Plains",
+  "Plumb the Forbidden": "Plumb the Forbidden",
+  "Purphoros, God of the Forge": "Purphoros, God of the Forge",
+  "Rings of Brighthearth": "Rings of Brighthearth",
+  "Rite of Oblivion": "Rite of Oblivion",
+  "Roaming Throne": "Roaming Throne",
+  "Rugged Prairie": "Rugged Prairie",
+  "Sanctum Seeker": "Sanctum Seeker",
+  "Savai Triome": "Savai Triome",
+  "Sevinne's Reclamation": "Sevinne's Reclamation",
+  "Skullclamp": "Skullclamp",
+  "Smothering Tithe": "Smothering Tithe",
+  "Sol Ring": "Sol Ring",
+  "Sorin, Imperious Bloodlord": "Sorin, Imperious Bloodlord",
+  "Spectator Seating": "Spectator Seating",
+  "Stensian Sanguinist // Exsanguinate": "Stensian Sanguinist // Exsanguinate",
+  "Swamp": "Swamp",
+  "Swords to Plowshares": "Swords to Plowshares",
+  "Takenuma, Abandoned Mire": "Takenuma, Abandoned Mire",
+  "Teferi's Protection": "Teferi's Protection",
+  "The Meathook Massacre": "The Meathook Massacre",
+  "Unholy Annex // Ritual Chamber": "Unholy Annex // Ritual Chamber",
+  "Urborg, Tomb of Yawgmoth": "Urborg, Tomb of Yawgmoth",
+  "Urza's Saga": "Urza's Saga",
+  "Vampiric Tutor": "Vampiric Tutor",
+  "Vein Ripper": "Vein Ripper",
+  "Vindicate": "Vindicate",
+  "Vindictive Vampire": "Vindictive Vampire",
+  "Viscera Seer": "Viscera Seer",
+  "Vito, Fanatic of Aclazotz": "Vito, Fanatic of Aclazotz",
+  "Vito, Thorn of the Dusk Rose": "Vito, Thorn of the Dusk Rose",
+  "Voldaren Estate": "Voldaren Estate",
+  "Warleader's Call": "Warleader's Call",
+  "Welcoming Vampire": "Welcoming Vampire",
+  "Westvale Abbey // Ormendahl, Profane Prince": "Westvale Abbey // Ormendahl, Profane Prince",
+  "Zulaport Cutthroat": "Zulaport Cutthroat"
+ },
+ "nao_reconhecidos": [],
+ "controle_positivo": true,
+ "controle_de_corte": true,
+ "antes": {
+  "combos": {
+   "Exquisite Blood + Vito, Thorn of the Dusk Rose": {
+    "id": "314-3966",
+    "tag": "S",
+    "usa": [
+     "Vito, Thorn of the Dusk Rose",
+     "Exquisite Blood"
+    ]
+   },
+   "Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose": {
+    "id": "314-6191",
+    "tag": "S",
+    "usa": [
+     "Vito, Thorn of the Dusk Rose",
+     "Bloodthirsty Conqueror"
+    ]
+   },
+   "Enduring Tenacity + Exquisite Blood": {
+    "id": "3966-5755",
+    "tag": "S",
+    "usa": [
+     "Exquisite Blood",
+     "Enduring Tenacity"
+    ]
+   },
+   "Bloodthirsty Conqueror + Enduring Tenacity": {
+    "id": "5755-6191",
+    "tag": "S",
+    "usa": [
+     "Enduring Tenacity",
+     "Bloodthirsty Conqueror"
+    ]
+   }
+  },
+  "n_quase": 183,
+  "bracket": {
+   "bracketTag": "S",
+   "game_changers": [
+    "Smothering Tithe",
+    "Teferi's Protection",
+    "Vampiric Tutor"
+   ]
+  }
+ },
+ "mais_br": {
+  "combos": {
+   "Exquisite Blood + Vito, Thorn of the Dusk Rose": {
+    "id": "314-3966",
+    "tag": "S",
+    "usa": [
+     "Vito, Thorn of the Dusk Rose",
+     "Exquisite Blood"
+    ]
+   },
+   "Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose": {
+    "id": "314-6191",
+    "tag": "S",
+    "usa": [
+     "Vito, Thorn of the Dusk Rose",
+     "Bloodthirsty Conqueror"
+    ]
+   },
+   "Enduring Tenacity + Exquisite Blood": {
+    "id": "3966-5755",
+    "tag": "S",
+    "usa": [
+     "Exquisite Blood",
+     "Enduring Tenacity"
+    ]
+   },
+   "Bloodthirsty Conqueror + Enduring Tenacity": {
+    "id": "5755-6191",
+    "tag": "S",
+    "usa": [
+     "Enduring Tenacity",
+     "Bloodthirsty Conqueror"
+    ]
+   }
+  },
+  "n_quase": 183,
+  "bracket": {
+   "bracketTag": "S",
+   "game_changers": [
+    "Smothering Tithe",
+    "Teferi's Protection",
+    "Vampiric Tutor"
+   ]
+  },
+  "novos": {},
+  "quase_que_citam_br": {}
+ },
+ "trocas": {
+  "Bartolomé del Presidio": {
+   "perde": [],
+   "ganha": []
+  },
+  "Blood Artist": {
+   "perde": [],
+   "ganha": []
+  },
+  "Bloodletter of Aclazotz": {
+   "perde": [],
+   "ganha": []
+  },
+  "Bloodthirsty Conqueror": {
+   "perde": [
+    "Bloodthirsty Conqueror + Enduring Tenacity",
+    "Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose"
+   ],
+   "ganha": []
+  },
+  "Champion of Dusk": {
+   "perde": [],
+   "ganha": []
+  },
+  "Charismatic Conqueror": {
+   "perde": [],
+   "ganha": []
+  },
+  "Clavileño, First of the Blessed": {
+   "perde": [],
+   "ganha": []
+  },
+  "Cordial Vampire": {
+   "perde": [],
+   "ganha": []
+  },
+  "Cruel Celebrant": {
+   "perde": [],
+   "ganha": []
+  },
+  "Elenda, the Dusk Rose": {
+   "perde": [],
+   "ganha": []
+  },
+  "Emeritus of Woe // Demonic Tutor": {
+   "perde": [],
+   "ganha": []
+  },
+  "Enduring Tenacity": {
+   "perde": [
+    "Bloodthirsty Conqueror + Enduring Tenacity",
+    "Enduring Tenacity + Exquisite Blood"
+   ],
+   "ganha": []
+  },
+  "Indulgent Aristocrat": {
+   "perde": [],
+   "ganha": []
+  },
+  "Mondrak, Glory Dominus": {
+   "perde": [],
+   "ganha": []
+  },
+  "Nullpriest of Oblivion": {
+   "perde": [],
+   "ganha": []
+  },
+  "Ojer Taq, Deepest Foundation // Temple of Civilization": {
+   "perde": [],
+   "ganha": []
+  },
+  "Ophiomancer": {
+   "perde": [],
+   "ganha": []
+  },
+  "Pitiless Plunderer": {
+   "perde": [],
+   "ganha": []
+  },
+  "Purphoros, God of the Forge": {
+   "perde": [],
+   "ganha": []
+  },
+  "Roaming Throne": {
+   "perde": [],
+   "ganha": []
+  },
+  "Sanctum Seeker": {
+   "perde": [],
+   "ganha": []
+  },
+  "Stensian Sanguinist // Exsanguinate": {
+   "perde": [],
+   "ganha": []
+  },
+  "Vein Ripper": {
+   "perde": [],
+   "ganha": []
+  },
+  "Vindictive Vampire": {
+   "perde": [],
+   "ganha": []
+  },
+  "Viscera Seer": {
+   "perde": [],
+   "ganha": []
+  },
+  "Vito, Fanatic of Aclazotz": {
+   "perde": [],
+   "ganha": []
+  },
+  "Vito, Thorn of the Dusk Rose": {
+   "perde": [
+    "Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose",
+    "Exquisite Blood + Vito, Thorn of the Dusk Rose"
+   ],
+   "ganha": []
+  },
+  "Welcoming Vampire": {
+   "perde": [],
+   "ganha": []
+  },
+  "Zulaport Cutthroat": {
+   "perde": [],
+   "ganha": []
+  },
+  "Arcane Signet": {
+   "perde": [],
+   "ganha": []
+  },
+  "Ashnod's Altar": {
+   "perde": [],
+   "ganha": []
+  },
+  "Phyrexian Altar": {
+   "perde": [],
+   "ganha": []
+  },
+  "Skullclamp": {
+   "perde": [],
+   "ganha": []
+  },
+  "Sol Ring": {
+   "perde": [],
+   "ganha": []
+  },
+  "Anointed Procession": {
+   "perde": [],
+   "ganha": []
+  },
+  "Bastion of Remembrance": {
+   "perde": [],
+   "ganha": []
+  },
+  "Black Market Connections": {
+   "perde": [],
+   "ganha": []
+  },
+  "Caretaker's Talent": {
+   "perde": [],
+   "ganha": []
+  },
+  "Exquisite Blood": {
+   "perde": [
+    "Enduring Tenacity + Exquisite Blood",
+    "Exquisite Blood + Vito, Thorn of the Dusk Rose"
+   ],
+   "ganha": []
+  },
+  "Funeral Room // Awakening Hall": {
+   "perde": [],
+   "ganha": []
+  },
+  "Goblin Bombardment": {
+   "perde": [],
+   "ganha": []
+  },
+  "Legion's Landing // Adanto, the First Fort": {
+   "perde": [],
+   "ganha": []
+  },
+  "Smothering Tithe": {
+   "perde": [],
+   "ganha": []
+  },
+  "The Meathook Massacre": {
+   "perde": [],
+   "ganha": []
+  },
+  "Unholy Annex // Ritual Chamber": {
+   "perde": [],
+   "ganha": []
+  },
+  "Warleader's Call": {
+   "perde": [],
+   "ganha": []
+  },
+  "Elspeth, Storm Slayer": {
+   "perde": [],
+   "ganha": []
+  },
+  "Sorin, Imperious Bloodlord": {
+   "perde": [],
+   "ganha": []
+  },
+  "Anguished Unmaking": {
+   "perde": [],
+   "ganha": []
+  },
+  "Call the Coppercoats": {
+   "perde": [],
+   "ganha": []
+  },
+  "Clever Concealment": {
+   "perde": [],
+   "ganha": []
+  },
+  "Fell the Profane // Fell Mire": {
+   "perde": [],
+   "ganha": []
+  },
+  "Get Lost": {
+   "perde": [],
+   "ganha": []
+  },
+  "Path to Exile": {
+   "perde": [],
+   "ganha": []
+  },
+  "Plumb the Forbidden": {
+   "perde": [],
+   "ganha": []
+  },
+  "Swords to Plowshares": {
+   "perde": [],
+   "ganha": []
+  },
+  "Teferi's Protection": {
+   "perde": [],
+   "ganha": []
+  },
+  "Vampiric Tutor": {
+   "perde": [],
+   "ganha": []
+  },
+  "Agadeem's Awakening // Agadeem, the Undercrypt": {
+   "perde": [],
+   "ganha": []
+  },
+  "Bloodline Bidding": {
+   "perde": [],
+   "ganha": []
+  },
+  "Diabolic Intent": {
+   "perde": [],
+   "ganha": []
+  },
+  "Rite of Oblivion": {
+   "perde": [],
+   "ganha": []
+  },
+  "Sevinne's Reclamation": {
+   "perde": [],
+   "ganha": []
+  },
+  "Vindicate": {
+   "perde": [],
+   "ganha": []
+  },
+  "Arid Mesa": {
+   "perde": [],
+   "ganha": []
+  },
+  "Battlefield Forge": {
+   "perde": [],
+   "ganha": []
+  },
+  "Blackcleave Cliffs": {
+   "perde": [],
+   "ganha": []
+  },
+  "Blazemire Verge": {
+   "perde": [],
+   "ganha": []
+  },
+  "Blood Crypt": {
+   "perde": [],
+   "ganha": []
+  },
+  "Bloodstained Mire": {
+   "perde": [],
+   "ganha": []
+  },
+  "Cabal Coffers": {
+   "perde": [],
+   "ganha": []
+  },
+  "Cavern of Souls": {
+   "perde": [],
+   "ganha": []
+  },
+  "City of Brass": {
+   "perde": [],
+   "ganha": []
+  },
+  "Command Tower": {
+   "perde": [],
+   "ganha": []
+  },
+  "Fetid Heath": {
+   "perde": [],
+   "ganha": []
+  },
+  "Fountainport": {
+   "perde": [],
+   "ganha": []
+  },
+  "Godless Shrine": {
+   "perde": [],
+   "ganha": []
+  },
+  "Haunted Ridge": {
+   "perde": [],
+   "ganha": []
+  },
+  "Luxury Suite": {
+   "perde": [],
+   "ganha": []
+  },
+  "Mana Confluence": {
+   "perde": [],
+   "ganha": []
+  },
+  "Marsh Flats": {
+   "perde": [],
+   "ganha": []
+  },
+  "Minas Tirith": {
+   "perde": [],
+   "ganha": []
+  },
+  "Plains": {
+   "perde": [],
+   "ganha": []
+  },
+  "Phyrexian Tower": {
+   "perde": [],
+   "ganha": []
+  },
+  "Rugged Prairie": {
+   "perde": [],
+   "ganha": []
+  },
+  "Savai Triome": {
+   "perde": [],
+   "ganha": []
+  },
+  "Spectator Seating": {
+   "perde": [],
+   "ganha": []
+  },
+  "Swamp": {
+   "perde": [],
+   "ganha": []
+  },
+  "Takenuma, Abandoned Mire": {
+   "perde": [],
+   "ganha": []
+  },
+  "Urborg, Tomb of Yawgmoth": {
+   "perde": [],
+   "ganha": []
+  },
+  "Urza's Saga": {
+   "perde": [],
+   "ganha": []
+  },
+  "Voldaren Estate": {
+   "perde": [],
+   "ganha": []
+  },
+  "Westvale Abbey // Ormendahl, Profane Prince": {
+   "perde": [],
+   "ganha": []
+  }
+ }
+}
