@@ -1,0 +1,9 @@
+ok 2000 padrao
+ok 2000 resiliencia
+ok 10000 padrao
+ok 10000 resiliencia
+FIM
+
+real	2m43.655s
+user	6m23.588s
+sys	0m25.977s

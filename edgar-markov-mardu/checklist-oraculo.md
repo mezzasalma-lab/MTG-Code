@@ -1,5 +1,21 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## Bloodline Recollector // Ancestral Craving (Reality Fracture nº 49): avaliação de entrada, 2026-11-04 (a carta NÃO entrou na lista nem no simulador)
+
+**Origem:** o usuário conseguiu a carta e perguntou o que cortar e se vale a pena. **Oráculo ao vivo (Scryfall, `fra` 49; Regra #2: não tem `flavor_name`, é o nome real; já estava no `oracle-cache.json`):** *Bloodline Recollector* `{1}{B}` Creature — Vampire Warlock 2/2: "At the beginning of each end step, if three or more creatures died this turn, this creature becomes prepared." / *Ancestral Craving* `{B}` Instant: "Target player draws three cards and loses 3 life." Layout `prepare`, legal em Commander, identidade B.
+
+**As 15 rulings (2026-08-21, lidas ANTES de avaliar; Regra #3):** (1) é uma carta de criatura em toda zona; (2) só se pode conjurar a cópia com as características-base; (3) a cópia fica em exílio enquanto o permanente estiver em campo preparado, só o controlador atual a conjura, e conjurá-la o despreparar (não é custo alternativo); (4) uma criatura não fica preparada duas vezes ao mesmo tempo (um 2º gatilho não cria 2ª cópia); (5) preparado não é valor copiável; (6) se deixa de ser criatura ou perde habilidades continua preparada; (7) magia sem alvo legal não resolve e a criatura segue despreparada; (8) efeito que despreparar remove a cópia. **"Three or more creatures died" conta qualquer criatura (inclusive de oponente e ficha) e o gatilho é em CADA end step, não só no meu.**
+
+| cláusula / conceito | situação para o Edgar |
+|---|---|
+| Vampiro de `{1}{B}`: conjurar dispara a Eminence do Edgar (ficha 1/1 lifelink) | ✅ entra na conta (a lista tem 21 Vampiros fora o Edgar, por `type_line`; com a BR são 22) |
+| 2/2: dispara o Welcoming Vampire ("power 2 or less enter") | ✅ |
+| Gatilho de 3 mortes por turno e a cópia do Ancestral Craving | 📊 **o simulador não exerce**: `sac_loop` sacrifica no máximo 2 fichas por turno e nunca criatura nomeada (cap declarado no próprio código); medido em `resultados-ab/2026-11-04-bloodline-recollector/` |
+| Craving mirando um oponente (3 de vida perdida) como início do loop Exquisite Blood + Vito/Enduring Tenacity | ✅ possível, redundante (a lista já tem muitos iniciadores), e dá 3 cartas ao oponente |
+| A cópia é Instant, não Vampiro | ✅ lançá-la NÃO dispara a Eminence |
+
+Resultado e decisão: `goldfish-log.md` (seção do topo) e `resultados-ab/2026-11-04-bloodline-recollector/LEIAME.md`.
+
 ## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
 
 **Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.

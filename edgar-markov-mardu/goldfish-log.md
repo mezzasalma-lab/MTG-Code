@@ -1,8 +1,22 @@
 # Goldfish Log — Edgar Markov
 
+> **Bloodline Recollector (Reality Fracture), avaliação de 2026-11-04: Spellbook antes/depois, medição de mortes por turno e A/B de custo de cada corte — dados brutos e reprodução:** [`resultados-ab/2026-11-04-bloodline-recollector/LEIAME.md`](resultados-ab/2026-11-04-bloodline-recollector/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-05 (Fetchlands reais (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`](resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md)
+
+## Bloodline Recollector // Ancestral Craving (Reality Fracture): vale a pena e o que cortar — 2026-11-04
+
+**Pergunta do usuário:** *"Consegui um Bloodline Recollector de Reality Fracture para o Edgar Markov. O que você me indicaria cogitar como carta para retirar para ele entrar? Ele vale mesmo a pena?"* Oráculo e as 15 rulings: `checklist-oraculo.md` (seção do topo). Arquivo bruto/auditável: `resultados-ab/2026-11-04-bloodline-recollector/`.
+
+**Veredito:** vale como **troca barata, não como peça nova do motor**. Cortar **Bloodline Bidding** (1ª opção) ou **Sevinne's Reclamation**; não cortar nenhuma peça de drain, de fichas ou do combo.
+- **O que a carta é aqui:** um Vampiro de `{1}{B}` 2/2 que dispara a Eminence (ficha 1/1 lifelink) e o Welcoming Vampire; o "comprar 3" só vem quando 3 criaturas morrem no mesmo turno. A lista tem 14 formas de sacrificar (6 grátis, 5 pagas, 3 magias de sacrifício) e linhas diretas (Meathook Massacre X=1 mata as fichas e a BR 2/2 sobrevive; Plumb the Forbidden sacrificando 3), então o gatilho é alcançável de propósito, mas não acontece sozinho.
+- **Spellbook (antes/depois, com controles):** 98 nomes reconhecidos (0 não reconhecidos), controle positivo e de corte passaram; a BR **não cria combo novo** e não aparece em nenhum dos 183 "quase"; das 93 trocas (sai X, entra BR) **só as 4 peças do combo perdem combos** (Exquisite Blood, Vito Thorn, Enduring Tenacity, Bloodthirsty Conqueror: 2 combos cada). Bracket estimado inalterado (S, os mesmos 3 Game Changers).
+- **Simulador, só como apoio (A/B pareado, N=10.000, a BR entra como corpo de Vampiro, SEM a habilidade, ou seja, um piso):** média do `antes`: dreno 5,88, fichas da Eminence 3,01 por partida. Trocar Zulaport Cutthroat custa **−0,18 de dreno** (+0,17 fichas); Vindictive Vampire **−0,20** (+0,06 fichas); Cordial Vampire 0 (o simulador não vê os contadores dele); Bloodline Bidding **+0,19**; Sevinne's Reclamation **+0,17**; Call the Coppercoats +0,07 (a carta nunca é conjurada no simulador: depende de criatura de oponente); um Plains **−0,09** de dreno e −0,11 terrenos jogados. Modo resiliência: mesmos sinais (Zulaport −0,15; Vindictive −0,22; Bidding +0,14; Sevinne's +0,11).
+- **O que o simulador NÃO consegue dizer:** o "comprar 3". `sac_loop` sacrifica no máximo 2 fichas por turno e nunca uma criatura nomeada, então ≥ 3 mortes num turno só aparecem em 3,4% das partidas até o T8 e "outlet grátis + ≥ 3 fichas de Vampiro" em 13,8%. É um piso por construção (regra #5), não a frequência no jogo real.
+- **Por que Bloodline Bidding:** 8 de mana (convoke) e devolve todos os Vampiros; a recursão da lista já está saturada (Sevinne's Reclamation, Agadeem's Awakening, Awakening Hall, Nullpriest com kicker, Rite of Oblivion com flashback) e o Awakening Hall faz o mesmo trabalho pesado. **Segunda opção, Sevinne's Reclamation:** é a recursão barata (MV ≤ 3, com flashback) que protege contra wipe; só corte se preferir manter o Bidding como seguro tardio.
+- **Não revi / não medi:** o texto real da mesa do usuário (nº de oponentes, frequência de wipes); a probabilidade por turno de o gatilho disparar no jogo real; o Cordial Vampire (contadores) e o Call the Coppercoats (depende de oponente) ficam fora do que o simulador mede.
 
 ## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
 

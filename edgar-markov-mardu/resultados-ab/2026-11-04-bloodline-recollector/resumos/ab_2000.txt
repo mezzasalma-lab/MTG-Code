@@ -1,0 +1,276 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao (BR = PROXY-PISO: so' o corpo de Vampiro)
+
+[ctrl_proxy_sem_troca - antes] N=2000 | partidas com resultado IDENTICO ao da base: 2000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+
+[BR_por_Zulaport_Cutthroat - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1673 (83.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *drain_total                                  6.1145       5.9300      -0.1845 ±0.0584  
+  *lifegain_total                               4.0140       3.8430      -0.1710 ±0.0440  
+  *eminence_tokens_created                      2.9725       3.1530      +0.1805 ±0.0199  
+  *death_trigger_events                         2.3755       2.1575      -0.2180 ±0.0419  
+   welcoming_vampire_draws                      0.3495       0.3510      +0.0015 ±0.0022  
+  *creatures_sacrificed_total                   2.6860       2.7965      +0.1105 ±0.0178  
+  *edgar_attack_counters_total                  7.2645       7.6270      +0.3625 ±0.0604  
+   commander_cast_turn__ate_T6                  0.5210       0.5220      +0.0010 ±0.0014  
+   tutors_used_total                            0.3700       0.3715      +0.0015 ±0.0029  
+  *skullclamp_draws                             0.4280       0.4440      +0.0160 ±0.0100  
+  *caretakers_talent_draws                      0.2170       0.2245      +0.0075 ±0.0043  
+  *lands_played_total                           6.4305       6.4340      +0.0035 ±0.0032  
+  *sorin_vampire_sacs_total                     0.0950       0.1040      +0.0090 ±0.0041  
+  *sanctum_seeker_drains                        0.9790       1.0115      +0.0325 ±0.0150  
+  *plumb_the_forbidden_draws                    0.2345       0.2430      +0.0085 ±0.0040  
+  *voldaren_estate_blood_tokens                 0.2915       0.3055      +0.0140 ±0.0078  
+  *champion_of_dusk_draws                       0.3410       0.3655      +0.0245 ±0.0159  
+  *caretakers_talent_level2_copies              0.0410       0.0455      +0.0045 ±0.0029  
+  *roaming_throne_doublings                     0.3270       0.3325      +0.0055 ±0.0040  
+  *edgar_attack_turns                           1.4615       1.4655      +0.0040 ±0.0031  
+  *token_doubler_events                         0.4425       0.4530      +0.0105 ±0.0088  
+  *purphoros_damage_total                       0.4940       0.5020      +0.0080 ±0.0068  
+  *combo_active                                 0.0200       0.0175      -0.0025 ±0.0022  
+  *combo_active_turn__nunca                     0.9800       0.9825      +0.0025 ±0.0022  
+   elenda_counters                              0.1965       0.2015      +0.0050 ±0.0052  
+   warleaders_call_damage_total                 0.5295       0.5400      +0.0105 ±0.0113  
+
+[BR_por_Vindictive_Vampire - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1727 (86.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *drain_total                                  6.1145       5.8870      -0.2275 ±0.0645  
+  *lifegain_total                               4.0140       3.8570      -0.1570 ±0.0458  
+  *eminence_tokens_created                      2.9725       3.0185      +0.0460 ±0.0142  
+  *death_trigger_events                         2.3755       2.1995      -0.1760 ±0.0416  
+  *welcoming_vampire_draws                      0.3495       0.3425      -0.0070 ±0.0060  
+  *creatures_sacrificed_total                   2.6860       2.7170      +0.0310 ±0.0134  
+  *edgar_attack_counters_total                  7.2645       7.3215      +0.0570 ±0.0493  
+   commander_cast_turn__ate_T6                  0.5210       0.5195      -0.0015 ±0.0022  
+   tutors_used_total                            0.3700       0.3730      +0.0030 ±0.0039  
+   skullclamp_draws                             0.4280       0.4290      +0.0010 ±0.0081  
+  *caretakers_talent_draws                      0.2170       0.2095      -0.0075 ±0.0056  
+   lands_played_total                           6.4305       6.4335      +0.0030 ±0.0048  
+  *pw_free_creature_total                       0.1425       0.1335      -0.0090 ±0.0041  
+  *unholy_annex_draws                           0.5350       0.5260      -0.0090 ±0.0048  
+  *fountainport_draws                           0.1205       0.1275      +0.0070 ±0.0048  
+  *fountainport_fish                            0.0630       0.0560      -0.0070 ±0.0054  
+  *sorin_vampire_sacs_total                     0.0950       0.1000      +0.0050 ±0.0039  
+  *warleaders_call_damage_total                 0.5295       0.5135      -0.0160 ±0.0128  
+  *black_market_treasures                       0.4110       0.4060      -0.0050 ±0.0044  
+  *caretakers_talent_level_end                  1.2125       1.2100      -0.0025 ±0.0022  
+  *pw_deaths_total                              0.0260       0.0235      -0.0025 ±0.0022  
+  *edgar_attack_turns                           1.4615       1.4575      -0.0040 ±0.0037  
+  *champion_of_dusk_draws                       0.3410       0.3605      +0.0195 ±0.0182  
+   ramp_pieces_cast                             0.6430       0.6400      -0.0030 ±0.0031  
+   fountainport_treasures                       0.1115       0.1160      +0.0045 ±0.0049  
+   roaming_throne_doublings                     0.3270       0.3145      -0.0125 ±0.0137  
+
+[BR_por_Cordial_Vampire - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1761 (88.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *death_trigger_events                         2.3755       2.0020      -0.3735 ±0.0543  
+  *roaming_throne_doublings                     0.3270       0.3080      -0.0190 ±0.0118  
+
+[BR_por_Funeral_Room_Awakening_Hall - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1715 (85.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   drain_total                                  6.1145       6.1160      +0.0015 ±0.0568  
+   lifegain_total                               4.0140       3.9725      -0.0415 ±0.0431  
+  *eminence_tokens_created                      2.9725       3.1705      +0.1980 ±0.0264  
+  *death_trigger_events                         2.3755       2.2785      -0.0970 ±0.0341  
+  *welcoming_vampire_draws                      0.3495       0.3600      +0.0105 ±0.0061  
+  *creatures_sacrificed_total                   2.6860       2.8055      +0.1195 ±0.0228  
+  *edgar_attack_counters_total                  7.2645       7.6275      +0.3630 ±0.0665  
+   commander_cast_turn__ate_T4                  0.0630       0.0625      -0.0005 ±0.0010  
+   commander_cast_turn__ate_T6                  0.5210       0.5215      +0.0005 ±0.0017  
+  *tutors_used_total                            0.3700       0.3760      +0.0060 ±0.0044  
+  *skullclamp_draws                             0.4280       0.4430      +0.0150 ±0.0122  
+  *caretakers_talent_draws                      0.2170       0.2270      +0.0100 ±0.0059  
+  *lands_played_total                           6.4305       6.4365      +0.0060 ±0.0037  
+   combo_active_turn__ate_T6                    0.0005       0.0010      +0.0005 ±0.0010  
+  *awakening_hall_unlocked                      0.0315       0.0000      -0.0315 ±0.0077  
+  *token_doubler_events                         0.4425       0.4725      +0.0300 ±0.0126  
+  *voldaren_estate_blood_tokens                 0.2915       0.3065      +0.0150 ±0.0070  
+  *roaming_throne_doublings                     0.3270       0.3390      +0.0120 ±0.0069  
+  *fountainport_draws                           0.1205       0.1275      +0.0070 ±0.0041  
+  *warleaders_call_damage_total                 0.5295       0.5440      +0.0145 ±0.0087  
+  *plumb_the_forbidden_draws                    0.2345       0.2465      +0.0120 ±0.0076  
+  *exsanguinate_casts                           0.0770       0.0825      +0.0055 ±0.0035  
+  *purphoros_damage_total                       0.4940       0.5170      +0.0230 ±0.0150  
+  *sorin_vampire_sacs_total                     0.0950       0.1020      +0.0070 ±0.0046  
+  *sanctum_seeker_drains                        0.9790       1.0055      +0.0265 ±0.0178  
+  *pitiless_plunderer_treasures                 0.1355       0.1410      +0.0055 ±0.0038  
+  *champion_of_dusk_draws                       0.3410       0.3625      +0.0215 ±0.0150  
+  *fountainport_treasures                       0.1115       0.1190      +0.0075 ±0.0058  
+
+[BR_por_Sevinne_s_Reclamation - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1685 (84.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *drain_total                                  6.1145       6.2850      +0.1705 ±0.0576  
+  *lifegain_total                               4.0140       4.1240      +0.1100 ±0.0370  
+  *eminence_tokens_created                      2.9725       3.1485      +0.1760 ±0.0209  
+  *death_trigger_events                         2.3755       2.4530      +0.0775 ±0.0234  
+  *welcoming_vampire_draws                      0.3495       0.3610      +0.0115 ±0.0059  
+  *creatures_sacrificed_total                   2.6860       2.7855      +0.0995 ±0.0178  
+  *edgar_attack_counters_total                  7.2645       7.4505      +0.1860 ±0.0678  
+   commander_cast_turn__ate_T4                  0.0630       0.0620      -0.0010 ±0.0014  
+  *commander_cast_turn__ate_T6                  0.5210       0.5120      -0.0090 ±0.0044  
+   tutors_used_total                            0.3700       0.3730      +0.0030 ±0.0037  
+  *skullclamp_draws                             0.4280       0.4480      +0.0200 ±0.0114  
+  *caretakers_talent_draws                      0.2170       0.2245      +0.0075 ±0.0053  
+  *lands_played_total                           6.4305       6.4355      +0.0050 ±0.0048  
+  *sevinnes_reclamation_returns                 0.0460       0.0000      -0.0460 ±0.0092  
+  *fetches_cracked_total                        0.5580       0.5145      -0.0435 ±0.0089  
+  *edgar_attack_turns                           1.4615       1.4335      -0.0280 ±0.0100  
+  *commander_cast_turn__ate_T5                  0.1810       0.1725      -0.0085 ±0.0040  
+  *sorin_vampire_sacs_total                     0.0950       0.1065      +0.0115 ±0.0058  
+  *voldaren_estate_blood_tokens                 0.2915       0.3090      +0.0175 ±0.0093  
+  *plumb_the_forbidden_draws                    0.2345       0.2405      +0.0060 ±0.0037  
+  *warleaders_call_damage_total                 0.5295       0.5460      +0.0165 ±0.0118  
+  *commander_cast_turn__nunca                   0.2195       0.2240      +0.0045 ±0.0032  
+  *adanto_tokens_created                        0.1185       0.1155      -0.0030 ±0.0024  
+  *roaming_throne_doublings                     0.3270       0.3335      +0.0065 ±0.0058  
+  *purphoros_damage_total                       0.4940       0.5070      +0.0130 ±0.0119  
+  *pw_activations_total                         0.6350       0.6290      -0.0060 ±0.0057  
+   sanctum_seeker_drains                        0.9790       0.9955      +0.0165 ±0.0176  
+
+[BR_por_Bloodline_Bidding - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1566 (78.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *drain_total                                  6.1145       6.2705      +0.1560 ±0.0802  
+  *lifegain_total                               4.0140       4.1090      +0.0950 ±0.0654  
+  *eminence_tokens_created                      2.9725       3.1715      +0.1990 ±0.0247  
+  *death_trigger_events                         2.3755       2.4650      +0.0895 ±0.0319  
+   welcoming_vampire_draws                      0.3495       0.3495      +0.0000 ±0.0068  
+  *creatures_sacrificed_total                   2.6860       2.7945      +0.1085 ±0.0187  
+  *edgar_attack_counters_total                  7.2645       7.6155      +0.3510 ±0.0690  
+   commander_cast_turn__ate_T6                  0.5210       0.5210      +0.0000 ±0.0024  
+   tutors_used_total                            0.3700       0.3710      +0.0010 ±0.0042  
+   skullclamp_draws                             0.4280       0.4400      +0.0120 ±0.0124  
+   caretakers_talent_draws                      0.2170       0.2205      +0.0035 ±0.0040  
+   lands_played_total                           6.4305       6.4355      +0.0050 ±0.0069  
+  *voldaren_estate_blood_tokens                 0.2915       0.3090      +0.0175 ±0.0085  
+  *pw_activations_total                         0.6350       0.6215      -0.0135 ±0.0071  
+  *ojer_taq_in_play                             0.0395       0.0510      +0.0115 ±0.0061  
+  *plumb_the_forbidden_draws                    0.2345       0.2415      +0.0070 ±0.0041  
+  *warleaders_call_damage_total                 0.5295       0.5485      +0.0190 ±0.0126  
+  *pw_tokens_created_total                      0.3020       0.2840      -0.0180 ±0.0127  
+  *pw_deaths_total                              0.0260       0.0305      +0.0045 ±0.0032  
+  *sorin_vampire_sacs_total                     0.0950       0.1010      +0.0060 ±0.0044  
+  *bloodline_bidding_returns                    0.0035       0.0000      -0.0035 ±0.0026  
+  *elspeth_in_play                              0.0610       0.0570      -0.0040 ±0.0031  
+  *caretakers_talent_level_end                  1.2125       1.2080      -0.0045 ±0.0035  
+  *caretakers_talent_level2_copies              0.0410       0.0440      +0.0030 ±0.0024  
+  *unholy_annex_draws                           0.5350       0.5275      -0.0075 ±0.0063  
+  *sorin_in_play                                0.1165       0.1120      -0.0045 ±0.0038  
+
+[BR_por_Call_the_Coppercoats - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1714 (85.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   drain_total                                  6.1145       6.1530      +0.0385 ±0.0564  
+   lifegain_total                               4.0140       4.0500      +0.0360 ±0.0409  
+  *eminence_tokens_created                      2.9725       3.1105      +0.1380 ±0.0232  
+  *death_trigger_events                         2.3755       2.4125      +0.0370 ±0.0196  
+  *welcoming_vampire_draws                      0.3495       0.3580      +0.0085 ±0.0061  
+  *creatures_sacrificed_total                   2.6860       2.7605      +0.0745 ±0.0157  
+  *edgar_attack_counters_total                  7.2645       7.5060      +0.2415 ±0.0624  
+   commander_cast_turn__ate_T6                  0.5210       0.5205      -0.0005 ±0.0022  
+   tutors_used_total                            0.3700       0.3705      +0.0005 ±0.0029  
+  *skullclamp_draws                             0.4280       0.4380      +0.0100 ±0.0083  
+   caretakers_talent_draws                      0.2170       0.2175      +0.0005 ±0.0038  
+   lands_played_total                           6.4305       6.4350      +0.0045 ±0.0049  
+  *sorin_vampire_sacs_total                     0.0950       0.1030      +0.0080 ±0.0052  
+  *plumb_the_forbidden_draws                    0.2345       0.2410      +0.0065 ±0.0043  
+  *unholy_annex_draws                           0.5350       0.5285      -0.0065 ±0.0043  
+  *pw_activations_total                         0.6350       0.6260      -0.0090 ±0.0062  
+  *champion_of_dusk_draws                       0.3410       0.3570      +0.0160 ±0.0116  
+  *black_market_treasures                       0.4110       0.4075      -0.0035 ±0.0029  
+  *voldaren_estate_blood_tokens                 0.2915       0.2990      +0.0075 ±0.0064  
+  *fountainport_draws                           0.1205       0.1270      +0.0065 ±0.0056  
+  *roaming_throne_in_play                       0.1035       0.1010      -0.0025 ±0.0022  
+  *tapped_land_first_plays_total                0.2665       0.2640      -0.0025 ±0.0022  
+  *tapped_land_skipped_for_play_total           0.1125       0.1150      +0.0025 ±0.0022  
+  *fountainport_treasures                       0.1115       0.1055      -0.0060 ±0.0055  
+   caretakers_talent_level2_copies              0.0410       0.0435      +0.0025 ±0.0026  
+   sanctum_seeker_drains                        0.9790       0.9980      +0.0190 ±0.0200  
+
+[BR_por_Charismatic_Conqueror - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1968 (98.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+   drain_total                                  6.1145       6.1095      -0.0050 ±0.0126  
+   lifegain_total                               4.0140       4.0140      +0.0000 ±0.0112  
+  *eminence_tokens_created                      2.9725       2.9805      +0.0080 ±0.0059  
+   death_trigger_events                         2.3755       2.3750      -0.0005 ±0.0051  
+   welcoming_vampire_draws                      0.3495       0.3500      +0.0005 ±0.0022  
+   creatures_sacrificed_total                   2.6860       2.6905      +0.0045 ±0.0049  
+   edgar_attack_counters_total                  7.2645       7.2785      +0.0140 ±0.0170  
+   commander_cast_turn__ate_T6                  0.5210       0.5215      +0.0005 ±0.0010  
+   tutors_used_total                            0.3700       0.3700      +0.0000 ±0.0014  
+   skullclamp_draws                             0.4280       0.4320      +0.0040 ±0.0073  
+   lands_played_total                           6.4305       6.4310      +0.0005 ±0.0022  
+   voldaren_estate_blood_tokens                 0.2915       0.2935      +0.0020 ±0.0024  
+   fountainport_fish                            0.0630       0.0620      -0.0010 ±0.0014  
+   plumb_the_forbidden_draws                    0.2345       0.2355      +0.0010 ±0.0014  
+   tapped_land_first_plays_total                0.2665       0.2655      -0.0010 ±0.0014  
+   tapped_land_skipped_for_play_total           0.1125       0.1135      +0.0010 ±0.0014  
+   token_doubler_events                         0.4425       0.4435      +0.0010 ±0.0014  
+   unholy_annex_draws                           0.5350       0.5340      -0.0010 ±0.0014  
+   urzas_saga_tutors                            0.1430       0.1440      +0.0010 ±0.0014  
+   sanctum_seeker_drains                        0.9790       0.9835      +0.0045 ±0.0071  
+   adanto_tokens_created                        0.1185       0.1190      +0.0005 ±0.0010  
+   bastion_of_remembrance_tokens                0.1655       0.1650      -0.0005 ±0.0010  
+   bloodline_bidding_returns                    0.0035       0.0030      -0.0005 ±0.0010  
+   both_combo_pieces_turn__nunca                0.9825       0.9820      -0.0005 ±0.0010  
+   caretakers_talent_in_play                    0.1420       0.1425      +0.0005 ±0.0010  
+
+[BR_por_Spectator_Seating - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1639 (82.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *drain_total                                  6.1145       5.9405      -0.1740 ±0.1318  
+   lifegain_total                               4.0140       3.9320      -0.0820 ±0.0969  
+  *eminence_tokens_created                      2.9725       3.0670      +0.0945 ±0.0258  
+   death_trigger_events                         2.3755       2.3805      +0.0050 ±0.0445  
+   welcoming_vampire_draws                      0.3495       0.3460      -0.0035 ±0.0126  
+  *creatures_sacrificed_total                   2.6860       2.7285      +0.0425 ±0.0302  
+  *edgar_attack_counters_total                  7.2645       7.1170      -0.1475 ±0.1235  
+   commander_cast_turn__ate_T4                  0.0630       0.0620      -0.0010 ±0.0024  
+  *commander_cast_turn__ate_T6                  0.5210       0.4955      -0.0255 ±0.0096  
+   tutors_used_total                            0.3700       0.3665      -0.0035 ±0.0088  
+   skullclamp_draws                             0.4280       0.4460      +0.0180 ±0.0196  
+   caretakers_talent_draws                      0.2170       0.2175      +0.0005 ±0.0100  
+  *lands_played_total                           6.4305       6.3060      -0.1245 ±0.0237  
+  *mulligans                                    0.6180       0.6605      +0.0425 ±0.0117  
+  *edgar_attack_turns                           1.4615       1.3975      -0.0640 ±0.0200  
+  *commander_cast_turn__nunca                   0.2195       0.2440      +0.0245 ±0.0084  
+  *token_doubler_events                         0.4425       0.4120      -0.0305 ±0.0181  
+  *warleaders_call_damage_total                 0.5295       0.4875      -0.0420 ±0.0249  
+  *elspeth_in_play                              0.0610       0.0545      -0.0065 ±0.0040  
+  *commander_cast_turn__ate_T5                  0.1810       0.1715      -0.0095 ±0.0059  
+  *pw_tokens_created_total                      0.3020       0.2750      -0.0270 ±0.0172  
+  *clavileno_triggers                           0.2075       0.1950      -0.0125 ±0.0086  
+  *legion_landing_transformed                   0.1015       0.0955      -0.0060 ±0.0042  
+  *exsanguinate_casts                           0.0770       0.0705      -0.0065 ±0.0047  
+  *exsanguinate_x_total                         0.2300       0.2160      -0.0140 ±0.0102  
+  *emeritus_of_woe_tutors                       0.0600       0.0530      -0.0070 ±0.0054  
+  *tapped_land_skipped_for_play_total           0.1125       0.1195      +0.0070 ±0.0055  
+  *sorin_vampire_sacs_total                     0.0950       0.1035      +0.0085 ±0.0069  
+
+[BR_por_Plains - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1608 (80.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+   drain_total                                  6.1145       6.0275      -0.0870 ±0.0946  
+   lifegain_total                               4.0140       3.9720      -0.0420 ±0.0743  
+  *eminence_tokens_created                      2.9725       3.0715      +0.0990 ±0.0297  
+   death_trigger_events                         2.3755       2.3845      +0.0090 ±0.0424  
+  *welcoming_vampire_draws                      0.3495       0.3350      -0.0145 ±0.0131  
+  *creatures_sacrificed_total                   2.6860       2.7310      +0.0450 ±0.0296  
+   edgar_attack_counters_total                  7.2645       7.2030      -0.0615 ±0.1402  
+   commander_cast_turn__ate_T4                  0.0630       0.0620      -0.0010 ±0.0024  
+  *commander_cast_turn__ate_T6                  0.5210       0.4980      -0.0230 ±0.0096  
+  *tutors_used_total                            0.3700       0.3615      -0.0085 ±0.0078  
+   skullclamp_draws                             0.4280       0.4350      +0.0070 ±0.0170  
+   caretakers_talent_draws                      0.2170       0.2150      -0.0020 ±0.0100  
+  *lands_played_total                           6.4305       6.3030      -0.1275 ±0.0226  
+  *mulligans                                    0.6180       0.6645      +0.0465 ±0.0119  
+  *edgar_attack_turns                           1.4615       1.3980      -0.0635 ±0.0199  
+  *commander_cast_turn__nunca                   0.2195       0.2460      +0.0265 ±0.0093  
+  *voldaren_estate_blood_tokens                 0.2915       0.3105      +0.0190 ±0.0113  
+  *clavileno_triggers                           0.2075       0.1900      -0.0175 ±0.0114  
+  *commander_cast_turn__ate_T5                  0.1810       0.1730      -0.0080 ±0.0059  
+  *fetches_cracked_total                        0.5580       0.5700      +0.0120 ±0.0091  
+  *tapped_land_skipped_for_play_total           0.1125       0.1180      +0.0055 ±0.0045  
+  *combo_active                                 0.0200       0.0170      -0.0030 ±0.0028  
+  *combo_active_turn__nunca                     0.9800       0.9830      +0.0030 ±0.0028  
+  *caretakers_talent_in_play                    0.1420       0.1365      -0.0055 ±0.0051  
+  *minas_tirith_draws                           0.1425       0.1340      -0.0085 ±0.0081  
+  *legion_landing_transformed                   0.1015       0.0960      -0.0055 ±0.0053  
+   champion_of_dusk_draws                       0.3410       0.3155      -0.0255 ±0.0260  
+   bastion_of_remembrance_tokens                0.1655       0.1600      -0.0055 ±0.0058  
