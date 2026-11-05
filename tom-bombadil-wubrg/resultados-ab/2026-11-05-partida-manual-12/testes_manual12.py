@@ -219,5 +219,17 @@ def t17(_):
     return "**Violações provadas pelo log: 0**" in out and "**Anomalias sem fonte no log: 1" in out and "não é violação" in out
 teste("analisa_partida.py: 0 violações provadas, 1 anomalia, Catacombs parada não é violação", t17, lambda: "**Violações provadas pelo log: 0**" in "**Violações provadas pelo log: 2**")
 
+# 18. o log sub-registra as fichas do oponente: 1 registro de Walker (T4) e 1 de Plant Warrior (T9), mas o usuário disse que eram 2 Plant Warrior (resposta de 2026-11-05)
+def t18(d):
+    w = [(ti, r["id"]) for ti, tt in enumerate(d, 1) for r in tt if r["name"] == "Walker"]
+    pw = [(ti, r["id"]) for ti, tt in enumerate(d, 1) for r in tt if r["name"] == "Plant Warrior"]
+    return [x[0] for x in w] == [4] and [x[0] for x in pw] == [9] and len({x[1] for x in pw}) == 1
+def c18():
+    d = copy.deepcopy(T)
+    extra = copy.deepcopy([r for r in d[8] if r["name"] == "Plant Warrior"][0]); extra["id"] = extra["id"] + "2"
+    d[8].append(extra)      # se o log tivesse os 2 Plant Warrior, o teste tem de cair
+    return t18(d)
+teste("opponentsCards: 1 registro de Walker (T4) e 1 de Plant Warrior (T9; o usuário diz que eram 2 fichas)", t18, c18)
+
 print(f"\n{sum(res)}/{len(res)} testes passam")
 sys.exit(0 if all(res) else 1)
