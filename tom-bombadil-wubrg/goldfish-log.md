@@ -1,5 +1,7 @@
 # Tom Bombadil — goldfish log
 
+> **Partida manual #12 (2026-11-05) — bruto, ledgers, 17 testes, rulings e regras conferidas:** [`resultados-ab/2026-11-05-partida-manual-12/LEIAME.md`](resultados-ab/2026-11-05-partida-manual-12/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-05 (varredura de classes de erro; nenhuma correção de código aqui):** [`varredura-2026-10-05/LEIAME.md`](../varredura-2026-10-05/LEIAME.md)
@@ -27,8 +29,8 @@ Regra #5: o simulador é **evidência de apoio**. A análise do deck
 goldfish tem convenções fixas: ataca com tudo, não modela bloqueio, não
 tem oponente real, e interação com oponente conta como 📊 (proxy).
 
-**Dados brutos arquivados (Regra #8):** partidas manuais #6 e #7 (2026-09-30), #8 (2026-10-01), #9, #10 e #11 (2026-10-02) em
-`tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/`, `.../2026-09-30-partida-manual-7/`, `.../2026-10-01-partida-manual-8/`, `.../2026-10-02-partida-manual-9/`, `.../2026-10-02-partida-manual-10/` e `.../2026-10-02-partida-manual-11/`
+**Dados brutos arquivados (Regra #8):** partidas manuais #6 e #7 (2026-09-30), #8 (2026-10-01), #9, #10 e #11 (2026-10-02) e #12 (2026-11-05) em
+`tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/`, `.../2026-09-30-partida-manual-7/`, `.../2026-10-01-partida-manual-8/`, `.../2026-10-02-partida-manual-9/`, `.../2026-10-02-partida-manual-10/`, `.../2026-10-02-partida-manual-11/` e `.../2026-11-05-partida-manual-12/`
 (`LEIAME.md` em cada uma: origem, mapa de arquivos, comandos, `cmp`; a #7 inclui a sensibilidade do Exotic Orchard).
 
 ## v1 — construção inicial (2026-09-22) — RASCUNHO, aguardando revisão da lista pelo usuário
@@ -771,3 +773,51 @@ Oráculos ao vivo; rulings lidas antes de concluir (36 cartas; `resumos/rulings_
 - **Resiliência (até o T17 e o início do T18, que são válidos)**: o Tom morreu 4 vezes (Edict T6, Martial Coup T8, Soul Shatter T13, All Is Dust T18) e voltou pelo comando com taxa até 4 (5 lançamentos no total); o Bane of Progress não o atinge (não é artefato nem encantamento) e, com ≥ 4 marcadores nas Sagas, ele fica hexproof e indestrutível. A Resurgent Belief reconstruiu os 16 encantamentos de uma vez (o certo eram 16 Soldiers da Boon).
 - **O que o T18 NÃO prova**: a Teferi's Protection que "passou" por Vandalblast + Casualties veio de uma compra sem base. Sem ela o dano seria pequeno de qualquer jeito: o Tom entra com 9 marcadores nas Sagas (hexproof e indestrutível, não pode ser alvo) e o Vandalblast só acerta o Sol Ring; a Casualties tira 1 de cada tipo (Sol Ring, 1 criatura que não seja o Tom, 1 encantamento, 1 terreno). Isso é leitura do oráculo, não do log.
 - **Sim × real**: Tom no T5 (simulador ≤T5 em 56,8%), 1 gatilho até o T8 (simulador: ≥1 em 71,5%, ≥2 em 47,3%). O simulador só mede 8 turnos; o `upkeep_step` já faz a Starfield antes do marcador natural (714.3b), então a ordem do log manual é do jogador, não do simulador. Nada a mudar no código.
+
+### Partida manual #12 (2026-11-05) — 10 turnos; 0 violações provadas pelo log; erros de operação confirmados pelo usuário e 5 pontos em aberto · respostas em 2026-11-05
+
+Dados brutos, scripts, ledgers, testes e rulings em `tom-bombadil-wubrg/resultados-ab/2026-11-05-partida-manual-12/` (Regra #8; `LEIAME.md` tem o escopo). Simulador de interação On (1 interação por rodada de T4 a T9), mulligan não informado, **sem foto** (o usuário: a mão são "as cartas antes da primeira compra"; leio as 7 primeiras do T1: Fertile Ground, Jugan, Iroan Games, Prismatic Omen, Enchantress's Presence, Forest, Ketria Triome; a 8ª, In the Darkness Bind Them, é a compra do turno: leitura minha pela ordem do log).
+Oráculos do cache; rulings ao vivo de 29 cartas lidas antes de concluir (`resumos/rulings_scryfall.json`); regras do `rules-cache/comprehensive-rules.txt` (CR de 2026-09-25, §18).
+O usuário parou no T10 "para não se alongar".
+
+| Turno | Evento principal |
+|---|---|
+| T1–T3 | Ketria Triome (virada) · Forest, Fertile Ground (na Floresta), Bloom Tender comprado · Temple Garden, **Enchantress's Presence** (3) |
+| T4 | Nesting Grounds · Bloom Tender + Prismatic Omen (4) · a Presence compra a Ripples of Potential · interação: **Walker** (Zombie 2/2) |
+| T5 | Godless Shrine (virada) · **Tom Bombadil** (5): com ele em campo o Bloom Tender dá 5 cores → **In the Darkness Bind Them** (5) · cap. I: Wraith + o Anel tenta · a Presence compra a Stomping Ground · interação: **Fold into Aether** (fica na zona do oponente) |
+| T6 | Stomping Ground (virada) · ITDBT II (Wraith) · **Jugan anulada pela Fold** (a Presence comprou a Plains do mesmo jeito) · The First Iroan Games (a Presence compra a Galactus; o Soldier do cap. I ficou pra trás) · Tom ataca · **Snuff Out** mata o Bloom Tender |
+| T7 | Plains (jogada 2× = desfazer) · Iroan II (3 contadores no Tom) e o Soldier atrasado · ITDBT III (Wraith; o emblema do Anel nasce com 3 de uma vez) · **Resurgent Belief suspensa** (2) · Soldier virado (enjoo) · **Soul Shatter** sacrifica o Tom (vai ao comando) · Iroan Lore 3 sem fonte |
+| T8 | Raugrin Triome (virada) · ITDBT 3→4→3 com o Nesting Grounds (erro de timing) · **Tom de novo** (5 + 2 de imposto, pagos) · **Austere Command** (encantamentos + criaturas MV ≤ 3): Presence, Omen, ITDBT, Iroan e a Fertile Ground vão ao cemitério |
+| T9 | Fertile Ground movida ao cemitério (o lembrete cobria a carta) · Karn's Bastion · Kiora (1ª tentativa desfeita) · **Resurgent Belief: último contador na fase principal** (esquecimento) → 6 encantamentos voltam · cap. I: Monk, Wraith, Soldier · Kiora (2ª, com a Presence) compra a Song · interação: **Plant Warrior** (4/2 alcance) |
+| T10 | O'aka · **Song of Eärendil** (a Presence compra + cap. I: 2 cartas) · cap. II de Iroan, Jugan e ITDBT aplicado sem clicar o saber (Wraith, Tom +4, Kraken +1) · Verdant Catacombs sem acionar · fim |
+
+**Conferido e correto** (script + conta à mão; escopo no `LEIAME.md`):
+- **Terrenos**: 1 por turno de T1 a T10; a Plains do T7 é o MESMO objeto (`ym_I-HoDOr6`) jogado 2× (desfazer, padrão já confirmado nas #9–#11). A Verdant Catacombs do T10 é fetch parada no fim do log, não violação (o script da #11 a marcaria como violação).
+- **Compras**: log 25 = esperado 25, turno a turno (8, 1, 1, 2, 2, 3, 1, 1, 2, 4). Das 25, 17 são mão e compra natural e **8 são extras: 6 da Presence** (Omen, ITDBT, Jugan anulada, Iroan, Kiora, Song) **+ 2 do cap. I da Song**. A Presence compra mesmo com a magia anulada (ruling 2021-06-18: o gatilho é independente da magia).
+- **Mana** fecha de T2 a T7 e em T9 e T10 (total por terreno virado; **cor não conferida**): T5 = 10 exatos (Floresta com a Fertile Ground 2 + Ketria + Temple Garden + Nesting Grounds = 5 para o Tom; com ele em campo o Bloom Tender rende 5 cores = ITDBT). **T8 não fecha por 1** (ver "Em aberto").
+- **Interações simuladas**: Snuff Out no Bloom Tender (alvo legal: "nonblack"; o Tom e os Wraith são pretos); Soul Shatter sacrifica o Tom (a criatura de maior MV; ruling 2020-09-25) e ele volta ao comando; Austere Command resolve modos em ordem, destrói enchantments e criaturas MV ≤ 3 (ruling 2020-11-10: os modos acontecem em sequência).
+- **Resurgent Belief**: suspensa no T7 (2), 1 no T8, 0 no T9; devolve **6 encantamentos** (Fertile Ground, Presence, Omen, ITDBT, Iroan e Jugan) e as Auras escolhem o que encantar na entrada (ruling 2021-06-18); o Bloom Tender (criatura) fica no cemitério.
+- **Anel**: o emblema nasce no T7 já com 3 incrementos seguidos (leitura minha: os tempts de T5 e T6 foram registrados atrasados), vai a 4 no T8 e nunca a 5 (o 4º nível é o último; só importa a escolha de Ring-bearer, e o Soldier novo do T9 recebeu o marcador depois que o antigo morreu na Austere).
+
+**Regra conferida a pedido do usuário** (*"Confira a regra oficial por favor!"*; CR de 2026-09-25 em `resumos/cr_2026-09-25_trechos.txt`, rulings em `resumos/rulings_scryfall.json`):
+- **Tirar o marcador ao chegar no capítulo final (714.4)**: a Saga só é sacrificada se o número de contadores é ≥ ao capítulo final E ela não é a fonte de um capítulo que **já disparou e ainda não saiu da pilha**. Logo, com o cap. IV na pilha **ainda não há sacrifício**, e **um efeito instantâneo** (ex.: O'aka, `{T}`, remova um marcador: compre) tira o marcador ali e a Saga fica; o cap. IV resolve do mesmo jeito e **dispara de novo quando os marcadores voltarem a 4** (rulings da Kiora e da Iroan). O Nesting Grounds não serve: "Activate only as a sorcery" (602.5d, 307.5) exige a pilha vazia, e quando o cap. IV sai da pilha o estado do jogo sacrifica a Saga antes de alguém ter prioridade (117.5). O usuário concordou que o Nesting Grounds não pode ser usado ali; o efeito líquido foi nenhum (a ITDBT vai ao cemitério antes da Resurgent de qualquer jeito, sacrificada ou destruída).
+- **Ordenar gatilhos (603.3b)**: gatilhos que disparam juntos o controlador ordena como quiser (os capítulos que disparam no mesmo marcador natural também: ruling da Kiora). Mas o **marcador natural não é gatilho**: é ação de turno no início da fase principal 1 (714.3c), depois do upkeep e da compra; o gatilho do suspend (upkeep) nunca pode ser empurrado para depois dele, e se o jogador não conjurar quando o último contador sai a carta **fica exilada sem contadores** (702.62a; ruling 2024-02-02). **Mesmo engano da #11, item 2** (o usuário achava que o marcador era gatilho de upkeep). Se a pergunta dele era outra, ele corrige.
+
+**Confirmado pelo usuário (2026-11-05)** (numeração = a das dúvidas)
+1. **Imposto do Tom (T8)**: pagou 7 mana e a Fertile Ground estava na Floresta. O `commandTax` ficou 0 no log (contador não mexido; nas #10 e #11 ele o ajustava).
+2. **Nesting Grounds (T8)**: *"errei ao usar como instant, o efeito é sorcery speed"*.
+3. **Resurgent Belief (T9)**: (a) esquecimento; (b) a Kiora foi conjurada antes da Resurgent, ele voltou atrás e a conjurou depois: **1 Kraken** (o log tem 2 ids: a ficha do 1º cast sumiu sem registro).
+4. **T10**: esqueceu os marcadores e efeitos.
+5. **T7**: o Soldier foi o cap. I da Iroan atrasado (esqueceu no T6); errou o enjoo de invocação do Soldier e esqueceu o compre-descarte do Anel (o Anel estava no 3º tempt: a partir do 2º, o Ring-bearer que ataca compra e descarta; um Soldier criado no turno não ataca, mas o Tom podia ser o Ring-bearer).
+6. **T6**: a Jugan foi anulada pela carta do gerador de interação (Fold into Aether).
+7. **T8/T9**: a Fertile Ground foi destruída na Austere do T8; só foi movida no T9 porque o lembrete da interação cobria a carta. 2º modo da Austere: criaturas com MV pequeno (o oráculo é **3 ou menos**, e as fichas têm MV 0: as 3 Wraith e o Soldier do Ring-bearer morrem; **o log não registra ficha que some**, então isso não se prova nem se refuta por ele).
+9. **Fim**: parou no T10 para não se alongar.
+10. **Foto**: esqueceu.
+
+**Em aberto**: (a) **Iroan Lore 2→3 no T7, depois de o Tom sair** (o usuário respondeu só o T8): leitura minha, o marcador natural do T8 aplicado cedo, com efeito líquido igual (sem criatura de poder 4 ou mais no T7/T8, o cap. III não compra, e no T8 ela morre na Austere antes do cap. IV); (b) **T8, 1 mana**: sobram 7 (Plains, Godless, Floresta 2, Ketria, Temple Garden, Stomping) para o Tom (7) + o `{1}` do Nesting Grounds, que vira como custo e não rende; o usuário diz que pagou 7 pelo Tom; (c) quais "efeitos" foram esquecidos no T10 além dos marcadores (leitura minha: o Anel e a Kiora II; os efeitos de Wraith e dos contadores aparecem no log); (d) quantas interações por rodada estavam configuradas e o que Walker e Plant Warrior fizeram; (e) mulligan, mão inicial e o motivo de o Soldier ter sido virado no T7.
+
+**Leitura do deck** (oráculo + regras; o simulador só apoia):
+- **Motor da mão**: Enchantress's Presence + Prismatic Omen + Fertile Ground no Forest rendem as compras de T4 a T10 (6 pela Presence e 2 pela Song = 8 das 25 cartas) e o mana do T5 (Tom + ITDBT no mesmo turno com o Bloom Tender lendo 5 cores). A Austere do T8 mostra a dupla Presence + Resurgent Belief: o wipe de encantamentos custou 2 turnos e o suspend (2 mana), não cartas (6 voltam).
+- **Linha legal do T9, pela leitura das regras (não jogada)**: com a Resurgent Belief no upkeep os 6 encantamentos voltam antes da compra, Jugan, Iroan e ITDBT ganham o 2º marcador no mesmo turno (cap. II no T9) e o cap. III cai no T10, onde a **Iroan III compra 2 cartas** (o Tom tem poder 4); o log tem o cap. II só no T10 e nenhuma compra da Iroan: o esquecimento custou um capítulo por Saga e essas 2 cartas. É a ordem de chamadas que o simulador tem (abaixo; só a ordem foi lida, não a lógica interna de `replenish_effect`).
+- **Sim × real**: `run_turn` do simulador é untap → `upkeep_step` (que chama `resolve_suspended`: a Resurgent Belief no upkeep) → compra → `precombat_lore_step` → ações (`try_nesting_grounds` só na fase principal, e só tira marcador de Saga abaixo do capítulo final). **Os erros do T8 e do T9 deste jogo não existem no simulador; nada a mudar no código.** Fold into Aether, Snuff Out, Soul Shatter, Austere Command e as fichas do oponente são 📊 (proxy): o simulador não tem oponente real.
+- **Não verificado nesta rodada**: cor da mana (só o total), pontos de vida, o que Walker e Plant Warrior fizeram, escolha de Ring-bearer a cada gatilho, se cada interação do gerador vale na hora ou na próxima magia (a Fold do T5 anulou a Jugan do T6: leitura de uma só ocorrência).
