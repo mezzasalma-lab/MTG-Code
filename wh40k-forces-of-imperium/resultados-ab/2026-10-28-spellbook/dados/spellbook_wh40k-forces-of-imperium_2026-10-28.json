@@ -1,0 +1,141 @@
+{
+ "deck": "wh40k-forces-of-imperium",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Inquisitor Greyfax",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Inquisitor Eisenhorn + Time Sieve": {
+     "id": "1297-1558",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Belisarius Cawl + Intruder Alarm": {
+     "id": "1636-4995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Marneus Calgar + The Watcher in the Water": {
+     "id": "245-2351",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Cybernetica Datasmith + Intruder Alarm": {
+     "id": "1636-3691",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite creature tokens for any number of players",
+      "Infinite draw triggers for any number of players"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Marneus Calgar",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Inquisitor Eisenhorn + Time Sieve": {
+     "id": "1297-1558",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Belisarius Cawl + Intruder Alarm": {
+     "id": "1636-4995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Marneus Calgar + The Watcher in the Water": {
+     "id": "245-2351",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Cybernetica Datasmith + Intruder Alarm": {
+     "id": "1636-3691",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite creature tokens for any number of players",
+      "Infinite draw triggers for any number of players"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

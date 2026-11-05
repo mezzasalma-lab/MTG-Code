@@ -1,0 +1,463 @@
+{
+ "deck": "wh40k-necron-dynasties",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Szarekh, the Silent King",
+   "incluidos": {},
+   "quase": {
+    "Shard of the Nightbringer + Vito, Thorn of the Dusk Rose": {
+     "id": "314-1612",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Sanguine Bond + Shard of the Nightbringer": {
+     "id": "690-1612",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Bloodletter of Aclazotz + Shard of the Nightbringer": {
+     "id": "1612-5342",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Near-infinite lifegain",
+      "Target opponent loses the game"
+     ]
+    },
+    "Enduring Tenacity + Shard of the Nightbringer": {
+     "id": "1612-5755",
+     "bracketTag": "P",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Sol Ring + Staff of Domination + Trazyn the Infinite": {
+     "id": "2645-3918-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colorless mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Pili-Pala + Sol Ring + Trazyn the Infinite": {
+     "id": "1247-3918-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Shard of the Nightbringer + Wound Reflection": {
+     "id": "1612-4475",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Archfiend of Despair + Shard of the Nightbringer": {
+     "id": "1612-2607",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Sceptre of Eternal Glory + Staff of Domination + Trazyn the Infinite": {
+     "id": "2645-3918-4002",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Gilded Lotus + Staff of Domination + Trazyn the Infinite": {
+     "id": "2645-3918-5116",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Farmstead Gleaner + Sol Ring + Trazyn the Infinite": {
+     "id": "3918-4038-5034",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gilded Lotus + Pili-Pala + Trazyn the Infinite": {
+     "id": "1247-3918-5116",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Aetherflux Reservoir + Trazyn the Infinite": {
+     "id": "3918-4740",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Pili-Pala + Sceptre of Eternal Glory + Trazyn the Infinite": {
+     "id": "1247-3918-4002",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Gilded Lotus + Trazyn the Infinite + Voltaic Construct": {
+     "id": "1978-3918-5116",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite untap of artifact creatures you control"
+     ]
+    },
+    "Farmstead Gleaner + Gilded Lotus + Trazyn the Infinite": {
+     "id": "3918-4038-5116",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colored mana"
+     ]
+    },
+    "Sceptre of Eternal Glory + Trazyn the Infinite + Voltaic Construct": {
+     "id": "1978-3918-4002",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite untap of artifact creatures you control"
+     ]
+    },
+    "Hedron Archive + Staff of Domination + Trazyn the Infinite": {
+     "id": "270-2645-3918",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Farmstead Gleaner + Sceptre of Eternal Glory + Trazyn the Infinite": {
+     "id": "3918-4002-4038",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colored mana"
+     ]
+    },
+    "Hedron Archive + Pili-Pala + Trazyn the Infinite": {
+     "id": "270-1247-3918",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Shard of the Nightbringer + Warlock Class": {
+     "id": "1612-1642",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Farmstead Gleaner + Hedron Archive + Trazyn the Infinite": {
+     "id": "270-3918-4038",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Canoptek Spyder + Leveler + Necron Deathmark + Out of the Tombs": {
+     "id": "31-212-1068-6309",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite mill",
+      "Infinite creature LTB"
+     ]
+    },
+    "Commander's Sphere + Leveler + Out of the Tombs + Trazyn the Infinite": {
+     "id": "31-1068-3255-3918",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Canoptek Spyder + Leveler + Lokhust Heavy Destroyer + Out of the Tombs": {
+     "id": "31-212-1068-1654",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent sacrifices all creatures they control",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Time Vault + Trazyn the Infinite": {
+     "id": "1261-3918",
+     "bracketTag": "B",
+     "produz": [
+      "Lock",
+      "Infinite turns"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Imotekh the Stormlord",
+   "incluidos": {},
+   "quase": {
+    "Shard of the Nightbringer + Vito, Thorn of the Dusk Rose": {
+     "id": "314-1612",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Sanguine Bond + Shard of the Nightbringer": {
+     "id": "690-1612",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Bloodletter of Aclazotz + Shard of the Nightbringer": {
+     "id": "1612-5342",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Near-infinite lifegain",
+      "Target opponent loses the game"
+     ]
+    },
+    "Enduring Tenacity + Shard of the Nightbringer": {
+     "id": "1612-5755",
+     "bracketTag": "P",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Sol Ring + Staff of Domination + Trazyn the Infinite": {
+     "id": "2645-3918-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colorless mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Pili-Pala + Sol Ring + Trazyn the Infinite": {
+     "id": "1247-3918-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Shard of the Nightbringer + Wound Reflection": {
+     "id": "1612-4475",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Archfiend of Despair + Shard of the Nightbringer": {
+     "id": "1612-2607",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Sceptre of Eternal Glory + Staff of Domination + Trazyn the Infinite": {
+     "id": "2645-3918-4002",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Gilded Lotus + Staff of Domination + Trazyn the Infinite": {
+     "id": "2645-3918-5116",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Farmstead Gleaner + Sol Ring + Trazyn the Infinite": {
+     "id": "3918-4038-5034",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gilded Lotus + Pili-Pala + Trazyn the Infinite": {
+     "id": "1247-3918-5116",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Aetherflux Reservoir + Trazyn the Infinite": {
+     "id": "3918-4740",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Pili-Pala + Sceptre of Eternal Glory + Trazyn the Infinite": {
+     "id": "1247-3918-4002",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Gilded Lotus + Trazyn the Infinite + Voltaic Construct": {
+     "id": "1978-3918-5116",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite untap of artifact creatures you control"
+     ]
+    },
+    "Farmstead Gleaner + Gilded Lotus + Trazyn the Infinite": {
+     "id": "3918-4038-5116",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colored mana"
+     ]
+    },
+    "Sceptre of Eternal Glory + Trazyn the Infinite + Voltaic Construct": {
+     "id": "1978-3918-4002",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite untap of artifact creatures you control"
+     ]
+    },
+    "Hedron Archive + Staff of Domination + Trazyn the Infinite": {
+     "id": "270-2645-3918",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Farmstead Gleaner + Sceptre of Eternal Glory + Trazyn the Infinite": {
+     "id": "3918-4002-4038",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colored mana"
+     ]
+    },
+    "Hedron Archive + Pili-Pala + Trazyn the Infinite": {
+     "id": "270-1247-3918",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite colorless mana"
+     ]
+    },
+    "Shard of the Nightbringer + Warlock Class": {
+     "id": "1612-1642",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Farmstead Gleaner + Hedron Archive + Trazyn the Infinite": {
+     "id": "270-3918-4038",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Canoptek Spyder + Leveler + Necron Deathmark + Out of the Tombs": {
+     "id": "31-212-1068-6309",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite mill",
+      "Infinite creature LTB"
+     ]
+    },
+    "Commander's Sphere + Leveler + Out of the Tombs + Trazyn the Infinite": {
+     "id": "31-1068-3255-3918",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Canoptek Spyder + Leveler + Lokhust Heavy Destroyer + Out of the Tombs": {
+     "id": "31-212-1068-1654",
+     "bracketTag": "E",
+     "produz": [
+      "Each opponent sacrifices all creatures they control",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Time Vault + Trazyn the Infinite": {
+     "id": "1261-3918",
+     "bracketTag": "B",
+     "produz": [
+      "Lock",
+      "Infinite turns"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

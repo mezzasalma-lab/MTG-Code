@@ -1,0 +1,120 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min",
+  "riverchurn_tap_cards_opp",
+  "riverchurn_exhaust_ascension",
+  "riverchurn_enter_turn__ate_T4",
+  "riverchurn_enter_turn__ate_T6"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_Evolution Witness": {
+   "SWAPS": [
+    [
+     "Evolution Witness",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Didn't Say Please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Zellix, Sanity Flayer": {
+   "SWAPS": [
+    [
+     "Zellix, Sanity Flayer",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Agatha's Soul Cauldron": {
+   "SWAPS": [
+    [
+     "Agatha's Soul Cauldron",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Arcane Denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Nuclear Fallout": {
+   "SWAPS": [
+    [
+     "Nuclear Fallout",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Cold-Eyed Selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_Evolution Witness",
+  "cut_Didn't Say Please",
+  "cut_Zellix, Sanity Flayer",
+  "cut_Agatha's Soul Cauldron",
+  "cut_Arcane Denial",
+  "cut_Nuclear Fallout",
+  "cut_Cold-Eyed Selkie"
+ ],
+ "regressao": []
+}

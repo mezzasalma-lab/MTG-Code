@@ -1,0 +1,18 @@
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  ab_10000_resiliencia.txt
+IGUAL  spellbook.txt
+IGUAL  oraculo_mythos.txt
+IGUAL  confere_cores.txt
+IGUAL  smoke.txt
+IGUAL  testes_repo.txt
+IGUAL  testes_dirigidos.txt
+IGUAL  bitident_20000.txt
+IGUAL  regressao_20000.txt
+IGUAL  diagnostico_resto.txt
+IGUAL  ab_2000.txt (re-execucao + bruto identico)
+IGUAL  ab_10000.txt (re-execucao + bruto identico)
+IGUAL  ab_2000_resiliencia.txt (re-execucao + bruto identico)
+IGUAL  ab_10000_resiliencia.txt (re-execucao + bruto identico)
+17/17 saidas byte a byte iguais

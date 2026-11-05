@@ -1,0 +1,27 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1883 (94.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *evolution_sage_proliferates                  1.1740       1.2980      +0.1240 ±0.0448  
+   lands_played_total                           6.2680       6.2680      +0.0000 ±0.0031  
+  *pw_activations_total                        10.9060      11.0950      +0.1890 ±0.1149  
+  *pw_ultimates_used_total                      2.3875       2.4435      +0.0560 ±0.0431  
+  *pw_draws_total                               7.3185       7.4445      +0.1260 ±0.1093  
+   first_ult_turn__nunca                        0.6385       0.6365      -0.0020 ±0.0024  
+  *first_ult_turn__ate_T6                       0.0605       0.0645      +0.0040 ±0.0028  
+   bridge_first_cast_turn__ate_T5               0.7075       0.7065      -0.0010 ±0.0014  
+   bridge_first_cast_turn__ate_T6               0.8000       0.8010      +0.0010 ±0.0014  
+  *late_pw_activations_total                    2.2885       2.3825      +0.0940 ±0.0349  
+  *turns_with_ult                               0.5500       0.5560      +0.0060 ±0.0039  
+  *pw_recursion_total                           0.2225       0.2325      +0.0100 ±0.0083  
+  *interaction_spells_cast_total                2.6425       2.6625      +0.0200 ±0.0171  
+  *pw_wipe_proxy_total                          0.3150       0.3235      +0.0085 ±0.0073  
+  *opp_eliminated_total                         0.2300       0.2365      +0.0065 ±0.0058  
+  *pw_life_lost_opponent_total                  1.1370       1.1640      +0.0270 ±0.0242  
+  *gauntlet_extra_turns_total                   0.0865       0.0895      +0.0030 ±0.0028  
+  *pw_removal_proxy_total                       1.0015       1.0100      +0.0085 ±0.0083  
+  *pw_life_gained_total                         3.8140       3.9085      +0.0945 ±0.0936  
+   planeswalkers_in_play_end                    2.9755       2.9970      +0.0215 ±0.0224  
+   pw_deaths_total                              0.6410       0.6480      +0.0070 ±0.0078  
+   urza_chapter_end                             0.2770       0.2805      +0.0035 ±0.0045  
+   chain_veil_activations_total                 0.1465       0.1475      +0.0010 ±0.0014  

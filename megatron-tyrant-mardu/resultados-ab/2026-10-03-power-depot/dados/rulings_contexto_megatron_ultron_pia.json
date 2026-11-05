@@ -1,0 +1,259 @@
+{
+ "Megatron, Tyrant": {
+  "name": "Megatron, Tyrant // Megatron, Destructive Force",
+  "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+  "rulings_uri": "https://api.scryfall.com/cards/ac6ded62-7bf2-476f-ad8e-020da6327c6b/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "Determining what excess damage would be dealt to a creature is similar to how combat damage from a creature with trample is handled. Start with the amount of damage being dealt to the creature and determine what is \"lethal.\" This is usually the creature's toughness minus the amount of damage that it already has marked on it, but ignoring any replacement or prevention effects that will modify this damage. Also ignore whether the creature has an ability such as indestructible that will result in it not being destroyed by this damage."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "Once you've determined that there would be excess damage and how much damage is excess, Megatron simultaneously deals damage to the creature and to that creature's controller, then converts. The damage may be modified by replacement or prevention effects."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "If the target creature is an illegal target by the time the reflexive triggered ability tries to resolve, the ability won't resolve. It won't deal damage to any player."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "If Megatron has deathtouch as the reflexive triggered ability resolves, 1 damage is lethal damage, and any amount beyond that is excess damage."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "The convert keyword action functions the same way as the transform keyword action found on some other cards; to convert a permanent on the battlefield, turn it over so that its other face is up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "The mana value of a converted permanent on the battlefield is equal to the mana value of the card's front face, no matter which face is up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "Converting a permanent doesn't affect any Auras or Equipment that are attached to it. Similarly, any counters on the permanent will remain on that permanent after it converts. Any continuous effects from a resolved spell or ability will continue to affect it. Any spells or abilities on the stack that target a permanent continue to do so after that permanent converts."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "Any triggered ability of another card that triggers whenever a permanent transforms will also trigger whenever a permanent converts."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "Similarly, an ability of another card that instructs you to \"transform\" one of these cards will cause you to convert it, even if that ability doesn't use the word \"convert.\""
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "\"More Than Meets the Eye [cost]\" means \"You may cast this card converted by paying [cost] rather than its mana cost.\" It functions in any zone from which the spell can be cast."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "The cost is an alternative cost, so it can't be combined with any other alternative costs. It can be combined with any applicable additional costs."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "When you cast a spell using its More Than Meets the Eye ability, the card is put onto the stack with its back face up. The resulting spell has all characteristics of that face."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "To determine the total cost of a spell, start with the mana cost or alternative cost (such as a More Than Meets the Eye cost) you're paying, add any cost increases, then apply any cost reductions. The mana value of a spell cast using More Than Meets the Eye is determined by the mana cost on the front face of the card, no matter what the total cost to cast the spell was."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "A spell cast this way enters the battlefield with its back face up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "If you copy a permanent spell cast this way, the copy has the characteristics of the card's back face, even though it isn't itself a double-faced card."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "\"Living metal\" means \"As long as it's your turn, this permanent is an artifact creature in addition to its other types.\""
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "While it's a creature, the Vehicle has its printed power and toughness."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+    "source": "wotc",
+    "published_at": "2022-10-14",
+    "comment": "If a static ability of another permanent applies only to noncreature permanents, that ability applies to a Vehicle with living metal only during your opponents' turns. For example, if you control Arcee, Acrobatic Coupe and March of the Machines, Arcee will be a 2/2 artifact creature during your turn and a 3/3 artifact creature (because its mana value is 3) during each opponent's turn."
+   }
+  ]
+ },
+ "Ultron, Artificial Malevolence": {
+  "name": "Ultron, Artificial Malevolence",
+  "oracle_id": "a8f25e67-2112-4355-9298-363ed04a5cb8",
+  "rulings_uri": "https://api.scryfall.com/cards/32ddd5ac-57ed-4e78-8932-a65980191f6e/rulings",
+  "rulings": []
+ },
+ "Pia's Revolution": {
+  "name": "Pia's Revolution",
+  "oracle_id": "edce515d-828e-49ae-8651-6d14f7470a62",
+  "rulings_uri": "https://api.scryfall.com/cards/51da6ff6-4d81-488e-83ff-8758f6c7bb9f/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "edce515d-828e-49ae-8651-6d14f7470a62",
+    "source": "wotc",
+    "published_at": "2018-01-19",
+    "comment": "There are many important moments in the story, but the most crucial—called “story spotlights”—are shown on cards. These cards have the Planeswalker symbol in their text box; this symbol has no effect on gameplay. You can read more about these events in the official Magic fiction at http://www.mtgstory.com."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "edce515d-828e-49ae-8651-6d14f7470a62",
+    "source": "wotc",
+    "published_at": "2017-02-09",
+    "comment": "If a nontoken artifact is put into your graveyard at the same time as Pia’s Revolution, Pia’s Revolution’s ability triggers."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "edce515d-828e-49ae-8651-6d14f7470a62",
+    "source": "wotc",
+    "published_at": "2017-02-09",
+    "comment": "It doesn’t matter who controlled the artifact when it was put into your graveyard. Pia’s Revolution’s ability will trigger if you own that artifact."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "edce515d-828e-49ae-8651-6d14f7470a62",
+    "source": "wotc",
+    "published_at": "2017-02-09",
+    "comment": "The target opponent chooses whether to have Pia’s Revolution deal 3 damage to them as its ability resolves. You won’t return the card to your hand if that player chooses to be dealt damage or if the card leaves the graveyard before the ability resolves."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "edce515d-828e-49ae-8651-6d14f7470a62",
+    "source": "wotc",
+    "published_at": "2017-02-09",
+    "comment": "If there are no legal targets for Pia’s Revolution’s ability (perhaps because each of your opponents has hexproof), it will be removed from the stack with no effect. No one may choose to be dealt damage and you won’t return the artifact card to your hand."
+   }
+  ]
+ },
+ "Demonic Junker": {
+  "name": "Demonic Junker",
+  "oracle_id": "88075828-a76e-412d-b738-182f50e3a133",
+  "rulings_uri": "https://api.scryfall.com/cards/4aad569e-4acb-4416-9d4f-64e6991de3ed/rulings",
+  "rulings": []
+ },
+ "Warstorm Surge": {
+  "name": "Warstorm Surge",
+  "oracle_id": "42fb1a1c-ab3d-4cdc-a6ff-a591f7481583",
+  "rulings_uri": "https://api.scryfall.com/cards/dbe1bfe0-0be7-496d-94db-e8028d4d9493/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "42fb1a1c-ab3d-4cdc-a6ff-a591f7481583",
+    "source": "wotc",
+    "published_at": "2011-09-22",
+    "comment": "Warstorm Surge is the source of the ability, but the creature is the source of the damage. The ability couldn't target a creature with protection from red, for example. It could target a creature with protection from creatures, but all the damage would be prevented. Since damage is dealt by the creature, abilities like lifelink, deathtouch and infect are taken into account, even if the creature has left the battlefield by the time it deals damage."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "42fb1a1c-ab3d-4cdc-a6ff-a591f7481583",
+    "source": "wotc",
+    "published_at": "2011-09-22",
+    "comment": "The creature that entered deals damage equal to its current power to the targeted permanent or player. If it's no longer on the battlefield, its last known existence on the battlefield is checked to determine its power."
+   }
+  ]
+ },
+ "Scrap Trawler": {
+  "name": "Scrap Trawler",
+  "oracle_id": "164f3f85-21fc-40b7-9871-4f303ba98428",
+  "rulings_uri": "https://api.scryfall.com/cards/614be454-3829-4c3b-9485-930755dfa16d/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "164f3f85-21fc-40b7-9871-4f303ba98428",
+    "source": "wotc",
+    "published_at": "2017-02-09",
+    "comment": "If Scrap Trawler and another artifact you control are put into a graveyard at the same time, Scrap Trawler's ability triggers for each of them."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "164f3f85-21fc-40b7-9871-4f303ba98428",
+    "source": "wotc",
+    "published_at": "2017-02-09",
+    "comment": "The target artifact card must have a lesser mana value than the artifact that caused Scrap Trawler's ability to trigger by being put into a graveyard. Use the artifact's mana value as it last existed on the battlefield to determine what may be returned."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "164f3f85-21fc-40b7-9871-4f303ba98428",
+    "source": "wotc",
+    "published_at": "2017-02-09",
+    "comment": "While on the battlefield or in a graveyard, {X} in an object's mana cost is 0."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "164f3f85-21fc-40b7-9871-4f303ba98428",
+    "source": "wotc",
+    "published_at": "2017-02-09",
+    "comment": "If an artifact is a copy of another artifact with greater mana value, such as Sculpting Steel copying an artifact with mana value 4, Scrap Trawler's ability can target that artifact card in your graveyard when that artifact is put into your graveyard."
+   }
+  ]
+ },
+ "Goblin Welder": {
+  "name": "Goblin Welder",
+  "oracle_id": "9fc28e1f-f4ea-4bf8-9442-a36dba3b3b29",
+  "rulings_uri": "https://api.scryfall.com/cards/17cd920a-de09-454a-a9da-c84512e3aff1/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "9fc28e1f-f4ea-4bf8-9442-a36dba3b3b29",
+    "source": "wotc",
+    "published_at": "2008-08-01",
+    "comment": "As the new wording makes clear, both targets must still be legal as the ability resolves in order for it to do anything. If either one or both has become illegal, nothing gets sacrificed and nothing gets returned to the battlefield."
+   }
+  ]
+ }
+}

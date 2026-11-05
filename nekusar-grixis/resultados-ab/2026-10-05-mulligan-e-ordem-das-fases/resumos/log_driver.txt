@@ -1,0 +1,103 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: MULLIGAN_SMART_BOTTOM_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'MULLIGAN_SMART_BOTTOM_ENABLED': False} == snapshot codigo/nekusar_goldfish_v1_ANTES_96a6a22.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: [])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1648 (82.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0885       0.0830      -0.0055 ±0.0053  
+  *commander_cast_turn__ate_T3                  0.1020       0.1080      +0.0060 ±0.0037  
+  *commander_cast_turn__ate_T4                  0.2990       0.3090      +0.0100 ±0.0054  
+  *commander_cast_turn__ate_T5                  0.6890       0.7000      +0.0110 ±0.0066  
+  *len_battlefield                             14.6725      14.8015      +0.1290 ±0.0836  
+  *small_wheel_lands_used_total                 0.2890       0.3065      +0.0175 ±0.0125  
+  *len_hand                                     5.4135       5.3685      -0.0450 ±0.0358  
+  *interaction_spells_cast_total                3.2180       3.2760      +0.0580 ±0.0476  
+  *sensei_top_draws_total                       2.0310       2.0805      +0.0495 ±0.0428  
+  *commander_cast_count                         0.9115       0.9170      +0.0055 ±0.0053  
+  *commander_in_play                            0.9115       0.9170      +0.0055 ±0.0053  
+  *len_creature_cast_turn                       3.1570       3.1855      +0.0285 ±0.0284  
+   flashback_card_recasts_total                 0.2185       0.2275      +0.0090 ±0.0094  
+   tutors_used_total                            0.9190       0.9300      +0.0110 ±0.0119  
+   reanimator_targets_total                     0.0330       0.0295      -0.0035 ±0.0038  
+   commander_cast_turn__ate_T6                  0.8040       0.8095      +0.0055 ±0.0063  
+   surveil_mills_total                          0.0250       0.0275      +0.0025 ±0.0029  
+   cephalid_coliseum_used                       0.0790       0.0825      +0.0035 ±0.0043  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1647 (82.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.1095       0.1040      -0.0055 ±0.0060  
+  *commander_cast_turn__ate_T3                  0.0965       0.1025      +0.0060 ±0.0037  
+  *commander_cast_turn__ate_T4                  0.2610       0.2695      +0.0085 ±0.0051  
+  *commander_cast_turn__ate_T5                  0.6305       0.6415      +0.0110 ±0.0072  
+  *commander_cast_count                         1.1495       1.1615      +0.0120 ±0.0098  
+  *small_wheel_lands_used_total                 0.2910       0.3080      +0.0170 ±0.0147  
+  *len_hand                                     4.4840       4.4395      -0.0445 ±0.0401  
+  *len_battlefield                             11.2360      11.3015      +0.0655 ±0.0606  
+   interaction_spells_cast_total                2.5740       2.6130      +0.0390 ±0.0394  
+   reanimator_targets_total                     0.0340       0.0310      -0.0030 ±0.0031  
+   commander_cast_turn__ate_T6                  0.7750       0.7815      +0.0065 ±0.0067  
+   commander_in_play                            0.7835       0.7900      +0.0065 ±0.0075  
+   len_smart_graveyard_snipe_log                0.1265       0.1325      +0.0060 ±0.0072  
+   smart_graveyard_snipes_total                 0.1265       0.1325      +0.0060 ±0.0072  
+   sensei_top_draws_total                       1.5015       1.5300      +0.0285 ±0.0368  
+   len_smart_removal_log                        0.6410       0.6505      +0.0095 ±0.0127  
+   smart_removals_total                         0.6410       0.6505      +0.0095 ±0.0127  
+   len_tapped_lands_this_turn                   0.0430       0.0460      +0.0030 ±0.0042  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8174 (81.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0868       0.0766      -0.0102 ±0.0024  
+  *commander_cast_turn__ate_T3                  0.0960       0.0996      +0.0036 ±0.0014  
+  *commander_cast_turn__ate_T4                  0.2928       0.3035      +0.0107 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.6915       0.7084      +0.0169 ±0.0032  
+  *commander_cast_turn__ate_T6                  0.8035       0.8177      +0.0142 ±0.0030  
+  *len_battlefield                             14.6506      14.8198      +0.1692 ±0.0373  
+  *commander_cast_count                         0.9132       0.9234      +0.0102 ±0.0024  
+  *commander_in_play                            0.9132       0.9234      +0.0102 ±0.0024  
+  *len_creature_cast_turn                       3.1473       3.1891      +0.0418 ±0.0129  
+  *lands_played_this_turn                       0.7655       0.7761      +0.0106 ±0.0036  
+  *tutors_used_total                            0.9047       0.9216      +0.0169 ±0.0057  
+  *interaction_spells_cast_total                3.1900       3.2486      +0.0586 ±0.0203  
+  *len_library                                 61.9738      61.6486      -0.3252 ±0.1319  
+  *cards_drawn_extra                           29.8373      30.1579      +0.3206 ±0.1322  
+  *sensei_top_draws_total                       2.2012       2.2445      +0.0433 ±0.0187  
+  *small_wheel_lands_used_total                 0.2820       0.2923      +0.0103 ±0.0050  
+  *rituals_cast_total                           0.8730       0.8871      +0.0141 ±0.0070  
+  *breach_recasts_total                         1.3636       1.4013      +0.0377 ±0.0199  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8172 (81.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1110       0.0989      -0.0121 ±0.0027  
+  *commander_cast_turn__ate_T3                  0.0893       0.0926      +0.0033 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.2569       0.2659      +0.0090 ±0.0023  
+  *commander_cast_turn__ate_T5                  0.6395       0.6553      +0.0158 ±0.0033  
+  *len_battlefield                             11.1055      11.2345      +0.1290 ±0.0275  
+  *commander_cast_turn__ate_T6                  0.7673       0.7810      +0.0137 ±0.0031  
+  *commander_in_play                            0.7727       0.7851      +0.0124 ±0.0036  
+  *commander_cast_count                         1.1423       1.1578      +0.0155 ±0.0045  
+  *interaction_spells_cast_total                2.5779       2.6281      +0.0502 ±0.0179  
+  *len_creature_cast_turn                       1.9889       2.0195      +0.0306 ±0.0118  
+  *len_hand                                     4.4064       4.3606      -0.0458 ±0.0182  
+  *lands_played_this_turn                       0.7048       0.7130      +0.0082 ±0.0038  
+  *breach_loops_total                           0.3291       0.3377      +0.0086 ±0.0043  
+  *rituals_cast_total                           0.7020       0.7131      +0.0111 ±0.0058  
+  *sensei_top_draws_total                       1.5705       1.6033      +0.0328 ±0.0172  
+  *small_wheel_lands_used_total                 0.2808       0.2910      +0.0102 ±0.0056  
+  *breach_recasts_total                         0.8583       0.8866      +0.0283 ±0.0157  
+  *tutors_used_total                            0.7884       0.7973      +0.0089 ±0.0051  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

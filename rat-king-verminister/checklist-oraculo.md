@@ -1,5 +1,308 @@
 # Checklist cláusula-a-cláusula — Rat King, Verminister
 
+## Rodada 6 (2026-10-29): revisão de código do PR #1 (sem cláusula de oráculo nova)
+
+Sem carta nova nem ruling novo: a rodada corrige DECISÕES do motor (Regra #10), não texto de carta. Cláusulas já listadas que ganham código: **Thornbite Staff** — *"Equipped creature has: Whenever a creature dies, untap this creature."* — passa a valer também quando a morte vem de um wipe meu (`apply_own_wipe`; chave `WIPE_UNTAPS_STAFF`, latente: o holder nunca está virado no wipe, 0 em 20.000 partidas); **Fell the Profane // Fell Mire** — a face de terreno (já modelada) agora é protegida de ir ao fundo do mulligan quando é o 3º terreno que `should_keep` contou (`FELL_MIRE_PROTECTED_IN_BOTTOM`). Tabela dos 10 apontamentos, testes (R6-1 a R6-5) e a medida rejeitada do ensaio do terreno virado: `resultados-ab/2026-10-29-revisao-codigo-pr1/LEIAME.md`.
+
+## Rodada 5 (2026-10-28): Kindred Dominance, Swarmyard Massacre e Damnation no próprio campo (Opção B)
+
+**Origem:** o usuário respondeu *"Opção B nos wipes, e meça no A/B"* ao relatório da rodada 4. **Oráculo e rulings lidos do arquivo ao vivo (`resultados-ab/2026-10-25-.../dados/scryfall_oraculo_rulings_2026-10-25.json`) ANTES de editar o simulador** (Regra #3). Tipos e tenacidades das 18 criaturas da lista vêm do mesmo arquivo (tabela conferida pelo teste WP0 contra o JSON e contra o `CARD_DB`). Dados e reprodução: `resultados-ab/2026-10-28-wipes-no-proprio-campo/`.
+
+| cláusula / ruling | situação |
+|---|---|
+| **Kindred Dominance** (`{5}{B}{B}`): "Choose a creature type. Destroy all creatures that aren't of the chosen type." | ✅ meu lado: `wipe_plan` escolhe o tipo que menos mata (empate: menos MV perdido, depois Rat); o Mercenary (changeling = todo tipo) sempre sobrevive; fichas de Esquilo morrem se o tipo é Rat (WP2). 📊 lado do oponente: criaturas dele (cláusula citada) |
+| Ruling 2017-08-25: "players can't try to save their creatures after you've chosen a creature type" | ✅ a escolha e a destruição são um passo só no código |
+| Ruling 2017-08-25: "You must choose an existing creature type ... Card types such as artifact can't be chosen" | ✅ só tipos de criatura (Rat, Squirrel e os das minhas criaturas) |
+| Ruling 2017-08-25: "You can't choose multiple creature types, such as Cat Warrior" (afeta tudo que é de qualquer um dos dois tipos) | ✅ uma criatura sobrevive se tem o tipo escolhido entre os seus (`t not in _types_of(n)`) |
+| **Swarmyard Massacre** (`{3}{B}{B}`): "Create two 1/1 green Squirrel creature tokens. Then each creature that isn't an Insect, Rat, Spider, or Squirrel gets -1/-1 until end of turn for each creature you control that's an Insect, Rat, Spider, or Squirrel." | ✅ os 2 Esquilos ANTES; N conta cada criatura minha Insect/Rat/Spider/Squirrel uma vez (os novos Esquilos entram em N); morre a carta não protegida com tenacidade ≤ N (WP3). Todas as fichas (Rat, Squirrel, Mercenary) são protegidas |
+| Ruling 2024-07-26: "creature that has more than one of the listed types ... is only counted once" | ✅ `n_prot` conta cada criatura uma vez (cartas pela interseção de tipos; fichas 1 cada) |
+| **Damnation** (`{2}{B}{B}`): "Destroy all creatures. They can't be regenerated." (0 rulings) | ✅ tudo morre, fichas e comandante (o comandante morre e volta à zona de comando, CR 903.9a; recast com imposto: WP7). "Can't be regenerated" ➖ nenhuma carta da lista regenera |
+| Mortes simultâneas (CR 603.10, last known information) | ✅ `apply_own_wipe` tira o snapshot de quem está em campo ANTES de remover; Zulaport conta a própria morte e todas as outras, Plunderer e Konrad contam as outras, Species Specialist conta Rats e o Mercenary (WP1) |
+| Rat King, Disappear: "if a permanent left the battlefield under your control this turn" | ✅ o wipe liga `permanent_left_battlefield_this_turn`; se o Rat King sobrevive (Kindred/Swarmyard), o end step cria o Rat (WP6) |
+| Quando conjurar ("só quando o resultado compensa") | ⏸→✅ **política minha, não do oráculo**: conjura se a perda própria **líquida** (mortes minhas menos corpos que o próprio wipe cria) ≤ `WIPE_CAST_MAX_OWN_LOSS = 0`; o A/B mede 0 (bruto e líquido), 1, 2, 5 e sem limite. O limite correto depende do tabuleiro do oponente, que o goldfish não tem |
+
+**Conceito compartilhado (Regra #3):** "criatura que sobrevive" depende do TIPO de cada criatura (Rat, Squirrel, changeling), e o simulador só tinha a tag `rat`. A tabela `CREATURE_TYPES` agora existe e o teste WP0 garante que cobre toda criatura do `CARD_DB`; qualquer carta nova de criatura quebra o teste até entrar na tabela.
+
+**Escopo (Regra #7).** Varrido: as cláusulas acima por teste dirigido (10, incluindo partidas inteiras com contagem > 0); `main_phase` e `resolve_instant_sorcery` lidos antes da edição. **NÃO varrido:** bônus de tenacidade (Skullclamp equipado) no −1/−1 do Swarmyard; o lado do oponente (N/A estrutural); as classes da Regra #10 que a mudança não toca (entrada de terreno, compra do T1, landfall); o modo de resiliência cláusula a cláusula.
+
+---
+
+## Rodada 4 (2026-10-28): Fell the Profane // Fell Mire (as duas faces), Black Market Connections com lifegain e o ensaio do terreno virado
+
+**Origem:** o usuário respondeu o relatório da rodada 3: *"Modela sim ambas as faces"*, e definiu a política do Black Market Connections (*"Acho que o modo mais importante do Black Market Connections é o 1o, com custo 1 de vida. Os demais só entram em cena se eu tiver algum mecanismo de lifegain rodando: Ayara, ou outro qq"*). **Oráculo e rulings lidos do arquivo ao vivo (`resultados-ab/2026-10-25-.../dados/scryfall_oraculo_rulings_2026-10-25.json`) ANTES de editar o simulador** (Regra #3). Tudo atrás de chave, bit-idêntico com as chaves desligadas (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-28-fell-mire-e-black-market-connections/`.
+
+**Fell the Profane // Fell Mire** (`modal_dfc`, `Instant // Land`, `{2}{B}{B} //`):
+
+| cláusula / ruling (2024-06-07) | situação |
+|---|---|
+| Fell the Profane — "Destroy target creature or planeswalker." | 📊 alvo de oponente: a carta é conjurada e paga, conta como interação (convenção do arquivo); não há efeito no tabuleiro do oponente (goldfish solo) |
+| Fell Mire — "As this land enters, you may pay 3 life. If you don't, it enters tapped." | ✅ `play_fell_mire`: paga os 3 de vida só se a vida depois fica ≥ `FELL_MIRE_LIFE_FLOOR` **e** o ensaio a seco da fase pré-combate gasta mais mana desvirado (empate: não paga). Testes FM4–FM6 |
+| Fell Mire — "{T}: Add {B}." | ✅ entra em `lands_mana` (todo terreno em `LAND_NAMES`); teste FM7 |
+| Ruling: "to determine whether it is legal to play a modal DFC, consider only the characteristics of the face you're playing" | ✅ joga-se como terreno (`play_land`, conta como a jogada de terreno do turno, não é magia) ou conjura-se como instant (`resolve_cast`); a mesma carta nunca fica nas duas zonas (teste FM11, 3.000 partidas) |
+| Ruling: "if an effect lets you return a land card from your graveyard to your hand, it won't let you return [the MDFC]" / "mana value ... in all other zones, consider only the front face" | ✅ `FELL_CARD` não está em `LAND_NAMES` (na mão/cemitério/biblioteca é Instant MV 4); só o `"Fell Mire"` em campo é terreno (teste FM9) |
+| Ruling: "an MDFC can't be transformed" | ➖ nenhuma carta da lista transforma terrenos |
+| Política de quando virar terreno | ⏸→✅ **política minha** (não do oráculo): só sem outro terreno na mão e com < 6 terrenos em campo (`FELL_MIRE_MAX_LANDS_IN_PLAY`); sensibilidade 4 e 99 no A/B. Na abertura, `should_keep` conta a MDFC como terreno (`FELL_MIRE_COUNTS_FOR_KEEP`); no fundo do mulligan e no `try_takenuma_channel` **não** (declarado) |
+
+**Black Market Connections** (oráculo ao vivo, 0 rulings): "At the beginning of your **first main phase**, choose one or more — Sell Contraband: Create a Treasure. You lose 1 life. · Buy Information: Draw a card. You lose 2 life. · Hire a Mercenary: Create a 3/2 colorless Shapeshifter with changeling. You lose 3 life."
+
+| cláusula | situação |
+|---|---|
+| "first main phase" | ✅ `main_phase(is_first_main=True)` chama o passo antes de qualquer conjuração da fase (conferi `play_turn` inteiro, Regra #6) |
+| "choose one or more" (cada modo uma vez) | ✅ a política escolhe o modo 1 sempre; 2 e 3 só com `lifegain_engine_in_play` (Ayara, Zulaport, Bontu's, Crypt Ghast, Valley Rotcaller); teste BM1–BM3 |
+| "You lose N life" | ✅ efeito do modo, não custo (CR 119.4 não se aplica). **Política minha:** não escolher modo que leve a vida a 0 ou menos (BM5) |
+| Mercenary: "colorless Shapeshifter with changeling" | ✅ conta como Rat/Shaman (changeling); recebe o Thornbite Staff no auto-attach (BM7); não é preto, então não dispara Ayara |
+| Conjunto `LIFEGAIN_ENGINES` | ✅ derivado do oráculo ao vivo arquivado (BM4): linhas com "you gain"/"gain that much"/lifelink/extort que não são só de entrada. O Gray Merchant (só ETB) fica de fora |
+
+**Conceito compartilhado (Regra #3) achado por acaso e corrigido:** o ensaio a seco do terreno virado primeiro (`_tl_dry_run_mv`) media o MV que sai da **mão**; o comandante sai da zona de comando. Quem lê "cartas conjuradas" tem de contar também o que vem de fora da mão (comandante, e potencialmente qualquer carta conjurável de outra zona). `TAPPED_FIRST_COUNTS_MANA` (mana gasto no turno); testes TF1–TF2. **13 outros simuladores têm a mesma função e não foram medidos.**
+
+**Escopo (Regra #7).** Varrido: as cláusulas acima por teste dirigido (21), `play_turn` lido inteiro, scripts da Regra #10 (entrada, `unless you control`, terreno ≠ magia, colisão de nome, compra do T1, ordem de landfall, ETB sem efeito) rodados e arquivados. **NÃO varrido:** a MDFC não está na lista de entrada dos scripts (só a `BASE_LIBRARY`); o modo de resiliência cláusula a cláusula; os outros 19 simuladores; "lifegain rodando" olha só presença, não se o gatilho dispara no turno; os 3 wipes continuam pendentes de decisão.
+
+---
+
+## Rodada 3 (2026-10-25): conceitos compartilhados (Rat/Shaman/changeling, "black creature", Treasure, "each opponent"), rulings e combos do Spellbook
+
+**Origem:** o usuário respondeu "Quero sim" ao meu relatório "O quê falta para terminar o deck do Verminister?" (itens 1 e 3). Ao rodar o Spellbook pela primeira vez neste deck (`resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/`) apareceram 2 combos que a lista já tinha e o simulador não executava; a leitura dos rulings (Regra #3) e a varredura de conceitos abriram o resto. **Oráculo e rulings foram baixados e lidos ANTES de qualquer linha de código.** Todas as correções entram atrás de chave (21), bit-idênticas com as chaves desligadas (20.000 × 2 modos).
+
+**Esta rodada contradiz a anterior.** As seções de 2026-08-31/09-14 abaixo marcam várias destas cartas como "✅ implementada" ou "📊 estrutural". As linhas abaixo as sobrepõem.
+
+| cláusula / conceito | situação |
+|---|---|
+| Thornbite Staff: "Whenever a Shaman creature enters, you may attach"; Equip {4}; "{2},{T}: 1 damage"; "whenever a creature dies, untap" | 🐛 era carta inerte, com a nota "nenhuma criatura Shaman na lista (type_line das 53 cartas)". O **Mercenary** de Black Market Connections (changeling = todo tipo) é Shaman. Corrigido: `THORNBITE_STAFF_ENABLED` |
+| **Combo Marrow-Gnawer + Thornbite Staff** (Spellbook 2178-3126, 2 cartas, "infinite creature tokens/ETB/LTB/sacrifice triggers") | 🐛 o simulador não executava. Agora: Equip {4} no Marrow, loop `{T}, sacrifica um Rat → morre → o Staff desvira → X fichas`, teto de 40 Rats / 12 voltas |
+| **Combo Ayara + Plague of Vermin** (Spellbook 884-5035, "near-infinite") | 🐛 não executava (a ficha de Rat não disparava Ayara: código morto `... if False else None`). Agora: `AYARA_TOKEN_TRIGGER`, `PLAGUE_PAYS_WITH_AYARA` |
+| Treasure: "{T}, Sacrifice: Add one mana of any color" (Pitiless Plunderer, Black Market Connections, Deadly Dispute criam) | 🐛 nunca era mana; gastar também deveria disparar o Disappear. `TREASURE_MANA_ENABLED` |
+| Gray Merchant of Asphodel: ETB "each opponent loses X... you gain life equal to the life lost" | 🐛 o ETB não existia (só o Nykthos lia a devoção). Teste dirigido mostrou +0 de dreno ao conjurar. `GRAY_MERCHANT_ETB` |
+| Emeritus of Woe: "This creature enters prepared" | 🐛 só o gatilho do end step ligava o estado. `EMERITUS_ENTERS_PREPARED` |
+| Crypt Ghast: Extort | 🐛 tag órfã; a docstring dizia "N/A estrutural". Pagar {W/B} e ganhar vida é do meu lado. `EXTORT_ENABLED` |
+| Ninja Teen: nível 1 (dreno), custo dos níveis, sneak do nível 3 | 🐛 cobrava {1}{B} fantasma · dreno inexistente · o sneak rodava na main phase, sem devolver atacante, entrando desvirada (CR 702.190a/b + rulings 2026-01-27). `NINJA_TEEN_LEVELS_AND_DRAIN`, `NINJA_TEEN_SNEAK_RULING` |
+| Bontu's Monument: "Whenever you cast a creature spell" | 🐛 disparava 2× por criatura da mão (`cast_card` e `resolve_cast`). `BONTU_TRIGGER_ONCE` |
+| Jet Medallion / Bontu's: só reduzem o genérico (rulings) | 🐛 magia preta nunca recebia o Jet (`pips_b=0`); com os dois em campo Rat Colony {1}{B} custava 0. `JET_MEDALLION_BLACK_SPELLS`, `COST_REDUCTION_COLORED_FLOOR` |
+| Valley Rotcaller: X = outros Squirrels/Bats/Lizards/Rats | 🐛 `Rats prontos + fichas − 1` (tirava um Rat real, ignorava Esquilos e Rats doentes). `ROTCALLER_EXACT_X` |
+| Marrow-Gnawer: X conta os Rats quando resolve, sem o sacrificado (ruling 2004-12-01) | 🐛 `MARROW_X_AFTER_SACRIFICE` |
+| Big Apple, 3 a.m.: "for each opponent you have" | 🐛 1 ficha em vez de `NUM_OPPONENTS` (que o arquivo já define = 3). `BIG_APPLE_PER_OPPONENT` |
+| Ayara: "another black creature" entra / sacrifica "another black creature" | 🐛 ficha de Rat (preta) não disparava nem era fodder. `AYARA_TOKEN_TRIGGER`, `AYARA_SACRIFICE_TOKENS` |
+| Rat King: "Sacrifice three Rats" | 🐛 contava o comandante entre os 3 mas nunca o sacrifica: pagava 2. `RAT_KING_REANIMATE_COST` |
+| The Soul Stone: Harness {6}{B}, {T} | 🐛 o {B} da própria pedra contava no mesmo turno (mesma classe de `{T}` compartilhado). `SOUL_STONE_SHARED_TAP` |
+| Priest of Forgotten Gods: "any number of target players"; "two OTHER creatures" | 🐛 perdia 2 de vida própria; podia sacrificar a si mesmo. `PRIEST_EXACT` |
+| Zulaport Cutthroat: "this creature OR another creature you control dies" | 🐛 a própria morte não contava. `ZULAPORT_SELF_DEATH` |
+| Deadly Dispute / Culling the Weak: custo adicional "sacrifice" | 🐛 conjuradas sem nada a sacrificar. `SACRIFICE_COST_NEEDS_FODDER` |
+| Plague of Vermin, Ashcoat, Takenuma, Three Tree City, Cabal Coffers, Urborg, Nykthos, Castle Locthwain, Reanimate, Echoing Return, Species Specialist, Syr Konrad, Pitiless Plunderer, Thrumming Stone, Deadly Rollick | ✅ conferidos contra o ruling (tabela completa em `resultados-ab/2026-10-25-.../resumos/rulings_vs_codigo.md`) |
+| Dictate of Erebos ("each opponent sacrifices"), Piper (roubo), Karumonix (toxic), Lord Skitter (exila do cemitério do oponente), Bojuka Bog (exila o cemitério de um jogador), Withering Torment/Deadly Rollick (alvo de oponente), fear de Marrow-Gnawer/Ratcatcher/Cover of Darkness | 📊 estrutural, cláusula citada na tabela de rulings |
+| Kindred Dominance, Swarmyard Massacre (−1/−1 no próprio campo), Damnation, Fell the Profane // **Fell Mire** (face de terreno) | ⏸ **decisão do usuário pendente.** O código justifica o "sem efeito" com "nenhum piloto racional conjuraria / remoção é o gap real" = julgamento de valor, vedado pela Regra #1. Não mexi. **ATUALIZAÇÃO 2026-10-28:** a face de terreno do Fell Mire foi decidida ("Modela sim ambas as faces") e modelada na rodada 4; os 3 wipes foram decididos ("Opção B nos wipes, e meça no A/B") e modelados na rodada 5 (seções acima) |
+
+**Escopo (Regra #7).** Varrido: conceitos de tipo/cor/changeling/Kindred (enumeração por script sobre o oráculo ao vivo); `CARD_DB` × oráculo (54 cartas, 0 divergências em mv/tipo/pips/poder/tag Rat); "each opponent"; Treasure/artefato; gatilho ligado em só alguns pontos (Disappear, Staff, Ninja Teen, Zulaport); reduções de custo × cor; `{T}` compartilhado; ETB/feitiço sem efeito e gatilho sem reação (`varredura-2026-10-05/scripts/audit_etb_sem_efeito.py`, 6 eventos-padrão); leitura das funções de estado, mana, custo, cast/ETB, morte e sacrifício, fases do turno, mulligan/terreno, combate e das ativadas (Skullclamp, Ninja Teen, Soul Stone, Takenuma, Piper, Priest, Ayara, Marrow-Gnawer, Big Apple, Rat King), mais o trecho do wipe do oponente. **NÃO varrido:** o modo de resiliência (`try_smart_*`, `simulate_one_with_interaction`) cláusula a cláusula, exceto o wipe; o cabeçalho/docstring de ~200 linhas só por leitura rápida; a política de Black Market Connections (escolhe sempre os 3 modos e a vida pode ficar ≤ 0 sem perder); a política de mulligan/keep; Ripples of Undeath e Black Market Connections como "gatilho de início da 1ª main" no scanner (não exercitados); os outros 19 decks (o scanner novo só roda no Rat King).
+
+---
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
+## Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| London Mulligan, CR 103.5 | 🐛 corrigido: `choose_bottom`, atrás de `MULLIGAN_SMART_BOTTOM_ENABLED` |
+| Upkeep antes do draw (CR 503/504; Regra #6) | 🐛 corrigido: `UPKEEP_BEFORE_DRAW_ENABLED` em `play_turn` |
+| Imposto de comandante, CR 903.8 | ✅ já estava no arquivo (contado antes do counter) |
+| Ordem de terrenos / entrada virada (T1/T2) | não tratado nesta seção |
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`.
+
+---
+
+## CR 903.9a: comandante DISPARA os 4 payoffs de aristocrata de verdade — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Achado real NUMÉRICO deste deck (mesma categoria do Edgar Markov —
+motor de aristocrats de verdade): 2 pontos reais precisavam de
+correção, não 1.**
+
+1. **`leave_battlefield`** (chokepoint central, já existia — mesmo
+   padrão do Toph/Maralen nesta sessão): o comandante era
+   especial-casado dentro de `remove_permanent()`, pulando `leave_
+   battlefield` inteiramente (nunca disparava `on_creature_dies`).
+   Movida a lógica pro chokepoint certo, seguindo a Regra #6 do
+   `CLAUDE.md` — `remove_permanent()` agora só delega, sem caso
+   especial. Regrepados os outros 3 call sites reais de `leave_
+   battlefield` (`sacrifice_rats`/`sacrifice_any_creature`/
+   `ayara_activation`) e o de `try_harness_soul_stone` (exile direto)
+   — todos já excluem `COMMANDER` de propósito (jogador racional nunca
+   sacrifica o próprio comandante por fodder mais barato quando há
+   opção mais barata) — nenhum precisou de mudança.
+
+2. **`try_smart_opponent_wipe`'s cálculo manual de LKI (last known
+   information, CR 603.10)** — achado mais sutil e específico deste
+   deck: o wipe de criatura usa um SNAPSHOT manual (não o caminho
+   genérico `remove_permanent`→`leave_battlefield`, por causa de mortes
+   simultâneas reais — ver docstring da função) pra calcular os 4
+   payoffs de aristocrata (Zulaport/Pitiless Plunderer/Syr Konrad/
+   Species Specialist) diretamente. Esse cálculo manual **excluía o
+   comandante EXPLICITAMENTE** (`named_dying_real_deaths = [n for n in
+   named_dying if n != COMMANDER]`) com base na mesma premissa errada
+   de CR 903.9 — corrigida pra **incluir** o comandante
+   (`named_dying_real_deaths = named_dying[:]`, sem exclusão). Achado
+   real adicional: **Rat King, Verminister tem a tag "rat" no
+   `CARD_DB`** (Legendary Creature — Rat Noble, confirmado Scryfall) —
+   a versão anterior não só excluía ele de Zulaport/Pitiless
+   Plunderer/Syr Konrad, mas TAMBÉM de Species Specialist (que conta só
+   Ratos), então o próprio comandante do deck, sendo literalmente um
+   Rato, nunca contava pra própria sub-engine tribal quando morria.
+   `_wipe_remove_creature_no_trigger` (a função de remoção física usada
+   por esse snapshot) também corrigida pra passar o comandante pelo
+   cemitério antes da zona de comando, por consistência estrutural
+   (mesmo sem efeito numérico adicional aqui — os 4 payoffs já são
+   calculados manualmente a partir do snapshot, não da função de
+   remoção física).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão
+(`simulate_one`, 20.000 seeds, seed_base 9300000) contra o commit
+anterior: **0/20000 mismatches** — os 2 call sites reais de `remove_
+permanent`/`try_smart_opponent_wipe` só disparam com `interaction_rng`
+ativo, e `try_smart_opponent_removal` já excluía o comandante de
+`INTERACTION_ENGINE_PRIORITY` de propósito. Regressão de 20.000
+partidas em modo de resiliência (seed_base 9700000): 0 exceções, 0
+comandantes presos no cemitério. **Comparação A/B agregada (5000
+seeds, modo de resiliência) confirmando que a correção move as
+métricas certas na direção esperada:** `proxy_damage_total` (Syr
+Konrad/Pitiless Plunderer) médio 3,7574→3,8632; `tokens_created_total`
+(Treasures do Pitiless Plunderer) médio 3,956→3,9978; `life` (drain do
+Zulaport) médio 36,4676→36,5378 — enquanto `smart_wipes_total`/`smart_
+removals_total` (eventos de RNG puro, não deveriam mudar) ficaram
+praticamente idênticos (0,841/0,8424 e 0,5312/0,5304, diferença dentro
+do ruído esperado de amostragem), confirmando que a divergência é
+isolada à correção. 5 testes dirigidos: (1) Zulaport dispara com a
+morte do comandante via `leave_battlefield` direto, ela não fica presa
+no cemitério; (2) Species Specialist conta a morte do comandante (ela
+é Rato de verdade); (3) `remove_permanent` delega corretamente pro
+chokepoint; (4) `_wipe_remove_creature_no_trigger` não deixa o
+comandante presa no cemitério; (5) `try_smart_opponent_wipe` conta a
+morte do comandante pro Pitiless Plunderer (cria Treasure).
+
+**Resultado:** junto com o Edgar Markov, uma das 2 correções desta
+rodada com impacto numérico real e mensurável — este deck é
+literalmente um motor de aristocrats tribal (Ratos) cujo próprio
+comandante é um Rato, e estava perdendo drain/Treasures/compras reais
+toda vez que ele — a peça central do deck — morria pra remoção/wipe de
+oponente.
+
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-21
+
+**Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
+Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+Bridge/Maralen nesta mesma sessão: *"Vamos fazer a implementação no
+Verminister agora."* Este deck nunca tinha nenhuma extensão de
+resiliência antes — porte completo do zero, incorporando direto o
+design FINAL já validado nos outros 8 (wipe unificado com escolha
+ponderada, gate de atenção do oponente, `wiped_this_round` +
+`POST_WIPE_ATTACK_HASTE_FACTOR` desde a primeira versão).
+
+**Implementadas as 7 categorias padrão:** ataque sem bloqueio, remoção
+curada (`INTERACTION_ENGINE_PRIORITY`: Skullclamp, Thrumming Stone,
+Ayara, Cabal Coffers, Crypt Ghast, Priest of Forgotten Gods,
+Marrow-Gnawer, Pitiless Plunderer, Zulaport Cutthroat, Syr Konrad),
+discard aleatório, board wipe (criatura/artefato/encantamento, pesos
+0.4/0.2/0.15), graveyard hate (mass exile 1x/partida + exílio de carta
+única repetível), counterspell (mira só o cast do próprio Rat King).
+
+**Achado real de regra MAIS substancial que nos outros 8 decks
+(aristocrats + simultaneidade, CR 603.10 "last known information"):**
+este é o primeiro deck da sessão com múltiplas cartas reais de payoff
+de morte (Zulaport Cutthroat, Pitiless Plunderer, Syr Konrad, Species
+Specialist) — um wipe de criatura mata VÁRIAS criaturas ao mesmo tempo
+(de verdade, simultâneo pela regra real), mas o ponto central
+pré-existente do arquivo (`on_creature_dies`, chamado individualmente
+por `leave_battlefield` dentro de um loop sequencial de remoção)
+checa `"Fonte" in state.battlefield` NO MOMENTO de cada morte
+individual — uma fonte de gatilho (ex.: Zulaport) já removida NO MEIO
+do loop deixa de "ver" as mortes que vêm depois dela no MESMO wipe,
+mesmo sendo tecnicamente simultâneas pela regra real. Isso subconta
+significativamente o payoff de aristocrata bem no cenário mais
+temático do deck inteiro (perder o board pra um wrath).
+
+**Achado de gap pré-existente descoberto no processo (não introduzido
+por mim):** `on_creature_dies` também nunca tratava corretamente a
+cláusula "this creature or another creature" da Zulaport (self-
+inclusiva — ela deveria contar até a própria morte dela, oráculo real
+confirmado via Scryfall) — o código checava só presença em campo,
+então a morte DELA MESMA nunca disparava a própria habilidade dela.
+Isso é diferente de Pitiless Plunderer/Syr Konrad, cujo oráculo real
+usa "another creature" (excludente — a própria morte deles NÃO deveria
+contar, e o código já acertava isso por acidente, pela mesma checagem
+de presença). Esse gap pré-existente é FORA DE ESCOPO consertar na
+função compartilhada (`on_creature_dies` é chamada em vários call
+sites de modo PADRÃO — `sacrifice_rats`/`sacrifice_any_creature`/
+`ayara_activation` — mexer nela mudaria resultado de modo padrão,
+quebrando bit-identidade).
+
+**Corrigido SÓ dentro de `try_smart_opponent_wipe`** (sem tocar
+`on_creature_dies`/`leave_battlefield` compartilhados): tira um
+SNAPSHOT de quem está em campo ANTES de remover qualquer coisa, calcula
+os 4 payoffs manualmente a partir dele — Zulaport (self-inclusiva,
+conta TODAS as mortes simultâneas inclusive a própria), Pitiless
+Plunderer/Syr Konrad ("another creature", excluem só a própria morte
+de cada um), Species Specialist (conta só Ratos — ela mesma é Human,
+nunca conta). Uma nova função auxiliar (`_wipe_remove_creature_no_
+trigger`) faz só a remoção física (campo→cemitério ou campo→zona de
+comando pro comandante), sem disparar o `on_creature_dies` individual
+que ficaria incompleto nesse cenário simultâneo.
+
+**Comandante nunca conta pros 4 payoffs** (CR 700.4 + 903.9 — ele vai
+pra zona de comando, nunca "morre" de verdade, mesmo sendo fisicamente
+removido do campo pelo wipe), mas `permanent_left_battlefield_this_turn`
+(Disappear, termo real "left the battlefield" — mais amplo que "dies")
+ainda dispara mesmo quando só o comandante sai.
+
+**2 bugs reais de infraestrutura corrigidos durante o porte** (nunca
+exercitados antes, sem call site pré-existente que os alcançasse):
+`leave_battlefield()` só mandava carta pro cemitério quando
+`is_creature_card()` era verdade — artefato/encantamento removido
+pelo modo de resiliência simplesmente desaparecia sem ir pro cemitério
+de verdade. Corrigido pra sempre mandar carta não-token pro cemitério
+quando `to_graveyard=True`, independente do tipo.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit anterior (3.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+7 testes dirigidos, incluindo os 2 mais específicos deste deck: (a)
+Zulaport+Pitiless Plunderer+5 tokens no mesmo wipe — 7 mortes
+simultâneas, Zulaport ganha +7 de vida (self-inclusiva, correto),
+Plunderer ganha 6 Treasures (exclui só a própria morte, correto); (b)
+Syr Konrad+Species Specialist+Rat Colony+2 tokens de Rato — Konrad
+causa 4 de dano (exclui só a própria morte), Species Specialist compra
+3 (só Ratos, nunca ela mesma); (c) comandante junto de Zulaport no
+mesmo wipe — vida sobe só +1 (só Zulaport conta, comandante nunca
+"morre" de verdade).
+
+**Resultado (A/B 2000 jogos mesma seed_base, modo padrão vs.
+resiliência):** vida final média 38,11 → 36,24. Avg board wipes: 0,84,
+artifact: 0,20, enchantment: 0,08. Avg proxy_damage_total (drain/dano
+acumulado) CAI de 5,74 pra 3,59 apesar do bônus real dos wipes — a
+perda de presença de board/cartas pra interação do oponente supera o
+ganho pontual do payoff de morte simultânea. Avg remoções
+inteligentes: 0,51 — Cabal Coffers (10,8%) e Skullclamp (9,8%) são os
+alvos mais removidos entre as peças curadas.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13/14
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
@@ -209,6 +512,7 @@ verdade e não disfarce de omissão):
 - **53 cartas únicas** (comandante + 51 cartas de biblioteca não-Swamp +
   Swamp) — lista confirmada em 99/100 (falta 1 carta que o usuário ainda
   vai escolher, `BASE_LIBRARY` reflete isso corretamente com 98 cartas).
+  **[SUPERADO: a lista fechou em 100/100 em 2026-08-31 com o Damnation (`auditoria.md` §14); `BASE_LIBRARY` tem 99 e o assert é `len == 99`. Registro histórico mantido; corrigido em 2026-10-25.]**
 - **🐛 Corrigido nesta rodada:** 3 cartas (Species Specialist, Deadly
   Rollick, Takenuma, Abandoned Mire).
 - **📊 Estrutural confirmado (sem oponente real / sem combate — não

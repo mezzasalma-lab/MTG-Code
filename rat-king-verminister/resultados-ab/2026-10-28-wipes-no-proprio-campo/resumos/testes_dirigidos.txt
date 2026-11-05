@@ -1,0 +1,12 @@
+PASS WP0 CREATURE_TYPES e CREATURE_TOUGHNESS == oraculo ao vivo arquivado (face da frente) e cobrem toda criatura do CARD_DB
+PASS WP1 Damnation: tudo morre (cartas, fichas, comandante); payoffs simultaneos: Zulaport total (inclui a si), Plunderer total-1 Treasures, Konrad total-1, Species Specialist conta Rats e o Mercenary
+PASS WP2 Kindred Dominance: escolhe Rat, mata o que nao e' Rat (e as fichas de Esquilo), poupa Rats e o Mercenary; com mais Esquilos que Rats escolhe Squirrel; empate = Rat
+PASS WP3 Swarmyard Massacre: 2 Esquilos antes; N = criaturas minhas Insect/Rat/Spider/Squirrel (cada uma 1x); morre a nao protegida com tenacidade <= N
+PASS WP4 limite de perda propria: 0 retem o wipe com perda (1 retencao por turno) e conjura o sem perda; None conjura sempre; wipe com efeito desligado nao e' retido
+PASS WP5 chaves desligadas = caminho antigo: Damnation e Kindred nao matam nada; Swarmyard so' cria os 2 Esquilos
+PASS WP6 Disappear: Kindred poupa o Rat King e mata o Zulaport -> o end step cria o Rat (e o contador); Damnation mata o Rat King -> nao cria
+PASS WP7 comandante morto por Damnation: volta a ser conjuravel pagando o imposto de comandante ({1}{B} + {2} por conjuracao anterior)
+PASS WP8 partidas inteiras (3.000): limite 0 BRUTO: nenhuma criatura minha morre por wipe meu E houve wipe conjurado (>0); limite 0 LIQUIDO: so' o Swarmyard perde criaturas (<= 2 por conjuracao); limite enorme: morrem (controle positivo)
+PASS WP9 limite LIQUIDO: Swarmyard que mata so' o Zulaport (perda 1) e cria 2 Esquilos e' conjurado com limite 0; com a chave liquida desligada (so' as mortes) fica retido; Kindred nao cria corpos (liquida = bruta)
+
+10/10 testes passaram

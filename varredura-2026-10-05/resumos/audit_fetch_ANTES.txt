@@ -1,0 +1,53 @@
+== azula-grixis: 2 fetch-likes
+   Grixis Panorama            fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Grixis Panorama'] vida 40->40
+   Seething Landscape         fetch ainda em campo=False no cemiterio=False biblioteca 98->97 campo=['Island'] vida 40->40
+== edgar-markov-mardu: 3 fetch-likes
+   Arid Mesa                  fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Arid Mesa'] vida 40->40
+   Bloodstained Mire          fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Bloodstained Mire'] vida 40->40
+   Marsh Flats                fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Marsh Flats'] vida 40->40
+== hei-bai-wurbg: 8 fetch-likes
+   Arid Mesa                  fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Arid Mesa'] vida 40->40
+   Bloodstained Mire          fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Bloodstained Mire'] vida 40->40
+   Flooded Strand             fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Flooded Strand'] vida 40->40
+   Marsh Flats                fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Marsh Flats'] vida 40->40
+   Misty Rainforest           fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Misty Rainforest'] vida 40->40
+   Scalding Tarn              fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Scalding Tarn'] vida 40->40
+   Verdant Catacombs          fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Verdant Catacombs'] vida 40->40
+   Windswept Heath            fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Windswept Heath'] vida 40->40
+== kutzil-selesnya: 1 fetch-likes
+   Windswept Heath            fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Windswept Heath'] vida 40->40
+== megatron-tyrant-mardu: 3 fetch-likes
+   Evolving Wilds             fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Plains'] vida 40->40
+   Rocky Tar Pit              fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Rocky Tar Pit'] vida 40->40
+   Terramorphic Expanse       fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Plains'] vida 40->40
+== ms-bumbleflower-bant: 1 fetch-likes
+   Tranquil Landscape         fetch ainda em campo=False no cemiterio=False biblioteca 98->97 campo=['Forest'] vida 40->40
+== nekusar-grixis: 9 fetch-likes
+   Arid Mesa                  fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Arid Mesa'] vida 40->39
+   Bloodstained Mire          fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Bloodstained Mire'] vida 40->39
+   Flooded Strand             fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Flooded Strand'] vida 40->39
+   Marsh Flats                fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Marsh Flats'] vida 40->39
+   Misty Rainforest           fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Misty Rainforest'] vida 40->39
+   Polluted Delta             fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Polluted Delta'] vida 40->39
+   Scalding Tarn              fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Scalding Tarn'] vida 40->39
+   Verdant Catacombs          fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Verdant Catacombs'] vida 40->39
+   Wooded Foothills           fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Wooded Foothills'] vida 40->39
+== prismatic-bridge-wurbg: 1 fetch-likes
+   Fabled Passage             fetch ainda em campo=True  no cemiterio=False biblioteca 98->98 campo=['Fabled Passage'] vida 40->40
+== tom-bombadil-wubrg: 5 fetch-likes
+   Windswept Heath            fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Indatha Triome'] vida 40->39
+   Flooded Strand             fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Indatha Triome'] vida 40->39
+   Wooded Foothills           fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Indatha Triome'] vida 40->39
+   Verdant Catacombs          fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Indatha Triome'] vida 40->39
+   Misty Rainforest           fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Indatha Triome'] vida 40->39
+== toph-naya: 3 fetch-likes
+   Arid Mesa                  fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Mountain'] vida 40->39
+   Windswept Heath            fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Forest'] vida 40->39
+   Wooded Foothills           fetch ainda em campo=False no cemiterio=True  biblioteca 98->97 campo=['Forest'] vida 40->39
+== ur-dragon-wurbg: 6 fetch-likes
+   Arid Mesa                  fetch ainda em campo=False no cemiterio=False biblioteca 98->97 campo=['Blood Crypt'] vida 40->37
+   Bloodstained Mire          fetch ainda em campo=False no cemiterio=False biblioteca 98->97 campo=['Bayou'] vida 40->39
+   Marsh Flats                fetch ainda em campo=False no cemiterio=False biblioteca 98->97 campo=['Bayou'] vida 40->39
+   Misty Rainforest           fetch ainda em campo=False no cemiterio=False biblioteca 98->97 campo=['Bayou'] vida 40->39
+   Windswept Heath            fetch ainda em campo=False no cemiterio=False biblioteca 98->97 campo=['Bayou'] vida 40->39
+   Wooded Foothills           fetch ainda em campo=False no cemiterio=False biblioteca 98->97 campo=['Bayou'] vida 40->39

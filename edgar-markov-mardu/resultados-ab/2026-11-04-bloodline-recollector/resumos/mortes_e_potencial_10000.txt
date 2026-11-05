@@ -1,0 +1,16 @@
+10000 partidas, modo padrao, sementes 3_000_000+i, 8 turnos (simulador vivo, politica dele: ate 2 sacrificios de token por turno)
+por turno (fraccao dos fins de turno / das chamadas do sac_loop):
+turno | fins | mortes>=2 | mortes>=3 | outlet gratis em campo | outlet gratis + >=3 tokens (potencial)
+  T1  | 10000 |   0.00% |   0.00% |   5.98% |   0.00%
+  T2  | 10000 |   1.07% |   0.00% |  18.54% |   0.02%
+  T3  | 10000 |   2.67% |   0.02% |  30.19% |   0.23%
+  T4  | 10000 |   5.03% |   0.12% |  39.98% |   0.95%
+  T5  | 10000 |   7.48% |   0.30% |  47.07% |   1.57%
+  T6  | 10000 |   8.13% |   0.44% |  52.30% |   2.42%
+  T7  | 10000 |  14.55% |   1.03% |  57.76% |   4.75%
+  T8  | 10000 |  20.78% |   1.93% |  62.50% |   8.51%
+por partida (alguma vez em T1..T8):
+  alguma_vez_mortes>=2: 3963 de 10000 (39.63%)
+  alguma_vez_mortes>=3: 337 de 10000 (3.37%)
+  alguma_vez_potencial(outlet gratis + 3 tokens): 1384 de 10000 (13.84%)
+  emeritus_tutors>=1: 515 de 10000 (5.15%)

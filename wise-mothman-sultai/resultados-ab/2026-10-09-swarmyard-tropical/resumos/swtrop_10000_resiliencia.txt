@@ -1,0 +1,85 @@
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[e1_swarmyard_tropical - base] N=10000 | partidas com resultado IDENTICO ao da base: 79 (0.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T7                                   0.0729       0.0750      +0.0021 ±0.0023  
+  *cleared_T8                                   0.2713       0.2797      +0.0084 ±0.0036  
+  *cleared_T10                                  0.6142       0.6246      +0.0104 ±0.0041  
+  *first_elim_T6                                0.2658       0.2740      +0.0082 ±0.0028  
+   self_lost                                    0.0148       0.0152      +0.0004 ±0.0017  
+   decked                                       0.0148       0.0152      +0.0004 ±0.0017  
+  *commander_cast_turn__ate_T3                  0.1400       0.1450      +0.0050 ±0.0018  
+  *commander_cast_turn__ate_T4                  0.5843       0.6012      +0.0169 ±0.0030  
+  *commander_cast_turn__ate_T5                  0.7088       0.7257      +0.0169 ±0.0030  
+  *commander_cast_turn__ate_T6                  0.8036       0.8165      +0.0129 ±0.0027  
+  *commander_cast_turn__nunca                   0.0216       0.0179      -0.0037 ±0.0014  
+  *regenerations_used                           0.0044       0.0000      -0.0044 ±0.0013  
+  *protection_used_total                        0.1133       0.1088      -0.0045 ±0.0034  
+   smart_removals_total                         0.8769       0.8733      -0.0036 ±0.0073  
+   smart_wipes_total                            0.6393       0.6377      -0.0016 ±0.0057  
+   commander_countered_total                    0.1176       0.1191      +0.0015 ±0.0030  
+  *commander_cast_count                         1.4787       1.4873      +0.0086 ±0.0061  
+   interaction_plays                            0.6547       0.6560      +0.0013 ±0.0082  
+   lands_entered_total                         11.6106      11.5921      -0.0185 ±0.0416  
+   mana_spent_total                             4.4772       4.4026      -0.0746 ±0.0817  
+  *life_min                                    29.8552      30.1705      +0.3153 ±0.0388  
+   mothman_counters_placed_total               58.2691      58.4345      +0.1654 ±0.6372  
+   cards_milled_opp_total                      68.7320      68.5534      -0.1786 ±0.5213  
+  *rad_counters_given_opp_total                15.0888      15.1753      +0.0865 ±0.0472  
+  *fetches_cracked_total                        1.2456       1.2223      -0.0233 ±0.0128  
+  *opp_turns_total                             24.3781      24.2165      -0.1616 ±0.0367  
+  *turn_id                                     34.1869      33.9831      -0.2038 ±0.0471  
+  *opp_spells_total                            21.8420      21.6926      -0.1494 ±0.0349  
+  *life                                        33.0819      33.4691      +0.3872 ±0.0969  
+  *opp_noncreature_spells_total                12.0229      11.9417      -0.0812 ±0.0204  
+  *first_elim_T8                                0.6838       0.6960      +0.0122 ±0.0032  
+  *len_cards_in_hand_by_turn                    9.0534       9.0030      -0.0504 ±0.0134  
+  *len_counters_on_board_by_turn                9.0534       9.0030      -0.0504 ±0.0134  
+  *len_creature_count_by_turn                   9.0534       9.0030      -0.0504 ±0.0134  
+  *len_lands_in_play_by_turn                    9.0534       9.0030      -0.0504 ±0.0134  
+  *len_library_by_turn                          9.0534       9.0030      -0.0504 ±0.0134  
+  *len_mothman_power_turn                       9.0534       9.0030      -0.0504 ±0.0134  
+  *turn                                         9.8088       9.7666      -0.0422 ±0.0116  
+  *len_mana_by_turn                             9.8040       9.7623      -0.0417 ±0.0117  
+
+[e2_e1_mais_bog_sea - base] N=10000 | partidas com resultado IDENTICO ao da base: 9 (0.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0729       0.0789      +0.0060 ±0.0027  
+  *cleared_T8                                   0.2713       0.2860      +0.0147 ±0.0044  
+  *cleared_T10                                  0.6142       0.6275      +0.0133 ±0.0051  
+  *first_elim_T6                                0.2658       0.2831      +0.0173 ±0.0035  
+   self_lost                                    0.0148       0.0156      +0.0008 ±0.0021  
+   decked                                       0.0148       0.0156      +0.0008 ±0.0021  
+  *commander_cast_turn__ate_T3                  0.1400       0.1507      +0.0107 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.5843       0.6137      +0.0294 ±0.0037  
+  *commander_cast_turn__ate_T5                  0.7088       0.7331      +0.0243 ±0.0036  
+  *commander_cast_turn__ate_T6                  0.8036       0.8224      +0.0188 ±0.0032  
+  *commander_cast_turn__nunca                   0.0216       0.0175      -0.0041 ±0.0015  
+  *regenerations_used                           0.0044       0.0000      -0.0044 ±0.0013  
+  *protection_used_total                        0.1133       0.1080      -0.0053 ±0.0043  
+   smart_removals_total                         0.8769       0.8731      -0.0038 ±0.0091  
+   smart_wipes_total                            0.6393       0.6342      -0.0051 ±0.0072  
+   commander_countered_total                    0.1176       0.1168      -0.0008 ±0.0036  
+  *commander_cast_count                         1.4787       1.4867      +0.0080 ±0.0076  
+  *interaction_plays                            0.6547       0.4425      -0.2122 ±0.0122  
+   lands_entered_total                         11.6106      11.5624      -0.0482 ±0.0504  
+  *mana_spent_total                             4.4772       4.3660      -0.1112 ±0.0985  
+  *life_min                                    29.8552      30.4056      +0.5504 ±0.0472  
+   mothman_counters_placed_total               58.2691      58.5711      +0.3020 ±0.7799  
+   cards_milled_opp_total                      68.7320      68.3807      -0.3513 ±0.6242  
+  *rad_counters_given_opp_total                15.0888      15.2085      +0.1197 ±0.0568  
+  *fetches_cracked_total                        1.2456       1.2008      -0.0448 ±0.0152  
+  *tapped_land_first_plays_total                0.2011       0.1322      -0.0689 ±0.0051  
+  *tapped_land_skipped_for_play_total           0.0834       0.0510      -0.0324 ±0.0046  
+  *opp_turns_total                             24.3781      24.0997      -0.2784 ±0.0466  
+  *opp_spells_total                            21.8420      21.5828      -0.2592 ±0.0440  
+  *turn_id                                     34.1869      33.8398      -0.3471 ±0.0597  
+  *opp_noncreature_spells_total                12.0229      11.8783      -0.1446 ±0.0257  
+  *life                                        33.0819      33.7643      +0.6824 ±0.1218  
+  *first_opp_elim_turn__ate_T6                  0.2658       0.2831      +0.0173 ±0.0035  
+  *len_cards_in_hand_by_turn                    9.0534       8.9730      -0.0804 ±0.0168  
+  *len_counters_on_board_by_turn                9.0534       8.9730      -0.0804 ±0.0168  
+  *len_creature_count_by_turn                   9.0534       8.9730      -0.0804 ±0.0168  
+  *len_lands_in_play_by_turn                    9.0534       8.9730      -0.0804 ±0.0168  
+  *len_library_by_turn                          9.0534       8.9730      -0.0804 ±0.0168  
+  *len_mothman_power_turn                       9.0534       8.9730      -0.0804 ±0.0168  

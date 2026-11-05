@@ -1,0 +1,1 @@
+Megatron: 300/300 partidas idênticas em 123 campos do GameState (original sem patch x base do harness); divergências por campo: nenhuma

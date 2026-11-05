@@ -1,0 +1,59 @@
+cartas distintas lidas: 90 (99 copias; 99 + comandante), sem oraculo no cache: []
+
+## COMPRA (cada compra com a biblioteca vazia e o Jace em campo vira vitoria) [14]
+  - Arcane Denial | Instant
+  - Cold-Eyed Selkie | Creature — Merfolk Rogue
+  - Danny Pink | Legendary Creature — Human Soldier Advisor
+  - Fathom Mage | Creature — Human Wizard
+  - Generous Patron | Creature — Elf Advisor
+  - Hollowmurk Siege | Enchantment
+  - Kozilek, Butcher of Truth | Legendary Creature — Eldrazi
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Palantír of Orthanc | Legendary Artifact
+  - Pollywog Prodigy | Creature — Frog Wizard
+  - Psychic Corrosion | Enchantment
+  - Soul-Guide Lantern | Artifact
+  - The Gitrog Monster | Legendary Creature — Frog Horror
+  - The Great Henge | Legendary Artifact
+
+## AUTO-MILL possivel ('you mill', 'target player mills', 'each player mills', X cartas, mill do rad) [17]
+  - Altar of Dementia | Artifact
+  - Ashiok, Dream Render | Legendary Planeswalker — Ashiok
+  - Bramble Familiar // Fetch Quest | Creature — Elemental Raccoon // Sorcery — Adventure
+  - Hedge Shredder | Artifact — Vehicle
+  - Icetill Explorer | Creature — Insect Scout
+  - Mindcrank | Artifact
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Nuclear Fallout | Sorcery
+  - Palantír of Orthanc | Legendary Artifact
+  - Rampant Frogantua | Creature — Frog
+  - Ruin Crab | Creature — Crab
+  - Six | Legendary Creature — Treefolk
+  - Smuggler's Surprise | Instant
+  - Syr Konrad, the Grim | Legendary Creature — Human Knight
+  - Takenuma, Abandoned Mire | Legendary Land
+  - Undead Alchemist | Creature — Zombie
+  - Zellix, Sanity Flayer | Legendary Creature — Horror
+
+## DEVOLVE cartas a BIBLIOTECA / embaralha o cemiterio (ANTI-sinergia com esvaziar a biblioteca) [2]
+  - Freestrider Lookout | Creature — Human Rogue
+  - Kozilek, Butcher of Truth | Legendary Creature — Eldrazi
+
+## PLANESWALKERS [1]
+  - Ashiok, Dream Render | Legendary Planeswalker — Ashiok
+
+## FONTES DE {U} entre os terrenos (por script; copias contadas)
+  - Breeding Pool x1 | Land — Forest Island
+  - Command Tower x1 | Land
+  - Fabled Passage x1 | Land
+  - Island x4 | Basic Land — Island
+  - Minamo, School at Water's Edge x1 | Legendary Land
+  - Misty Rainforest x1 | Land
+  - Morphic Pool x1 | Land
+  - Plaza of Heroes x1 | Land
+  - Polluted Delta x1 | Land
+  - Rejuvenating Springs x1 | Land
+  - Waterlogged Grove x1 | Land
+  - Watery Grave x1 | Land — Island Swamp
+  - Zagoth Triome x1 | Land — Swamp Forest Island
+  total de copias de terreno que produzem {U}: 16 de 36 terrenos (o MDFC Agadeem conta como terreno so' pelo lado terreno)

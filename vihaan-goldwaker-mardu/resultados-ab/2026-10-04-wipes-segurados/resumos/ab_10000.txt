@@ -1,0 +1,14 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao (goldfish)
+ANTES: win<=T8 15.5% | Treasures criados 13.31 (estoque no fim 3.73) | dano mesa 23.05 combate 56.68 drain 10.30 | mortes de criatura 3.78 | mana bonus 2.39 | recursoes 0.06 | mana T5 5.099 T6 6.221
+variante  win<=8 pp      Treasures criados estoque no fim dano mesa      combate        drain          mortes cria.   mana bonus     mana T5        mana T6       
+sempre     +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+liberar    +0.000±0.000   +0.002±0.005   -0.002±0.005   +0.001±0.003   -0.004±0.007   +0.001±0.003   +0.006±0.007   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+sem_hold_pagar  -2.160±0.332   -0.374±0.198   -0.124±0.098   -0.655±1.494   -5.723±0.862   -0.460±0.612   +0.910±0.071   -0.251±0.055   -0.000±0.001   -0.009±0.004 
+sem_hold   -2.160±0.332   -0.374±0.198   -0.119±0.098   -0.666±1.494   -5.718±0.862   -0.464±0.612   +0.910±0.071   -0.251±0.055   -0.000±0.001   -0.009±0.004 
+
+variante        jogos iguais Blood Money  Blasphemous Act wipe c/ Vihaan|Mahadi Vihaan destruido  retencoes   wipe mitigado      animados pagando  dano pagamento  pool expirado 
+antes           100.0%       0.0000       0.0000          0.0000                0.0000            n/a         n/a                n/a               n/a             1.2110        
+sempre          100.0%       0.0000       0.0000          0.0000                0.0000            0.6321      0.0000             0.0000            0.0000          1.2110        
+liberar         100.0%       0.0005       0.0000          0.0005                0.0005            0.6320      0.0005             0.0035            0.0035          1.2110        
+sem_hold_pagar   83.0%       0.0547       0.1186          0.1721                0.1720            0.0000      0.0000             0.0484            0.0411          1.1496        
+sem_hold         83.0%       0.0547       0.1186          0.1722                0.1721            0.0000      0.0000             0.0000            0.0000          1.1497        

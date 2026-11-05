@@ -1,0 +1,24 @@
+{
+ "flags_off": {
+  "FETCH_LANDS_ENABLED": false
+ },
+ "ignora_campos": [
+  "fetches_cracked_total",
+  "fetch_no_target_total"
+ ],
+ "sensibilidade": {},
+ "turns": 8,
+ "extra": null,
+ "destaque": [
+  "fetches_cracked_total",
+  "fetch_no_target_total",
+  "lands_played_total",
+  "commander_cast_turn__nunca",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5"
+ ],
+ "deck": "edgar-markov-mardu",
+ "sim": "edgar_markov_goldfish_v1.py",
+ "snapshot": "codigo/edgar_markov_goldfish_v1_ANTES_fd34e07.py"
+}

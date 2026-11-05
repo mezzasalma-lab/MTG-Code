@@ -1,0 +1,642 @@
+{
+ "Austere Command": {
+  "oracle_id": "09cc8709-fe10-472a-b05c-e89f3523018d",
+  "rulings": [
+   [
+    "2020-11-10",
+    "If a card is exiled \"until\" another permanent leaves the battlefield, the exiled card returns to the battlefield immediately after that permanent leaves the battlefield during Austere Command's resolution, and it may be destroyed by a later mode."
+   ],
+   [
+    "2020-11-10",
+    "Each of the chosen modes happens sequentially. If a permanent has an ability that triggers whenever it or another permanent is destroyed, it will see permanents destroyed at the same time as it or before it, but not permanents destroyed by later modes."
+   ],
+   [
+    "2020-11-10",
+    "If the first and last modes are chosen, an artifact creature with mana value 4 or greater will have to be regenerated twice to survive. This is because the modes happen sequentially, and the regeneration \"shield\" is used up by the first one. The same is true with any other combination of modes that covers one permanent twice."
+   ]
+  ]
+ },
+ "Bloom Tender": {
+  "oracle_id": "0c23fefe-9891-4dd8-9bb1-eebdb3274e31",
+  "rulings": [
+   [
+    "2025-11-17",
+    "Lands are normally colorless permanents, even if they tap for mana of a certain color."
+   ],
+   [
+    "2025-11-17",
+    "Bloom Tender can't produce colorless mana, even if you control a colorless permanent."
+   ],
+   [
+    "2025-11-17",
+    "For each color (white, blue, black, red, and green), check to see if you control a permanent of that color. You can count the same permanent for multiple colors. For example, if you control a green enchantment and a white-black creature, Bloom Tender's ability produces {W}{B}{G}."
+   ],
+   [
+    "2025-11-17",
+    "Bloom Tender won't produce more than one mana of any particular color. At most, it will produce {W}{U}{B}{R}{G}."
+   ],
+   [
+    "2025-11-17",
+    "The colors are white, blue, black, red, and green. Colorless is not a color."
+   ]
+  ]
+ },
+ "Elspeth Conquers Death": {
+  "oracle_id": "40c88392-2aa7-4e12-86a4-8d680219e670",
+  "rulings": [
+   [
+    "2020-01-24",
+    "If a creature on the battlefield has {X} in its mana cost, X is considered to be 0."
+   ],
+   [
+    "2020-01-24",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases (such as that of this Saga's second chapter), then apply any cost reductions. The mana value of the spell remains unchanged, no matter what the total cost to cast it was."
+   ],
+   [
+    "2020-01-24",
+    "The effect of the second chapter lasts until your next turn even if this Saga leaves the battlefield before then."
+   ],
+   [
+    "2020-01-24",
+    "You choose which kind of counter to put on the returned permanent after it has entered the battlefield. You may put a +1/+1 counter on a planeswalker or a loyalty counter on a creature, but this isn't normally going to have any effect."
+   ],
+   [
+    "2020-01-24",
+    "In a multiplayer game, if you leave the game after this Saga's second chapter ability resolves but before your next turn begins, its effect lasts until your next turn would have begun. It neither expires immediately nor lasts indefinitely."
+   ],
+   [
+    "2020-01-24",
+    "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   ],
+   [
+    "2020-01-24",
+    "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   ],
+   [
+    "2020-01-24",
+    "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the III chapter ability to trigger, but I and II won't trigger again."
+   ],
+   [
+    "2020-01-24",
+    "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   ],
+   [
+    "2020-01-24",
+    "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   ],
+   [
+    "2020-01-24",
+    "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives lore counters. "
+   ],
+   [
+    "2020-01-24",
+    "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   ]
+  ]
+ },
+ "Enchantress's Presence": {
+  "oracle_id": "795b096a-2bce-4588-a2c9-abc5ea40dc0c",
+  "rulings": [
+   [
+    "2021-06-18",
+    "The triggered ability will resolve before the spell that caused it to trigger."
+   ],
+   [
+    "2021-06-18",
+    "The ability is independent from the spell that caused it to trigger. Notably, if the enchantment spell is countered or doesn't resolve for any other reason, you'll still draw a card (unless something specifically counters the triggered ability)."
+   ]
+  ]
+ },
+ "Estrid's Invocation": {
+  "oracle_id": "7f5f10ee-6428-4053-8824-3bc70420ec2c",
+  "rulings": [
+   [
+    "2018-07-13",
+    "If Estrid's Invocation doesn't copy an enchantment as it enters the battlefield, it won't have the ability to exile it at the beginning of your upkeep. You can't have it copy itself to get this ability."
+   ],
+   [
+    "2018-07-13",
+    "Once Estrid's Invocation returns, it's considered a new object with no relation to the object that it was. You must choose an enchantment that's currently on the battlefield to copy (or to not copy anything). Auras that were attached to it will be put into their owners' graveyards. Any counters that were on it cease to exist."
+   ],
+   [
+    "2018-07-13",
+    "Estrid's Invocation copies exactly what was printed on the original enchantment (unless that enchantment is copying something else or is a token; see below). It doesn't copy whether that enchantment is tapped or untapped, whether it has any counters on it or any Auras attached to it, or any non-copy effects that have changed its types, color, or so on."
+   ],
+   [
+    "2018-07-13",
+    "If the copied enchantment has {X} in its mana cost, X is considered to be 0."
+   ],
+   [
+    "2018-07-13",
+    "If the chosen enchantment is copying something else (for example, if the chosen enchantment is another Estrid's Invocation), then Estrid's Invocation enters the battlefield as whatever the chosen enchantment copied."
+   ],
+   [
+    "2018-07-13",
+    "If the chosen enchantment is a token, Estrid's Invocation copies the original characteristics of that token as stated by the effect that created the token. Estrid's Invocation doesn't become a token in this case."
+   ],
+   [
+    "2018-07-13",
+    "If the chosen enchantment is an Aura, you choose what it enchants just before Estrid's Invocation enters the battlefield. The chosen recipient must be able to legally be enchanted by the Aura Estrid's Invocation will be. This doesn't target the player or permanent it will enchant, so an opponent's permanent with hexproof may be chosen this way."
+   ],
+   [
+    "2018-07-13",
+    "If the chosen enchantment is an Aura but Estrid's Invocation won't be able to legally enchant anything, Estrid's Invocation remains in its current zone and doesn't enter the battlefield. If Estrid's Invocation is on the stack, it's put into its owner's graveyard."
+   ],
+   [
+    "2018-07-13",
+    "Any enters-the-battlefield abilities of the copied enchantment will trigger when Estrid's Invocation enters the battlefield. Any \"as [this enchantment] enters the battlefield\" or \"[this enchantment] enters the battlefield with\" abilities of the chosen enchantment will also work."
+   ],
+   [
+    "2018-07-13",
+    "If Estrid's Invocation somehow enters the battlefield at the same time as another enchantment, it can't become a copy of that enchantment. You may choose only an enchantment that's already on the battlefield."
+   ]
+  ]
+ },
+ "Fertile Ground": {
+  "oracle_id": "cf14d4e5-5965-45ad-97f7-26facf2884b5",
+  "rulings": []
+ },
+ "Fold into Aether": {
+  "oracle_id": "bc2f807b-555d-4a62-ab14-75fe62c64b97",
+  "rulings": [
+   [
+    "2004-12-01",
+    "If the spell isn’t countered (because it’s a spell that can’t be countered, for example), nothing happens."
+   ],
+   [
+    "2004-12-01",
+    "If your Fold into Aether counters a spell you control, you get to put a creature card from your hand onto the battlefield."
+   ]
+  ]
+ },
+ "Godless Shrine": {
+  "oracle_id": "73864fcc-1bde-4bc0-831e-2b93e546e417",
+  "rulings": [
+   [
+    "2018-10-05",
+    "Unlike most dual lands, this land has two basic land types. It's not basic, so cards such as District Guide can't find it, but it does have the appropriate land types for effects such as that of Drowned Catacomb (from the Ixalan set)."
+   ],
+   [
+    "2018-10-05",
+    "If an effect puts this land onto the battlefield tapped, you may pay 2 life, but it still enters tapped."
+   ]
+  ]
+ },
+ "In the Darkness Bind Them": {
+  "oracle_id": "c8689a83-cefa-4ef3-8ec1-58b4c64e332b",
+  "rulings": [
+   [
+    "2023-06-16",
+    "While resolving In the Darkness Bind Them's first three chapter abilities, you can choose the Wraith token you just created to be your Ring-bearer as the Ring tempts you."
+   ],
+   [
+    "2023-06-16",
+    "If a creature targeted by In the Darkness Bind Them's final chapter ability changes controllers before the ability resolves, that creature is no longer a legal target."
+   ],
+   [
+    "2023-06-16",
+    "When In the Darkness Bind Them's final chapter ability triggers, you can choose to target no creatures just so that the Ring tempts you. However, if you do choose at least one target, and all of those targets are illegal at the time the ability tries to resolve, the ability won't resolve and none of its effects will happen. The Ring won't tempt you."
+   ],
+   [
+    "2023-06-16",
+    "As the Ring tempts you, you get an emblem named The Ring if you don't have one. Then your emblem gains its next ability and you choose a creature you control to become (or remain) your Ring-bearer."
+   ],
+   [
+    "2023-06-16",
+    "The Ring can tempt you even if you don't control a creature. In this case, abilities that trigger \"whenever the Ring tempts you\" will still trigger."
+   ],
+   [
+    "2023-06-16",
+    "If the creature you choose as your Ring-bearer was already your Ring-bearer, that still counts as choosing that creature as your Ring-bearer for the purpose of abilities that trigger \"whenever you choose a creature as your Ring-bearer\" or abilities that care about which creature was chosen as your Ring-bearer."
+   ],
+   [
+    "2023-06-16",
+    "The Ring gains its abilities in order from top to bottom. Once it gains an ability, it has that ability for the rest of the game."
+   ],
+   [
+    "2023-06-16",
+    "Each time the Ring tempts you, you must choose a creature if you control one."
+   ],
+   [
+    "2023-06-16",
+    "Each player can have only one emblem named The Ring and only one Ring-bearer at a time."
+   ],
+   [
+    "2023-06-16",
+    "Some spells and abilities that cause the Ring to tempt you may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. The Ring won't tempt you."
+   ]
+  ]
+ },
+ "Jugan Defends the Temple": {
+  "oracle_id": "e70ac420-8540-4a69-820f-ae3e0274ca1a",
+  "rulings": [
+   [
+    "2022-02-18",
+    "Each face of a transforming double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a transforming double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   ],
+   [
+    "2022-02-18",
+    "Each transforming double-faced card in this set is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   ],
+   [
+    "2022-02-18",
+    "The mana value of a transforming double-faced card is the mana value of its front face, no matter which face is up."
+   ],
+   [
+    "2022-02-18",
+    "The back face of a transforming double-faced card usually has a color indicator that defines its color."
+   ],
+   [
+    "2022-02-18",
+    "A transforming double-faced card enters the battlefield with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or you cast it transformed, in which case it enters with its back face up."
+   ],
+   [
+    "2022-02-18",
+    "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter the battlefield at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Azusa's Many Journeys, the chapter III ability will cause it to be exiled and then remain in exile."
+   ],
+   [
+    "2022-02-18",
+    "An Aura controlled by an opponent does not cause a creature you control to be modified."
+   ],
+   [
+    "2022-02-18",
+    "A creature with a counter on it is considered modified no matter what kind of counter it is or which player put it on that creature."
+   ],
+   [
+    "2022-02-18",
+    "A creature that is equipped is considered modified no matter who controls the Equipment that's attached to it."
+   ]
+  ]
+ },
+ "Karn's Bastion": {
+  "oracle_id": "9fb8cd81-403a-4988-8f1c-b8eccf8abd9c",
+  "rulings": [
+   [
+    "2023-02-04",
+    "To proliferate, you can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can't choose cards in any zone other than the battlefield, even if they have counters on them."
+   ],
+   [
+    "2023-02-04",
+    "You don't have to choose every permanent or player that has a counter, only the ones you want to add another counter to. Since \"any number\" includes zero, you don't have to choose any permanents at all, and you don't have to choose any players at all."
+   ],
+   [
+    "2023-02-04",
+    "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can't have it get just one kind of counter it already has and not the others."
+   ],
+   [
+    "2023-02-04",
+    "An ability that triggers \"Whenever you proliferate\" triggers even if you chose no permanents or players while doing so."
+   ],
+   [
+    "2023-02-04",
+    "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it's too late for anyone to respond."
+   ],
+   [
+    "2023-02-04",
+    "If a permanent ever has both +1/+1 counters and -1/-1 counters on it at the same time, they're removed in pairs as a state-based action so that the permanent has only one of those kinds of counters on it."
+   ]
+  ]
+ },
+ "Ketria Triome": {
+  "oracle_id": "6bae00e8-06cf-4ac4-a1cc-757e454109fe",
+  "rulings": []
+ },
+ "Kiora Bests the Sea God": {
+  "oracle_id": "84d0c616-2fce-47f4-bfdd-783741a63fd2",
+  "rulings": [
+   [
+    "2020-01-24",
+    "Nonland permanents target opponent controls that are already tapped when the second chapter ability resolves won’t be tapped again, but they won’t untap during their controller’s next untap step."
+   ],
+   [
+    "2020-01-24",
+    "The second chapter ability keeps the permanents tapped even if Kiora Bests the Sea God leaves the battlefield before that player’s next untap step."
+   ],
+   [
+    "2020-01-24",
+    "Any nonland permanents that come under the target player’s control after the second chapter ability resolves will untap as normal."
+   ],
+   [
+    "2020-01-24",
+    "The second chapter ability targets the player but not their permanents. Permanents with hexproof may be tapped this way."
+   ],
+   [
+    "2020-01-24",
+    "The control-change effect of the third chapter ability lasts indefinitely. It doesn’t wear off during the cleanup step. In a multiplayer game, it does expire if you leave the game."
+   ],
+   [
+    "2020-01-24",
+    "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn’t use the stack."
+   ],
+   [
+    "2020-01-24",
+    "Each symbol on the left of a Saga’s text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability’s chapter number. Chapter abilities are put onto the stack and may be responded to."
+   ],
+   [
+    "2020-01-24",
+    "A chapter ability doesn’t trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter’s number. For example, the third lore counter put on a Saga causes the III chapter ability to trigger, but I and II won’t trigger again."
+   ],
+   [
+    "2020-01-24",
+    "Once a chapter ability has triggered, the ability on the stack won’t be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   ],
+   [
+    "2020-01-24",
+    "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   ],
+   [
+    "2020-01-24",
+    "Removing lore counters won’t cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives lore counters."
+   ],
+   [
+    "2020-01-24",
+    "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga’s controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn’t use the stack."
+   ]
+  ]
+ },
+ "Nesting Grounds": {
+  "oracle_id": "d27bb97d-286b-4947-8d7b-443e4df93319",
+  "rulings": [
+   [
+    "2020-04-17",
+    "To move a counter from one creature to another, the counter is removed from the first permanent and put on the second. Any abilities that care about a counter being removed from or put onto a permanent will apply."
+   ],
+   [
+    "2020-04-17",
+    "You choose the two target permanents as Nesting Grounds's second ability is put onto the stack. You choose which kind of counter to move as that ability resolves."
+   ],
+   [
+    "2020-04-17",
+    "The two target permanents don't have to share a type, which can result in some counters on permanents that would not occur normally, such as loyalty counters on creatures or +1/+1 counters on lands. Keyword counters will grant the permanent that keyword even if it's meaningless (such as trample on an enchantment); +1/+1 counters won't affect the permanent unless it's a creature; and many named counters (such as soul counters) won't have an effect unless the recipient permanent refers to them in some way."
+   ],
+   [
+    "2020-04-17",
+    "If either permanent becomes an illegal target, no counter is removed or put."
+   ]
+  ]
+ },
+ "O'aka, Traveling Merchant": {
+  "oracle_id": "ed0fc294-de9b-4c64-b97d-e3a41fd2f46a",
+  "rulings": []
+ },
+ "Prismatic Omen": {
+  "oracle_id": "d90882ae-6572-4214-8d9c-0bdfb75f9be2",
+  "rulings": [
+   [
+    "2008-05-01",
+    "Each land you control will have the land types Plains, Island, Swamp, Mountain, and Forest. They’ll also have the mana ability of each basic land type (for example, Forests can tap to produce {G}). They’ll still have their other subtypes and abilities."
+   ],
+   [
+    "2008-05-01",
+    "Giving a land extra basic land types doesn’t change its name or whether it’s legendary or basic."
+   ]
+  ]
+ },
+ "Raugrin Triome": {
+  "oracle_id": "c7fa1dda-9312-4ec8-82cd-a1ba7bc33497",
+  "rulings": []
+ },
+ "Resurgent Belief": {
+  "oracle_id": "0fcfef04-a954-4423-82b0-c70dc64a8fbc",
+  "rulings": [
+   [
+    "2024-02-02",
+    "If a card with no mana cost is given an alternative cost equal to its mana cost (by Snapcaster Mage, for example), that cost cannot be paid and the card cannot be cast this way."
+   ],
+   [
+    "2024-02-02",
+    "The mana value of a spell cast without paying its mana cost is determined by its mana cost, even though that cost wasn't paid."
+   ],
+   [
+    "2024-02-02",
+    "A card with no mana cost can't be cast normally; you'll need a way to cast it for an alternative cost or without paying its mana cost, such as by suspending it."
+   ],
+   [
+    "2024-02-02",
+    "Suspend is a keyword that represents three abilities. The first is a static ability that allows you to exile the card from your hand with the specified number of time counters (the number before the dash) on it by paying its suspend cost (listed after the dash). The second is a triggered ability that removes a time counter from the suspended card at the beginning of each of your upkeeps. The third is a triggered ability that gives you the option to cast the card when the last time counter is removed."
+   ],
+   [
+    "2024-02-02",
+    "You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time."
+   ],
+   [
+    "2024-02-02",
+    "Cards exiled with suspend are exiled face up."
+   ],
+   [
+    "2024-02-02",
+    "Exiling a card with suspend isn't casting that card. This action doesn't use the stack and can't be responded to."
+   ],
+   [
+    "2024-02-02",
+    "If the spell requires any targets, those targets are chosen when the spell is finally cast, not when it's exiled."
+   ],
+   [
+    "2024-02-02",
+    "If an effect refers to a \"suspended card,\" that means a card that (1) has suspend, (2) is in exile, and (3) has one or more time counters on it."
+   ],
+   [
+    "2024-02-02",
+    "If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep."
+   ],
+   [
+    "2024-02-02",
+    "When the last time counter is removed, the second triggered ability of suspend (the one that lets you cast the card) triggers. It doesn't matter why the last time counter was removed or what effect removed it."
+   ],
+   [
+    "2024-02-02",
+    "If the second triggered ability is countered, the card can't be cast. It remains exiled with no time counters on it, and it's no longer suspended."
+   ],
+   [
+    "2024-02-02",
+    "Due to a recent rules change to suspend, you are no longer required to cast the suspended card as the second triggered ability of suspend resolves. Instead, as the second triggered ability resolves, you may cast the card. Timing permissions based on the card's type are ignored. If you don't cast the card, it remains exiled with no time counters on it, and it's no longer suspended."
+   ],
+   [
+    "2024-02-02",
+    "If you cast a card \"without paying its mana cost,\" such as with suspend, you can't choose to cast it for any alternative costs. You can, however, pay additional costs. If the card has any mandatory additional costs, you must pay those if you want to cast the card."
+   ],
+   [
+    "2024-02-02",
+    "If the card has {X} in its mana cost, you must choose 0 as the value of X when casting it without paying its mana cost."
+   ],
+   [
+    "2021-06-18",
+    "All of the enchantment cards in your graveyard that can return to the battlefield will. You can't choose to leave some in the graveyard. If you're returning an Aura that can only be attached to a creature, but your opponent is the only player who controls a creature, you must choose to attach it to that creature."
+   ],
+   [
+    "2021-06-18",
+    "If an effect puts an Aura onto the battlefield under your control, you choose what it enters attached to. It must be something that it could legally enchant, but not necessarily something it could target if it were on the stack. For example, you could attach an Aura with enchant creature to an opponent's creature with hexproof, but not to a creature with protection from enchantments."
+   ]
+  ]
+ },
+ "Ripples of Potential": {
+  "oracle_id": "45bcebd0-5e93-4433-b92f-b4c161d04bd6",
+  "rulings": [
+   [
+    "2023-11-10",
+    "An ability that triggers \"Whenever you proliferate\" triggers even if you chose no permanents or players while doing so."
+   ],
+   [
+    "2023-11-10",
+    "A phased-out token will phase in at the beginning of its controller's untap step just like a nontoken permanent would."
+   ],
+   [
+    "2023-11-10",
+    "To proliferate, you can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can't choose cards in any zone other than the battlefield, even if they have counters on them."
+   ],
+   [
+    "2023-11-10",
+    "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it's too late for anyone to respond."
+   ],
+   [
+    "2023-11-10",
+    "You don't have to choose every permanent or player that has a counter, only the ones you want to add another counter to. Since \"any number\" includes zero, you don't have to choose any permanents at all, and you don't have to choose any players at all."
+   ],
+   [
+    "2023-11-10",
+    "Permanents phase back in during their controller's untap step, immediately before that player untaps their permanents. Creatures that phase in this way are able to attack and pay a cost of {T} during that turn. If a permanent had counters on it when it phased out, it will have those counters when it phases back in."
+   ],
+   [
+    "2023-11-10",
+    "Phasing out doesn't cause any \"leaves the battlefield\" abilities to trigger. Similarly, phasing in won't cause any \"enters the battlefield\" abilities to trigger."
+   ],
+   [
+    "2023-11-10",
+    "Choices made for permanents as they entered the battlefield are remembered even after they phase in."
+   ],
+   [
+    "2023-11-10",
+    "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can't have it get just one kind of counter it already has and not the others."
+   ],
+   [
+    "2023-11-10",
+    "Phased-out permanents are treated as though they don't exist. They can't be the target of spells or abilities, their static abilities have no effect on the game, their triggered abilities can't trigger, they can't attack or block, and so on."
+   ],
+   [
+    "2023-11-10",
+    "As a creature is phased out, Auras and Equipment attached to it also phase out at the same time. Those Auras and Equipment will phase in at the same time that creature does, and they'll phase in still attached to that creature."
+   ],
+   [
+    "2023-11-10",
+    "An attacking or blocking creature that phases out is removed from combat."
+   ],
+   [
+    "2023-11-10",
+    "Any continuous effects with a \"for as long as\" duration ignore phased-out objects. If ignoring those objects causes the effect's conditions to no longer be met, the duration will expire."
+   ]
+  ]
+ },
+ "Snuff Out": {
+  "oracle_id": "324824cb-f938-401c-b9b5-d8908b431ef0",
+  "rulings": []
+ },
+ "Song of Eärendil": {
+  "oracle_id": "440366dd-7654-4ede-aa47-7e8a7916e31e",
+  "rulings": []
+ },
+ "Soul Shatter": {
+  "oracle_id": "615927c2-3fb0-4e64-a1a7-55fb56de1423",
+  "rulings": [
+   [
+    "2020-09-25",
+    "As Soul Shatter resolves, first the opponent whose turn it is (or the next opponent in turn order, if it's your turn) chooses a creature or planeswalker they control with the highest mana value among that player's creatures and planeswalkers, then each other opponent in turn order does the same, knowing the choices made before them. Then all of the chosen permanents are sacrificed at the same time."
+   ]
+  ]
+ },
+ "Stomping Ground": {
+  "oracle_id": "16052b52-ade1-406f-a06b-ce7ea607fb63",
+  "rulings": [
+   [
+    "2018-10-05",
+    "Unlike most dual lands, this land has two basic land types. It's not basic, so cards such as District Guide can't find it, but it does have the appropriate land types for effects such as that of Drowned Catacomb (from the Ixalan set)."
+   ],
+   [
+    "2018-10-05",
+    "If an effect puts this land onto the battlefield tapped, you may pay 2 life, but it still enters tapped."
+   ]
+  ]
+ },
+ "Temple Garden": {
+  "oracle_id": "f413a83d-a40d-434c-b20a-4c707c0527fa",
+  "rulings": [
+   [
+    "2025-11-17",
+    "If an effect puts this land onto the battlefield tapped, you may pay 2 life, but it still enters tapped."
+   ],
+   [
+    "2025-11-17",
+    "This land has two basic land types. It's not basic, so cards such as Tend the Sprigs can't find it, but it does have the appropriate land types for effects such as that of Great Arashin City (from the Tarkir: Dragonstorm release)."
+   ],
+   [
+    "2018-10-05",
+    "Unlike most dual lands, this land has two basic land types. It's not basic, so cards such as District Guide can't find it, but it does have the appropriate land types for effects such as that of Drowned Catacomb (from the Ixalan set)."
+   ]
+  ]
+ },
+ "The Coming of Galactus": {
+  "oracle_id": "e05f23ba-f2b2-4c40-83fa-8defce3cb978",
+  "rulings": []
+ },
+ "The First Iroan Games": {
+  "oracle_id": "58934f6d-1aa2-414c-85c6-955a1e26d675",
+  "rulings": [
+   [
+    "2020-01-24",
+    "A Gold token is a colorless Gold artifact token with \"Sacrifice this artifact: Add one mana of any color.\""
+   ],
+   [
+    "2020-01-24",
+    "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   ],
+   [
+    "2020-01-24",
+    "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   ],
+   [
+    "2020-01-24",
+    "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the III chapter ability to trigger, but I and II won't trigger again."
+   ],
+   [
+    "2020-01-24",
+    "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   ],
+   [
+    "2020-01-24",
+    "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   ],
+   [
+    "2020-01-24",
+    "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives lore counters. "
+   ],
+   [
+    "2020-01-24",
+    "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   ]
+  ]
+ },
+ "Tom Bombadil": {
+  "oracle_id": "89a2d5bc-df06-47e8-8b4a-6d1f0a63c78d",
+  "rulings": [
+   [
+    "2023-06-16",
+    "An ability that triggers when another ability resolves, such as Tom Bombadil's triggered ability, triggers when all of its instructions (as modified by applicable replacement effects) have been followed and it has been removed from the stack. For example, if Tom Bombadil is returned to the battlefield by the final chapter ability of Elspeth Conquers Death, it will be on the battlefield in time to see that final chapter ability finish resolving and get removed from the stack, and thus Tom Bombadil's last ability will trigger."
+   ],
+   [
+    "2023-06-16",
+    "Damage dealt to creatures remains on those creatures until the cleanup step or until an effect removes that damage. If you control Tom Bombadil with at least 4 damage on it as well as a single Saga which has four or more lore counters on it, and that Saga leaves the battlefield later in the turn, Tom Bombadil will be destroyed. This will be true even if that Saga leaves the battlefield as a result of its final chapter ability leaving the stack; state-based actions will be checked before Tom Bombadil's triggered ability could get you another Saga."
+   ],
+   [
+    "2023-06-16",
+    "The final chapter ability of a Saga is the ability with the greatest chapter number among chapter abilities that Saga has."
+   ]
+  ]
+ },
+ "Verdant Catacombs": {
+  "oracle_id": "67d60b24-d429-4ded-90d9-06e49f28c396",
+  "rulings": []
+ },
+ "The Ring Tempts You": {
+  "oracle_id": "98737456-ac2a-420d-aa0e-778ba3a22cec",
+  "rulings": []
+ }
+}

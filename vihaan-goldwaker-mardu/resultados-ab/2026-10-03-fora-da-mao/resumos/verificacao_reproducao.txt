@@ -1,0 +1,9 @@
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  ab_10000_resiliencia.txt
+IGUAL  smoke.txt
+IGUAL  testes_dirigidos.txt
+IGUAL  bitident_flags_off_20000.txt
+IGUAL  regressao_20000.txt
+8/8 saidas byte a byte iguais

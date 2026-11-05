@@ -91,6 +91,8 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   criaturas de ataque, e um deck de dano por gatilho de compra).
 """
 
+import collections
+import copy
 import json
 import random
 import re
@@ -278,6 +280,10 @@ def is_artifact_card(name: str) -> bool:
     return CARD_DB[name].ctype in ARTIFACT_ISH
 
 
+def is_enchantment_card(name: str) -> bool:
+    return CARD_DB[name].ctype == "enchantment"
+
+
 # ---------------------------------------------------------------------------
 # Game state
 # ---------------------------------------------------------------------------
@@ -299,6 +305,10 @@ class GameState:
     the_one_ring_burden: int = 0
     life: int = 40
     tapped_lands_this_turn: set = field(default_factory=set)
+    fetches_cracked_total: int = 0   # correcao de 2026-10-05: fetchlands de fato quebradas (busca real)
+    fetch_no_target_total: int = 0   # ... e fetches sem alvo na biblioteca (ficam em campo)
+    tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
+    tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
     spark_double_copy_target: Optional[str] = None
 
     commander_in_play: bool = False
@@ -333,6 +343,34 @@ class GameState:
     rituals_cast_total: int = 0
     interaction_spells_cast_total: int = 0
 
+    # Modo de resiliencia (interacao de oponente) — 2026-09-21, porte do
+    # Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+    # Bridge/Maralen/Rat King Verminister/Vihaan. `interaction_rng`
+    # None = modo padrao, totalmente inerte (bit-identico ao motor sem
+    # estas categorias).
+    interaction_rng: Optional[random.Random] = None
+    wiped_this_round: bool = False
+    graveyard_wipe_used: bool = False
+
+    smart_removals_total: int = 0
+    smart_removal_log: list = field(default_factory=list)
+    smart_attacks_taken_total: int = 0
+    smart_attack_log: list = field(default_factory=list)
+    smart_discards_total: int = 0
+    smart_discard_log: list = field(default_factory=list)
+    smart_wipes_total: int = 0
+    smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
+    smart_counters_total: int = 0
+    smart_counter_log: list = field(default_factory=list)
+    smart_graveyard_wipes_total: int = 0
+    smart_graveyard_wipe_log: list = field(default_factory=list)
+    smart_graveyard_snipes_total: int = 0
+    smart_graveyard_snipe_log: list = field(default_factory=list)
+
 
 def _copies_of(state: GameState, name: str) -> int:
     """Conta quantas 'copias' de uma criatura-payoff estao valendo em campo
@@ -351,6 +389,44 @@ def _commander_copies(state: GameState) -> int:
     if state.spark_double_copy_target == COMMANDER:
         n += 1
     return n
+
+
+def remove_permanent(state: GameState, name: str, source: str = "opponent"):
+    """Ponto central de remocao de permanente NOMEADO do campo por acao de
+    OPONENTE (wipe/remocao do modo de resiliencia, 2026-09-21 -- porte do
+    Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+    Bridge/Maralen/Rat King Verminister/Vihaan, ja' incorporando desde o
+    inicio a correcao de CR 903.9a validada nesta sessao).
+
+    Comandante: CR 903.9a (cemiterio/exilio, o caso de MORTE) e' ACAO
+    BASEADA EM ESTADO (CR 704), NAO substituicao -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`. Nekusar vai pro cemiterio DE
+    VERDADE primeiro (CR 700.4, 'dies'), so' DEPOIS e' removido de la'
+    pra representar a escolha do dono de move-lo pra zona de comando.
+    Sem efeito NUMERICO aqui -- **0 cartas 'creature dies' neste deck**
+    (grep confirmado: e' um deck de dano-por-compra/wheel/storm, sem
+    NENHUM motor de aristocrata/sacrificio) -- mas corrigido por
+    consistencia estrutural desde a 1a linha, nao como retrofit.
+
+    Spark Double: se ELA MESMA for removida, `state.spark_double_copy_
+    target` e' limpo -- a copia deixa de existir com ela (CR 706.2,
+    'copiar' e' um efeito de caracteristica aplicado 1x na entrada, nao
+    um link continuo com o original). Remover a criatura ORIGINAL que
+    ela copiou nao afeta a copia -- ela continua sendo uma copia
+    daquela criatura pro resto do jogo, mesmo que o original ja' tenha
+    saido de campo antes."""
+    if name not in state.battlefield:
+        return
+    state.battlefield.remove(name)
+    state.creature_cast_turn.pop(name, None)
+    state.graveyard.append(name)
+    if name == "Spark Double":
+        state.spark_double_copy_target = None
+    if name == COMMANDER:
+        if name in state.graveyard:
+            state.graveyard.remove(name)
+        state.commander_in_play = False
 
 
 def draw_cards(state: GameState, n: int):
@@ -709,7 +785,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
     elif "tutor" in tags or "tutor_top" in tags or "tutor_instant_sorcery" in tags:
         do_tutor(state, name)
     elif name == "Brain Freeze":
-        copies = state.spells_cast_this_turn  # storm: copiada 1x por spell ja conjurada antes
+        copies = state.spells_cast_this_turn - (1 if STORM_SELF_COUNT_FIX_ENABLED else 0)  # storm: copiada 1x por spell ja conjurada ANTES (o contador ja inclui o proprio Brain Freeze)
         state.mill_proxy_total += 3 * (1 + copies) * NUM_OPPONENTS
     elif name == "Reanimate" or name == "Animate Dead":
         targets = [c for c in state.graveyard if is_creature_card(c)]
@@ -848,6 +924,48 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
     resolve_etb(state, name)
 
 
+# Fetchlands reais -- correcao de 2026-10-05 (varredura mecanica de fetches, `varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`; mesma classe do Megatron: Evolving Wilds/Terramorphic/Rocky Tar Pit).
+# Antes: a fetch era um terreno que ficava em campo como dual estatica (ou, no Nekusar, pagava a vida mas ficava em campo): sem sacrificio, sem busca, sem thinning da biblioteca.
+# Oraculo: "{T}, Pay 1 life, Sacrifice this land: Search your library for a X or Y card, put it onto the battlefield, then shuffle." Agora: ao jogar a fetch ela e' sacrificada (vai pro cemiterio), paga 1 de vida,
+# a biblioteca perde um terreno do tipo certo (basico OU dual tipada, por SUBTIPO) que entra em campo pelas regras de entrada do deck. Politica de escolha: terreno que entra desvirado (e sem pagar vida),
+# sem pagar vida (choque so' se nao ha outra) e nao-basico antes de basico. Sem alvo na biblioteca a fetch fica em campo (comportamento antigo; contado em `fetch_no_target_total`, esperado ~0).
+# O "shuffle" do oraculo NAO e' modelado: o estado deste simulador nao tem RNG (so' `interaction_rng` no modo de resiliencia) e a biblioteca ja' e' uma permutacao aleatoria; embaralhar de novo so' mudaria algo se um tutor/scry tivesse posto uma carta no topo entre a compra e a jogada de terreno.
+# Com a chave em False o comportamento antigo volta bit a bit.
+FETCH_LANDS_ENABLED = True
+FETCH_TYPES = {'Arid Mesa': {'Mountain', 'Plains'}, 'Bloodstained Mire': {'Mountain', 'Swamp'}, 'Flooded Strand': {'Island', 'Plains'}, 'Marsh Flats': {'Plains', 'Swamp'}, 'Misty Rainforest': {'Forest', 'Island'}, 'Polluted Delta': {'Island', 'Swamp'}, 'Scalding Tarn': {'Island', 'Mountain'}, 'Verdant Catacombs': {'Forest', 'Swamp'}, 'Wooded Foothills': {'Forest', 'Mountain'}}
+LAND_BASIC_TYPES = {'Badlands': {'Mountain', 'Swamp'}, 'Blood Crypt': {'Mountain', 'Swamp'}, 'Island': {'Island'}, 'Mountain': {'Mountain'}, 'Steam Vents': {'Island', 'Mountain'}, 'Swamp': {'Swamp'}, 'Undercity Sewers': {'Island', 'Swamp'}, 'Underground Sea': {'Island', 'Swamp'}, 'Volcanic Island': {'Island', 'Mountain'}, 'Watery Grave': {'Island', 'Swamp'}, "Xander's Lounge": {'Island', 'Mountain', 'Swamp'}}
+
+
+def land_etb(state: GameState, name: str):
+    """Efeitos de entrada de um terreno que NAO veio de `cast_card` (o buscado por uma fetch): mesmas regras do ramo de terreno de `cast_card`."""
+    card = CARD_DB[name]
+    state.battlefield.append(name)
+    if "etb_tapped" in card.tags:
+        state.tapped_lands_this_turn.add(name)
+    if "shock" in card.tags:
+        state.life -= 2
+    if "etb_tapped_conditional" in card.tags and not any(n in MOUNTAIN_TYPE_LANDS for n in state.battlefield):
+        state.tapped_lands_this_turn.add(name)
+    if "surveil_on_etb" in card.tags:
+        do_surveil_1(state)
+
+
+def crack_fetch(state: GameState, fetch: str) -> bool:
+    """Quebra a fetch recem-jogada (a vida do custo ja' foi paga em `cast_card`). Devolve True se buscou."""
+    searched = set(FETCH_TYPES[fetch])
+    pool = [n for n in state.library if n in LAND_BASIC_TYPES and (LAND_BASIC_TYPES[n] & searched)]
+    if not pool:
+        state.fetch_no_target_total += 1
+        return False
+    pick = min(pool, key=lambda n: ("etb_tapped" in CARD_DB[n].tags, "shock" in CARD_DB[n].tags, n in ("Island", "Swamp", "Mountain")))
+    state.library.remove(pick)
+    state.battlefield.remove(fetch)
+    state.graveyard.append(fetch)
+    land_etb(state, pick)
+    state.fetches_cracked_total += 1
+    return True
+
+
 def cast_card(state: GameState, name: str, from_hand: bool = True):
     card = CARD_DB[name]
     if name == COMMANDER:
@@ -858,13 +976,16 @@ def cast_card(state: GameState, name: str, from_hand: bool = True):
         spend_mana(state, card.mv)
     if from_hand and name != COMMANDER:
         state.hand.remove(name)
-    state.spells_cast_this_turn += 1
-    state.storm_count_max = max(state.storm_count_max, state.spells_cast_this_turn)
+    if not (LAND_PLAY_NOT_A_SPELL_ENABLED and name in LAND_NAMES):   # CR 305.1: jogar terreno nao e' conjurar magia (nao conta pra storm)
+        state.spells_cast_this_turn += 1
+        state.storm_count_max = max(state.storm_count_max, state.spells_cast_this_turn)
 
     if name in LAND_NAMES:
         state.battlefield.append(name)
         if "fetch" in card.tags:
             state.life -= 1
+            if FETCH_LANDS_ENABLED and crack_fetch(state, name):
+                return   # fetch sacrificada; o terreno buscado ja' passou por land_etb
         if "etb_tapped" in card.tags:
             state.tapped_lands_this_turn.add(name)
         if "shock" in card.tags:
@@ -892,9 +1013,93 @@ def cast_card(state: GameState, name: str, from_hand: bool = True):
         state.graveyard.append(name)
         return
 
+    # Contra-ataque (`try_smart_opponent_counter`, 7a categoria do modo de
+    # resiliencia -- so' faz sentido no exato momento do cast, mesma
+    # logica do Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Vihaan): mana e
+    # taxa ja' foram gastos ACIMA (CR 903.10a/608.2b contam "cast", nao
+    # "resolved") -- so' mira o comandante, e' o motor de dano-por-compra
+    # inteiro do deck. `interaction_rng is None` (modo padrao) faz isso
+    # ser sempre False, sem custo nenhum de bit-identidade. Comandante
+    # contra-atacada nunca chega a `enter_battlefield` -- ela nunca
+    # esteve fisicamente em `state.hand` (command zone), entao nao ha'
+    # zona nenhuma pra mover (nem cemiterio: CR 903.9a so' se aplica a
+    # permanente que JA' foi a campo, "dies" exige "from the
+    # battlefield" -- um cast contra-atacado nunca resolveu).
+    if name == COMMANDER and try_smart_opponent_counter(state):
+        return
+
     enter_battlefield(state, name, from_hand=False)
     if name == "Underworld Breach":
         state.underworld_breach_active = True
+
+
+# ---------------------------------------------------------------------------
+# Terreno virado primeiro em T1/T2 -- correcao de 2026-10-05 (mesma regra do Vihaan/Megatron)
+# ---------------------------------------------------------------------------
+# Antes: `play_land` jogava SEMPRE o primeiro terreno da ordem propria do deck (desvirado antes de virado); a mana de um turno sem jogada era desperdicada e o
+# terreno virado ficava pra um turno em que ele custa desenvolvimento. Agora, em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo terreno virado E desvirado na mao, joga o
+# virado, salvo se isso custar desenvolvimento: o teste e' um ENSAIO a seco da propria fase de conjuracao pre-combate (copia profunda do estado), comparando o MV
+# total das cartas que saem da mao com cada candidato. Empate -> o virado. Com a chave em False o comportamento e' o antigo, bit a bit.
+# Correcoes de 2026-10-05 (varredura de contadores de magia, Regra 'terreno nao e' magia'): (1) `cast_card` contava a JOGADA de terreno em `spells_cast_this_turn`/`storm_count_max` (CR 305.1: jogar
+# terreno nao e' conjurar); (2) o storm do Brain Freeze usava `spells_cast_this_turn` ja' incluindo o proprio Brain Freeze (copias = magias conjuradas ANTES dela). Medido antes: Brain Freeze como 1a magia
+# do turno dava 18 de mill proxy (storm 1) em vez de 9 (storm 0); com 1 terreno jogado antes, 27 em vez de 9. Com as chaves em False o comportamento antigo volta bit a bit.
+LAND_PLAY_NOT_A_SPELL_ENABLED = True
+STORM_SELF_COUNT_FIX_ENABLED = True
+TAPPED_LAND_FIRST_ENABLED = True
+TAPPED_LAND_FIRST_MAX_TURN = 2
+TAPPED_LAND_FIRST_GHOST = False   # so' validacao: roda o ensaio mas ignora o resultado (joga o padrao). Com a chave ligada + GHOST == chave desligada prova que o ensaio nao tem efeito colateral
+_TL_FORCED = None   # terreno imposto a play_land durante o ensaio a seco
+_TL_BUSY = False    # trava de recursao: o ensaio chama play_land de novo
+
+
+def _tl_is_tapped(state, name: str) -> bool:
+    return "etb_tapped" in CARD_DB[name].tags or ("etb_tapped_conditional" in CARD_DB[name].tags and not any(n in MOUNTAIN_TYPE_LANDS for n in state.battlefield))
+
+
+def _tl_develop(sim, log: list):
+    """Fase de conjuracao pre-combate do turno: a mesma sequencia que o turno roda logo depois de `play_land`."""
+    main_phase(sim)
+
+
+def _tl_dry_run_mv(state, land: str) -> int:
+    """MV total das cartas que SAEM da mao se `land` for o terreno jogado e o resto da fase pre-combate rodar. Copia profunda (CARD_DB compartilhado; RNG do estado
+    copiado e `random` global restaurado): nao muta `state`."""
+    global _TL_FORCED, _TL_BUSY
+    memo = {id(c): c for c in CARD_DB.values()}
+    saved = random.getstate()
+    sim = copy.deepcopy(state, memo)
+    ficam = collections.Counter(sim.hand)
+    ficam[land] -= 1
+    _TL_FORCED, _TL_BUSY = land, True
+    try:
+        play_land(sim)
+        _tl_develop(sim, None)
+    finally:
+        _TL_FORCED, _TL_BUSY = None, False
+        random.setstate(saved)
+    saiu = ficam - collections.Counter(sim.hand)
+    return sum(CARD_DB[c].mv for c in saiu.elements() if c in CARD_DB)
+
+
+def tapped_first_pick(state, lands_in_hand: list) -> str:
+    """`lands_in_hand` ja' vem ordenada pelo criterio do proprio deck: a 1a e' o padrao (comportamento antigo)."""
+    if _TL_FORCED is not None and _TL_FORCED in lands_in_hand:
+        return _TL_FORCED
+    default = lands_in_hand[0]
+    if not TAPPED_LAND_FIRST_ENABLED or _TL_BUSY or state.turn > TAPPED_LAND_FIRST_MAX_TURN:
+        return default
+    tapped = [n for n in lands_in_hand if _tl_is_tapped(state, n)]
+    untapped = [n for n in lands_in_hand if not _tl_is_tapped(state, n)]
+    if not tapped or not untapped:
+        return default
+    mv_virado, mv_desvirado = _tl_dry_run_mv(state, tapped[0]), _tl_dry_run_mv(state, untapped[0])
+    if TAPPED_LAND_FIRST_GHOST:
+        return default
+    if mv_virado >= mv_desvirado:
+        state.tapped_land_first_plays_total += 1
+        return tapped[0]
+    state.tapped_land_skipped_for_play_total += 1
+    return untapped[0]
 
 
 def play_land(state: GameState):
@@ -903,7 +1108,7 @@ def play_land(state: GameState):
     lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
     if not lands_in_hand:
         return
-    choice = lands_in_hand[0]
+    choice = tapped_first_pick(state, lands_in_hand)
     cast_card(state, choice)
     state.lands_played_this_turn += 1
 
@@ -1135,6 +1340,30 @@ def build_library():
 BASE_LIBRARY = build_library()
 
 
+# Correcao de 2026-10-05 (varredura das classes de erro das rodadas do Vihaan/Megatron nos outros decks): o London Mulligan deste arquivo SORTEAVA as cartas do fundo
+# (`rng.shuffle(hand)`), devolvendo com a mesma chance uma carta-chave e um terreno sobrando. Com a chave em False o arquivo se comporta bit-a-bit como antes.
+MULLIGAN_SMART_BOTTOM_ENABLED = True   # o jogador ESCOLHE as cartas do fundo (mesma regra do Vihaan/Megatron)
+MULLIGAN_PROTECTED = frozenset({"Sol Ring", "Arcane Signet", "Dark Ritual", COMMANDER})   # as cartas que `should_keep` ja' trata como "boa abertura": nao sao devolvidas se houver outra
+
+
+def choose_bottom(hand: list, n: int) -> list:
+    """London Mulligan: o jogador ESCOLHE as `n` cartas do fundo. So' desfaz de terreno quando sobram MAIS de 4 (e entao o que entra tapped primeiro, se o CARD_DB marcar);
+    fora isso devolve a carta nao-terreno de MAIOR custo, protegendo `MULLIGAN_PROTECTED`."""
+    hand = list(hand)
+    bottom = []
+    for _ in range(n):
+        lands = [c for c in hand if c in LAND_NAMES]
+        nonlands = [c for c in hand if c not in LAND_NAMES]
+        if len(lands) > 4 or not nonlands:
+            pick = min(lands, key=lambda c: (0 if "etb_tapped" in CARD_DB[c].tags else 1))
+        else:
+            pool = [c for c in nonlands if c not in MULLIGAN_PROTECTED] or nonlands
+            pick = max(pool, key=lambda c: CARD_DB[c].mv)
+        hand.remove(pick)
+        bottom.append(pick)
+    return bottom
+
+
 def mulligan(rng: random.Random, max_mulls: int = 3):
     mulls = 0
     hand, lib = [], []
@@ -1148,9 +1377,14 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
             # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
             penalty = max(0, mulls - 1)
             if penalty > 0:
-                rng.shuffle(hand)
-                bottom = hand[:penalty]
-                hand = hand[penalty:]
+                if MULLIGAN_SMART_BOTTOM_ENABLED:
+                    bottom = choose_bottom(hand, penalty)
+                    for c in bottom:
+                        hand.remove(c)
+                else:
+                    rng.shuffle(hand)
+                    bottom = hand[:penalty]
+                    hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -1176,6 +1410,347 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     combat_step(state)
     main_phase(state)
     end_step(state)
+
+
+# ---------------------------------------------------------------------------
+# Modo de resiliencia (interacao de oponente) — 2026-09-21
+# ---------------------------------------------------------------------------
+# Porte completo do design FINAL ja' validado nos outros 10 decks desta
+# sessao (Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+# Bridge/Maralen/Rat King Verminister/Vihaan). 7 categorias
+# padronizadas (removal/attack/discard/wipe/graveyard-wipe/
+# graveyard-snipe/counterspell), 1 rolagem "algum wipe acontece" +
+# escolha ponderada de 1 TIPO so' (nao 3 rolagens independentes), gate
+# de atencao por oponente (`OPPONENT_ATTENTION_CHANCE`), supressao de
+# ataque pos-wipe simetrico (`state.wiped_this_round`).
+#
+# Igual ao Vihaan (o outro deck desta sessao a nascer sem retrofit):
+# ja' nasce com a correcao de CR 903.9a aplicada desde a 1a linha
+# (`remove_permanent`, ver docstring) -- mas aqui SEM nenhum efeito
+# numerico, ja' que este e' um deck de dano-por-compra/wheel/storm, com
+# ZERO cartas "creature dies" (grep confirmado antes de escrever
+# `remove_permanent`) e ZERO motor de aristocrata/sacrificio -- mais
+# proximo do Ur-Dragon/Hei Bai/Ulalek (correcao estrutural) do que do
+# Edgar Markov/Rat King/Vihaan (correcao com impacto numerico real).
+# Tambem ZERO token agregado (Treasure/Construct/etc) -- Zombie tokens
+# do Waste Not sao proxy de metrica pura (`zombie_tokens_total`), nunca
+# entram em `state.battlefield` de verdade, entao o wipe nao precisa de
+# nenhuma logica de bucket de token.
+
+NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), mesma convencao dos outros 10 decks
+
+INTERACTION_SETUP_TURNS = 2
+# Turnos 1-2 sao sempre setup, sem chance de reacao nenhuma -- o
+# oponente ainda nao tem motivo/mana pra reagir.
+
+
+def interaction_chance(state: GameState) -> float:
+    """Formula compartilhada de 'chance do oponente reagir esse turno' --
+    identica aos outros 10 decks: escala com o impacto do meu proprio
+    board (permanentes nao-terreno em campo)."""
+    board_impact = sum(1 for n in state.battlefield if n not in LAND_NAMES)
+    return min(0.10 + 0.03 * board_impact, 0.75)
+
+
+OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
+# Gate de "esse oponente esta' de olho em mim esse turno" -- chance
+# BASE de que um turno de oponente qualquer seja sobre MIM, antes de
+# qualquer ajuste por ameaca de board (que ja' fica dentro de
+# `interaction_chance()`). Rolado 1x no INICIO de `try_smart_opponent_
+# turn`, antes de qualquer categoria.
+
+POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
+# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
+# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
+# round`), TODOS os turnos de oponente restantes na mesma rodada tambem
+# ficam sem criaturas de verdade pra atacar -- exceto por haste.
+
+BOARD_WIPE_CHANCE_FACTOR = 0.4
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
+GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
+COUNTERSPELL_CHANCE_FACTOR = 0.5
+# Pesos relativos de cada TIPO de sweeper (criatura/artefato/
+# encantamento) -- design final ja' validado nos outros 10 decks: 1
+# rolagem "algum wipe acontece" (soma dos 3 pesos) + SO' DEPOIS escolha
+# ponderada de qual TIPO, restrita aos tipos com pelo menos 1 alvo legal
+# em campo. Wipe de criatura muito mais comum numa lista real que
+# artefato/encantamento.
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+
+INTERACTION_ENGINE_PRIORITY = [
+    "Underworld Dreams",
+    "Phyrexian Tyranny",
+    "Spiteful Visions",
+    "Liliana's Caress",
+    "Waste Not",
+    "Bloodchief Ascension",
+    "Teferi's Puzzle Box",
+    "The One Ring",
+    "Sensei's Divining Top",
+    "Mindcrank",
+]
+# Lista curada por prioridade (a mais critica primeiro) -- so' cartas
+# que sao motor RECORRENTE de valor (dano/vida por compra ou descarte
+# do oponente, wheel forcado, draw/protecao/mill repetivel), nao corpos
+# grandes isolados. O proprio Nekusar fica DE FORA de proposito -- ja'
+# tem categoria dedicada (`try_smart_opponent_counter`, mira o CAST
+# dele especificamente) e remocao pontual nao o mata de verdade mesmo
+# (vai pra zona de comando via `remove_permanent`, recastavel depois
+# pagando a taxa de novo), entao um oponente esperto prefere gastar a
+# remocao pontual numa peca irrecuperavel.
+
+OPPONENT_ATTACKER_PROFILES = [
+    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
+    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
+    ("Elemental Token", 3),
+]
+# Mesmos perfis genericos ja' validados nos outros 10 decks -- sem
+# toughness, este arquivo nao modela combate/bloqueio de um oponente de
+# verdade (o proprio `combat_step` do meu lado tambem e' no-op, ver
+# docstring la). Todo ataque conecta.
+
+
+def try_smart_opponent_removal(state: GameState) -> Optional[str]:
+    """Remocao 'inteligente' -- mira sempre a peca-motor de maior
+    prioridade presente em campo (`INTERACTION_ENGINE_PRIORITY`), nunca
+    aleatorio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    present = [n for n in INTERACTION_ENGINE_PRIORITY if n in state.battlefield]
+    if not present:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = present[0]
+    remove_permanent(state, target, source="opponent_removal")
+    state.smart_removals_total += 1
+    state.smart_removal_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_attack(state: GameState) -> Optional[str]:
+    """Ataque de oponente -- SEM bloqueio (limitacao estrutural: este
+    arquivo nao modela combate/bloqueio de nenhum tipo, nem o meu
+    proprio). Sempre conecta em `state.life`.
+
+    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada,
+    de qualquer oponente, incluindo este mesmo turno) a chance cai pra
+    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
+    haste conjurado DEPOIS do wipe."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
+    if state.interaction_rng.random() >= chance:
+        return None
+    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
+    state.life -= power
+    state.smart_attacks_taken_total += 1
+    state.smart_attack_log.append((state.turn, name))
+    return name
+
+
+def try_smart_opponent_discard(state: GameState) -> Optional[str]:
+    """Discard aleatorio -- mesma logica dos outros 10 decks (alvo
+    puramente ao acaso na mao, sem filtro nenhum)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if not state.hand:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = state.interaction_rng.choice(state.hand)
+    state.hand.remove(target)
+    state.graveyard.append(target)
+    state.smart_discards_total += 1
+    state.smart_discard_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
+    """Board wipe ('destroy all creatures'/'destroy all artifacts'/
+    'destroy all enchantments') -- destroi TODOS os meus permanentes do
+    tipo escolhido de uma vez via `remove_permanent` (que ja' trata
+    comandante->zona de comando). Nekusar nunca e' artefato/encantamento
+    (Legendary Creature, tags {"commander", "payoff"}, confirmado no
+    CARD_DB), entao so' e' alvo do wipe de criatura -- exatamente como
+    deveria (CR 903.9a: ele genuinamente morre nesse caso, so' depois
+    volta pra zona de comando).
+
+    Design de 2 passos (nao 3 rolagens independentes): 1) rola 1x se
+    ALGUM wipe acontece esse turno de oponente, chance =
+    `interaction_chance() * TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso
+    disparar, escolhe qual TIPO de sweeper via escolha ponderada
+    (`state.interaction_rng.choices`) restrita aos tipos que tem pelo
+    menos 1 alvo legal em campo. Sem tokens agregados neste deck (ver
+    nota estrutural no topo da secao) -- diferente dos outros decks,
+    nenhum bucket extra pra zerar."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
+        return None
+    candidates = {
+        "creature": [n for n in state.battlefield if is_creature_card(n)],
+        "artifact": [n for n in state.battlefield if is_artifact_card(n)],
+        "enchantment": [n for n in state.battlefield if is_enchantment_card(n)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if not available:
+        return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = any(is_creature_card(n) for n in targets)
+    for n in targets:
+        remove_permanent(state, n, source=f"opponent_{wipe_type}_wipe")
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, targets))
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, targets))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, targets))
+    if hit_creature:
+        state.wiped_this_round = True
+    return targets
+
+
+def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
+    """Graveyard hate, modelo MASS EXILE (Bojuka Bog/Soul-Guide
+    Lantern-style) -- dispara NO MAXIMO 1x por partida inteira
+    (`state.graveyard_wipe_used`). Relevante de verdade neste deck --
+    Animate Dead/Reanimate/Underworld Breach dependem do cemiterio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.graveyard_wipe_used or not state.graveyard:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
+        return None
+    exiled = state.graveyard[:]
+    state.graveyard.clear()
+    state.graveyard_wipe_used = True
+    state.smart_graveyard_wipes_total += 1
+    state.smart_graveyard_wipe_log.append((state.turn, exiled))
+    return exiled
+
+
+def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
+    """Graveyard hate, modelo EXILIO DE CARTA UNICA (Scavenging
+    Ooze/Cease-style) -- repetivel todo turno. Alvo SMART: maior MV
+    entre criatura no cemiterio -- mesmo criterio que Animate
+    Dead/Reanimate ja' usam pra escolher alvo real de reanimacao."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    candidates = [c for c in state.graveyard if is_creature_card(c)]
+    if not candidates:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
+        return None
+    target = max(candidates, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(target)
+    state.smart_graveyard_snipes_total += 1
+    state.smart_graveyard_snipe_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_counter(state: GameState) -> bool:
+    """Counterspell -- so' mira a conjuracao do proprio Nekusar (mesma
+    logica dos outros 10 decks: o motor inteiro do deck depende do
+    comandante resolver -- dano-por-compra E MAIS UMA compra extra
+    simetrica por turno pra todo mundo). Chamada de dentro de
+    `cast_card()`, nao do loop de `simulate_one_with_interaction` -- so'
+    faz sentido no exato momento do cast, dentro do MEU turno."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
+        return False
+    state.smart_counters_total += 1
+    state.smart_counter_log.append(state.turn)
+    return True
+
+
+def try_smart_opponent_turn(state: GameState):
+    """Simula O TURNO DE UM oponente dentro da rodada entre os meus
+    turnos (Regra #6 do CLAUDE.md: bug de orquestracao de turno que
+    auditoria carta-a-carta nao pega). Chamada `NUM_OPPONENTS` vezes por
+    rodada -- um wipe de um oponente ANTERIOR na rodada continua
+    afetando corretamente o ataque de um oponente POSTERIOR na MESMA
+    rodada (chamadas em sequencia, mesmo `state`).
+
+    Gate de atencao: antes de rolar QUALQUER categoria, este turno de
+    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE`. Wipe e
+    ataque nao precisam de exclusao mutua manual aqui: `try_smart_
+    opponent_attack` ja' se auto-regula via `state.wiped_this_round`
+    (setado por `try_smart_opponent_wipe`, que roda antes, dentro desta
+    mesma chamada)."""
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
+    try_smart_opponent_wipe(state)
+    try_smart_opponent_attack(state)
+    try_smart_opponent_graveyard_wipe(state)
+    try_smart_opponent_graveyard_snipe(state)
+    try_smart_opponent_removal(state)
+    try_smart_opponent_discard(state)
+
+
+def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
+    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
+    de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
+    rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
+    neste loop -- ver `try_smart_opponent_counter`, chamada de dentro de
+    `cast_card()` no exato momento do cast do comandante.
+
+    NUNCA chamado por `run_batch`/`simulate_one` padrao (nem o loop
+    aqui, nem o counter dentro de `cast_card` -- ambos ficam inertes sem
+    `interaction_rng`). Retorna o `GameState` bruto (nao um resumo),
+    mesma convencao dos outros 10 decks, pra inspecao detalhada das
+    metricas de resiliencia."""
+    rng = random.Random(seed)
+    hand, lib, mulls = mulligan(rng)
+    state = GameState(hand=hand, library=lib, mulligans=mulls,
+                       interaction_rng=random.Random(seed + 999_999))
+    for t in range(turns):
+        play_turn(state, is_first_turn=(t == 0), on_play=True)
+        state.wiped_this_round = False
+        for _ in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state)
+    return state
+
+
+def run_batch_with_interaction(n=2000, turns=8, seed_base=6000000):
+    """Batch do modo de resiliencia -- reporta so' as metricas
+    relevantes pra 'o motor aguenta perder a peca central?', nao
+    duplica o relatorio inteiro do `run_batch` padrao."""
+    states = [simulate_one_with_interaction(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + graveyard hate + "
+          f"remocao + ataque + discard aleatorio + counterspell de oponente)")
+    print(f"Avg counterspells sofridos (so' mira a conjuracao do Nekusar): "
+          f"{avg([s.smart_counters_total for s in states]):.2f}")
+    cmd_cast = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    print(f"  -- Turno medio de conjuracao QUE RESOLVEU: {avg(cmd_cast):.2f} | "
+          f"nunca resolveu em {turns} turnos: {100*(n-len(cmd_cast))/n:.1f}%")
+    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    print(f"Avg enchantment wipes sofridos: {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
+    gy_wiped = sum(1 for s in states if s.smart_graveyard_wipes_total > 0)
+    print(f"Partidas com graveyard wipe sofrido (no maximo 1x/partida): {100*gy_wiped/n:.1f}%")
+    print(f"Avg graveyard snipes sofridos (sempre a maior MV criatura): "
+          f"{avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
+    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
+    print(f"Avg ataques sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
+    print(f"Avg descartes sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
+    return states
 
 
 def simulate_one(seed: int, turns: int = 8):

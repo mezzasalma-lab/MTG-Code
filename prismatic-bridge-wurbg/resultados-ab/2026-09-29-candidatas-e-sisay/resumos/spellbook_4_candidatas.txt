@@ -1,0 +1,19 @@
+base                                     cartas=99 combos=12 quase-combos=92
+Dihada                                   cartas=99 combos=12 quase-combos=92
+   combos novos: [] | removidos: []
+   quase-combos novos: 0 | removidos: 0
+Guff                                     cartas=99 combos=12 quase-combos=92
+   combos novos: [] | removidos: []
+   quase-combos novos: 0 | removidos: 0
+Vronos                                   cartas=99 combos=12 quase-combos=92
+   combos novos: [] | removidos: []
+   quase-combos novos: 0 | removidos: 0
+Sarkhan                                  cartas=99 combos=12 quase-combos=92
+   combos novos: [] | removidos: []
+   quase-combos novos: 0 | removidos: 0
+as 4 juntas                              cartas=99 combos=12 quase-combos=92
+   combos novos: [] | removidos: []
+   quase-combos novos: 0 | removidos: 0
+CONTROLE positivo: sem The Chain Veil    cartas=98 combos=8 quase-combos=87
+   combos novos: [] | removidos: [('Aminatou, the Fateshifter', 'Nicol Bolas, Dragon-God', 'The Chain Veil'), ('Carth the Lion', 'Teferi, Temporal Archmage', 'The Chain Veil'), ('Teferi, Temporal Archmage', 'The Chain Veil'), ('Teferi, Who Slows the Sunset', 'The Chain Veil')]
+   quase-combos novos: 4 | removidos: 9

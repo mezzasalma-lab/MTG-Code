@@ -1,0 +1,901 @@
+{
+ "deck": "tarkir-dragonstorm-sultai-arisen",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Teval, the Balanced Scale",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Gravecrawler + Phyrexian Altar": {
+     "id": "2577-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Gravecrawler + Pitiless Plunderer + Woe Strider": {
+     "id": "997-2577-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mikaeus, the Unhallowed + Woe Strider": {
+     "id": "628-997--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Jumbo Cactuar": {
+     "id": "182-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss",
+      "Each opponent loses the game"
+     ]
+    },
+    "Gorma, the Gullet + Woe Strider": {
+     "id": "997-7430--5",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Wall of Blood": {
+     "id": "182-2749",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Doppelgang + Timeless Witness": {
+     "id": "4823-5352",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite storm count",
+      "Infinite creature tokens"
+     ]
+    },
+    "Thran Vigil + Woe Strider": {
+     "id": "997-2131--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Dauthi Voidwalker + Helm of Obedience": {
+     "id": "2581-5065",
+     "bracketTag": "R",
+     "produz": [
+      "Exile target opponent's library"
+     ]
+    },
+    "Metallic Mimic + Woe Strider": {
+     "id": "345-997--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Gravecrawler + Kheru Goldkeeper + Woe Strider": {
+     "id": "997-2577-6462",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Warden of the Grove + Woe Strider": {
+     "id": "997-6461--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Phyrexian Altar + Reassembling Skeleton + Teval, the Balanced Scale": {
+     "id": "1580-4050-6351",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "The Great Henge + Woe Strider": {
+     "id": "997-3139--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite scry 1",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Melira, Sylvok Outcast + Woe Strider": {
+     "id": "522-997--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Phyrexian Devourer": {
+     "id": "182-4899",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Master Chef + Woe Strider": {
+     "id": "997-2486--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bloodspore Thrinax + Woe Strider": {
+     "id": "997-2646--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Hatred + Jarad, Golgari Lich Lord": {
+     "id": "182-1877",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Renata, Called to the Hunt + Woe Strider": {
+     "id": "997-4419--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Naru Meha, Master Wizard + Necromantic Selection": {
+     "id": "141-4799",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Gravecrawler + Rooftop Storm + Woe Strider": {
+     "id": "997-2452-2577",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Arwen, Weaver of Hope + Woe Strider": {
+     "id": "997-1453--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Gravecrawler + The Ghoul, Gunslinger + Woe Strider": {
+     "id": "997-2577-7390",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Mindslaver + Tasigur, the Golden Fang": {
+     "id": "1167-5672",
+     "bracketTag": "S",
+     "produz": [
+      "You control one opponent on each of their turns",
+      "Lock"
+     ]
+    },
+    "Stalwart Successor + Woe Strider": {
+     "id": "997-6982--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Tromell, Seymour's Butler + Woe Strider": {
+     "id": "997-6602--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Surrak and Goreclaw + Woe Strider": {
+     "id": "713-997--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Beifong's Bounty Hunters + Teval, the Balanced Scale + Woe Strider": {
+     "id": "997-6351-7084",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Railway Brawler + Woe Strider": {
+     "id": "997-5508--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Thunderous Velocipede + Woe Strider": {
+     "id": "997-6258--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Rocksteady, Mutant Marauder + Woe Strider": {
+     "id": "997-7388--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bioengineered Future + Woe Strider": {
+     "id": "997-7096--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Conduit of Worlds + Second Chance": {
+     "id": "1530-4935",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "You can't cast spells",
+      "Lock"
+     ]
+    },
+    "Darksteel Angel + Woe Strider": {
+     "id": "997-7841--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Master Biomancer + Woe Strider": {
+     "id": "997-4802--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Screams from Within + Teval, the Balanced Scale + Woe Strider": {
+     "id": "997-5058-6351",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Moritte of the Frost + Woe Strider": {
+     "id": "997-3388--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Naru Meha, Master Wizard + Victimize + Woe Strider": {
+     "id": "141-997-3125",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Body of Research + Disciple of Bolas": {
+     "id": "329-648",
+     "bracketTag": "C",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite lifegain"
+     ]
+    },
+    "Woe Strider + Zameck Guildmage": {
+     "id": "997-2169--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Moritte of the Frost + River Kelpie + Woe Strider": {
+     "id": "997-3388-3607",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite death triggers"
+     ]
+    },
+    "Combine Guildmage + Woe Strider": {
+     "id": "997-2595--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Dominion Saboteur + Woe Strider": {
+     "id": "997-7936--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Captain Kathryn Janeway + Woe Strider": {
+     "id": "997-7804--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Afterlife from the Loam + Naru Meha, Master Wizard + Woe Strider": {
+     "id": "141-997-6476",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Support Mission + Woe Strider": {
+     "id": "997-7940--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Kotis, Sibsig Champion",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Gravecrawler + Phyrexian Altar": {
+     "id": "2577-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Gravecrawler + Pitiless Plunderer + Woe Strider": {
+     "id": "997-2577-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mikaeus, the Unhallowed + Woe Strider": {
+     "id": "628-997--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Jumbo Cactuar": {
+     "id": "182-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss",
+      "Each opponent loses the game"
+     ]
+    },
+    "Gorma, the Gullet + Woe Strider": {
+     "id": "997-7430--5",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Wall of Blood": {
+     "id": "182-2749",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Doppelgang + Timeless Witness": {
+     "id": "4823-5352",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite storm count",
+      "Infinite creature tokens"
+     ]
+    },
+    "Thran Vigil + Woe Strider": {
+     "id": "997-2131--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Dauthi Voidwalker + Helm of Obedience": {
+     "id": "2581-5065",
+     "bracketTag": "R",
+     "produz": [
+      "Exile target opponent's library"
+     ]
+    },
+    "Metallic Mimic + Woe Strider": {
+     "id": "345-997--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Gravecrawler + Kheru Goldkeeper + Woe Strider": {
+     "id": "997-2577-6462",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Warden of the Grove + Woe Strider": {
+     "id": "997-6461--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Phyrexian Altar + Reassembling Skeleton + Teval, the Balanced Scale": {
+     "id": "1580-4050-6351",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "The Great Henge + Woe Strider": {
+     "id": "997-3139--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite scry 1",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Melira, Sylvok Outcast + Woe Strider": {
+     "id": "522-997--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Phyrexian Devourer": {
+     "id": "182-4899",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Master Chef + Woe Strider": {
+     "id": "997-2486--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bloodspore Thrinax + Woe Strider": {
+     "id": "997-2646--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Hatred + Jarad, Golgari Lich Lord": {
+     "id": "182-1877",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Renata, Called to the Hunt + Woe Strider": {
+     "id": "997-4419--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Naru Meha, Master Wizard + Necromantic Selection": {
+     "id": "141-4799",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Gravecrawler + Rooftop Storm + Woe Strider": {
+     "id": "997-2452-2577",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Arwen, Weaver of Hope + Woe Strider": {
+     "id": "997-1453--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Gravecrawler + The Ghoul, Gunslinger + Woe Strider": {
+     "id": "997-2577-7390",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Mindslaver + Tasigur, the Golden Fang": {
+     "id": "1167-5672",
+     "bracketTag": "S",
+     "produz": [
+      "You control one opponent on each of their turns",
+      "Lock"
+     ]
+    },
+    "Stalwart Successor + Woe Strider": {
+     "id": "997-6982--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Tromell, Seymour's Butler + Woe Strider": {
+     "id": "997-6602--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Surrak and Goreclaw + Woe Strider": {
+     "id": "713-997--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Beifong's Bounty Hunters + Teval, the Balanced Scale + Woe Strider": {
+     "id": "997-6351-7084",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Railway Brawler + Woe Strider": {
+     "id": "997-5508--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Thunderous Velocipede + Woe Strider": {
+     "id": "997-6258--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Rocksteady, Mutant Marauder + Woe Strider": {
+     "id": "997-7388--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bioengineered Future + Woe Strider": {
+     "id": "997-7096--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Conduit of Worlds + Second Chance": {
+     "id": "1530-4935",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "You can't cast spells",
+      "Lock"
+     ]
+    },
+    "Darksteel Angel + Woe Strider": {
+     "id": "997-7841--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Master Biomancer + Woe Strider": {
+     "id": "997-4802--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Screams from Within + Teval, the Balanced Scale + Woe Strider": {
+     "id": "997-5058-6351",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Moritte of the Frost + Woe Strider": {
+     "id": "997-3388--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Naru Meha, Master Wizard + Victimize + Woe Strider": {
+     "id": "141-997-3125",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Body of Research + Disciple of Bolas": {
+     "id": "329-648",
+     "bracketTag": "C",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite lifegain"
+     ]
+    },
+    "Woe Strider + Zameck Guildmage": {
+     "id": "997-2169--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Moritte of the Frost + River Kelpie + Woe Strider": {
+     "id": "997-3388-3607",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite death triggers"
+     ]
+    },
+    "Combine Guildmage + Woe Strider": {
+     "id": "997-2595--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Dominion Saboteur + Woe Strider": {
+     "id": "997-7936--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Captain Kathryn Janeway + Woe Strider": {
+     "id": "997-7804--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Afterlife from the Loam + Naru Meha, Master Wizard + Woe Strider": {
+     "id": "141-997-6476",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Support Mission + Woe Strider": {
+     "id": "997-7940--5",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

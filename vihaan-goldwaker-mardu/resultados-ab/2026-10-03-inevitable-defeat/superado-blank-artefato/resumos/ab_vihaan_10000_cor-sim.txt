@@ -1,0 +1,26 @@
+N=10000 base: win<=8=0.088 cmd<=3=0.850 table=13.85 combat=47.43 removal=0.83 life=2.34
+Defeat entra no lugar de   win<=8 (pp)       cmd<=3 (pp)       table dmg         treasures       cast%  Magda/Witch em campo (% jogos)
+Defeat<-Monologue Tax       +0.16±0.12      +0.00±0.00      +0.48±0.08     +0.04±0.02      10.5%   1.5 /  0.2  recursao +0.000±0.002
+Defeat<-Academy Manufactor  +0.41±0.16      +0.00±0.00      +0.73±0.10     +0.19±0.03      11.1%   1.6 /  0.1  recursao +0.002±0.003
+Defeat<-Back in Town        +0.13±0.14      +0.01±0.02      +0.49±0.08     +0.05±0.02      11.0%   1.4 /  0.1  recursao -0.004±0.002
+Defeat<-Teferi's Protectio  +0.20±0.15      +0.00±0.00      +0.42±0.13     +0.01±0.04      10.4%   1.4 /  0.1  recursao -0.003±0.002
+Defeat<-Smothering Tithe    +0.17±0.12      +0.07±0.21      +0.42±0.08     +0.04±0.03      10.7%   1.4 /  0.2  recursao -0.000±0.002
+Defeat<-Council's Judgment  +0.23±0.14      +0.00±0.00      +0.50±0.13     +0.02±0.02      11.0%   1.3 /  0.2  recursao -0.002±0.002
+Defeat<-Shoot the Sheriff   +0.14±0.16      +0.04±0.04      +0.32±0.09     -0.00±0.02      10.2%   1.4 /  0.1  recursao -0.001±0.003
+Defeat<-Boros Charm         +0.17±0.14      +0.04±0.04      +0.43±0.11     +0.03±0.03      10.8%   1.5 /  0.1  recursao -0.001±0.003
+Defeat<-Path to Exile       +0.13±0.15      +0.08±0.06      +0.28±0.07     -0.00±0.02      10.7%   1.4 /  0.1  recursao +0.001±0.002
+Defeat<-Deadly Derision     -0.21±0.13      +0.00±0.00      +0.13±0.10     -0.16±0.02      11.1%   1.4 /  0.1  recursao -0.001±0.001
+Defeat<-Requisition Raid    -0.03±0.16      +0.08±0.06      +0.40±0.10     -0.01±0.03      11.0%   1.4 /  0.1  recursao -0.004±0.003
+Defeat<-Blasphemous Act     +0.39±0.16      +0.00±0.00      +0.36±0.25     +0.09±0.03      10.2%   1.5 /  0.1  recursao -0.004±0.002
+Defeat<-Life Insurance      +0.28±0.15      +0.00±0.00      +0.05±0.10     +0.07±0.03      10.9%   1.3 /  0.2  recursao +0.003±0.002
+Defeat<-Mari, the Killing   -0.02±0.13      +0.01±0.02      +0.45±0.08     +0.01±0.02      10.8%   1.3 /  0.1  recursao -0.001±0.002
+Defeat<-The Reaver Cleaver  -0.14±0.19      +0.00±0.00      -0.00±0.13     -0.45±0.06      10.4%   1.3 /  0.1  recursao +0.002±0.002
+Defeat<-Laughing Jasper Fl  -0.45±0.18      +0.00±0.00      -0.10±0.22     -0.10±0.06      11.2%   1.4 /  0.1  recursao -0.001±0.003
+Defeat<-Urabrask's Forge    -0.41±0.16      +0.00±0.00      -0.35±0.15     -0.03±0.03      10.7%   1.5 /  0.1  recursao +0.001±0.002
+Defeat<-Lotho, Corrupt Shi  -1.42±0.25      +0.14±0.07      -0.33±0.13     -0.44±0.05      10.4%   1.4 /  0.1  recursao -0.004±0.003
+Defeat<-Orochi Soul-Reaver  -1.46±0.25      +0.00±0.00      -0.72±0.14     -0.59±0.05      10.9%   1.4 /  0.1  recursao -0.003±0.003
+Defeat<-Arcane Signet       -0.42±0.22      -0.66±0.24      -0.13±0.15     -0.13±0.05      10.1%   1.4 /  0.1  recursao -0.003±0.003
+Defeat<-Sol Ring            -3.13±0.37      -1.98±0.28      -1.87±0.30     -0.71±0.08       9.7%   1.3 /  0.1  recursao -0.015±0.004
+Blank<-Monologue Tax        +0.52±0.17      +0.00±0.00      +0.45±0.14     +0.09±0.03       0.0%   0.0 /  0.0  recursao +0.002±0.002
+Blank<-Academy Manufactor   +0.59±0.17      +0.00±0.00      +0.54±0.13     +0.19±0.04       0.0%   0.0 /  0.0  recursao +0.005±0.003
+Blank<-Back in Town         +0.52±0.17      +0.01±0.02      +0.32±0.09     +0.06±0.02       0.0%   0.0 /  0.0  recursao -0.003±0.003

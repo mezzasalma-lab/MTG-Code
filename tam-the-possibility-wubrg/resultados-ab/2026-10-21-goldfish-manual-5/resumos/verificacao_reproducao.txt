@@ -1,0 +1,7 @@
+IGUAL  linha_do_tempo.md
+IGUAL  eventos_compactos.txt
+IGUAL  deltas_lealdade.txt
+IGUAL  replay_semente_1.txt
+IGUAL  replay_semente_2.txt
+IGUAL  replay_semente_3.txt
+6/6 saidas byte a byte iguais

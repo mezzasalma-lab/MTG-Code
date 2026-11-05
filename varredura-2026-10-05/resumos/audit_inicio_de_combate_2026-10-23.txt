@@ -1,0 +1,64 @@
+
+== beorn-fierce: 1 carta(s) com gatilho de inicio de combate
+  * Beorn the Fierce | At the beginning of combat on your turn, put a trample counter on up to one target creature you control.
+      citada em 6 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+== captain-storm-izzet: 1 carta(s) com gatilho de inicio de combate
+  * The Ozolith | At the beginning of combat on your turn, if The Ozolith has counters on it, you may move all counters from The Ozolith onto target creature.
+      citada em 5 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+== kutzil-selesnya: 8 carta(s) com gatilho de inicio de combate
+  * Agent Bishop, Man in Black | At the beginning of combat on your turn, put a +1/+1 counter on each of up to two target creatures.
+      citada em 4 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+  * Innkeeper's Talent | At the beginning of combat on your turn, put a +1/+1 counter on target creature you control.
+      citada em 11 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+  * Luminarch Aspirant | At the beginning of combat on your turn, put a +1/+1 counter on target creature you control.
+      citada em 4 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+  * Maester Seymour | At the beginning of combat on your turn, put a number of +1/+1 counters equal to Maester Seymour's power on another target creature you control.
+      citada em 7 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+  * Ornery Tumblewagg | At the beginning of combat on your turn, put a +1/+1 counter on target creature.
+      citada em 10 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): [1342, 1343]
+  * Ouroboroid | At the beginning of combat on your turn, put X +1/+1 counters on each creature you control, where X is this creature's power.
+      citada em 4 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+  * The Ozolith | At the beginning of combat on your turn, if The Ozolith has counters on it, you may move all counters from The Ozolith onto target creature.
+      citada em 7 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+  * Training Regimen | At the beginning of combat on your turn, put a +1/+1 counter on target creature you control.
+      citada em 4 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+== megatron-tyrant-mardu: 2 carta(s) com gatilho de inicio de combate
+  * Nexus of Becoming | At the beginning of combat on your turn, draw a card.
+      citada em 4 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): [2899]
+  * Steel Seraph | At the beginning of combat on your turn, target creature you control gains your choice of flying, vigilance, or lifelink until end of turn.
+      citada em 2 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+== ms-bumbleflower-bant: 1 carta(s) com gatilho de inicio de combate
+  * The Ozolith | At the beginning of combat on your turn, if The Ozolith has counters on it, you may move all counters from The Ozolith onto target creature.
+      citada em 7 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+== prismatic-bridge-wurbg: 2 carta(s) com gatilho de inicio de combate
+  * Innkeeper's Talent | At the beginning of combat on your turn, put a +1/+1 counter on target creature you control.
+      citada em 16 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+  * Oko, the Ringleader | At the beginning of combat on your turn, Oko becomes a copy of up to one target creature you control until end of turn, except he has hexproof.
+      citada em 26 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): [1380, 1789, 3683]
+
+== rat-king-verminister: 1 carta(s) com gatilho de inicio de combate
+  * Lord Skitter, Sewer King | At the beginning of combat on your turn, create a 1/1 black Rat creature token with "This token can't block.
+      citada em 6 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+== toph-naya: 2 carta(s) com gatilho de inicio de combate
+  * Avatar Kyoshi, Earthbender | At the beginning of combat on your turn, earthbend 8, then untap that land.
+      citada em 7 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): [138]
+  * The Ozolith | At the beginning of combat on your turn, if The Ozolith has counters on it, you may move all counters from The Ozolith onto target creature.
+      citada em 11 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+== vihaan-goldwaker-mardu: 2 carta(s) com gatilho de inicio de combate
+  * Urabrask's Forge | At the beginning of combat on your turn, put an oil counter on this artifact, then create an X/1 red Phyrexian Horror creature token with trample and 
+      citada em 6 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+  * Vihaan, Goldwaker | At the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their othe
+      citada em 27 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+== wise-mothman-sultai: 1 carta(s) com gatilho de inicio de combate
+  * Ouroboroid | At the beginning of combat on your turn, put X +1/+1 counters on each creature you control, where X is this creature's power.
+      citada em 5 linhas do simulador; linhas com can_attack/doenca/attack por perto (ler a mao): []
+
+total de cartas candidatas: 21

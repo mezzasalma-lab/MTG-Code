@@ -1,5 +1,221 @@
 # Checklist cláusula-a-cláusula — Maralen, Fae Ascendant
 
+## Terreno virado primeiro em T1/T2 + condições de entrada de terreno (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Drowned Catacomb / Hinterland Harbor / Woodland Cemetery (check lands) | 🐛 corrigido: `land_enters_tapped` por subtipo, atrás de `LAND_ENTRY_CONDITIONS_ENABLED` |
+| Sunken Hollow (2+ básicos) | 🐛 corrigido |
+| Gilt-Leaf Palace (revelar Elfo) | 🐛 corrigido (política: entra desvirado se há Elfo na mão) |
+| Choques (3) | ✅ convenção do repositório (paga 2 de vida; vida não é deduzida neste arquivo) |
+| Morphic Pool / Undergrowth Stadium | ✅ desvirados em mesa de 4 ("two or more opponents") |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
+## Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| London Mulligan, CR 103.5 | 🐛 corrigido: `choose_bottom`, atrás de `MULLIGAN_SMART_BOTTOM_ENABLED` |
+| Upkeep antes do draw (CR 503/504; Regra #6) | 🐛 corrigido: `UPKEEP_BEFORE_DRAW_ENABLED` em `play_turn` |
+| Imposto de comandante, CR 903.8 | ✅ já estava no arquivo (contado antes do counter) |
+| Ordem de terrenos / entrada virada (T1/T2) | não tratado nesta seção |
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`.
+
+---
+
+## CR 903.9a: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Este deck é igual ao Toph nesta sessão: já tinha um chokepoint
+central real (`leave_battlefield`, gatilhos de Tegwyll/Umbral Mantle
+já implementados) — só o comandante era especial-casado dentro de
+`remove_permanent()`, pulando `leave_battlefield` inteiramente.
+Aplicada direto a lição do Toph** (Regra #6 do `CLAUDE.md`): o
+tratamento do comandante foi movido pra DENTRO de `leave_battlefield`
+(não mais em `remove_permanent`, que agora só delega, sem caso
+especial), e todos os call sites reais de `leave_battlefield` foram
+regrepados antes de mudar a função (só 2: o Champion do Mistbind
+Clique — nunca pode ser o comandante, tag exclusiva dela — e
+`remove_permanent`) e todos os `state.battlefield.remove(` diretos
+fora dela (bounce elf em `try_bounce_untap_effects`, já excluía
+`COMMANDER` explicitamente com comentário documentado; Devoted Druid
+hardcoded, carta diferente) — nenhum outro ponto real atinge o
+comandante sem passar por `leave_battlefield`.
+
+**Achado real NUMÉRICO (mesma categoria do Edgar Markov):** Maralen é
+ela mesma "Elf Faerie Noble" — uma Fada de verdade. Tegwyll, Duke of
+Splendor ("whenever a Faerie enters... or another Faerie you control
+dies, draw a card and lose 1 life") e o clear de `state.
+umbral_equipped_on` deveriam disparar quando ela morre, mas a versão
+anterior pulava `leave_battlefield` inteiramente pro comandante,
+silenciando os 2.
+
+**Validação:** compilação OK. Bit-identidade em modo padrão (20.000
+seeds) contra uma cópia do commit anterior **com o mesmo guard do bug
+de loop infinito abaixo já aplicado** (pra isolar exatamente o efeito
+do fix de CR 903.9a, sem contaminação do outro achado): **0/20000
+mismatches** — nenhum dos 2 call sites de `remove_permanent` do modo
+de resiliência roda em modo padrão, e nenhum outro ponto do arquivo
+mata o comandante fora deles. Regressão de 20.000 partidas em modo de
+resiliência: 0 exceções, 0 comandantes presos no cemitério. 4 testes
+dirigidos: (1) `remove_permanent` no comandante; (2) Tegwyll dispara
+com a morte do comandante (achado numérico real); (3) `leave_
+battlefield` chamado direto no comandante — mesmo resultado (chokepoint
+central); (4) permanente comum inalterado.
+
+## Achado adicional durante a validação: loop infinito real (bug pré-existente, não relacionado ao comandante) — 2026-09-21
+
+**Gatilho:** a regressão de 20.000 partidas em modo padrão (rodando a
+validação do fix de CR 903.9a acima) travou indefinidamente — não um
+erro de exceção, um hang de verdade. Investigado ao vivo (`faulthandler.
+dump_traceback_later`, depois um monkeypatch instrumentado em
+`remaining_mana` contando chamadas) até achar a causa raiz: seed
+8010333 (e outros no mesmo espaço de seeds) trava pra sempre dentro do
+loop finito do Staff of Domination.
+
+**Causa raiz:** `remaining_mana()` → `total_mana()` → `dork_mana()` NÃO
+é pura — `dork_mana()` pode setar `state.infinite_mana_this_turn = True`
+como EFEITO COLATERAL da própria avaliação (combo Umbral Mantle + dork
+escalável com saída ≥4, linha ~728), não só ler estado já calculado.
+`use_staff_of_domination_v2()`'s loop de mana FINITA (`while
+remaining_mana(state) >= 6: ...`) reavalia `remaining_mana()` a CADA
+iteração — se o combo Umbral é detectado PELA PRIMEIRA VEZ durante uma
+dessas reavaliações (não antes do loop começar), `total_mana` passa a
+retornar 999 permanentemente E `spend_mana` vira no-op (guarda o mesmo
+flag) — a condição `>= 6` nunca mais fica falsa. Loop infinito de
+verdade, reproduzido ao vivo. **Achado confirmado como pré-existente**:
+o mesmo hang acontece rodando a versão do commit anterior (git HEAD),
+não foi introduzido pela correção de CR 903.9a acima — só foi
+descoberto porque a validação rigorosa desta rodada rodou 20.000
+partidas de verdade pela primeira vez neste espaço de seeds.
+
+**Achado estrutural relevante:** o loop IRMÃO (Faerie Mastermind, mesmo
+arquivo, ~40 linhas abaixo) já tem a defesa certa (`while remaining_mana
+(state) >= 4 and not state.infinite_mana_this_turn:`) — o bug é uma
+INCONSISTÊNCIA entre 2 loops estruturalmente idênticos no mesmo
+arquivo, um defendido, um não.
+
+**Corrigido:** replicado o mesmo guard (`and not state.
+infinite_mana_this_turn`) no loop do Staff of Domination.
+
+**Validação:** varredura completa de 20.000 seeds (mesmo espaço,
+8000000-8019999) em modo padrão: 0 travamentos, tempo total 30s (antes:
+travava indefinidamente a partir do seed 8010333). Teste dirigido:
+`simulate_one(8010333)` completa em <2s (antes: hang permanente,
+confirmado travar por 3+ minutos sem terminar). Bit-identidade
+específica deste fix não verificada isoladamente (contaminaria a
+comparação do fix de CR 903.9a acima, que já isola este fix aplicando
+o mesmo guard na baseline "antes") — mas o efeito é estritamente
+"impede a mutação `infinite_mana_this_turn=True` de deixar o loop
+preso", nunca muda QUANDO ou SE o combo é detectado, só ONDE o
+código para de tentar ativar o Staff mais uma vez depois que a mão
+inteira já vai ser comprada pelo motor "infinito" no próximo turno
+(reset de `infinite_mana_this_turn` em upkeep, linha ~1712) —
+comportamento estruturalmente equivalente, sem side-effect numérico
+novo além de "não trava".
+
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
+Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic Bridge
+nesta mesma sessão: *"Agora vamos atualizar o simulador da Maralen,
+mantendo todos os cuidados que já estamos usando."* Este deck nunca
+tinha nenhuma extensão de resiliência antes — porte completo do zero,
+incorporando direto o design FINAL já validado nos outros 7 (não
+precisou repetir o histórico de correção de rolagens independentes de
+wipe nem o gate de atenção do oponente — ambos entraram já corretos).
+
+**Implementadas as 7 categorias padrão:** ataque sem bloqueio, remoção
+curada (`INTERACTION_ENGINE_PRIORITY`), discard aleatório, board wipe
+(criatura/artefato/encantamento com escolha ponderada, pesos
+0.4/0.2/0.15), graveyard hate (mass exile 1x/partida + exílio de carta
+única repetível), counterspell (mira só o cast da própria Maralen) —
+com `state.wiped_this_round` + `POST_WIPE_ATTACK_HASTE_FACTOR` (wipe
+simétrico suprime ataque na rodada inteira, reduzido não zerado) e
+`OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS` (gate de atenção do
+oponente) desde a primeira versão.
+
+**Achado real específico deste deck (nenhum dos outros 7 tinha essa
+particularidade):** Elfo/Fada TOKEN não vive como entrada nomeada em
+`state.battlefield` — são contadores agregados (`state.elf_tokens`/
+`state.faerie_tokens`, documentado desde a criação do arquivo). Um
+"destroy all creatures" de verdade acerta esses tokens também (são
+criaturas reais na mesa), então `try_smart_opponent_wipe` zera os 2
+contadores quando o tipo escolhido é "creature" — não só remove as
+entradas nomeadas de `state.battlefield` como nos outros decks.
+"Mercenary Token" (Black Market Connections) é o único token deste deck
+que vive nomeado em `state.battlefield` — passa pelo caminho normal.
+
+**Bug real encontrado e corrigido durante o porte (não pré-existente em
+uso — nunca exercitado antes):** `leave_battlefield()` mandava QUALQUER
+permanente pro cemitério incondicionalmente, incluindo token. O único
+call site pré-existente (Champion do Mistbind Clique) nunca passava um
+token de verdade, então o gap nunca disparava — mas `remove_permanent()`
+do modo de resiliência agora pode atingir "Mercenary Token" de verdade.
+Corrigido: token (nome terminado em "Token") nunca vai pro cemitério
+(CR 111.7 — deixa de existir).
+
+**Achado de regra real (CR 903.10a) corrigido durante a integração do
+counterspell:** a taxa de recast do comandante (`commander_cast_count`)
+tem que aumentar toda vez que ela é CONJURADA, resolvendo ou não — mas
+`enter_battlefield()` só incrementava esse contador no caminho de
+sucesso (nunca roda se a conjuração for contra-atacada). Corrigido
+incrementando manualmente no ramo "foi counterada" de `main_phase`
+(testado diretamente: cast contra-atacado no turno 5 incrementa o
+contador de 0 pra 1, igual a um cast bem-sucedido).
+
+**Achado de regra real específico deste deck:** a face de TRÁS de
+Growing Rites of Itlimoc (Itlimoc, Cradle of the Sun, pós-transformação)
+é TERRENO, não encantamento (confirmado via Scryfall: "Legendary
+Enchantment // Legendary Land"). `CARD_DB` fixa `ctype="enchantment"`
+pra carta inteira (só a face da frente é conjurável da mão), mas depois
+de `state.itlimoc_transformed=True` a permanente real na mesa é um
+terreno — excluída explicitamente dos candidatos de wipe de
+encantamento quando já transformou (testado: 500/500 sem alvo
+pós-transformação, 500/500 alvo válido pré-transformação).
+
+Maralen confirmada via Scryfall como Legendary Creature — Elf Faerie
+Noble pura (nunca artefato/encantamento), então nunca é alvo direto dos
+2 tipos novos de wipe — só do wipe de criatura (roteada corretamente
+pra zona de comando via CR 903.9, testado 500/500).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `13178fc` (3.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+7 testes dirigidos (no máximo 1 tipo de wipe por chamada; distribuição
+ponderada dentro de 3pp do esperado; wipe de criatura zera contadores
+de token; Itlimoc transformado excluído do wipe de encantamento;
+Maralen roteada pra zona de comando; Mercenary Token cessa de existir
+em vez de ir pro cemitério; cast counterado incrementa a taxa).
+
+**Resultado (A/B 2000 jogos mesma seed_base, modo padrão vs. modo
+resiliência):** Maralen nunca resolvida em 8 turnos sobe de 1,8% (modo
+padrão) pra 4,4% (modo resiliência, incluindo counterspell). Avg
+counterspells sofridos: 0,14. Avg board wipes: 0,83, artifact wipes:
+0,16, enchantment wipes: 0,17. 38,1% dos jogos sofrem graveyard wipe
+(no máximo 1x). Avg remoções inteligentes: 0,65 — Priest of Titania
+(11,7%) e Cryptolith Rite (8,7%) são os alvos mais removidos entre as
+peças curadas. Vida final média: 35,63 (de 40).
+
 ## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece) + bug de hang de verdade achado ao validar
 
 Este deck já tinha a arquitetura mais madura da sessão pra Roaming
@@ -255,6 +471,15 @@ carta, contra o oráculo real:
   decisão consistente pra todo o arquivo) — ✅.
 
 ---
+
+## 🐛 Payoff de landfall antes do terreno (2026-10-07)
+
+Classe do motor (Regra #6/#10), não da carta: `maralen_goldfish_v1.py` jogava o terreno antes de conjurar. Arquivo: `resultados-ab/2026-10-07-landfall-payoff-primeiro/`. Escopo declarado (Regra #7): **varrido** = a ordem terreno × payoff de landfall nos 2 payoff(s) abaixo, com teste dirigido, A/B pareado 2.000 e 10.000, bit-identidade, regressão e determinismo; **NÃO varrido** = magia que põe terreno em campo antes do payoff, terreno que volta ao campo, 2ª fase principal.
+
+| carta | cláusula de oráculo (landfall) | achado / status | onde |
+|---|---|---|---|
+| Thranduil's Company | As long as you control another Elf, you may play an additional land on each of your turns; Landfall — dois +1/+1 counters (modelado só em Marwyn: único alvo com efeito numérico) | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Thranduil, Sindarin Liege // Silvan Rally | Landfall — Elfo 1/1 | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
 
 ## Resumo numérico
 

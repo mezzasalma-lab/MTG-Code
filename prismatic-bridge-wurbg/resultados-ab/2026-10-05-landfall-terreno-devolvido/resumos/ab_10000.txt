@@ -1,0 +1,19 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9914 (99.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2397       6.2397      +0.0000 ±0.0003  
+  *pw_deaths_total                              0.6378       0.6357      -0.0021 ±0.0016  
+  *planeswalkers_in_play_end                    2.9870       2.9886      +0.0016 ±0.0013  
+   pw_tokens_created_total                      2.0901       2.0867      -0.0034 ±0.0045  
+   opp_eliminated_total                         0.2193       0.2195      +0.0002 ±0.0003  
+   pw_recursion_total                           0.2424       0.2422      -0.0002 ±0.0003  
+   urza_extra_lore_total                        0.0391       0.0389      -0.0002 ±0.0003  
+   urza_chapter_end                             0.2546       0.2540      -0.0006 ±0.0008  
+   board_cap_hits_total                        28.8477      28.7583      -0.0894 ±0.1680  
+   bridge_cast_turn__ate_T4                     0.1055       0.1056      +0.0001 ±0.0002  
+   bridge_cast_turn__ate_T5                     0.2941       0.2942      +0.0001 ±0.0002  
+   bridge_in_play_end                           0.7135       0.7134      -0.0001 ±0.0002  
+   carth_tutors_total                           0.3899       0.3897      -0.0002 ±0.0004  
+   protectors_removed_count                     0.0534       0.0535      +0.0001 ±0.0002  
+   removal_attempts_total                       0.8845       0.8846      +0.0001 ±0.0002  

@@ -1,0 +1,35 @@
+cartas na lista: 99
+base                               n=99 incluidos=4 quase=98 id=BGU
++The Pride of Hull Clade (sem cortar) n=100 incluidos=4 quase=99 id=BGU
+   novos incluidos: [] | novos quase: 1
+      quase + ('Body of Research', 'The Pride of Hull Clade')
+-Oversold Cemetery +The Pride of Hull Clade n=99 incluidos=4 quase=99 id=BGU
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1
+-Deathbloom Ritualist +The Pride of Hull Clade n=99 incluidos=4 quase=90 id=BGU
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 9 | quase novos: 1
+-Underrealm Lich +The Pride of Hull Clade n=99 incluidos=4 quase=99 id=BGU
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1
+-Kindred Summons +The Pride of Hull Clade n=99 incluidos=4 quase=99 id=BGU
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1
+-Bloodline Bidding +The Pride of Hull Clade n=99 incluidos=4 quase=99 id=BGU
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1
+-Trystan's Command +The Pride of Hull Clade n=99 incluidos=4 quase=99 id=BGU
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1
+-Finale of Devastation +The Pride of Hull Clade n=99 incluidos=4 quase=99 id=BGU
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1
+-Ruthless Winnower +The Pride of Hull Clade n=99 incluidos=4 quase=99 id=BGU
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1
+-Devoted Druid +The Pride of Hull Clade n=99 incluidos=0 quase=87 id=BGU
+   incluidos que SUMIRAM: [("Agatha's Soul Cauldron", 'Devoted Druid', 'Immaculate Magistrate'), ("Agatha's Soul Cauldron", 'Devoted Druid', 'Incubation Druid'), ('Devoted Druid', 'Immaculate Magistrate', 'Thranduil, the Elvenking'), ('Devoted Druid', 'Tyvar, the Pummeler')] | NOVOS: []
+   quase sumiram: 16 | quase novos: 5
+-Immaculate Magistrate +The Pride of Hull Clade n=99 incluidos=2 quase=99 id=BGU
+   incluidos que SUMIRAM: [("Agatha's Soul Cauldron", 'Devoted Druid', 'Immaculate Magistrate'), ('Devoted Druid', 'Immaculate Magistrate', 'Thranduil, the Elvenking')] | NOVOS: []
+   quase sumiram: 2 | quase novos: 3

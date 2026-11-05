@@ -1,0 +1,7 @@
+Determinismo entre processos: mesma semente, 3 PYTHONHASHSEED diferentes (11, 22, 33), N=1500 sementes (1_000_000+i), modos padrao e resiliencia; compara campo a campo o estado final.
+CONTROLE (DETERMINISTIC_SET_ORDER_ENABLED=False, o iterador antigo):
+hei-bai-wurbg              padrao       N=1500 sementes divergentes entre 3 hash seeds: 4 [1000194, 1000399, 1000664, 1001499] campos: [('battlefield', 4)]
+hei-bai-wurbg              resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 1 [1000194] campos: [('battlefield', 1)]
+CORRECAO (arquivo vivo, DETERMINISTIC_SET_ORDER_ENABLED=True):
+hei-bai-wurbg              padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+hei-bai-wurbg              resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

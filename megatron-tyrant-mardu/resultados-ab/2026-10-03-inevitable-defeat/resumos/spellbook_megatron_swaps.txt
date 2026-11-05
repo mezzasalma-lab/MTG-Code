@@ -1,0 +1,49 @@
+cartas na lista: 99
+base                               n=99 incluidos=2 quase=27 id=RWB
++Inevitable Defeat (sem cortar)    n=100 incluidos=2 quase=27 id=RWB
+   novos incluidos: [] | novos quase: 0
+-Chaos Warp +Inevitable Defeat     n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Generous Gift +Inevitable Defeat  n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Path to Exile +Inevitable Defeat  n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Swords to Plowshares +Inevitable Defeat n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Vandalblast +Inevitable Defeat    n=99 incluidos=2 quase=26 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 1 | quase novos: 0
+-Heartless Conscription +Inevitable Defeat n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Decree of Pain +Inevitable Defeat n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Blasphemous Act +Inevitable Defeat n=99 incluidos=2 quase=23 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 4 | quase novos: 0
+-Tarrian's Journal +Inevitable Defeat n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Scarecrone +Inevitable Defeat     n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Black Market Connections +Inevitable Defeat n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Clever Concealment +Inevitable Defeat n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Pia's Revolution +Inevitable Defeat n=99 incluidos=2 quase=27 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Chandra's Ignition +Inevitable Defeat n=99 incluidos=1 quase=24 id=RWB
+   incluidos que SUMIRAM: [('Blightsteel Colossus', "Chandra's Ignition")] | NOVOS: []
+   quase sumiram: 4 | quase novos: 1
+-Genesis Chamber +Inevitable Defeat n=99 incluidos=1 quase=28 id=RWB
+   incluidos que SUMIRAM: [('Cursed Mirror', 'Daretti, Rocketeer Engineer', 'Genesis Chamber')] | NOVOS: []
+   quase sumiram: 0 | quase novos: 1

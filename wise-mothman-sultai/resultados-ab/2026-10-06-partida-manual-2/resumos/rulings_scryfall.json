@@ -1,0 +1,355 @@
+{
+ "Winding Constrictor": {
+  "scryfall_name": "Winding Constrictor",
+  "oracle_id": "c9404d7d-a026-4082-9fcb-1ab571a136b5",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2017-09-29",
+    "If a nonartifact, noncreature permanent (such as a planeswalker) would enter the battlefield with counters on it and become an artifact or a creature on the battlefield due to another card's effect (such as that of Mycosynth Lattice), Winding Constrictor's effect will give that permanent another of those counters."
+   ],
+   [
+    "2017-02-09",
+    "If an artifact or creature you control would enter the battlefield with a number of any kind of counters on it, it enters with that many plus one instead."
+   ],
+   [
+    "2017-02-09",
+    "If an effect includes multiple instructions to put one or more counters on an artifact or creature, such as Lifecrafter's Gift does, Winding Constrictor's effect applies to each of those instructions."
+   ],
+   [
+    "2017-02-09",
+    "If you control two Winding Constrictors, the number of counters placed on the artifact or creature is the original number plus two. Three Winding Constrictors adds three to the original number, and so on."
+   ],
+   [
+    "2017-02-09",
+    "If you would get counters of multiple kinds at the same time, Winding Constrictor increases the number of each of those kinds of counters by one. The same is true if counters of multiple kinds would be placed on an artifact or creature you control."
+   ],
+   [
+    "2017-02-09",
+    "Winding Constrictor's effect can't apply to itself as it's entering the battlefield or to any other permanent entering the battlefield at the same time as it."
+   ]
+  ]
+ },
+ "Ouroboroid": {
+  "scryfall_name": "Ouroboroid",
+  "oracle_id": "50d6fd91-23d3-4d32-804f-6233e4386904",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2025-07-25",
+    "The value of X is calculated only once, as Ouroboroid’s ability resolves."
+   ],
+   [
+    "2025-07-25",
+    "If Ouroboroid leaves the battlefield before its ability resolves, use its power as it last existed on the battlefield to determine the value of X."
+   ]
+  ]
+ },
+ "Basking Broodscale": {
+  "scryfall_name": "Basking Broodscale",
+  "oracle_id": "a7c69802-99c4-4778-934e-cc09ba58c267",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2024-06-07",
+    "A card with devoid is just colorless. It's not colorless and the colors of mana in its mana cost."
+   ],
+   [
+    "2024-06-07",
+    "Other cards and abilities can give a card with devoid a color. If that happens, it's just the new color, not that color and colorless."
+   ],
+   [
+    "2024-06-07",
+    "Devoid works in all zones, not just on the battlefield."
+   ],
+   [
+    "2024-06-07",
+    "If a card loses devoid, it will still be colorless. This is because effects that change an object's color (like the one created by devoid) are considered before the object loses devoid."
+   ],
+   [
+    "2024-06-07",
+    "Devoid doesn't affect the color identity of the card for the purposes of the Commander variant. For example, while Abstruse Appropriation is colorless because it has devoid, its color identity is still white and black, and it can't be included in a Commander deck where the commander's color identity doesn't include both white and black."
+   ],
+   [
+    "2024-06-07",
+    "You can always activate an ability that will cause a creature to adapt. As that ability resolves, if the creature has a +1/+1 counter on it for any reason, you simply won't put any +1/+1 counters on it."
+   ],
+   [
+    "2024-06-07",
+    "If a creature somehow loses all of its +1/+1 counters, it can adapt again and get more +1/+1 counters."
+   ]
+  ]
+ },
+ "Gyre Sage": {
+  "scryfall_name": "Gyre Sage",
+  "oracle_id": "e3aa16cf-079b-4737-9ffd-7bfdffef0cb2",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2013-04-15",
+    "Whenever a creature enters the battlefield under your control, check its power and toughness against the power and toughness of the creature with evolve. If neither stat of the new creature is greater, evolve won't trigger at all."
+   ],
+   [
+    "2013-04-15",
+    "When comparing the stats as the evolve ability resolves, it's possible that the stat that's greater changes from power to toughness or vice versa. If this happens, the ability will still resolve and you'll put a +1/+1 counter on the creature with evolve. For example, if you control a 2/2 creature with evolve and a 1/3 creature enters the battlefield under your control, it toughness is greater so evolve will trigger. In response, the 1/3 creature gets +2/-2. When the evolve trigger tries to resolve, its power is greater. You'll put a +1/+1 counter on the creature with evolve."
+   ],
+   [
+    "2013-04-15",
+    "If evolve triggers, the stat comparison will happen again when the ability tries to resolve. If neither stat of the new creature is greater, the ability will do nothing. If the creature that entered the battlefield leaves the battlefield before evolve tries to resolve, use its last known power and toughness to compare the stats."
+   ],
+   [
+    "2013-04-15",
+    "When comparing the stats of the two creatures for evolve, you always compare power to power and toughness to toughness."
+   ],
+   [
+    "2013-04-15",
+    "If a creature enters the battlefield with +1/+1 counters on it, consider those counters when determining if evolve will trigger. For example, a 1/1 creature that enters the battlefield with two +1/+1 counters on it will cause the evolve ability of a 2/2 creature to trigger."
+   ],
+   [
+    "2013-04-15",
+    "If multiple creatures enter the battlefield at the same time, evolve may trigger multiple times, although the stat comparison will take place each time one of those abilities tries to resolve. For example, if you control a 2/2 creature with evolve and two 3/3 creatures enter the battlefield, evolve will trigger twice. The first ability will resolve and put a +1/+1 counter on the creature with evolve. When the second ability tries to resolve, neither the power nor the toughness of the new creature is greater than that of the creature with evolve, so that ability does nothing."
+   ],
+   [
+    "2013-01-24",
+    "Gyre Sage's last ability is a mana ability. It doesn't use the stack and can't be responded to."
+   ]
+  ]
+ },
+ "The Great Henge": {
+  "scryfall_name": "The Great Henge",
+  "oracle_id": "78427103-9543-41fb-b6d4-72963fe87275",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2025-10-02",
+    "Once you announce that you're casting a spell, no player may take actions until the spell has been paid for. Notably, opponents can't try to change by how much The Great Henge's cost is reduced."
+   ],
+   [
+    "2025-10-02",
+    "The first step of casting a spell is to move it to the stack. If this causes the greatest power among creatures you control to change, that new power will be used to determine the cost reduction."
+   ],
+   [
+    "2025-10-02",
+    "The cost reduction ability reduces only the generic mana in The Great Henge's cost. The colored mana must still be paid."
+   ],
+   [
+    "2025-10-02",
+    "Once The Great Henge's last ability has triggered, you'll draw a card even if you can't put a +1/+1 counter on the creature for some reason (most likely because it has left the battlefield)."
+   ],
+   [
+    "2025-10-02",
+    "Once you determine the cost to cast The Great Henge, you may activate mana abilities to pay that cost. If the greatest power among creatures you control changes while activating mana abilities, the cost to cast The Great Henge remains what you previously determined."
+   ],
+   [
+    "2025-10-02",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases, then apply any cost reductions. The mana value of the spell remains unchanged, no matter what the total cost to cast it was."
+   ]
+  ]
+ },
+ "Kami of Whispered Hopes": {
+  "scryfall_name": "Kami of Whispered Hopes",
+  "oracle_id": "f122624f-f30d-444e-a62a-939829241045",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2023-04-14",
+    "If you control two Kamis of Whispered Hopes, the number of +1/+1 counters put on a permanent is two plus the original number. Three Kamis of Whispered Hopes add three, and so on."
+   ],
+   [
+    "2023-04-14",
+    "If another permanent you control would enter the battlefield with a number of +1/+1 counters on it, it enters with that many plus one instead."
+   ],
+   [
+    "2023-04-14",
+    "If two or more effects attempt to modify how many counters would be put onto a permanent you control, you choose the order to apply those effects, no matter who controls the sources of those effects."
+   ],
+   [
+    "2023-04-14",
+    "The last ability is a mana ability. It doesn't use the stack and can't be responded to."
+   ],
+   [
+    "2023-04-14",
+    "However, if Kami of Whispered Hopes somehow enters the battlefield with +1/+1 counters it, its first ability won't apply to itself."
+   ]
+  ]
+ },
+ "The Wise Mothman": {
+  "scryfall_name": "The Wise Mothman",
+  "oracle_id": "7656f93b-336f-49cb-b8fe-c2b5c014258f",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2024-03-08",
+    "If more than one player is instructed to mill at the same time (by the activated ability of Raul, Trouble Shooter, for example), as long as at least one nonland card is milled, The Wise Mothman’s last ability will trigger just once."
+   ],
+   [
+    "2024-03-08",
+    "Rad counters are a kind of counter that a player may have. They’re not associated with any specific permanents."
+   ],
+   [
+    "2024-03-08",
+    "Keep track of how many rad counters each player has. Potential ways to track this include writing them down on paper or using dice, but any method that is clear and mutually agreeable is fine."
+   ],
+   [
+    "2024-03-08",
+    "Rad counters don’t go away as steps, phases, or turns end. They only go away when an effect instructs a player to remove rad counters from themselves."
+   ],
+   [
+    "2024-03-08",
+    "There is an inherent triggered ability associated with having rad counters. This triggered ability has no source and is controlled by the active player. The full text of this ability is “At the beginning of the precombat main phase of a player with rad counters, that player mills cards equal to the number of rad counters they have. For each nonland card milled this way, that player loses 1 life and removes one rad counter from themselves.”"
+   ],
+   [
+    "2024-03-08",
+    "In a game using the shared team turns option, such as an Archenemy or Two-Headed Giant game, the inherent triggered ability associated with rad counters triggers once for each player on the active team that has rad counters. Each instance of that ability is controlled by one of those players."
+   ],
+   [
+    "2024-03-08",
+    "Any effects (such as proliferate) that interact with counters a player gets, has, or loses can interact with rad counters."
+   ],
+   [
+    "2024-03-08",
+    "The cards are milled all at once, which means abilities that trigger “whenever one or more nonland cards are milled” will trigger exactly once as long as at least one nonland card was milled."
+   ],
+   [
+    "2024-03-08",
+    "If a player has fewer cards remaining in their library than the number of rad counters they have when the triggered ability resolves, they’ll mill as many cards as they can."
+   ]
+  ]
+ },
+ "Freestrider Lookout": {
+  "scryfall_name": "Freestrider Lookout",
+  "oracle_id": "b7d3e234-0954-4422-96c0-cda91101faa3",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2024-04-12",
+    "A player commits a crime as they cast a spell, activate an ability, or put a triggered ability on the stack that targets at least one opponent, at least one permanent, spell, or ability an opponent controls, and/or at least one card in an opponent’s graveyard."
+   ],
+   [
+    "2024-04-12",
+    "The spell or ability that constituted a crime doesn’t have to have resolved yet or at all. As soon as you’re finished casting the spell, activating the ability, or putting the triggered ability on the stack, you’ve committed a crime."
+   ],
+   [
+    "2024-04-12",
+    "For example, an ability that triggers when you cast a spell that targets an opponent will trigger at the same time as an ability that triggers whenever you commit a crime. Those abilities can be put on the stack in either order (if you control them both), and they’ll both resolve before the spell that caused them to trigger."
+   ],
+   [
+    "2024-04-12",
+    "A player can commit only one crime per spell or ability they control. Targeting multiple opponents, permanents, spells, abilities, and/or cards with the same spell or ability doesn’t constitute committing multiple crimes."
+   ],
+   [
+    "2024-04-12",
+    "Changing the target or targets of a spell or ability won’t affect whether or not the controller of that spell or ability has committed a crime. Only the initial targets chosen for that spell or ability are used to determine whether or not its controller committed a crime."
+   ]
+  ]
+ },
+ "Undergrowth Stadium": {
+  "scryfall_name": "Undergrowth Stadium",
+  "oracle_id": "7c69f718-acc8-4851-8e5d-0cbaaa86192c",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2020-11-10",
+    "Count the number of opponents you currently have, not how many you started with. If your four-player game is down to you and a single opponent, the land enters the battlefield tapped."
+   ],
+   [
+    "2020-11-10",
+    "If an effect puts the land onto the battlefield tapped, having two or more opponents won't untap it."
+   ]
+  ]
+ },
+ "Soul-Guide Lantern": {
+  "scryfall_name": "Soul-Guide Lantern",
+  "oracle_id": "1b5e6560-ff2e-4475-96cb-63f64c8a86db",
+  "flavor_name": null,
+  "rulings": []
+ },
+ "Cankerbloom": {
+  "scryfall_name": "Cankerbloom",
+  "oracle_id": "d5b80895-621a-40df-bf48-6c7295658f21",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2023-02-04",
+    "To proliferate, you can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can't choose cards in any zone other than the battlefield, even if they have counters on them."
+   ],
+   [
+    "2023-02-04",
+    "You don't have to choose every permanent or player that has a counter, only the ones you want to add another counter to. Since \"any number\" includes zero, you don't have to choose any permanents at all, and you don't have to choose any players at all."
+   ],
+   [
+    "2023-02-04",
+    "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can't have it get just one kind of counter it already has and not the others."
+   ],
+   [
+    "2023-02-04",
+    "An ability that triggers \"Whenever you proliferate\" triggers even if you chose no permanents or players while doing so."
+   ],
+   [
+    "2023-02-04",
+    "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it's too late for anyone to respond."
+   ],
+   [
+    "2023-02-04",
+    "If a permanent ever has both +1/+1 counters and -1/-1 counters on it at the same time, they're removed in pairs as a state-based action so that the permanent has only one of those kinds of counters on it."
+   ]
+  ]
+ },
+ "Takenuma, Abandoned Mire": {
+  "scryfall_name": "Takenuma, Abandoned Mire",
+  "oracle_id": "ac2dd694-d2f1-4025-8400-12332bdc882a",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2022-02-18",
+    "The creature or planeswalker card you return to your hand is not chosen until after you mill three cards. You may choose a creature or planeswalker card from among all the cards in your graveyard, including the milled cards."
+   ],
+   [
+    "2022-02-18",
+    "Discarding the card is part of the cost to activate a channel ability."
+   ],
+   [
+    "2022-02-18",
+    "If a channel ability requires a target, you may not activate it without a target just to discard the card."
+   ]
+  ]
+ },
+ "Swarmyard": {
+  "scryfall_name": "Swarmyard",
+  "oracle_id": "4b508087-99da-4eb1-8b12-29162f2ec85d",
+  "flavor_name": null,
+  "rulings": []
+ },
+ "Zagoth Triome": {
+  "scryfall_name": "Zagoth Triome",
+  "oracle_id": "fdd46004-eaba-4024-8687-39b23dc6a58c",
+  "flavor_name": null,
+  "rulings": []
+ },
+ "Fierce Guardianship": {
+  "scryfall_name": "Fierce Guardianship",
+  "oracle_id": "d09c9cba-fdd2-479b-ad5d-d05181c3e3f9",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2020-04-17",
+    "It doesn't matter whose commander you control. Any one will do. If you have two commanders, you just need to control one of them."
+   ],
+   [
+    "2020-04-17",
+    "Once you begin casting this spell, players can't take any other actions until you're done casting it. Notably, they can't try to remove the commander you control to make you pay its cost."
+   ]
+  ]
+ },
+ "Mindcrank": {
+  "scryfall_name": "Mindcrank",
+  "oracle_id": "c73c1d91-0163-49c6-832a-b9327e7a2c9b",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2017-11-17",
+    "Damage dealt to an opponent usually causes that opponent to lose life. An opponent paying life also causes loss of life."
+   ]
+  ]
+ }
+}

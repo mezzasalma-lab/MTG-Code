@@ -1,0 +1,20 @@
+PASS - A1 carta do exilio que NAO expira neste turno (prazo 8) tambem vai ANTES da mao: Lotho entra, o Mahadi espera, Pact Boon cria 1 Treasure 
+PASS - A2 chave desligada = comportamento da rodada anterior: so' as que expiram neste turno vao antes; a que pode esperar fica depois da mao 
+PASS - A3 Inspired Tinkering com so' 3 de mana sobrando: a carta recem-exilada (Lotho, 2) entra ANTES do Zulaport da mao; Pact Boon +1; o Zulaport fica na mao 
+PASS - A4 chave desligada (so' as que expiram vao antes): o Zulaport da mao vai primeiro e a carta da Tinkering fica esperando no pool, sem Pact Boon 
+PASS - A5 o comandante continua sendo conjurado antes de tudo, inclusive antes do exilio 
+PASS - A6 varias do exilio (prazo 8): todas entram, com 1 Pact Boon por carta (3 Treasures) antes de qualquer carta da mao 
+PASS - D1 Dictate em campo, SEM Mahadi/Plunderer: sacrifica os 5 animados (custa 5 Treasures): 5 criaturas mortas, 5 gatilhos do Dictate = 5 x 3 oponentes sacrificando uma criatura (proxy) 
+PASS - D2 chave desligada = comportamento da rodada anterior: so' Dictate nao aciona o farm 
+PASS - D3 Dictate + Mahadi: sacrifica (de graca, o Mahadi repoe) e o contador 'so' por causa do Dictate' fica em 0 
+PASS - D4 sem Dictate, Mahadi nem Plunderer: nao sacrifica (a regra da rodada anterior continua) 
+PASS - D5 so' os animados: dos 8 Treasures, 5 animados saem e os 3 criados depois do combate ficam 
+PASS - D6 ordem: o Dictate (custo 5) e' pago pelos 5 terrenos (nenhum animado gasto), e os 6 animados depois morrem com ele em campo = 6 gatilhos (pagar com os Treasures, como no T8, perderia esses gatilhos) 
+PASS - D7 integracao: Dictate + Zulaport + Sephiroth, 6 animados: 6 gatilhos do Dictate, 6 drains do Zulaport e o Sephiroth vira na 4a morte 
+PASS - D8 sequencia real combat_step -> main_phase (Dictate pago com terrenos) -> farm -> end_step: 6 animados, 6 gatilhos do Dictate, 0 animados vivos no fim 
+PASS - I1 (padrao, 1.500 jogos) nenhuma carta duplicada, 0 'animados vivos' no fim do turno, o farm nunca acima dos animados 
+   info I1 padrao: Treasures-criatura sacrificados pelo farm em 1.500 jogos: 1080 (so' por causa do Dictate: 140)
+PASS - I1 (resiliencia, 1.500 jogos) nenhuma carta duplicada, 0 'animados vivos' no fim do turno, o farm nunca acima dos animados 
+   info I1 resiliencia: Treasures-criatura sacrificados pelo farm em 1.500 jogos: 420 (so' por causa do Dictate: 73)
+
+16/16 testes passaram

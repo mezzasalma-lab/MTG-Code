@@ -1,0 +1,18 @@
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  ab_10000_resiliencia.txt
+IGUAL  resumo_ab_10000.md
+IGUAL  edgar_markov_goldfish_v1.py == codigo/..._VIVO_2026-11-04.py
+DIFERE mortes_e_potencial_10000.txt
+(re-simulando o A/B inteiro...)
+IGUAL  ab_2000.txt (re-execucao)
+IGUAL  ab_10000.txt (re-execucao)
+IGUAL  ab_2000_resiliencia.txt (re-execucao)
+IGUAL  ab_10000_resiliencia.txt (re-execucao)
+IGUAL  raw_ab_2000.json.xz (bruto re-simulado identico)
+IGUAL  raw_ab_10000.json.xz (bruto re-simulado identico)
+IGUAL  raw_ab_2000_resiliencia.json.xz (bruto re-simulado identico)
+IGUAL  raw_ab_10000_resiliencia.json.xz (bruto re-simulado identico)
+14/15 saidas byte a byte iguais
+FIM_VERIF

@@ -1,0 +1,2 @@
+referencia (piso 99)           ensaios a seco executados=    0 | Fell Mire jogado como terreno=321 | pagou 3 de vida=0
+ghost (piso 10, GHOST=True)    ensaios a seco executados=  642 | Fell Mire jogado como terreno=321 | pagou 3 de vida=0

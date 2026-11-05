@@ -1,0 +1,149 @@
+{
+ "flags_off": {
+  "FELL_MIRE_LAND_ENABLED": false,
+  "FELL_MIRE_COUNTS_FOR_KEEP": false,
+  "BMC_MODES_NEED_LIFEGAIN": false,
+  "TAPPED_FIRST_COUNTS_MANA": false
+ },
+ "ignora_campos": [
+  "fell_mire_land_plays_total",
+  "fell_mire_paid_total",
+  "fell_mire_tapped_total",
+  "bmc_triggers_total",
+  "bmc_mode1_total",
+  "bmc_mode2_total",
+  "bmc_mode3_total",
+  "bmc_modes_skipped_total"
+ ],
+ "sensibilidade": {
+  "so_fell_terreno": {
+   "FELL_MIRE_LAND_ENABLED": true,
+   "FELL_MIRE_COUNTS_FOR_KEEP": false,
+   "BMC_MODES_NEED_LIFEGAIN": false,
+   "TAPPED_FIRST_COUNTS_MANA": false,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 6,
+   "FELL_MIRE_LIFE_FLOOR": 10,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": true
+  },
+  "so_fell_terreno_e_keep": {
+   "FELL_MIRE_LAND_ENABLED": true,
+   "FELL_MIRE_COUNTS_FOR_KEEP": true,
+   "BMC_MODES_NEED_LIFEGAIN": false,
+   "TAPPED_FIRST_COUNTS_MANA": false,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 6,
+   "FELL_MIRE_LIFE_FLOOR": 10,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": true
+  },
+  "so_bmc": {
+   "FELL_MIRE_LAND_ENABLED": false,
+   "FELL_MIRE_COUNTS_FOR_KEEP": false,
+   "BMC_MODES_NEED_LIFEGAIN": true,
+   "TAPPED_FIRST_COUNTS_MANA": false,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 6,
+   "FELL_MIRE_LIFE_FLOOR": 10,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": true
+  },
+  "so_tapped_first_mana": {
+   "FELL_MIRE_LAND_ENABLED": false,
+   "FELL_MIRE_COUNTS_FOR_KEEP": false,
+   "BMC_MODES_NEED_LIFEGAIN": false,
+   "TAPPED_FIRST_COUNTS_MANA": true,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 6,
+   "FELL_MIRE_LIFE_FLOOR": 10,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": true
+  },
+  "fell_max_terrenos_4": {
+   "FELL_MIRE_LAND_ENABLED": true,
+   "FELL_MIRE_COUNTS_FOR_KEEP": true,
+   "BMC_MODES_NEED_LIFEGAIN": true,
+   "TAPPED_FIRST_COUNTS_MANA": true,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 4,
+   "FELL_MIRE_LIFE_FLOOR": 10,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": true
+  },
+  "fell_max_terrenos_99": {
+   "FELL_MIRE_LAND_ENABLED": true,
+   "FELL_MIRE_COUNTS_FOR_KEEP": true,
+   "BMC_MODES_NEED_LIFEGAIN": true,
+   "TAPPED_FIRST_COUNTS_MANA": true,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 99,
+   "FELL_MIRE_LIFE_FLOOR": 10,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": true
+  },
+  "fell_nunca_paga_vida": {
+   "FELL_MIRE_LAND_ENABLED": true,
+   "FELL_MIRE_COUNTS_FOR_KEEP": true,
+   "BMC_MODES_NEED_LIFEGAIN": true,
+   "TAPPED_FIRST_COUNTS_MANA": true,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 6,
+   "FELL_MIRE_LIFE_FLOOR": 99,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": true
+  },
+  "fell_piso_vida_4": {
+   "FELL_MIRE_LAND_ENABLED": true,
+   "FELL_MIRE_COUNTS_FOR_KEEP": true,
+   "BMC_MODES_NEED_LIFEGAIN": true,
+   "TAPPED_FIRST_COUNTS_MANA": true,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 6,
+   "FELL_MIRE_LIFE_FLOOR": 4,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": true
+  },
+  "ref_sem_terreno_virado_primeiro": {
+   "FELL_MIRE_LAND_ENABLED": false,
+   "FELL_MIRE_COUNTS_FOR_KEEP": false,
+   "BMC_MODES_NEED_LIFEGAIN": false,
+   "TAPPED_FIRST_COUNTS_MANA": false,
+   "FELL_MIRE_MAX_LANDS_IN_PLAY": 6,
+   "FELL_MIRE_LIFE_FLOOR": 10,
+   "FELL_MIRE_GHOST": false,
+   "TAPPED_LAND_FIRST_ENABLED": false
+  }
+ },
+ "turns": 8,
+ "extra": null,
+ "ghost": {
+  "FELL_MIRE_GHOST": true,
+  "FELL_MIRE_LIFE_FLOOR": 10
+ },
+ "ghost_base": {
+  "FELL_MIRE_LAND_ENABLED": true,
+  "FELL_MIRE_COUNTS_FOR_KEEP": true,
+  "BMC_MODES_NEED_LIFEGAIN": true,
+  "TAPPED_FIRST_COUNTS_MANA": true,
+  "FELL_MIRE_MAX_LANDS_IN_PLAY": 6,
+  "FELL_MIRE_LIFE_FLOOR": 99,
+  "FELL_MIRE_GHOST": false
+ },
+ "destaque": [
+  "commander_cast_turn__ate_T2",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "len_battlefield",
+  "rat_tokens",
+  "tokens_created_total",
+  "proxy_damage_total",
+  "life",
+  "cards_drawn_extra",
+  "treasure_tokens",
+  "mercenary_tokens",
+  "interaction_spells_cast_total",
+  "lands_played_total",
+  "mulligans",
+  "fell_mire_land_plays_total",
+  "fell_mire_paid_total",
+  "bmc_mode1_total",
+  "bmc_mode2_total",
+  "bmc_mode3_total"
+ ],
+ "deck": "rat-king-verminister",
+ "sim": "ratking_goldfish_v1.py",
+ "snapshot": "codigo/ratking_goldfish_v1_ANTES_7639380.py"
+}

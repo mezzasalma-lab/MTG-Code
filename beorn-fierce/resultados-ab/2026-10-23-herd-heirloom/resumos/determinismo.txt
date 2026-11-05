@@ -1,0 +1,4 @@
+Determinismo entre processos (varredura-2026-10-05/scripts/det_check.sh beorn-fierce beorn_goldfish_v1.py 8 1500): 3 PYTHONHASHSEED (11, 22, 33) x 1.500 sementes (1.000.000+i) x 2 modos, campo a campo, estado final, com as 4 chaves da rodada LIGADAS (padrao).
+beorn-fierce               padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+beorn-fierce               resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+(controle de nao-vacuidade: com o Heirloom ligado o resultado difere do baralho de antes; ver ab_*.txt, 'partidas com resultado IDENTICO')

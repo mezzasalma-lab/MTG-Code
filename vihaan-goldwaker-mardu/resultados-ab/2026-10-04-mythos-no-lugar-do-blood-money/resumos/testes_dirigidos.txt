@@ -1,0 +1,3 @@
+estados naturais: 2400 (turnos 4/6/8 x 400 sementes x 2 modos) | com algum permanente nao-terreno: 2352 | com motor (Vihaan/Mahadi/Mayhem Devil) em campo: 2107
+(A) divergencias simulador x harness: 0
+(B) violacoes da resolucao forcada: 0 | permanentes minhas sacrificadas no total: 12687

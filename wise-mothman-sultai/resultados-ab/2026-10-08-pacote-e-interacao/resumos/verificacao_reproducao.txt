@@ -1,0 +1,12 @@
+IGUAL  tabela_pacote.md (refeita so' dos brutos)
+IGUAL  pacotes_entre_si.md (refeito so' dos brutos)
+IGUAL  gy_oponentes.md (refeito so' dos brutos)
+IGUAL  replicacao.txt (refeito so' dos brutos)
+IGUAL  indice_dados.md (refeito so' dos brutos)
+re-simulando base e p1 (1.000 sementes x 2 modos) com o simulador congelado...
+padrao       base            : 1000/1000 identicas
+padrao       p1_offer_negate : 1000/1000 identicas
+resiliencia  base            : 1000/1000 identicas
+resiliencia  p1_offer_negate : 1000/1000 identicas
+IGUAL  amostra re-simulada == bruto (4/4 series)
+6/6 saidas iguais

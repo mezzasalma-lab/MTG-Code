@@ -1,0 +1,247 @@
+{
+ "Estrid's Invocation": {
+  "scryfall_uri": "https://scryfall.com/card/mh3/269/estrids-invocation?utm_source=api",
+  "oracle_id": "7f5f10ee-6428-4053-8824-3bc70420ec2c",
+  "rulings": [
+   {
+    "date": "2018-07-13",
+    "text": "If Estrid's Invocation doesn't copy an enchantment as it enters the battlefield, it won't have the ability to exile it at the beginning of your upkeep. You can't have it copy itself to get this ability."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "Once Estrid's Invocation returns, it's considered a new object with no relation to the object that it was. You must choose an enchantment that's currently on the battlefield to copy (or to not copy anything). Auras that were attached to it will be put into their owners' graveyards. Any counters that were on it cease to exist."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "Estrid's Invocation copies exactly what was printed on the original enchantment (unless that enchantment is copying something else or is a token; see below). It doesn't copy whether that enchantment is tapped or untapped, whether it has any counters on it or any Auras attached to it, or any non-copy effects that have changed its types, color, or so on."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the copied enchantment has {X} in its mana cost, X is considered to be 0."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the chosen enchantment is copying something else (for example, if the chosen enchantment is another Estrid's Invocation), then Estrid's Invocation enters the battlefield as whatever the chosen enchantment copied."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the chosen enchantment is a token, Estrid's Invocation copies the original characteristics of that token as stated by the effect that created the token. Estrid's Invocation doesn't become a token in this case."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the chosen enchantment is an Aura, you choose what it enchants just before Estrid's Invocation enters the battlefield. The chosen recipient must be able to legally be enchanted by the Aura Estrid's Invocation will be. This doesn't target the player or permanent it will enchant, so an opponent's permanent with hexproof may be chosen this way."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the chosen enchantment is an Aura but Estrid's Invocation won't be able to legally enchant anything, Estrid's Invocation remains in its current zone and doesn't enter the battlefield. If Estrid's Invocation is on the stack, it's put into its owner's graveyard."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "Any enters-the-battlefield abilities of the copied enchantment will trigger when Estrid's Invocation enters the battlefield. Any \"as [this enchantment] enters the battlefield\" or \"[this enchantment] enters the battlefield with\" abilities of the chosen enchantment will also work."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If Estrid's Invocation somehow enters the battlefield at the same time as another enchantment, it can't become a copy of that enchantment. You may choose only an enchantment that's already on the battlefield."
+   }
+  ]
+ },
+ "Satsuki, the Living Lore": {
+  "scryfall_uri": "https://scryfall.com/card/neo/235/satsuki-the-living-lore?utm_source=api",
+  "oracle_id": "e41be9ad-3717-4f25-a8e0-c9947a2a0227",
+  "rulings": [
+   {
+    "date": "2022-02-18",
+    "text": "Putting a lore counter on a Saga will usually cause the next chapter ability to trigger. If it already has a number of lore counters on it equal to its final chapter number however, no abilities trigger. In particular, this doesn't cause the final chapter ability to trigger again."
+   }
+  ]
+ },
+ "O'aka, Traveling Merchant": {
+  "scryfall_uri": "https://scryfall.com/card/fic/39/oaka-traveling-merchant?utm_source=api",
+  "oracle_id": "ed0fc294-de9b-4c64-b97d-e3a41fd2f46a",
+  "rulings": []
+ },
+ "Resourceful Defense": {
+  "scryfall_uri": "https://scryfall.com/card/eoc/67/resourceful-defense?utm_source=api",
+  "oracle_id": "83e78565-e61f-4bbc-b834-f47941f7e3ec",
+  "rulings": []
+ },
+ "Jugan Defends the Temple // Remnant of the Rising Star": {
+  "scryfall_uri": "https://scryfall.com/card/neo/194/jugan-defends-the-temple-remnant-of-the-rising-star?utm_source=api",
+  "oracle_id": "e70ac420-8540-4a69-820f-ae3e0274ca1a",
+  "rulings": [
+   {
+    "date": "2022-02-18",
+    "text": "Each face of a transforming double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a transforming double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "Each transforming double-faced card in this set is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "The mana value of a transforming double-faced card is the mana value of its front face, no matter which face is up."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "The back face of a transforming double-faced card usually has a color indicator that defines its color."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "A transforming double-faced card enters the battlefield with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or you cast it transformed, in which case it enters with its back face up."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter the battlefield at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Azusa's Many Journeys, the chapter III ability will cause it to be exiled and then remain in exile."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "An Aura controlled by an opponent does not cause a creature you control to be modified."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "A creature with a counter on it is considered modified no matter what kind of counter it is or which player put it on that creature."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "A creature that is equipped is considered modified no matter who controls the Equipment that's attached to it."
+   }
+  ]
+ },
+ "Summon: Fenrir": {
+  "scryfall_uri": "https://scryfall.com/card/fin/203/summon:-fenrir?utm_source=api",
+  "oracle_id": "3509171e-8d7d-4e9e-97a1-58e6c7d225ed",
+  "rulings": [
+   {
+    "date": "2025-06-06",
+    "text": "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the chapter III ability to trigger, but chapters I and II won't trigger again."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Saga creatures have two sections to their text boxes. The first section, above the type line, contains their chapter abilities, and the second section, below the type line, contains any other abilities (or italicized flavor text). Any abilities in the latter section aren't chapter abilities and apply no matter how many lore counters are on the creature."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "As a Saga enters, its controller puts a lore counter on it. As your first main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Due to a rules change that takes effect with this release (see below for details), a Saga that somehow loses all of its chapter abilities will not be sacrificed as a state-based action. It will also not gain a lore counter at the beginning of each of its controller's first main phases."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   },
+   {
+    "date": "2025-06-06",
+    "text": "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives more lore counters."
+   }
+  ]
+ },
+ "Birth of the Imperium": {
+  "scryfall_uri": "https://scryfall.com/card/40k/107/birth-of-the-imperium?utm_source=api",
+  "oracle_id": "7f0544e3-965f-4b12-baaf-d7dfea8d4d41",
+  "rulings": []
+ },
+ "Ugin, Eye of the Storms": {
+  "scryfall_uri": "https://scryfall.com/card/tdm/1/ugin-eye-of-the-storms?utm_source=api",
+  "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
+  "rulings": [
+   {
+    "date": "2025-04-04",
+    "text": "You must follow the normal timing permissions and restrictions of each spell you cast using the permission granted by Ugin’s last ability."
+   },
+   {
+    "date": "2025-04-04",
+    "text": "If you cast a spell “without paying its mana cost,” you can’t choose to cast it for any alternative costs. You can, however, pay additional costs, such as kicker costs. If the spell has any mandatory additional costs those must be paid to cast the spell."
+   },
+   {
+    "date": "2025-04-04",
+    "text": "If a spell has {X} in its mana cost, you must choose 0 as the value of X when casting it without paying its mana cost."
+   }
+  ]
+ },
+ "Elspeth Conquers Death": {
+  "scryfall_uri": "https://scryfall.com/card/thb/13/elspeth-conquers-death?utm_source=api",
+  "oracle_id": "40c88392-2aa7-4e12-86a4-8d680219e670",
+  "rulings": [
+   {
+    "date": "2020-01-24",
+    "text": "If a creature on the battlefield has {X} in its mana cost, X is considered to be 0."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases (such as that of this Saga's second chapter), then apply any cost reductions. The mana value of the spell remains unchanged, no matter what the total cost to cast it was."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "The effect of the second chapter lasts until your next turn even if this Saga leaves the battlefield before then."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "You choose which kind of counter to put on the returned permanent after it has entered the battlefield. You may put a +1/+1 counter on a planeswalker or a loyalty counter on a creature, but this isn't normally going to have any effect."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "In a multiplayer game, if you leave the game after this Saga's second chapter ability resolves but before your next turn begins, its effect lasts until your next turn would have begun. It neither expires immediately nor lasts indefinitely."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the III chapter ability to trigger, but I and II won't trigger again."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives lore counters. "
+   },
+   {
+    "date": "2020-01-24",
+    "text": "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   }
+  ]
+ },
+ "Tom Bombadil": {
+  "scryfall_uri": "https://scryfall.com/card/ltr/234/tom-bombadil?utm_source=api",
+  "oracle_id": "89a2d5bc-df06-47e8-8b4a-6d1f0a63c78d",
+  "rulings": [
+   {
+    "date": "2023-06-16",
+    "text": "An ability that triggers when another ability resolves, such as Tom Bombadil's triggered ability, triggers when all of its instructions (as modified by applicable replacement effects) have been followed and it has been removed from the stack. For example, if Tom Bombadil is returned to the battlefield by the final chapter ability of Elspeth Conquers Death, it will be on the battlefield in time to see that final chapter ability finish resolving and get removed from the stack, and thus Tom Bombadil's last ability will trigger."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "Damage dealt to creatures remains on those creatures until the cleanup step or until an effect removes that damage. If you control Tom Bombadil with at least 4 damage on it as well as a single Saga which has four or more lore counters on it, and that Saga leaves the battlefield later in the turn, Tom Bombadil will be destroyed. This will be true even if that Saga leaves the battlefield as a result of its final chapter ability leaving the stack; state-based actions will be checked before Tom Bombadil's triggered ability could get you another Saga."
+   },
+   {
+    "date": "2023-06-16",
+    "text": "The final chapter ability of a Saga is the ability with the greatest chapter number among chapter abilities that Saga has."
+   }
+  ]
+ }
+}

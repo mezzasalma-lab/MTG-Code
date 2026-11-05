@@ -1,0 +1,10 @@
+T 1: PWs 0 [] | terrenos 1 | mana(ini) 0 | Tam nao | mao 7 | outros []
+T 2: PWs 0 [] | terrenos 2 | mana(ini) 1 | Tam nao | mao 7 | outros []
+T 3: PWs 0 [] | terrenos 3 | mana(ini) 2 | Tam sim | mao 7 | outros ['Tam, the Possibility']
+T 4: PWs 1 [('Nissa', 4)] | terrenos 4 | mana(ini) 3 | Tam sim | mao 6 | outros ['Tam, the Possibility', 'Horror Token']
+T 5: PWs 1 [('Nissa', 5)] | terrenos 5 | mana(ini) 4 | Tam sim | mao 5 | outros ['Tam, the Possibility', 'Horror Token', 'Ichormoon Gauntlet', 'Horror Token']
+T 6: PWs 2 [('Nissa', 7), ('Elspeth', 5)] | terrenos 6 | mana(ini) 5 | Tam sim | mao 4 | outros ['Tam, the Possibility', 'Horror Token', 'Ichormoon Gauntlet', 'Horror Token', 'Soldier Token', 'Soldier Token', 'Soldier Token', 'Horror Token']
+T 7: PWs 4 [('Nissa', 10), ('Elspeth', 8), ('Teferi', 5), ('Ajani', 6)] | terrenos 7 | mana(ini) 7 | Tam sim | mao 2 | outros ['Tam, the Possibility', 'Horror Token', 'Ichormoon Gauntlet', 'Horror Token', 'Soldier Token', 'Soldier Token', 'Soldier Token', 'Horror Token', 'Soldier Token']
+T 8: PWs 4 [('Elspeth', 4), ('Teferi', 8), ('Ajani', 9), ('Garruk', 8)] | terrenos 8 | mana(ini) 9 | Tam sim | mao 0 | outros ['Tam, the Possibility', 'Horror Token', 'Ichormoon Gauntlet', 'Horror Token', 'Soldier Token', 'Soldier Token', 'Soldier Token', 'Horror Token', 'Soldier Token']
+T 9: PWs 4 [('Elspeth', 12), ('Teferi', 15), ('Ajani', 16), ('Garruk', 15)] | terrenos 9 | mana(ini) 11 | Tam sim | mao 0 | outros ['Tam, the Possibility', 'Horror Token', 'Ichormoon Gauntlet', 'Horror Token', 'Soldier Token', 'Soldier Token', 'Soldier Token', 'Horror Token', 'Soldier Token']
+FIM da partida: mesa limpa no turno 9

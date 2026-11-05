@@ -317,6 +317,16 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
     - Morte do planeswalker (lealdade chega a 0, ou removido por remoção do
       oponente se esse simulador já rastreia isso) rastreada e refletida no
       board.
+    - **Janela de ativação (achado 2026-09-25, Prismatic Bridge):** todo PW
+      que entra durante o main phase (conjurado da mão, posto em campo por
+      tutor/saga, ficha-cópia) pode ativar **no mesmo turno**. Não existe
+      doença de invocação pra lealdade (CR 606.3: "any time they have
+      priority and the stack is empty during a main phase of their turn").
+      O bug achado foi de ORQUESTRAÇÃO (Regra #6): a única passada de
+      ativação rodava ANTES do loop de conjuração, então PW conjurado só
+      ativava no turno seguinte. A correção subiu as ativações em +54% e os
+      ultimates em +61%. Em todo simulador com PW, conferir que existe uma
+      passada DEPOIS de cada entrada no main phase, não só a do começo.
 
 13. **Cartas com "níveis" — Classes e Sagas** — citação literal do usuário
     (2026-08-28), depois de eu deixar Caretaker's Talent (Hei Bai) e
@@ -345,6 +355,12 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
       regra — qualquer Class/Saga em qualquer decklist precisa ter TODOS
       os níveis/capítulos conferidos contra o oráculo real antes de
       decidir o que é modelável.
+    - **Saga também recebe lore de outras fontes (achado 2026-09-25):**
+      proliferate (CR 701.34a, "any number of permanents ... that have a
+      counter") e "double the counters" (Deepglow Skate) põem lore, e o
+      capítulo dispara igual (CR 714.2b). É ESCOLHA do jogador (pode deixar
+      a saga de fora), então a política tem que decidir se o capítulo vale
+      agora, e não aplicar sempre nem nunca.
 
 **Prática obrigatória:** antes de declarar QUALQUER simulador (novo ou já
 existente, numa auditoria de revisão) completo, rodar essa checklist e citar
@@ -415,6 +431,297 @@ pareado (`urdragon_*_test.py` e equivalentes de outros decks):**
 
 ---
 
+## Redução de custo só abate mana GENÉRICO — usar o `mana_cost` real
+
+Achado real (Prismatic Bridge, 2026-09-25): o desconto do Tamiyo's
+Notebook ("Spells you cast cost {2} less") usava `mv - len(colors)` como
+parte genérica. Isso erra toda carta com 2+ símbolos da mesma cor. Nicol
+Bolas, Dragon-God é {U}{B}{B}{B}{R}: genérico 0, e a aproximação dava 2.
+Counterspell {U}{U} caía pra 1. Redução de custo ("costs {N} less") só
+abate genérico (CR 601.2f). Em todo simulador com redutor de custo, montar
+uma tabela de genérico real a partir do `mana_cost` do cache (híbrido e
+phyrexiano contam como símbolo colorido). Nunca derivar o genérico da
+identidade de cor.
+
+## A/B de carta: nunca comparar MÉDIA de contagem sem teto
+
+Achado real (Prismatic Bridge, 2026-09-25): em partidas já ganhas o motor
+entra em loop (Oko −5 copiando Doubling Season, Gauntlet −12, Chain Veil).
+Aí aparecem 80+ "ultimates" e lealdade na casa dos bilhões numa partida só.
+Uma carta que acelera a chegada nesse estado em 1 partida a mais em 100
+move a média de ultimates em +2. O número parece enorme, mas não diz nada
+sobre o jogo real. Pra decidir inclusão ou corte, usar só métricas
+limitadas por partida:
+- turno do 1º ultimate;
+- P(ultimate até o T8);
+- turnos com ultimate (no máximo 10);
+- morte/vida no modo de resiliência;
+- PW-turnos vivos.
+Sempre reportar diferença pareada com IC95%, e contagem ilimitada só como
+métrica de uso da carta.
+
+
+## Gatilho do turno do OPONENTE modelado no meu turno: a criatura criada nasce "ontem"
+
+Achado real (Ur-Dragon + Draconic Visitor, 2026-09-25). Smothering Tithe
+("Whenever an opponent draws a card...") é modelada como 1 Treasure no
+MEU upkeep. Pra Treasure isso é neutro: a mana fica disponível no meu
+turno do mesmo jeito. Mas quando uma substituição transforma o produto em
+CRIATURA (Draconic Visitor: Treasure → Dragão 5/5), a posição do proxy
+muda o resultado. A ficha nascia doente no meu turno, sendo que na mesa
+real ela entrou no turno do oponente e ataca no meu. Regra: todo proxy de
+gatilho que acontece fora do meu turno precisa marcar o turno de entrada
+da ficha como `turno - 1` (sem doença de invocação), nunca `turno`.
+
+## Métrica de letalidade: "each opponent loses N" vale N × oponentes
+
+Achado real (Vihaan, 2026-09-25). O contador histórico de drain somava 1
+por gatilho, seja "each opponent loses 1" (Zulaport) ou "target opponent
+loses 1" (Sephiroth). Pra uma métrica de letalidade da mesa (3 × 40 =
+120) isso mistura unidades. Dano de combate e "target"/"any target"
+contam N; "each opponent" conta N × NUM_OPPONENTS. Manter o contador
+antigo pra comparabilidade histórica e criar um contador novo com peso.
+
+## A/B de carta cara ou tardia: condicional + decomposição, não só o incondicional
+
+Achado real (Draconic Visitor, 2026-09-25). A mesma carta resolve em 44%
+das partidas no Ur-Dragon (motor de compra e redutores) e em 8% no Vihaan.
+O A/B incondicional dá "neutro" nos dois, mas por motivos opostos: diluído
+no Vihaan, e efeito teto no Ur-Dragon (as partidas em que ela resolve já
+estão ganhas). Pra toda carta candidata de MV ≥ 5 ou dependente de
+motor, reportar também:
+1. a frequência de resolução por deck;
+2. o condicional, só nas seeds em que ela entrou, com horizonte maior se
+   ela chega tarde;
+3. a **decomposição**: a carta × um corpo genérico de mesmo custo, cor e
+   tipo, no mesmo slot, só no harness. A diferença é o valor do TEXTO
+   naquele deck. É isso que responde "em qual deck ela é melhor".
+
+## A/B de carta: dano por limiar, proteção por dano recebido, e controle de entrada
+
+Achado real (Prismatic Bridge, 2026-09-29, Dihada/Guff/Vronos/Sarkhan).
+1. **Dano de combate: usar P(dano ≥ 40) e P(dano ≥ 120), não a média.** O proxy
+   é dominado pelas partidas em loop. A média com teto de 1000 dava sobre a
+   base um sinal que contradizia o efeito real da Sarkhan (Δ −5,1 ±5,9 contra
+   +6,2 pp de P(dano ≥ 40) sobre o PW inerte). 40 = uma vida de oponente; 120 =
+   a mesa de 3.
+2. **Carta de proteção (phase out, hexproof) não aparece em "PWs mortos".** O
+   oponente simulado bate no de maior lealdade fora de fase e desvia o dano
+   pro resto, então o total de mortes não muda. Medir dano recebido pelos
+   permanentes protegidos, soma de lealdade no fim e comparar a carta com a
+   MESMA carta sem a habilidade (chave `CAND_POLICY` desligada no harness).
+3. **Sempre incluir o corpo genérico (PW inerte).** Ele separa "é mais um PW"
+   e o valor do slot cortado do valor do texto. Sem ele o A/B contra
+   Arena Rector misturava tudo (o slot vale ~0,065 de 1º ult na resiliência).
+4. **Sensibilidade por chave de política**, uma de cada vez. Mostrou que o
+   valor da Dihada vem todo do −3, o da Guff do gatilho e não do −3, e o da
+   Sarkhan do +1 (animação) só no dano.
+
+## Processo: resposta idêntica em todos os cenários exige controle positivo
+
+Os 6 resultados do Commander Spellbook (base, 4 cartas, as 4 juntas) tinham
+exatamente o mesmo tamanho em bytes. Isso pode ser "nenhuma das cartas está
+em combo" ou "a requisição não mudou". Antes de afirmar "0 combos novos",
+rodar um controle positivo: remover uma carta que ESTÁ em combos (a Chain
+Veil derrubou 4) e ver a resposta mudar. Guardar o script (`csb.py`), não só
+os JSONs.
+
+## Processo: nunca `pkill -f`/`pgrep -f` com padrão que aparece no próprio comando
+
+Aconteceu 2× nesta sessão. O padrão aparece na linha de comando do
+próprio shell, então o `pgrep` casou com ele e o `pkill` derrubou o shell
+junto (exit 144). Listar com `ps aux | grep ... | grep -v grep` e matar
+por PID.
+
+Reincidência (2026-09-28, mais 2×): `ps aux | grep "[a]b_x" | xargs kill`
+no MESMO comando que depois relança `nohup python3 ab_x ...` também mata o
+shell: o truque do colchete impede o grep de casar consigo mesmo, mas a
+linha do `bash -c` contém o nome do script por extenso mais adiante. Um
+laço `until ! pgrep -f "regress.py std"` também nunca termina, pelo mesmo
+motivo. Regra: **listar PIDs num comando, matar por número em OUTRO
+comando**; nunca listar/matar e relançar na mesma chamada.
+
+## Efeito que transforma permanente em TERRENO não dá habilidade de mana
+
+Achado real (Toph, 2026-09-26). O simulador somava 1 de mana pra todo
+terreno, e a Toph ("Nontoken artifacts you control are lands ... (They
+don't gain the ability to {T} for mana.)") transforma todo artefato em
+terreno. Resultado: Skullclamp, Crucible e KCI geravam mana, e Sol Ring e
+Great Henge caíam de 2 pra 1 porque o ramo "terreno" vinha antes do ramo
+"rock". Regra: mana é **por permanente**, pela melhor habilidade de mana
+que ele TEM. As fontes possíveis são:
+- habilidade própria;
+- tipo básico de terreno (Forest dá {G}, inclusive o tipo concedido por
+  Yavimaya, Prismatic Omen, Dryad ou Ashaya);
+- concessão explícita (Wrenn and Realmbreaker, Great Divide Guide,
+  Enduring Vitality).
+
+Todo deck com "X are lands" (Toph, Ashaya, Mycosynth + Toph) precisa
+desse modelo.
+
+## Mana gerada por gatilho precisa ser gastável na mesma fase
+
+Achado real (Toph, 2026-09-26). A mana de Lotus Cobra/Nissa (landfall) e
+do Krark-Clan Ironworks ia só pra uma métrica `mana_generated_extra` e
+nunca podia pagar nada. Esse é o inverso da "mana fantasma" da taxonomia:
+a mana existe mas não pode ser usada. Treasure, por outro lado, nunca era
+sacrificado e virava 1 mana por turno pra sempre. Regra: toda mana gerada
+entra num pool flutuante que esvazia ao fim da fase, e todo recurso gasto
+sai de campo. Precisa haver uma fase principal **pós-combate** pra mana de
+combate (untap do Avatar Kyoshi, Sword of Feast and Famine).
+
+## Fetch: a própria fetch dispara landfall
+
+Achado real (Toph, 2026-09-26). A fetch entra (landfall 1), é quebrada, e
+o terreno buscado entra (landfall 2). O simulador pulava a entrada da
+fetch. Além disso, "Search for a Mountain or Plains card" aceita qualquer
+carta com o TIPO, não só básico. Vale pra todo deck com landfall.
+
+## Checagem de cor: uma fonte paga UM pip (condição de Hall)
+
+Achado real (Ur-Dragon, 2026-09-28). `has_color_sources_for` checava cada
+cor sozinha. Um Command Tower contava como fonte de W, U, B, R e G ao
+mesmo tempo, então Command Tower + 5 Forest "pagava" WUBRG. O certo:
+- uma entrada por fonte pronta, com o conjunto de cores que ela produz;
+- pra todo subconjunto S das cores exigidas, pips(S) ≤ fontes que
+  produzem alguma cor de S.
+Mana restrita que é colorida conta como fonte só pro tipo de magia
+permitido: Orb of Dragonkind ("two mana in any combination of colors"),
+Cavern, Haven. Junto com "redução só abate genérico" (acima), é o par que
+decide se carta de 5 cores é conjurável.
+
+## "Look at the top N" nunca é busca na biblioteca inteira
+
+Achado real (Ur-Dragon, 2026-09-28). O sacrifício da Orb of Dragonkind
+("Look at the top seven cards ... reveal a Dragon card from among them")
+buscava na biblioteca inteira: virou tutor completo. O risco real da linha
+é o topo 7 vir sem alvo. Nesse caso a carta sai por nada, e o resto vai
+pro fundo na ordem que o oráculo manda.
+
+## Categoria nova no modo de resiliência reabre todo 📊 que citava a ausência dela
+
+Achado real (Ur-Dragon, 2026-09-28). Em 2026-08-29, Cavern of Souls
+("can't be countered"), Rhythm of the Wild, Dragonlord Dromoka ("Your
+opponents can't cast spells during your turn"), Heroic Intervention,
+Teferi's Protection e o shroud do Lightning Greaves foram marcados 📊
+"sem contramágica/remoção de oponente". Em 2026-09-20 o modo de
+resiliência ganhou contramágica, wipe e remoção, e ninguém voltou nessas
+cláusulas. Heroic e Teferi ficaram mortas na mão durante esses 8 dias
+de modo de resiliência.
+
+Regra: ao adicionar uma categoria de ação de oponente (contramágica,
+wipe, remoção, ataque, descarte, hate de cemitério) a qualquer simulador,
+grepar no MESMO arquivo toda nota 📊/`opponent_dependent`/`interaction`
+que cita essa categoria. Ligar as respostas no mesmo commit.
+Consequência pra A/B: a carta cujo valor está nessas cláusulas aparece
+subestimada. Cortar por esse número é o erro da Regra #5.
+
+## Compra obrigatória em massa: modelar deck-out (CR 704.5b) e a escolha de atacantes
+
+Achado real (Ur-Dragon, 2026-09-28). "Draw that many cards" da Ur-Dragon
+é obrigatório e resolve na declaração de ataque, antes do dano. O
+simulador só levantava uma flag `library_emptied` e seguia, marcando
+letal no fim do turno. Resultado: 16% das partidas eram "letais" num turno
+em que o piloto teria decado antes do dano.
+
+Regra, pra todo simulador com compra em massa (gatilho de ataque,
+ETB-draw por ficha, "draw X"):
+1. comprar de grimório vazio = derrota; a partida para;
+2. letal só vale se o dano já tinha passado do limiar antes da compra
+   fatal;
+3. o piloto controla a alavanca real (quantos atacam, quais compras
+   opcionais aceita) e usa isso pra não decar.
+
+## Treasure é PERMANENTE: estoque persistente, conta pra qualquer "Sacrifice N Treasures"
+
+Achado real (Ur-Dragon, 2026-09-28, avaliando a Magda). O simulador
+convertia Treasure em mana na hora (o que sobrava sumia no fim do turno) e
+a Magda tinha um contador separado só com os Treasures DELA. Erros: o
+Treasure do Goldspan/Old Gnawbone/Ancient Copper/Smothering Tithe nunca
+contava pro "Sacrifice five Treasures", e Treasure não gasto não passava
+pro turno seguinte. Corrigido com `treasure_stock`: o estoque entra no
+total de mana, gasta só o que foi preciso (terrenos e rocks primeiro), o
+resto persiste, e o tutor sacrifica o que sobrou. Efeito medido: letal até
+o T8 50,4% → 54,7%, comandante 0,13 turno antes. Vale pra todo deck com
+Treasure (Vihaan, Megatron, Toph, Ulalek...): grep de `bonus_mana_pool` em
+código de Treasure.
+
+## Changeling é Dwarf/Dragão/tudo, em toda zona: varrer o conceito, não a carta
+
+Achado real (Ur-Dragon, 2026-09-28). Magda dispara em "a Dwarf you control
+becomes tapped". Firdoch Core e Morophon têm Changeling, então são Dwarf.
+O simulador só conhecia o Firdoch; o Morophon atacando (vira) não gerava
+Treasure e a Magda não dava +1/+0 a nenhum dos dois. Regra: pra todo
+gatilho/estático por tipo de criatura, listar por script, em `type_line` +
+`oracle_text` ao vivo, quem satisfaz (Changeling inclusive), e propagar pra
+fichas-cópia (Miirym) e pro Sarkhan, Soul Aflame copiando.
+
+## Política de descarte do cleanup antes da comandante
+
+Achado real (Ur-Dragon, 2026-09-28, avaliando a Tiamat). O descarte pegava
+o menor custo, terreno primeiro, mesmo antes da comandante de 9 estar em
+campo. Com uma carta que põe +5 na mão, isso jogava fora Herald's Horn e
+ramp pra guardar Dragão de 7. Carta que enche a mão só pode ser avaliada
+com uma política de descarte que proteja o plano. Conferir essa política
+antes de rodar A/B de tutor ou draw em massa.
+## Habilidade ativada de tutor: medir a ORDEM na fase antes de concluir que ela "funciona"
+
+Achado real (Prismatic Bridge, 2026-09-29, Sisay). A primeira política pôs a
+busca DEPOIS do loop da mão (só antes quando o alvo custava 6+). Rodou, disparou,
+trouxe PW, e o A/B deu −0,069 de 1º ult. Medindo a outra ordem (busca antes da
+mão, o mana da fase vai primeiro pro tutor) deu −0,086, e no terceiro slot
+mudou o veredito contra o Entrust. Habilidade sem {T} e sem restrição de
+timing tem uma janela de ordem dentro do main phase; a ordem entra no harness
+como chave de política (`@sisay_pre_hand_all`), com as duas medidas no log.
+Outras duas lições do mesmo achado: (1) o oráculo que eu lembrava estava
+errado (poder = maior MV; o real é +1/+1 por cor entre OUTRAS lendárias),
+então buscar ao vivo antes de escrever código não é opcional; (2) uma chamada
+extra de `activate_unactivated_planeswalkers` depois do main phase mudou a
+base sem a carta em campo, só a bit-identidade da lista atual pegou. Chamada
+nova só quando a ação de fato aconteceu (retorno inteiro > 0).
+
+Reincidência de `pgrep -f`: um laço `until [ -f done ] && ! pgrep -f
+bitident.py` dentro de `bash -c` nunca terminou, porque a linha do próprio
+`bash -c` contém "bitident.py". Esperar por ARQUIVO de sinal (`done.txt`
+escrito pelo script), nunca por `pgrep -f` do nome do script.
+
+## Comparar duas cartas que "fazem a mesma coisa": instrumentar a fonte de cada evento e refazer a varredura de prosa
+
+Achado real (Prismatic Bridge, 2026-09-29, Sisay no lugar da Arena Rector). Três erros meus de uma vez, todos pegos só
+porque o usuário propôs uma troca direta e eu fui olhar o que a carta cortada FAZ no simulador:
+1. **Prosa antiga virou "fato".** O log dizia "a lista não tem NENHUM outlet de sacrifício de criatura" e usava isso pra
+   chamar a Arena Rector de carta morta. Liliana −4, Eternal Wanderer −4 e 4 wipes eram outlets de propósito, e o simulador já
+   os modelava. Antes de reusar uma afirmação negativa ("não tem X") de um doc antigo, refazer a varredura ao vivo e
+   grepar `NENHUM|nunca|não tem` nos docs do deck.
+2. **Regex por texto perde efeito escondido em modo alternativo.** A varredura por "each creature" não achou o Damn (o
+   "each" só aparece no overload). Depois da varredura por texto, rodar uma segunda por ALVO ("destroy target", "damage to
+   target") e uma por palavra-chave de modo (overload, kicker, escape).
+3. **Política do simulador que só aparece na fonte do evento.** Instrumentando `_our_creature_leaves` por `source`, a Liliana
+   −4 apareceu sacrificando a Sisay em 8% das entradas, embora o −4 seja escolha do jogador. Toda comparação de duas
+   criaturas deve imprimir de onde vêm as mortes de cada uma (combate, wipe próprio, outlet, wipe de oponente).
+Complemento: "a carta vale pouco no simulador" só vale depois de perguntar qual linha DELIBERADA falta (aqui: Damn/Void Rend na
+própria Arena Rector). Modelei como chave desligada por padrão e medi o teto: −0,009 turno, o que confirmou o A/B em vez de
+mudar a conclusão. Fazer a medição do teto antes de reclamar que o simulador subestima uma carta.
+
+---
+
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos
      estruturais que exigem implementação explícita (não só tag) em qualquer
      simulador que as inclua. -->
+
+
+## Payoff de landfall antes do terreno
+
+Achado real (Mothman, partida manual #1, 2026-10-06; estendido a 5 decks em 2026-10-07). O usuário conjurou Ruin Crab, Mothman e Icetill Explorer e só depois jogou o terreno; os simuladores jogavam
+SEMPRE o terreno antes de conjurar (`play_land` antes de `main_phase`/`cast_loop`), então o payoff de landfall nunca estava em campo quando o terreno do turno entrava (100% das sementes em 4 cenários
+dirigidos no Mothman). É convenção de ordem do motor, não limite da carta (Regra #5): virou chave `LANDFALL_PAYOFF_FIRST`.
+- **Regra de jogo:** com um terreno ainda por jogar, conjurar antes o payoff de landfall que o mana de AGORA já paga (o terreno do turno e os de efeito seguinte disparam). A guarda tem de ser um
+  ENSAIO A SECO (cópia profunda do estado; roda o resto da fase pré-combate na ordem antiga e na nova; o payoff só passa se nada que a ordem antiga conjuraria/jogaria deixar de acontecer, comandante e rochas de mana
+  incluídos). A 1ª versão usava a fórmula `custo do comandante <= mana de agora + 1` e **estava errada**: não conta o mana de landfall já em campo (Lotus Cobra, Provisioner), os land drops extras (Company) nem
+  a rocha de mana de prioridade maior; atrasou o comandante do Beorn de T3 para T4 em 38 de 2.000 partidas pareadas e foi achada só no A/B; no Mothman era cega a COR (Ruin Crab `{U}` gastava o único Island do comandante) e inflou o efeito do payoff-primeiro em cerca de um terço (Ruin Crab +21% → +13%, mesa limpa até T8 +0,9 → +0,6 ponto). Só muda a ORDEM do que o turno já conjuraria.
+- **Efeito além do landfall:** Thranduil's Company ("you may play an additional land") só libera o 2º land drop se entrar ANTES dos terrenos; com a ordem antiga o 2º drop nunca era usado no turno em que ela entra.
+- **Como validar (Regra #1/#10):** chave desligada == snapshot anterior em 20.000 × 2 modos; testes dirigidos (payoff antes do terreno dispara o landfall; chave desligada não; comandante não é deslocado; sem terreno
+  na mão ou terreno já jogado não dispara); A/B pareado 2.000 e 10.000; regressão 20.000 × 2 modos; determinismo com 3 `PYTHONHASHSEED`. Script de varredura: `audit_landfall_ordem.py`.
+- **Cuidado ao implementar:** `copy.deepcopy(state, memo)` com o MESMO `memo` em duas cópias devolve os mesmos objetos da 1ª (a 2ª cópia aliasa a 1ª): criar o `memo` novo a cada cópia (Toph). Usar o MESMO caminho de conjuração do loop da fase principal (no Prismatic Bridge foi preciso extrair `_cast_hand_spell` e `_main_phase_reserved` do `main_phase`, sem mudar nada);
+  funções que só LEEM o estado não podem mexer em contador de estatística (a 1ª versão do Mothman mexia em `self_mill_blocked_total` e a bit-identidade acusou).
+- **Não coberto:** magia que põe terreno em campo (Cultivate, Farseek, Three Visits) conjurada antes de um payoff que o mana também pagaria depois do terreno; terreno que volta ao campo; várias fases principais.

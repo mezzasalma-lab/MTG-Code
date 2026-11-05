@@ -1,0 +1,169 @@
+{
+ "deck": "final-fantasy-scions-spellcraft",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Y'shtola, Night's Blessed",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Gray Merchant of Asphodel + Rite of Replication": {
+     "id": "328-1744",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Naru Meha, Master Wizard + Rite of Replication": {
+     "id": "141-1744",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Archmage Emeritus + Chain of Smog": {
+     "id": "326-610",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite self-discard triggers",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Naru Meha, Master Wizard + Sublime Epiphany": {
+     "id": "141-892",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Mirror-Mad Phantasm + Rite of Replication": {
+     "id": "1744-2084",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Mirror-Mad Phantasm + Sublime Epiphany": {
+     "id": "892-2084",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "G'raha Tia, Scion Reborn",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Gray Merchant of Asphodel + Rite of Replication": {
+     "id": "328-1744",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Naru Meha, Master Wizard + Rite of Replication": {
+     "id": "141-1744",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Archmage Emeritus + Chain of Smog": {
+     "id": "326-610",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite self-discard triggers",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Naru Meha, Master Wizard + Sublime Epiphany": {
+     "id": "141-892",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Mirror-Mad Phantasm + Rite of Replication": {
+     "id": "1744-2084",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Mirror-Mad Phantasm + Sublime Epiphany": {
+     "id": "892-2084",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

@@ -1,0 +1,10 @@
+   padrao: ok
+   resiliencia: ok
+   terrenos devolvidos que dispararam landfall em 600 partidas: 14
+PASS PF1 terreno devolvido + Evolution Sage: proliferate (+1 de lealdade) e contador
+PASS PF2 chave desligada: sem landfall no terreno devolvido
+PASS PF3 sem Evolution Sage: conta o retorno mas nao proliferate
+PASS PF4 criatura devolvida nao dispara landfall
+PASS PF5 integracao: 300 partidas por modo, sem excecao
+
+5/5 testes passaram

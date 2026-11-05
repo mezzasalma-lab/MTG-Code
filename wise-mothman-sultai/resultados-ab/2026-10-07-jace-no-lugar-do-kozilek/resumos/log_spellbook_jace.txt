@@ -1,0 +1,12 @@
+nomes verificados: 91 | NAO reconhecidos pelo Spellbook: []
+base: main 99 incluidos 2 quase 134
+10 / 87
+20 / 87
+30 / 87
+40 / 87
+50 / 87
+60 / 87
+70 / 87
+80 / 87
+controle positivo (Thassa+Consultation apareceu): True
+controle de corte (base tem Ascension+Mindcrank; sumiu ao cortar Mindcrank): True True

@@ -1,0 +1,16 @@
+{
+ "S1 Evolution Sage <- Cold-Eyed Selkie": {"sai": ["Cold-Eyed Selkie"], "entra": ["Evolution Sage"]},
+ "S2 Mutational Advantage <- Negate": {"sai": ["Negate"], "entra": ["Mutational Advantage"]},
+ "S3 Karn's Bastion <- Swarmyard": {"sai": ["Swarmyard"], "entra": ["Karn's Bastion"]},
+ "S4 Bruvac <- Soul-Guide Lantern": {"sai": ["Soul-Guide Lantern"], "entra": ["Bruvac the Grandiloquent"]},
+ "S5 The Master of Lake-town <- Kozilek": {"sai": ["Kozilek, Butcher of Truth"], "entra": ["The Master of Lake-town"]},
+ "S6 Garruk's Uprising <- An Offer You Can't Refuse": {"sai": ["An Offer You Can't Refuse"], "entra": ["Garruk's Uprising"]},
+ "PACOTE 1 (S1..S6 juntas)": {"sai": ["Cold-Eyed Selkie", "Negate", "Swarmyard", "Soul-Guide Lantern", "Kozilek, Butcher of Truth", "An Offer You Can't Refuse"], "entra": ["Evolution Sage", "Mutational Advantage", "Karn's Bastion", "Bruvac the Grandiloquent", "The Master of Lake-town", "Garruk's Uprising"]},
+ "T2a Lo and Li <- Bojuka Bog": {"sai": ["Bojuka Bog"], "entra": ["Lo and Li, Royal Advisors"]},
+ "T2b Terrasymbiosis <- Yavimaya Hollow": {"sai": ["Yavimaya Hollow"], "entra": ["Terrasymbiosis"]},
+ "T2c Corpsejack Menace <- Strip Mine": {"sai": ["Strip Mine"], "entra": ["Corpsejack Menace"]},
+ "T2d Contentious Plan <- Heroic Intervention": {"sai": ["Heroic Intervention"], "entra": ["Contentious Plan"]},
+ "T2e Opulent Palace <- Bojuka Bog": {"sai": ["Bojuka Bog"], "entra": ["Opulent Palace"]},
+ "CONTROLE (corte de peca de combo): Mindcrank <- Evolution Sage": {"sai": ["Mindcrank"], "entra": ["Evolution Sage"]},
+ "CONTROLE (corte de peca de combo): Glen Elendra Archmage <- Evolution Sage": {"sai": ["Glen Elendra Archmage"], "entra": ["Evolution Sage"]}
+}

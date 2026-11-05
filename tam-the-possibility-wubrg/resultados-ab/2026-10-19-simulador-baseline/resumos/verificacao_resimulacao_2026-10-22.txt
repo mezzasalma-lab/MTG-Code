@@ -1,0 +1,13 @@
+IGUAL  raw_baseline_2000 (bruto re-simulado == arquivado)
+IGUAL  raw_baseline_2000_resiliencia (bruto re-simulado == arquivado)
+IGUAL  raw_baseline_10000 (bruto re-simulado == arquivado)
+IGUAL  raw_baseline_10000_resiliencia (bruto re-simulado == arquivado)
+4/4 brutos re-simulados byte a byte iguais aos arquivados
+--- fim do log do driver (esperado: FileNotFoundError em compacto(), ver comentario acima):
+    self._fp = builtins.open(filename, mode)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp.6waCTQGjjr/resultados-ab/2026-10-19-simulador-baseline/dados/raw_baseline_2000.json.xz'
+
+real	7m53.059s
+user	28m18.040s
+sys	0m2.274s

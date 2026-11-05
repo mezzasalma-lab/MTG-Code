@@ -1,0 +1,28 @@
+PASS - P1 Blood Money paga com 7 animados (custo 7): mana dos terrenos intacta, 7 sacrificados, 7 de dano do Mayhem Devil ANTES do wipe 
+PASS - P1b e o wipe segue valendo: o Vihaan, o Mahadi/Lotho e o proprio Mayhem Devil morrem (destruicao, sem dano extra do Mayhem), e os 7 animados ja' tinham morrido como custo (mortes = 7 + 3) 
+PASS - P1c chave desligada = codigo anterior: paga com os 7 terrenos (mana gasta 7), os 7 animados morrem no wipe como fichas e o Mayhem Devil NAO causa dano (destruicao) 
+PASS - P2 sem Mayhem Devil o pagamento com animados e' o mesmo (os animados morreriam no wipe de qualquer jeito), mas sem dano: 0 de dreno 
+PASS - P3 cobertura parcial: 3 animados pagam 3 e os terrenos pagam os 4 restantes (mana gasta 4), 3 de dano 
+PASS - P4 Treasure virado nao paga (so' o desvirado entra no custo): 9 Treasures, 7 animados, 5 virados -> so' 4 desvirados; 4 pagam, terrenos pagam 3 
+PASS - P5 com Goldspan Dragon (Treasure vale 2) 4 animados pagam os 7 (8 de mana; o excesso de 1 se perde) e nada sai dos terrenos 
+PASS - P6 Blasphemous Act: o custo ja' cai pelas criaturas (Vihaan, Mayhem, Zulaport + 6 animados = 9 -> piso 1) e 1 animado paga; Zulaport drena pelo pagamento 
+PASS - P7 so' o wipe paga com animados: uma magia comum continua pagando com terrenos primeiro (Sol Ring custa 1: 0 animados sacrificados) 
+PASS - R1 todo wipe e' segurado: sem Vihaan nem Mahadi em campo, com 8 de mana, a Blood Money continua na mao (a regra da 9a rodada a conjuraria) 
+PASS - R1b idem a Blasphemous Act 
+PASS - R1c chave desligada = retencao da 9a rodada: sem Vihaan/Mahadi conjura 
+PASS - R2 excecao mitigada: Mayhem Devil em campo e 7 animados pagam os 7 do custo -> a Blood Money e' conjurada, paga so' com animados, e o Vihaan morre no wipe (a perda e' aceita) 
+PASS - R2b sem Mayhem Devil: a mesma cena NAO libera (fica na mao) 
+PASS - R2c com Mayhem Devil mas animados que NAO pagam o custo inteiro (3 de 7): segura (a excecao exige o custo inteiro nos doomed) 
+PASS - R2d animados virados nao contam pra liberar (7 animados, 4 virados): segura 
+PASS - R2e chave da excecao desligada: nem a circunstancia mitigada libera (segura sempre) 
+PASS - R2f a Blasphemous Act com tabuleiro cheio NAO libera: o custo cai pelo piso (1), o pagamento causa 1 de dano contra 3 criaturas minhas perdidas (dano 1 <= 3) 
+PASS - R2g mas libera num tabuleiro magro: so' o Mayhem Devil + 5 animados (custo 9 - 6 = 3): 3 de dano > 1 criatura minha perdida -> conjura 
+PASS - R2h Blood Money com 7 animados pagando (7 de dano) mas 9 criaturas minhas perdidas (Vihaan + 8): 7 <= 9 -> segura (o principio: mais perdas pro oponente do que pra mim) 
+PASS - R2i e com 6 criaturas minhas (Vihaan + 5): 7 de dano > 6 -> conjura 
+PASS - R3 carta exilada pelo Prosper: com Mayhem + animados pagando, e' conjurada; sem a circunstancia fica no pool ate' expirar (o T8 do usuario) 
+PASS - I1 (padrao, 3.000 jogos) nenhuma carta duplicada, tapped valido, todo wipe proprio conjurado esta na circunstancia mitigada, e o pagamento com animados nunca passa dos animados vivos (e e' > 0 quando mitigado) 
+   info I1 padrao: wipes proprios conjurados em 3.000 jogos: 1 (na circunstancia mitigada: 1)
+PASS - I1 (resiliencia, 3.000 jogos) nenhuma carta duplicada, tapped valido, todo wipe proprio conjurado esta na circunstancia mitigada, e o pagamento com animados nunca passa dos animados vivos (e e' > 0 quando mitigado) 
+   info I1 resiliencia: wipes proprios conjurados em 3.000 jogos: 0 (na circunstancia mitigada: 0)
+
+24/24 testes passaram

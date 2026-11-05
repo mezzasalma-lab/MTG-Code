@@ -1,0 +1,93 @@
+{
+ "deck": "final-fantasy-revival-trance",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Terra, Herald of Hope",
+   "incluidos": {},
+   "quase": {
+    "Celes, Rune Knight + Murderous Redcap": {
+     "id": "1657-6431",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on most creatures you control",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Pitiless Plunderer + Spawnsire of Ulamog": {
+     "id": "2143-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Anger + Joo Dee, One of Many + Pitiless Plunderer": {
+     "id": "4068-4871-7072",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Celes, Rune Knight",
+   "incluidos": {},
+   "quase": {
+    "Celes, Rune Knight + Murderous Redcap": {
+     "id": "1657-6431",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on most creatures you control",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Pitiless Plunderer + Spawnsire of Ulamog": {
+     "id": "2143-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Anger + Joo Dee, One of Many + Pitiless Plunderer": {
+     "id": "4068-4871-7072",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

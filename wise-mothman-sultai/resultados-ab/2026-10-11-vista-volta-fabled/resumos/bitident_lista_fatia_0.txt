@@ -1,0 +1,2 @@
+vivo (SWAPS=()) == ANTES + w1 no lugar: 5000 identicas, 0 divergencias
+rc=0

@@ -1,0 +1,22 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 276 (13.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0815       0.0850      +0.0035 ±0.0038  
+   commander_cast_turn__ate_T3                  0.1045       0.1050      +0.0005 ±0.0022  
+   commander_cast_turn__ate_T4                  0.3100       0.3100      +0.0000 ±0.0034  
+   commander_cast_turn__ate_T5                  0.7065       0.7030      -0.0035 ±0.0056  
+  *len_graveyard                               15.6135      17.1605      +1.5470 ±0.2253  
+  *len_library                                 61.7985      60.1665      -1.6320 ±0.2701  
+  *breach_loops_total                           0.4590       0.4965      +0.0375 ±0.0147  
+  *lands_played_this_turn                       0.7755       0.7505      -0.0250 ±0.0117  
+  *tapped_land_skipped_for_play_total           0.2465       0.2395      -0.0070 ±0.0037  
+  *cephalid_coliseum_used                       0.0825       0.0980      +0.0155 ±0.0085  
+  *small_wheel_lands_used_total                 0.3065       0.2900      -0.0165 ±0.0097  
+  *commander_cast_turn__ate_T6                  0.8095       0.8020      -0.0075 ±0.0051  
+  *rituals_cast_total                           0.8670       0.8885      +0.0215 ±0.0172  
+  *len_battlefield                             14.8655      14.7855      -0.0800 ±0.0739  
+  *faerie_mastermind_draws_total                1.0620       1.0380      -0.0240 ±0.0224  
+  *breach_recasts_total                         1.4495       1.5060      +0.0565 ±0.0552  
+  *tapped_land_first_plays_total                0.1700       0.1680      -0.0020 ±0.0020  
+  *the_one_ring_burden                          0.3445       0.3300      -0.0145 ±0.0144  

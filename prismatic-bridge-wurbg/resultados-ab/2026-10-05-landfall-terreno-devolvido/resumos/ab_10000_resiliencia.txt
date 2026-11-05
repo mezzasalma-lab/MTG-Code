@@ -1,0 +1,20 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9930 (99.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *evolution_sage_proliferates                  0.7161       0.7376      +0.0215 ±0.0061  
+   lands_played_total                           6.1453       6.1452      -0.0001 ±0.0002  
+  *all_will_be_one_triggers_total             251.8471     254.9136      +3.0665 ±1.7638  
+  *len_graveyard                                4.4731       4.4719      -0.0012 ±0.0010  
+  *pw_turns_alive_total                         6.3661       6.3671      +0.0010 ±0.0010  
+   len_token_counters                           0.7839       0.7842      +0.0003 ±0.0003  
+   oko_minus5_total                             0.2050       0.2053      +0.0003 ±0.0003  
+   discards_total                               0.2638       0.2633      -0.0005 ±0.0006  
+   len_pw_activated_this_turn                   2.7711       2.7715      +0.0004 ±0.0005  
+   pw_deaths_total                              1.3050       1.3044      -0.0006 ±0.0008  
+   elspeth_emblem                               0.2086       0.2088      +0.0002 ±0.0003  
+   pw_recursion_total                           0.2619       0.2617      -0.0002 ±0.0003  
+   pw_activations_total                         9.2390       9.2399      +0.0009 ±0.0013  
+   len_new_tokens_this_turn                     0.5635       0.5641      +0.0006 ±0.0009  
+   len_loyalty                                  2.4919       2.4925      +0.0006 ±0.0009  
+   len_activations_this_turn                    4.6930       4.6939      +0.0009 ±0.0014  

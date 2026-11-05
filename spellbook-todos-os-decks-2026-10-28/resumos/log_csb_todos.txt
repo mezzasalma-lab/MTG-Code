@@ -1,0 +1,49 @@
+decks: 46 | nomes unicos a resolver: 2510
+nomes NAO reconhecidos pelo Spellbook (total): 0 []
+azula-grixis                               total=100 combos=[4] est=['R'] nao_reconhecidos=0 controles=True,True
+beorn-fierce                               total=100 combos=[0] est=['P'] nao_reconhecidos=0 controles=True,True
+captain-storm-izzet                        total= 99 combos=[0] est=['E'] nao_reconhecidos=0 controles=True,True
+edgar-markov-mardu                         total=100 combos=[4] est=['S'] nao_reconhecidos=0 controles=True,True
+edge-of-eternities-counter-intelligence    total=100 combos=[0] est=['E'] nao_reconhecidos=0 controles=True,True
+edge-of-eternities-world-shaper            total=100 combos=[1] est=['S'] nao_reconhecidos=0 controles=True,True
+enduring-enchantments-abzan                total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+final-fantasy-counter-blitz                total=100 combos=[1, 1] est=['P', 'P'] nao_reconhecidos=0 controles=True,True
+final-fantasy-limit-break                  total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+final-fantasy-revival-trance               total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+final-fantasy-scions-spellcraft            total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+hei-bai-wurbg                              total=100 combos=[0] est=['P'] nao_reconhecidos=0 controles=True,True
+kutzil-selesnya                            total=100 combos=[0] est=['P'] nao_reconhecidos=0 controles=True,True
+lorwyn-eclipsed-blight-curse               total=100 combos=[2] est=['E'] nao_reconhecidos=0 controles=True,True
+lorwyn-eclipsed-dance-of-elements          total=100 combos=[0] est=['E'] nao_reconhecidos=0 controles=True,True
+lotr-elven-council                         total=100 combos=[0, 0] est=['C', 'C'] nao_reconhecidos=0 controles=True,True
+lotr-food-and-fellowship                   total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+lotr-hosts-of-mordor                       total=100 combos=[0, 0] est=['P', 'P'] nao_reconhecidos=0 controles=True,True
+lotr-riders-of-rohan                       total=100 combos=[1, 1] est=['S', 'S'] nao_reconhecidos=0 controles=True,True
+maralen-sultai                             total=100 combos=[9] est=['S'] nao_reconhecidos=0 controles=True,True
+marvel-avengers-assemble                   total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+marvel-doom-prevails                       total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+marvel-fantastic-four                      total=100 combos=[0, 0, 0, 0] est=['E', 'E', 'E', 'E'] nao_reconhecidos=0 controles=True,True
+marvel-wakanda-forever                     total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+megatron-tyrant-mardu                      total=100 combos=[2] est=['R'] nao_reconhecidos=0 controles=True,True
+ms-bumbleflower-bant                       total=100 combos=[2] est=['S'] nao_reconhecidos=0 controles=True,True
+nekusar-grixis                             total=100 combos=[1] est=['R'] nao_reconhecidos=0 controles=True,True
+prismatic-bridge-wurbg                     total=100 combos=[12] est=['R'] nao_reconhecidos=0 controles=True,True
+secrets-strixhaven-lorehold                total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+secrets-strixhaven-prismari                total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+secrets-strixhaven-quandrix                total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+secrets-strixhaven-silverquill             total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+secrets-strixhaven-witherbloom             total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+tam-the-possibility-wubrg                  total=100 combos=[2] est=['S'] nao_reconhecidos=0 controles=True,True
+tarkir-dragonstorm-sultai-arisen           total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+thranduil-sultai                           total=100 combos=[4] est=['R'] nao_reconhecidos=0 controles=True,True
+tom-bombadil-wubrg                         total=100 combos=[1] est=['P'] nao_reconhecidos=0 controles=True,True
+toph-naya                                  total=100 combos=[29] est=['R'] nao_reconhecidos=0 controles=True,True
+ulalek-wurbg                               total=100 combos=[5] est=['R'] nao_reconhecidos=0 controles=True,True
+ur-dragon-wurbg                            total=100 combos=[3] est=['S'] nao_reconhecidos=0 controles=True,True
+vihaan-goldwaker-mardu                     total=100 combos=[4] est=['P'] nao_reconhecidos=0 controles=True,True
+wh40k-forces-of-imperium                   total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+wh40k-necron-dynasties                     total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+wh40k-ruinous-powers                       total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+wh40k-tyranid-swarm                        total=100 combos=[0, 0] est=['E', 'E'] nao_reconhecidos=0 controles=True,True
+wise-mothman-sultai                        total=100 combos=[2] est=['S'] nao_reconhecidos=0 controles=True,True
+FIM

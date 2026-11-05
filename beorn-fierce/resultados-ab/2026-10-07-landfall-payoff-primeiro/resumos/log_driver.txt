@@ -1,0 +1,146 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=0 | distintas=0 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=0 | distintas=0 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: LANDFALL_PAYOFF_FIRST=True
+Bit-identidade: arquivo vivo com as chaves {'LANDFALL_PAYOFF_FIRST': False} == snapshot codigo/beorn_goldfish_v1_ANTES_0ee4972.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['payoff_first_casts'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1039 (52.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           7.0490       7.0615      +0.0125 ±0.0070  
+  *spells_cast                                 13.1410      13.3815      +0.2405 ±0.0391  
+  *bear_count_final                             8.4770       8.8825      +0.4055 ±0.0997  
+  *counters_on_board_final                     15.7445      17.6745      +1.9300 ±0.5520  
+  *extra_draws                                 20.6980      21.4770      +0.7790 ±0.2001  
+  *ramp_pieces_in_play                          3.2845       3.3260      +0.0415 ±0.0181  
+   commander_cast_turn__ate_T3                  0.1695       0.1700      +0.0005 ±0.0010  
+   commander_cast_turn__ate_T4                  0.6280       0.6280      +0.0000 ±0.0014  
+   commander_cast_turn__ate_T5                  0.9115       0.9125      +0.0010 ±0.0014  
+   commander_cast_turn__ate_T6                  0.9505       0.9510      +0.0005 ±0.0010  
+  *finisher_turn__nunca                         0.5800       0.5710      -0.0090 ±0.0083  
+  *finisher_turn__ate_T4                        0.0170       0.0190      +0.0020 ±0.0020  
+  *finisher_turn__ate_T5                        0.0805       0.0850      +0.0045 ±0.0029  
+   finisher_turn__ate_T6                        0.1770       0.1800      +0.0030 ±0.0044  
+  *battlefield_count                           21.5300      22.0915      +0.5615 ±0.1163  
+  *beorn_bear_draws                             3.3775       3.4190      +0.0415 ±0.0110  
+  *finishers_resolved                           0.5555       0.5765      +0.0210 ±0.0109  
+  *lightning_greaves_equip_count                0.6140       0.6300      +0.0160 ±0.0084  
+  *combat_damage_draws                          7.5295       7.7665      +0.2370 ±0.1263  
+  *springleaf_parade_cast                       0.2170       0.2265      +0.0095 ±0.0051  
+  *managorger_final_counters                    1.6545       1.7005      +0.0460 ±0.0260  
+  *hand_size                                    9.7085       9.8850      +0.1765 ±0.1105  
+  *cards_discarded_to_hand_size                 6.0190       6.2280      +0.2090 ±0.1462  
+  *removal_cast                                 0.7100       0.7165      +0.0065 ±0.0047  
+  *roaming_throne_doublings                     0.9540       1.0395      +0.0855 ±0.0661  
+  *bala_ged_recovery_cast                       0.1380       0.1435      +0.0055 ±0.0045  
+  *own_interaction_used                         0.4270       0.4305      +0.0035 ±0.0029  
+  *titanias_command_cast                        0.1765       0.1815      +0.0050 ±0.0048  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1099 (55.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.6480       6.6675      +0.0195 ±0.0097  
+  *spells_cast                                 11.0430      11.1560      +0.1130 ±0.0364  
+  *counters_on_board                            7.4385       8.2215      +0.7830 ±0.2073  
+  *extra_draws                                 10.7910      11.0855      +0.2945 ±0.1440  
+  *ramp_pieces_in_play                          2.6190       2.6445      +0.0255 ±0.0143  
+   commander_cast_turn__nunca                   0.0330       0.0320      -0.0010 ±0.0014  
+   commander_cast_turn__ate_T3                  0.0795       0.0780      -0.0015 ±0.0029  
+   commander_cast_turn__ate_T4                  0.3375       0.3350      -0.0025 ±0.0049  
+   commander_cast_turn__ate_T5                  0.5585       0.5590      +0.0005 ±0.0060  
+   commander_cast_turn__ate_T6                  0.6595       0.6590      -0.0005 ±0.0060  
+   finisher_turn__nunca                         0.6770       0.6765      -0.0005 ±0.0078  
+   finisher_turn__ate_T4                        0.0150       0.0160      +0.0010 ±0.0014  
+  *finisher_turn__ate_T5                        0.0620       0.0670      +0.0050 ±0.0031  
+  *finisher_turn__ate_T6                        0.1250       0.1295      +0.0045 ±0.0040  
+  *len_dork_entered_turn                        1.5585       1.5995      +0.0410 ±0.0122  
+  *clues                                        0.1015       0.1460      +0.0445 ±0.0135  
+  *len_creature_entered_turn                    6.1525       6.2410      +0.0885 ±0.0275  
+  *beorn_bear_draws                             2.2120       2.2545      +0.0425 ±0.0164  
+  *len_library                                 71.6710      71.3420      -0.3290 ±0.1487  
+  *len_graveyard                                4.6110       4.7580      +0.1470 ±0.0729  
+  *len_battlefield                             14.1120      14.2495      +0.1375 ±0.0713  
+  *len_smart_counter_log                        0.1205       0.1100      -0.0105 ±0.0056  
+  *smart_counters_total                         0.1205       0.1100      -0.0105 ±0.0056  
+  *lightning_greaves_equip_count                0.4465       0.4615      +0.0150 ±0.0087  
+  *len_smart_discard_log                        1.1950       1.2170      +0.0220 ±0.0140  
+  *smart_discards_total                         1.1950       1.2170      +0.0220 ±0.0140  
+  *len_hand                                     5.7845       5.8935      +0.1090 ±0.0730  
+  *mana_spent_this_turn                         8.6685       8.7900      +0.1215 ±0.0833  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5396 (54.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.9625       6.9819      +0.0194 ±0.0036  
+  *spells_cast                                 13.1438      13.4008      +0.2570 ±0.0189  
+  *bear_count_final                             8.4299       8.8165      +0.3866 ±0.0455  
+  *counters_on_board_final                     16.5665      18.8544      +2.2879 ±0.3262  
+  *extra_draws                                 20.4289      21.1423      +0.7134 ±0.0947  
+  *ramp_pieces_in_play                          3.2976       3.3451      +0.0475 ±0.0081  
+   commander_cast_turn__nunca                   0.0133       0.0132      -0.0001 ±0.0002  
+   commander_cast_turn__ate_T3                  0.1739       0.1741      +0.0002 ±0.0003  
+  *commander_cast_turn__ate_T4                  0.6188       0.6201      +0.0013 ±0.0007  
+   commander_cast_turn__ate_T5                  0.8962       0.8965      +0.0003 ±0.0004  
+  *commander_cast_turn__ate_T6                  0.9369       0.9375      +0.0006 ±0.0005  
+  *finisher_turn__nunca                         0.5656       0.5539      -0.0117 ±0.0036  
+   finisher_turn__ate_T3                        0.0028       0.0029      +0.0001 ±0.0002  
+  *finisher_turn__ate_T4                        0.0192       0.0203      +0.0011 ±0.0007  
+  *finisher_turn__ate_T5                        0.0759       0.0796      +0.0037 ±0.0013  
+  *finisher_turn__ate_T6                        0.1754       0.1808      +0.0054 ±0.0021  
+  *battlefield_count                           21.4932      22.0552      +0.5620 ±0.0559  
+  *beorn_bear_draws                             3.3390       3.3800      +0.0410 ±0.0051  
+  *finishers_resolved                           0.5717       0.5954      +0.0237 ±0.0050  
+  *lightning_greaves_equip_count                0.6379       0.6545      +0.0166 ±0.0037  
+  *managorger_final_counters                    1.8074       1.8694      +0.0620 ±0.0146  
+  *beorns_hospitality_animated                  0.0792       0.0881      +0.0089 ±0.0026  
+  *cards_discarded_to_hand_size                 5.6306       5.8464      +0.2158 ±0.0635  
+  *beorn_combat_triggers                        3.0073       3.0234      +0.0161 ±0.0056  
+  *combat_damage_draws                          7.3807       7.7657      +0.3850 ±0.1355  
+  *roaming_throne_doublings                     0.9900       1.0768      +0.0868 ±0.0319  
+  *return_of_wildspeaker_cast                   0.0948       0.0995      +0.0047 ±0.0018  
+  *obscuring_haze_cast_free                     0.2199       0.2253      +0.0054 ±0.0020  
+  *removal_cast                                 0.6796       0.6852      +0.0056 ±0.0021  
+  *titanias_command_cast                        0.1806       0.1857      +0.0051 ±0.0021  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5685 (56.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.5715       6.5925      +0.0210 ±0.0042  
+  *spells_cast                                 11.0650      11.2130      +0.1480 ±0.0167  
+  *counters_on_board                            8.0968       9.1443      +1.0475 ±0.1706  
+  *extra_draws                                 10.6985      11.0521      +0.3536 ±0.0759  
+  *ramp_pieces_in_play                          2.6329       2.6621      +0.0292 ±0.0062  
+  *commander_cast_turn__nunca                   0.0335       0.0319      -0.0016 ±0.0008  
+  *commander_cast_turn__ate_T3                  0.0852       0.0838      -0.0014 ±0.0012  
+   commander_cast_turn__ate_T4                  0.3371       0.3362      -0.0009 ±0.0021  
+   commander_cast_turn__ate_T5                  0.5569       0.5568      -0.0001 ±0.0026  
+   commander_cast_turn__ate_T6                  0.6578       0.6576      -0.0002 ±0.0028  
+  *finisher_turn__nunca                         0.6674       0.6624      -0.0050 ±0.0032  
+   finisher_turn__ate_T3                        0.0027       0.0028      +0.0001 ±0.0002  
+  *finisher_turn__ate_T4                        0.0161       0.0171      +0.0010 ±0.0007  
+  *finisher_turn__ate_T5                        0.0587       0.0616      +0.0029 ±0.0013  
+  *finisher_turn__ate_T6                        0.1335       0.1364      +0.0029 ±0.0018  
+  *clues                                        0.1080       0.1662      +0.0582 ±0.0069  
+  *len_dork_entered_turn                        1.5581       1.6050      +0.0469 ±0.0056  
+  *len_creature_entered_turn                    6.1926       6.3200      +0.1274 ±0.0162  
+  *beorn_bear_draws                             2.1975       2.2369      +0.0394 ±0.0071  
+  *mana_spent_this_turn                         8.6180       8.8178      +0.1998 ±0.0381  
+  *len_library                                 71.7191      71.3361      -0.3830 ±0.0771  
+  *len_battlefield                             14.0256      14.2380      +0.2124 ±0.0440  
+  *len_smart_counter_log                        0.1088       0.0972      -0.0116 ±0.0027  
+  *smart_counters_total                         0.1088       0.0972      -0.0116 ±0.0027  
+  *len_graveyard                                4.9063       5.0306      +0.1243 ±0.0351  
+  *lightning_greaves_equip_count                0.4582       0.4695      +0.0113 ±0.0032  
+  *land_played                                  0.7332       0.7418      +0.0086 ±0.0026  
+  *bonus_mana_this_turn                         0.8056       0.8794      +0.0738 ±0.0251  
+  *tapped_green_this_turn                       0.8130       0.8278      +0.0148 ±0.0054  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

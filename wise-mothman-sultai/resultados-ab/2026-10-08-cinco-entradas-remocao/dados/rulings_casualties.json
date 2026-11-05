@@ -1,0 +1,19 @@
+{
+ "Casualties of War": {
+  "oracle_id": "5c6c8fe7-3520-423b-a224-1c0af516871a",
+  "mana_cost": "{2}{B}{B}{G}{G}",
+  "type_line": "Sorcery",
+  "oracle_text": "Choose one or more —\n• Destroy target artifact.\n• Destroy target creature.\n• Destroy target enchantment.\n• Destroy target land.\n• Destroy target planeswalker.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2019-05-03",
+    "Each target permanent is destroyed in the order specified. Abilities that trigger when one is destroyed won't be put onto the stack until Casualties of War has finished resolving."
+   ],
+   [
+    "2019-05-03",
+    "You can choose any number of the modes for Casualties of War, but you can't choose a mode more than once."
+   ]
+  ]
+ }
+}

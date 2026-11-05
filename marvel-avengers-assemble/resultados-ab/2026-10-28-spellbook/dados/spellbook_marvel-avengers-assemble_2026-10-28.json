@@ -1,0 +1,157 @@
+{
+ "deck": "marvel-avengers-assemble",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Captain America, Team Leader",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Kindred Discovery + The Locust God": {
+     "id": "1339-4052",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Near-infinite creature tokens with haste",
+      "Near-infinite creature ETB"
+     ]
+    },
+    "Iron Man, Armored Avenger + Pensive Professor": {
+     "id": "7414-7811",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Kindred Discovery + The Watcher in the Water": {
+     "id": "2351-4052",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Ant-Man, Elusive Avenger + Mechanized Production": {
+     "id": "2047-7748",
+     "bracketTag": "S",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Bearer of the Heavens + Gift of Immortality": {
+     "id": "3055-3118",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all permanents each turn",
+      "Lock",
+      "Mass Land Denial"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Director Nick Fury",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Kindred Discovery + The Locust God": {
+     "id": "1339-4052",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Near-infinite creature tokens with haste",
+      "Near-infinite creature ETB"
+     ]
+    },
+    "Iron Man, Armored Avenger + Pensive Professor": {
+     "id": "7414-7811",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Kindred Discovery + The Watcher in the Water": {
+     "id": "2351-4052",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite creature tokens"
+     ]
+    },
+    "Ant-Man, Elusive Avenger + Mechanized Production": {
+     "id": "2047-7748",
+     "bracketTag": "S",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Bearer of the Heavens + Gift of Immortality": {
+     "id": "3055-3118",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all permanents each turn",
+      "Lock",
+      "Mass Land Denial"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

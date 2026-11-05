@@ -1,0 +1,13 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao (goldfish)
+ANTES: win<=T8 9.8% | Sephiroth virou (emblema) em 1.90% dos jogos | emblemas/jogo 0.0190 | dano mesa 14.89 drain 6.64 vida ganha 2.52 mortes de criatura 2.95 Treasures 10.20
+variante     win<=8 pp      virou pp       emblemas       dano mesa      drain          vida ganha     mortes cria.   Treasures     
+emblema       +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+simultaneas   +0.000±0.000   -0.300±0.240   -0.003±0.002   +0.028±0.034   +0.028±0.034   +0.028±0.034   +0.000±0.000   +0.000±0.000 
+fronteira     +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+todas         +0.000±0.000   -0.300±0.240   -0.003±0.002   +0.028±0.034   +0.028±0.034   +0.028±0.034   +0.000±0.000   +0.000±0.000 
+
+variante     jogos iguais  jogos com gatilho extra do emblema gatilhos extras/jogo    
+emblema      99.70%        0                              0.00000                 
+simultaneas  99.05%        0                              0.00000                 
+fronteira    100.00%        0                              0.00000                 
+todas        99.05%        0                              0.00000                 

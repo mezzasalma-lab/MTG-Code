@@ -1,0 +1,6 @@
+IGUAL  comparacao_estrutural.md (refeito so' dos dados arquivados)
+IGUAL  decks_parecidos.md (refeito so' dos dados arquivados)
+IGUAL  inclusao_cartas.md (refeito so' dos dados arquivados)
+IGUAL  pacote_efeitos.md (refeito so' dos dados arquivados)
+IGUAL  indice_dados.md (refeito so' dos dados arquivados)
+5/5 saidas iguais

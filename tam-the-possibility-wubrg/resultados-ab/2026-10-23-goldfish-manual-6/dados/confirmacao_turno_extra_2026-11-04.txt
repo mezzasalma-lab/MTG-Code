@@ -1,0 +1,4 @@
+Resposta do usuario de 2026-11-04 a pergunta aberta do relatorio de revisao de codigo do PR #1 (texto literal, byte a byte):
+A pergunta: "No Tam #6, o turno extra do Oko (-12 do Gauntlet) foi jogado a mao dentro do bloco T11, sem apertar o botao de passar turno?"
+
+No TAM #6 sim, foi jogado na mão sem mudar o turno

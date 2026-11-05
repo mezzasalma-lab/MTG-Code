@@ -1,0 +1,4 @@
+IGUAL  analise_estatica.md (refeita so' dos dados arquivados)
+IGUAL  indice_dados.md (refeito so' dos dados arquivados)
+IGUAL  lista.md (categoria + nome) == o que o Scryfall devolveu para as 113 linhas
+3/3 saidas iguais

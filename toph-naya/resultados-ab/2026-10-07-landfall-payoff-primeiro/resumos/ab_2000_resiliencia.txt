@@ -1,0 +1,27 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 931 (46.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   landfall_triggers_fired                     12.8995      13.0045      +0.1050 ±0.1183  
+  *spells_cast_total                            9.9360      10.0960      +0.1600 ±0.0663  
+   table_damage_total                     2478448839238410307633152.0000 241492439472759136.0000 -2478448597745970813337600.0000 ±4857759379377897982656512.0000
+  *lethal_turn__nunca                           0.8765       0.8610      -0.0155 ±0.0089  
+   lethal_turn__ate_T5                          0.0010       0.0015      +0.0005 ±0.0010  
+  *lethal_turn__ate_T6                          0.0040       0.0070      +0.0030 ±0.0024  
+   commander_cast_turn__nunca                   0.0895       0.0860      -0.0035 ±0.0045  
+   commander_cast_turn__ate_T3                  0.1195       0.1200      +0.0005 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.4720       0.4785      +0.0065 ±0.0047  
+  *first_finisher_turn__ate_T6                  0.3290       0.3615      +0.0325 ±0.0079  
+  *commander_cast_turn__ate_T5                  0.6725       0.6905      +0.0180 ±0.0063  
+  *first_finisher_turn__ate_T5                  0.1930       0.2115      +0.0185 ±0.0065  
+  *first_finisher_turn__nunca                   0.3950       0.3780      -0.0170 ±0.0078  
+  *graveyard_wipe_used                          0.3600       0.3805      +0.0205 ±0.0096  
+  *len_smart_graveyard_wipe_log                 0.3600       0.3805      +0.0205 ±0.0096  
+  *smart_graveyard_wipes_total                  0.3600       0.3805      +0.0205 ±0.0096  
+  *next_uid                                    38.2685      40.6320      +2.3635 ±1.1443  
+  *first_finisher_turn__ate_T4                  0.0935       0.1010      +0.0075 ±0.0038  
+  *bf_version                                  74.5705      79.5115      +4.9410 ±2.5083  
+  *tokens_created                              17.1590      19.2800      +2.1210 ±1.0997  
+  *len_smart_discard_log                        1.1255       1.1620      +0.0365 ±0.0190  
+  *smart_discards_total                         1.1255       1.1620      +0.0365 ±0.0190  
+  *len_smart_counter_log                        0.1185       0.1005      -0.0180 ±0.0105  

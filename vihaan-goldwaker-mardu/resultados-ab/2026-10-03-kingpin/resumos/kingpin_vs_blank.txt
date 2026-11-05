@@ -1,0 +1,24 @@
+
+Kingpin − Blank, mesmas sementes, N=6000, 8 turnos (pp)
+slot                 política  win<=8 (pp)      revel<=8 (pp)   
+Academy Manufactor   sim        -0.02±0.24      +0.07±0.07    
+Monologue Tax        sim        -0.15±0.25      +0.02±0.06    
+Back in Town         sim        -0.33±0.22      +0.00±0.07    
+Academy Manufactor   anim       +0.17±0.24      +0.08±0.07    
+Monologue Tax        anim       +0.03±0.25      +0.02±0.06    
+Back in Town         anim       -0.13±0.23      +0.03±0.07    
+Academy Manufactor   delib      +0.30±0.23      +0.05±0.06    
+Monologue Tax        delib      +0.25±0.25      +0.08±0.09    
+Back in Town         delib      +0.07±0.24      +0.08±0.09    
+
+Kingpin − Blank, mesmas sementes, N=6000, 12 turnos (pp)
+slot                 política  win<=12 (pp)     revel<=12 (pp)  
+Academy Manufactor   sim        +0.80±0.38      +0.33±0.28    
+Monologue Tax        sim        +0.67±0.36      +0.30±0.33    
+Back in Town         sim        +0.82±0.36      +0.55±0.35    
+Academy Manufactor   anim       +0.87±0.39      +0.38±0.28    
+Monologue Tax        anim       +0.67±0.35      +0.47±0.34    
+Back in Town         anim       +0.82±0.37      +0.57±0.35    
+Academy Manufactor   delib      +1.27±0.41      +0.47±0.28    
+Monologue Tax        delib      +0.92±0.38      +0.57±0.35    
+Back in Town         delib      +1.08±0.38      +0.55±0.33    

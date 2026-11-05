@@ -1,0 +1,22 @@
+N=10000 sementes 3000000..3009999, modo padrao (diferenca pareada A - B, IC95%)
+metrica                                todas - sem_hold       sem_hold - oraculo    
+win<=8 (pp)                              +2.160 ±0.332        -1.020 ±0.247     
+estoque no fim                           +0.119 ±0.098        -0.043 ±0.049     
+Treasures criados                        +0.374 ±0.198        -0.305 ±0.073     
+mortes de criatura                       -0.910 ±0.071        +0.434 ±0.051     
+Blood Money conjurada                    -0.055 ±0.004        -0.002 ±0.001     
+Blasphemous Act conjurada                -0.119 ±0.006        +0.079 ±0.005     
+wipe c/ Vihaan ou Mahadi em campo        -0.172 ±0.008        +0.076 ±0.005     
+Vihaan conjurado (cast)                  -0.098 ±0.006        +0.046 ±0.004     
+
+N=10000 sementes 3000000..3009999, modo resiliencia (diferenca pareada A - B, IC95%)
+metrica                                todas - sem_hold       sem_hold - oraculo    
+win<=8 (pp)                              +0.410 ±0.160        -0.160 ±0.133     
+estoque no fim                           +0.093 ±0.026        -0.047 ±0.023     
+Treasures criados                        +0.139 ±0.041        -0.059 ±0.045     
+mortes de criatura                       -0.199 ±0.048        +0.112 ±0.036     
+Blood Money conjurada                    -0.027 ±0.003        -0.001 ±0.001     
+Blasphemous Act conjurada                -0.061 ±0.005        +0.044 ±0.004     
+wipe c/ Vihaan ou Mahadi em campo        -0.088 ±0.006        +0.043 ±0.004     
+Vihaan conjurado (cast)                  -0.043 ±0.004        +0.033 ±0.009     
+

@@ -1,0 +1,17 @@
+linhas: 91 cartas (com basicos): 100
+encontradas no lote: 89 | nao encontradas no lote (buscadas por fuzzy): ["Agadeem's Awakening // Agadeem, the Undercrypt", 'Bramble Familiar // Fetch Quest']
+total resolvido: 91 de 91 nomes distintos (0 = vacuo)
+
+=== tipo Insect (type_line, qualquer face)
+ - Icetill Explorer | Creature — Insect Scout | 2 / 4 | MV 4.0
+ - The Wise Mothman | Legendary Creature — Insect Mutant | 3 / 3 | MV 4.0
+=== tipo Rat (type_line, qualquer face)
+=== tipo Spider (type_line, qualquer face)
+=== tipo Squirrel (type_line, qualquer face)
+
+=== Changeling / 'every creature type' / Kindred (conta em toda zona)
+
+=== cria ficha Insect/Rat/Spider/Squirrel ou muda tipo (texto do oraculo)
+
+=== quem 'cuida' de Inseto no texto (Insect em oraculo, nao so type_line)
+ - Swarmyard | {T}: Add {C}. / {T}: Regenerate target Insect, Rat, Spider, or Squirrel. (The next time it would be destroyed this turn, instead tap it, remove it from combat, and heal all damage on it.)

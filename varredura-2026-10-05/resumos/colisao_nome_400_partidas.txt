@@ -1,0 +1,10 @@
+# colisao_nome.py (varredura-2026-10-05/scripts): quantas vezes um terreno e' marcado "entrou virado neste turno" POR NOME enquanto OUTRA copia do mesmo nome esta' em campo
+# (o conjunto `tapped_lands_this_turn` guarda nomes; a marca valeria pra todas as copias). N=400 partidas por deck, modo padrao, sementes 5.000.000+i, arvore de trabalho de 2026-10-05.
+prismatic-bridge-wurbg padrao N=400: marcacoes=1390 colisoes_por_nome=0 partidas_com_colisao=0
+nekusar-grixis padrao N=400: marcacoes=351 colisoes_por_nome=0 partidas_com_colisao=0
+maralen-sultai padrao N=400: marcacoes=847 colisoes_por_nome=0 partidas_com_colisao=0
+rat-king-verminister padrao N=400: marcacoes=539 colisoes_por_nome=0 partidas_com_colisao=0
+thranduil-sultai padrao N=400: marcacoes=623 colisoes_por_nome=0 partidas_com_colisao=0
+beorn-fierce padrao N=400: marcacoes=42 colisoes_por_nome=0 partidas_com_colisao=0
+vihaan-goldwaker-mardu padrao N=400: marcacoes=559 colisoes_por_nome=0 partidas_com_colisao=0
+# Leitura: 0 ocorrencias nas amostras; nao e' erro observavel hoje (nao foi varrido o modo resiliencia nem N maior; Ulalek/Toph/Hei Bai/Edgar/Kutzil usam contador ou uid, nao nome).

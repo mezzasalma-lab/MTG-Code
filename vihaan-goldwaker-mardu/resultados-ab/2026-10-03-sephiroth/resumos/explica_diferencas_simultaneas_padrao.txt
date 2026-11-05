@@ -1,0 +1,9 @@
+variante=simultaneas modo=padrao N=2000: jogos com estado final diferente=19
+  campo sephiroth_deaths_this_turn: diverge em 14 jogos
+  campo life: diverge em 13 jogos
+  campo drain_damage_total: diverge em 13 jogos
+  campo table_damage_total: diverge em 13 jogos
+  campo life_gained_total: diverge em 13 jogos
+  campo life_gained_this_turn: diverge em 9 jogos
+  campo sephiroth_transformed: diverge em 6 jogos
+  campo has_super_nova_emblem: diverge em 6 jogos

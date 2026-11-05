@@ -1,0 +1,7 @@
+T 1: PWs 0 [] | terrenos 1 | mana(ini) 0 | Tam nao | mao 7 | outros []
+T 2: PWs 0 [] | terrenos 2 | mana(ini) 1 | Tam nao | mao 7 | outros []
+T 3: PWs 0 [] | terrenos 2 | mana(ini) 2 | Tam nao | mao 7 | outros []
+T 4: PWs 0 [] | terrenos 2 | mana(ini) 2 | Tam nao | mao 7 | outros ['Birds of Paradise']
+T 5: PWs 0 [] | terrenos 3 | mana(ini) 3 | Tam sim | mao 7 | outros ['Birds of Paradise', 'Tam, the Possibility']
+T 6: PWs 0 [] | terrenos 3 | mana(ini) 4 | Tam sim | mao 7 | outros ['Birds of Paradise', 'Tam, the Possibility', 'Faeburrow Elder']
+T 7: PWs 2 [('Ajani', 6), ('Professor', 5)] | terrenos 4 | mana(ini) 7 | Tam sim | mao 6 | outros ['Birds of Paradise', 'Tam, the Possibility', 'Faeburrow Elder', 'Cadet Token', 'Cadet Token']

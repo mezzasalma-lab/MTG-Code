@@ -1,0 +1,675 @@
+{
+ "deck": "ulalek-wurbg",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Ulalek, Fused Atrocity",
+   "incluidos": {
+    "Echoes of Eternity + Glaring Fleshraker + Ulalek, Fused Atrocity": {
+     "id": "5642-5657-5705",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Ulalek, Fused Atrocity",
+      "Glaring Fleshraker",
+      "Echoes of Eternity"
+     ],
+     "prerequisitos": ""
+    },
+    "Echoes of Eternity + Kozilek's Unsealing + Ulalek, Fused Atrocity": {
+     "id": "5637-5642-5657--34",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite copies of abilities you control on the stack",
+      "Infinite copies of a specific creature",
+      "Infinite creature tokens"
+     ],
+     "usa": [
+      "Ulalek, Fused Atrocity",
+      "Echoes of Eternity",
+      "Kozilek's Unsealing"
+     ],
+     "prerequisitos": ""
+    },
+    "Echoes of Eternity + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5642-5657-5664",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite copies of abilities you control on the stack",
+      "Infinite creature tokens",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ],
+     "usa": [
+      "Ulalek, Fused Atrocity",
+      "Echoes of Eternity",
+      "Writhing Chrysalis"
+     ],
+     "prerequisitos": ""
+    },
+    "Eldritch Immunity + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5657-5664-7116",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Ulalek, Fused Atrocity",
+      "Writhing Chrysalis",
+      "Eldritch Immunity"
+     ],
+     "prerequisitos": ""
+    },
+    "Glaring Fleshraker + Roaming Throne + Ulalek, Fused Atrocity": {
+     "id": "5334-5657-5705",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers",
+      "Infinite death triggers"
+     ],
+     "usa": [
+      "Ulalek, Fused Atrocity",
+      "Glaring Fleshraker",
+      "Roaming Throne"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Basalt Monolith + Forsaken Monument": {
+     "id": "4131-4547",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Glaring Fleshraker + Mystic Forge + Sensei's Divining Top": {
+     "id": "985-5078-5705",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mystic Forge + Sensei's Divining Top + Ugin, the Ineffable": {
+     "id": "985-2604-5078",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite storm count"
+     ]
+    },
+    "Echoes of Eternity + Glaring Fleshraker + Sensei's Divining Top": {
+     "id": "5078-5642-5705",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Echoes of Eternity + Sensei's Divining Top + Ugin, the Ineffable": {
+     "id": "2604-5078-5642",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite storm count"
+     ]
+    },
+    "Jumbo Cactuar + Swords to Plowshares": {
+     "id": "3779-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain"
+     ]
+    },
+    "Master Transmuter + The One Ring": {
+     "id": "1999-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Lightning Greaves + Monk Gyatso": {
+     "id": "876-7070--141",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite storm count"
+     ]
+    },
+    "Mind Over Matter + The One Ring": {
+     "id": "3363-4067",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite card draw",
+      "Infinite self-discard triggers",
+      "Infinite draw triggers"
+     ]
+    },
+    "Echoes of Eternity + Spawn-Gang Commander + Ulalek, Fused Atrocity": {
+     "id": "5642-5657-5665",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite copies of abilities you control on the stack",
+      "Infinite creature tokens"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Drafna, Founder of Lat-Nam + The One Ring": {
+     "id": "3363-4331",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Cephalid Illusionist + Lightning Greaves": {
+     "id": "876-2904",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Lightning Greaves + Monk Gyatso + Urza's Incubator": {
+     "id": "876-3168-7070",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite storm count"
+     ]
+    },
+    "Drowner of Truth // Drowned Jungle + Skittering Cicada + Ulalek, Fused Atrocity": {
+     "id": "5657-5863-6489",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Kozilek's Unsealing + Strionic Resonator + Ulalek, Fused Atrocity": {
+     "id": "2751-5637-5657--34",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite copies of abilities you control on the stack",
+      "Infinite copies of a specific creature",
+      "Infinite creature tokens"
+     ]
+    },
+    "Drowner of Truth // Drowned Jungle + Liberator, Urza's Battlethopter + Ulalek, Fused Atrocity": {
+     "id": "1838-5657-6489",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Meticulous Excavation + The One Ring": {
+     "id": "1350-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Strionic Resonator + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "2751-5657-5664",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on an infinite number of creature tokens",
+      "Infinite copies of abilities you control on the stack",
+      "Infinite creature tokens"
+     ]
+    },
+    "Abstruse Archaic + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5277-5657-5664",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Kozilek's Unsealing + Lithoform Engine + Ulalek, Fused Atrocity": {
+     "id": "3094-5637-5657--34",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite copies of abilities you control on the stack",
+      "Infinite copies of a specific creature",
+      "Infinite creature tokens"
+     ]
+    },
+    "Drowner of Truth // Drowned Jungle + Emergence Zone + Ulalek, Fused Atrocity": {
+     "id": "1860-5657-6489",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Drowner of Truth // Drowned Jungle + Ulalek, Fused Atrocity + Vedalken Orrery": {
+     "id": "1927-5657-6489",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Lithoform Engine + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "3094-5657-5664",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on an infinite number of creature tokens",
+      "Infinite copies of abilities you control on the stack",
+      "Infinite creature tokens"
+     ]
+    },
+    "Lightning Greaves + Monk Gyatso + Ugin, the Ineffable": {
+     "id": "876-2604-7070",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Eye of Ugin + Lightning Greaves + Monk Gyatso": {
+     "id": "876-1157-7070--32",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "The One Ring + Vedalken Mastermind": {
+     "id": "2529-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Essence Reliquary + The One Ring": {
+     "id": "3363-8187",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Keeper of the Nine Gales + The One Ring": {
+     "id": "3363-5302",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "The One Ring + Umbilicus": {
+     "id": "131-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Blood Clock + The One Ring": {
+     "id": "3363-4933",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Nameless Inversion + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5657-5664-5910",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Annie Joins Up + Kozilek's Unsealing + Ulalek, Fused Atrocity": {
+     "id": "5473-5637-5657--34",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Cephalid Aristocrat + Lightning Greaves": {
+     "id": "876-2796",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Annie Joins Up + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5473-5657-5664",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Peter Parker's Camera + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5657-5664-6924",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Grinning Ignus + Morophon, the Boundless": {
+     "id": "411-877",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Heidar, Rimewind Master + The One Ring": {
+     "id": "3363-4782",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "The One Ring + Tradewind Rider": {
+     "id": "1363-3363",
+     "bracketTag": "S",
+     "produz": [
+      "You have protection from everything",
+      "Lock",
+      "Prevent all damage that would be dealt to you"
+     ]
+    },
+    "Horned Kavu + Morophon, the Boundless": {
+     "id": "877-3977",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Morophon, the Boundless + Shrieking Drake": {
+     "id": "751-877",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite storm count"
+     ]
+    },
+    "Temporal Adept + The One Ring": {
+     "id": "1111-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Esperzoa + The One Ring": {
+     "id": "3363-8186",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Cavern Harpy + Morophon, the Boundless": {
+     "id": "877-3859",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite storm count",
+      "Infinite creature ETB"
+     ]
+    },
+    "The One Ring + Tolarian Sentinel": {
+     "id": "3363-4780",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Phenomenon Investigators + The One Ring": {
+     "id": "3363-6248",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Obelisk of Undoing + The One Ring": {
+     "id": "3363-5278",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "The One Ring + Time Elemental": {
+     "id": "3363-3823",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything",
+      "Lock"
+     ]
+    },
+    "Return the Favor + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5657-5664-5940",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Acererak the Archlich + Morophon, the Boundless + Urza's Incubator": {
+     "id": "877-1824-3168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters"
+     ]
+    },
+    "Gogo, Master of Mimicry + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5657-5664-6657",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite +1/+1 counters on an infinite number of creature tokens"
+     ]
+    },
+    "Cache Raiders + The One Ring": {
+     "id": "306-3363",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Adric, Mathematical Genius + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "5657-5664-5904",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Shi'ar Soldier + The One Ring": {
+     "id": "3363-8189",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "Salvage Scuttler + The One Ring": {
+     "id": "3363-8188",
+     "bracketTag": "S",
+     "produz": [
+      "Lock",
+      "Prevent all damage that would be dealt to you",
+      "You have protection from everything"
+     ]
+    },
+    "The Peregrine Dynamo + Ulalek, Fused Atrocity + Writhing Chrysalis": {
+     "id": "2341-5657-5664",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "R",
+    "game_changers": [
+     "Rhystic Study",
+     "The One Ring",
+     "Ancient Tomb"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [
+     "Emrakul, the Promised End"
+    ],
+    "combos": [
+     {
+      "combo": "Eldritch Immunity + Ulalek, Fused Atrocity + Writhing Chrysalis",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 3,
+      "lock": false,
+      "tag": "O"
+     },
+     {
+      "combo": "Echoes of Eternity + Glaring Fleshraker + Ulalek, Fused Atrocity",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Glaring Fleshraker + Roaming Throne + Ulalek, Fused Atrocity",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Echoes of Eternity + Ulalek, Fused Atrocity + Writhing Chrysalis",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Echoes of Eternity + Kozilek's Unsealing + Ulalek, Fused Atrocity",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

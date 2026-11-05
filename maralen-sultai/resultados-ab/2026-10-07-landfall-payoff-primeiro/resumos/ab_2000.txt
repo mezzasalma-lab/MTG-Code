@@ -1,0 +1,29 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1705 (85.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.1910       6.2140      +0.0230 ±0.0160  
+  *landfall_elf_tokens_total                    0.2820       0.3790      +0.0970 ±0.0198  
+  *landfall_counters_total                      0.3285       0.4490      +0.1205 ±0.0238  
+  *tokens_created_total                      1027.9370     923.0370    -104.9000 ±100.3345
+  *elf_tokens                                1026.4780     921.5825    -104.8955 ±100.3348
+   ramp_pieces_cast_total                       4.9185       4.9455      +0.0270 ±0.0321  
+   staff_infinite_draws                         1.5980       1.6860      +0.0880 ±0.1136  
+   infinite_combo_turn__nunca                   0.8445       0.8445      +0.0000 ±0.0052  
+   infinite_combo_turn__ate_T4                  0.0025       0.0030      +0.0005 ±0.0010  
+   infinite_combo_turn__ate_T5                  0.0155       0.0165      +0.0010 ±0.0020  
+   infinite_combo_turn__ate_T6                  0.0450       0.0455      +0.0005 ±0.0022  
+  *cards_exiled_total                          22.9250      23.1545      +0.2295 ±0.0992  
+  *maralen_triggers_total                      12.6085      12.7785      +0.1700 ±0.0791  
+  *len_library                                 52.6770      52.3120      -0.3650 ±0.1938  
+  *library_emptied                              0.0995       0.1060      +0.0065 ±0.0040  
+  *black_market_mercenaries_total               0.4695       0.4795      +0.0100 ±0.0065  
+  *black_market_treasures_total                 0.4695       0.4795      +0.0100 ±0.0065  
+  *len_battlefield                             21.3365      21.4655      +0.1290 ±0.0857  
+  *interaction_spells_cast_total                2.4445       2.4725      +0.0280 ±0.0188  
+  *len_creature_cast_turn                      11.3830      11.4735      +0.0905 ±0.0619  
+  *life                                        35.7240      35.6685      -0.0555 ±0.0401  
+  *len_graveyard                                2.9990       3.0270      +0.0280 ±0.0203  
+  *len_exile_maralen                            6.1590       6.2380      +0.0790 ±0.0681  
+   len_tapped_lands_this_turn                   0.1945       0.1890      -0.0055 ±0.0060  
+   cards_drawn_extra                            7.5015       7.6380      +0.1365 ±0.1488  

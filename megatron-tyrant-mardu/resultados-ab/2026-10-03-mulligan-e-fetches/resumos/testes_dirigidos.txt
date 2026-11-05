@@ -1,0 +1,36 @@
+PASS - ML1 modo legacy reproduz o bug: carta de MENOR MV devolvida no TOPO (proxima compra) 
+PASS - ML1 modo bottom_only: mesma carta (menor MV), agora no FUNDO 
+PASS - ML2 modo smart: mao de 6, a devolvida e' a ULTIMA da biblioteca e nao esta na mao 
+PASS - ML2 3 mulligans (penalidade 2): 5 cartas na mao e as 2 devolvidas sao as 2 ULTIMAS da biblioteca 
+PASS - ML3 devolve a carta nao-terreno de MAIOR custo (Blightsteel Colossus), nunca Sol Ring nem terreno 
+PASS - ML3 mais de 4 terrenos: devolve um terreno (o de menos cores, empate: o que entra tapped) 
+PASS - ML3 mais de 4 terrenos com Myriad (incolor): devolve o Myriad primeiro 
+PASS - ML3 mao so' de keepers+1 terreno: nao quebra, 2 cartas distintas 
+PASS - ML4 (4.000 maos de 6, 2 mulligans forcados) a escolha nao esvazia a mao de terrenos como o legado (min MV devolvia terreno primeiro) 
+   info ML4: media de terrenos na mao de 6 cartas: legacy=1.438 smart=2.349
+PASS - F0 LAND_TYPES do simulador == tipos do type_line do Scryfall (cache) para todo terreno da lista com tipo basico 
+PASS - F0 alvos do Rocky Tar Pit ('Swamp or Mountain card') na lista = ROCKY_TAR_PIT_ORDER 
+PASS - F1 Evolving Wilds: sacrificado (cemiterio), 1 basico no campo, entrou TAPPED (0 de mana neste turno) 
+PASS - F1 biblioteca perdeu exatamente o basico buscado e foi embaralhada (mesmo multiset, ordem diferente) 
+PASS - F1 'descended': a carta sacrificada conta como permanente no cemiterio 
+PASS - F2 Terramorphic Expanse com Swamp+Mountain em campo (falta W): busca Plains 
+PASS - F2 falta R e a mao tem Goblin Welder ({R}): busca Mountain 
+PASS - F3 duas Plains, uma tapped por efeito: color_sources(W) = 1 e total_mana = 1 (nao exclui as duas pelo nome) 
+PASS - F4 sem basico na biblioteca: nao sacrifica; fica em campo sem mana nem cor 
+PASS - F5 Rocky Tar Pit jogado: fica em campo (entrou tapped, nao paga o {T}); 0 de mana; biblioteca intacta 
+PASS - F6 Rocky (falta B e R): busca Badlands (Swamp Mountain, cobre as duas), untapped: total_mana = 2 ja' neste turno 
+PASS - F6 Rocky (falta W e B): busca Scrubland (Plains Swamp) 
+PASS - F6 Rocky (falta W e R): busca Plateau (Mountain Plains) 
+PASS - F7 Rocky buscando Sunlit Marsh (entra tapped): registrado como tapped, 0 mana do alvo neste turno 
+PASS - F7 Smoldering Marsh com 2 basicos em campo entra UNTAPPED 
+PASS - F7 Smoldering Marsh com 1 basico entra TAPPED 
+PASS - F8 Rocky sem carta Swamp/Mountain na biblioteca (so' Plains e Command Tower): nao sacrifica 
+PASS - F9 FETCHLANDS_ENABLED=False: Evolving Wilds volta a ser 'terreno tapped que vira fonte W/B/R' (antigo) 
+PASS - F10 play_turn completo: no 1o main phase do T2 o Rocky ja' foi sacrificado e o terreno buscado entrou (mana do T2 = terrenos untapped) 
+PASS - F10 no T1 o Rocky (tapped) esta em campo e rende 0 
+PASS - F11 (2.000 jogos) conservacao: cada terreno nomeado aparece o numero certo de vezes entre as zonas 
+PASS - F11 (2.000 jogos) nenhum fetch fica em campo sem sacrificar quando havia alvo na biblioteca (ao fim de cada turno) 
+PASS - F11 (2.000 jogos) total_mana nunca negativo 
+PASS - F11 (2.000 jogos) houve sacrificios e o Rocky buscou duais 
+
+33/33 testes passaram

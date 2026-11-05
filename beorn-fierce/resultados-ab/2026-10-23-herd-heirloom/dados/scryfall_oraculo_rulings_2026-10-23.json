@@ -1,0 +1,154 @@
+{
+ "Herd Heirloom": {
+  "name": "Herd Heirloom",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a creature spell.\n{T}: Until end of turn, target creature you control with power 4 or greater gains trample and \"Whenever this creature deals combat damage to a player, draw a card.\"",
+  "power": null,
+  "toughness": null,
+  "keywords": [],
+  "color_identity": [
+   "G"
+  ],
+  "legalities_commander": "legal",
+  "prices": {
+   "usd": "4.54",
+   "usd_foil": "4.78",
+   "usd_etched": null,
+   "eur": "4.02",
+   "eur_foil": "4.53",
+   "tix": "0.02"
+  },
+  "oracle_id": "78b6dd40-c182-4037-a4d3-9fd012b2c584",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2025-04-04",
+    "Once Herd Heirloom’s last ability has resolved, lowering the affected creature’s power below 4 won’t cause it to lose those abilities."
+   ]
+  ]
+ },
+ "Ram Through": {
+  "name": "Ram Through",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature you control deals damage equal to its power to target creature you don't control. If the creature you control has trample, excess damage is dealt to that creature's controller instead.",
+  "power": null,
+  "toughness": null,
+  "keywords": [],
+  "color_identity": [
+   "G"
+  ],
+  "legalities_commander": "legal",
+  "prices": {
+   "usd": "0.45",
+   "usd_foil": "4.41",
+   "usd_etched": null,
+   "eur": "0.19",
+   "eur_foil": "0.63",
+   "tix": "0.15"
+  },
+  "oracle_id": "4b1befff-48fa-47a3-832e-bdaf43495c02",
+  "flavor_name": null,
+  "rulings": [
+   [
+    "2020-04-17",
+    "If either creature is an illegal target as Ram Through tries to resolve, the creature you control won’t deal damage to any creature or player."
+   ],
+   [
+    "2020-04-17",
+    "Excess damage caused by a spell or ability is similar to how combat damage from a creature with trample is handled. Start with the amount of damage being dealt to the creature and determine what is “lethal.” This is the creature’s toughness minus the amount of damage that it already has marked on it, but ignoring any replacement or prevention effects that will modify this damage. Also ignore whether the creature has an ability such as indestructible that will result in it not being destroyed by this damage."
+   ],
+   [
+    "2020-04-17",
+    "If the target creature you control has deathtouch, 1 damage from it is lethal."
+   ],
+   [
+    "2020-04-17",
+    "Once you’ve determined how much damage is excess, the creature you control simultaneously deals damage to the creature and to its controller. This damage may be modified by replacement or prevention effects."
+   ]
+  ]
+ },
+ "Beorn the Fierce": {
+  "name": "Beorn the Fierce",
+  "mana_cost": "{3}{G}{G}",
+  "type_line": "Legendary Creature — Bear Shapeshifter Warrior",
+  "oracle_text": "Trample\nOther Bears you control get +2/+2.\nAt the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.",
+  "rulings": [
+   [
+    "2026-06-29",
+    "The type-changing effect of the triggered ability lasts indefinitely. It doesn't wear off during the cleanup step or when Beorn the Fierce leaves the battlefield. The creature couldn't bear not being a Bear!"
+   ]
+  ]
+ },
+ "Roaming Throne": {
+  "name": "Roaming Throne",
+  "mana_cost": "{4}",
+  "type_line": "Artifact Creature — Golem",
+  "oracle_text": "Ward {2}\nAs this creature enters, choose a creature type.\nThis creature is the chosen type in addition to its other types.\nIf a triggered ability of another creature you control of the chosen type triggers, it triggers an additional time.",
+  "rulings": [
+   [
+    "2023-11-10",
+    "Roaming Throne's last ability doesn't copy the triggered ability; it just causes the ability to trigger an additional time. Any choices made as you put the ability onto the stack, such as modes and targets, are made separately for each instance of the ability. Any choices made on resolution, such as whether to put counters on a permanent, are also made individually."
+   ],
+   [
+    "2023-11-10",
+    "If you control two Roaming Thrones with the same chosen creature type, triggered abilities of other creatures you control of the chosen type trigger three times. Three such Roaming Thrones result in four triggered abilities, and so on."
+   ]
+  ]
+ },
+ "Ohran Frostfang": {
+  "name": "Ohran Frostfang",
+  "mana_cost": "{3}{G}{G}",
+  "type_line": "Snow Creature — Snake",
+  "oracle_text": "Attacking creatures you control have deathtouch.\nWhenever a creature you control deals combat damage to a player, draw a card.",
+  "rulings": [
+   [
+    "2019-08-23",
+    "If one or more creatures you control deal combat damage to players at the same time that lethal damage is dealt to Ohran Frostfang, its ability triggers for each of those creatures."
+   ],
+   [
+    "2019-08-23",
+    "Snow is a supertype, not a card type. It has no rules meaning or function by itself, but other cards and abilities may refer to it."
+   ]
+  ]
+ },
+ "Toski, Bearer of Secrets": {
+  "name": "Toski, Bearer of Secrets",
+  "mana_cost": "{3}{G}",
+  "type_line": "Legendary Creature — Squirrel",
+  "oracle_text": "This spell can't be countered.\nIndestructible\nToski attacks each combat if able.\nWhenever a creature you control deals combat damage to a player, draw a card.",
+  "rulings": [
+   [
+    "2021-02-05",
+    "A spell or ability that counters spells can still target Toski. When that spell or ability resolves, Toski won't be countered, but any additional effects of that spell or ability will still happen."
+   ],
+   [
+    "2021-02-05",
+    "If Toski can't attack for some reason (such as being tapped or having come under that player's control that turn), then it doesn't attack. If there's a cost associated with having it attack, you aren't forced to pay that cost, so it doesn't have to attack in that case either."
+   ]
+  ]
+ },
+ "Goreclaw, Terror of Qal Sisma": {
+  "name": "Goreclaw, Terror of Qal Sisma",
+  "mana_cost": "{3}{G}",
+  "type_line": "Legendary Creature — Bear",
+  "oracle_text": "Creature spells you cast with power 4 or greater cost {2} less to cast.\nWhenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gains trample until end of turn.",
+  "rulings": [
+   [
+    "2018-07-13",
+    "If you cast a creature spell that will enter the battlefield with a number of +1/+1 counters, such as Hungering Hydra, those counters aren't considered when determining whether Goreclaw reduces that spell's cost. Similarly, effects that will raise the creature's power once it has entered the battlefield won't apply."
+   ],
+   [
+    "2018-07-13",
+    "If another creature has an ability that changes its power when it attacks, such as Brawl-Bash Ogre, you may have that ability resolve before Goreclaw's last ability."
+   ],
+   [
+    "2018-07-13",
+    "Goreclaw's last ability affects only creatures you control with the appropriate power at the time it resolves. Creatures you begin to control later in the turn won't get either bonus, and a creature you control whose power decreases later in the turn won't lose either bonus."
+   ]
+  ]
+ }
+}

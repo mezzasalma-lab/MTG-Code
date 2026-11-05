@@ -1,0 +1,282 @@
+=== T1 (9 eventos)
+   0 Promise of Loyalty                 QAmR2g  library→hand               
+   1 Steam Vents                        uZETRq  library→hand               
+   2 Hallowed Fountain                  EioxFx  library→hand               
+   3 Way of the Paradox                 sfI4vQ  library→hand               
+   4 Oko, Thief of Crowns               5akBF2  library→hand               
+   5 Dihada, Binder of Wills            QCtsmG  library→hand               
+   6 Domri, Chaos Bringer               IRZh8W  library→hand               
+   7 Liliana's Talent                   bwiWyH  library→hand               
+   8 Hallowed Fountain                  EioxFx  hand→battlefield           TAP
+=== T2 (3 eventos)
+   0 Hallowed Fountain                  EioxFx  ·                          
+   1 Wrenn and Realmbreaker             srDQAk  library→hand               
+   2 Steam Vents                        uZETRq  hand→battlefield           TAP
+=== T3 (7 eventos)
+   0 Steam Vents                        uZETRq  ·                          
+   1 Plaza of Heroes                    cHFcPA  library→hand               
+   2 Plaza of Heroes                    cHFcPA  hand→battlefield           
+   3 Plaza of Heroes                    cHFcPA  ·                          TAP
+   4 Steam Vents                        uZETRq  ·                          TAP
+   5 Hallowed Fountain                  EioxFx  ·                          TAP
+   6 Tam, the Possibility               2k7jEQ  commandZone→battlefield    
+=== T4 (20 eventos)
+   0 Plaza of Heroes                    cHFcPA  ·                          
+   1 Steam Vents                        uZETRq  ·                          
+   2 Hallowed Fountain                  EioxFx  ·                          
+   3 Sanctum Lurker                     lrxQP7  library→hand               
+   4 Plaza of Heroes                    cHFcPA  ·                          TAP
+   5 Steam Vents                        uZETRq  ·                          TAP
+   6 Hallowed Fountain                  EioxFx  ·                          TAP
+   7 Way of the Paradox                 sfI4vQ  hand→battlefield           
+   8 Jace                               Yap1mo  None→battlefield           TOKEN
+   9 Jace                               Yap1mo  ·                          L1 TOKEN
+  10 Oko, Thief of Crowns               5akBF2  hand→battlefield           L4
+  11 Jace                               Yap1mo  ·                          L5 TOKEN
+  12 Jace                               Yap1mo  ·                          L2 TOKEN
+  13 Jace                               Yap1mo  ·                          L3 TOKEN
+  14 Jace                               Yap1mo  ·                          L4 TOKEN
+  15 Jace                               Yap1mo  ·                          L5 TOKEN
+  16 Jace                               Yap1mo  ·                          L2 TOKEN
+  17 Way of the Mind Sculptor           qyXiog  library→hand               
+  18 Promise of Loyalty                 QAmR2g  hand→graveyard             
+  19 Fracture                           7hX4uy  None→opponentsCards        
+=== T5 (14 eventos)
+   0 Plaza of Heroes                    cHFcPA  ·                          
+   1 Steam Vents                        uZETRq  ·                          
+   2 Hallowed Fountain                  EioxFx  ·                          
+   3 Mossfire Valley                    0DKC0J  library→hand               
+   4 Mossfire Valley                    0DKC0J  hand→battlefield           
+   5 Plaza of Heroes                    cHFcPA  ·                          TAP
+   6 Mossfire Valley                    0DKC0J  ·                          TAP
+   7 Steam Vents                        uZETRq  ·                          TAP
+   8 Oko, Thief of Crowns               5akBF2  hand→battlefield           L4
+   9 Oko, Thief of Crowns               5akBF2  ·                          L5
+  10 Oko, Thief of Crowns               5akBF2  ·                          L6
+  11 Food                               TOgAop  None→battlefield           TOKEN
+  12 Cat                                hE4d3A  None→opponentsCards        
+  13 Spirit                             gf5Pfb  None→opponentsCards        
+=== T6 (20 eventos)
+   0 Mossfire Valley                    0DKC0J  ·                          
+   1 Plaza of Heroes                    cHFcPA  ·                          
+   2 Steam Vents                        uZETRq  ·                          
+   3 Overflowing Basin                  KzGzW8  library→hand               
+   4 Overflowing Basin                  KzGzW8  hand→battlefield           
+   5 Steam Vents                        uZETRq  ·                          TAP
+   6 Hallowed Fountain                  EioxFx  ·                          TAP
+   7 Steam Vents                        uZETRq  ·                          
+   8 Overflowing Basin                  KzGzW8  ·                          TAP
+   9 Plaza of Heroes                    cHFcPA  ·                          TAP
+  10 Wrenn and Realmbreaker             srDQAk  hand→battlefield           L4
+  11 Wrenn and Realmbreaker             srDQAk  ·                          L5
+  12 Steam Vents                        uZETRq  ·                          
+  13 Steam Vents                        uZETRq  ·                          H1
+  14 Steam Vents                        uZETRq  ·                          H1 V1
+  15 Steam Vents                        uZETRq  ·                          H1 V1 H1
+  16 Oko, Thief of Crowns               5akBF2  ·                          L7
+  17 Food                               TOgAop  ·                          TOKEN
+  18 Food                               TOgAop  ·                          E1 TOKEN
+  19 Rukh                               Q57soo  None→opponentsCards        
+=== T7 (19 eventos)
+   0 Overflowing Basin                  KzGzW8  ·                          
+   1 Plaza of Heroes                    cHFcPA  ·                          
+   2 Hallowed Fountain                  EioxFx  ·                          
+   3 Wooded Foothills                   dwYub0  library→hand               
+   4 Wooded Foothills                   dwYub0  hand→battlefield           
+   5 Wooded Foothills                   dwYub0  ·                          TAP
+   6 Wooded Foothills                   dwYub0  battlefield→graveyard      
+   7 Indatha Triome                     erzHFw  library→battlefield        TAP
+   8 Hallowed Fountain                  EioxFx  ·                          TAP
+   9 Mossfire Valley                    0DKC0J  ·                          TAP
+  10 Overflowing Basin                  KzGzW8  ·                          TAP
+  11 Domri, Chaos Bringer               IRZh8W  hand→battlefield           L5
+  12 Domri, Chaos Bringer               IRZh8W  ·                          L6
+  13 Oko, Thief of Crowns               5akBF2  ·                          L8
+  14 Oko, Thief of Crowns               5akBF2  ·                          L9
+  15 Food                               ByYpJb  None→battlefield           TOKEN
+  16 Wrenn and Realmbreaker             srDQAk  ·                          L6
+  17 Syphon Mind                        BkZtru  None→opponentsCards        
+  18 Way of the Mind Sculptor           qyXiog  hand→graveyard             
+=== T8 (28 eventos)
+   0 Mossfire Valley                    0DKC0J  ·                          
+   1 Indatha Triome                     erzHFw  ·                          
+   2 Overflowing Basin                  KzGzW8  ·                          
+   3 Hallowed Fountain                  EioxFx  ·                          
+   4 Fellwar Stone                      EG0S9B  library→hand               
+   5 Hallowed Fountain                  EioxFx  ·                          TAP
+   6 Overflowing Basin                  KzGzW8  ·                          TAP
+   7 Fellwar Stone                      EG0S9B  hand→battlefield           
+   8 Oko, Thief of Crowns               5akBF2  ·                          L10
+   9 Food                               ByYpJb  ·                          TOKEN
+  10 Food                               ByYpJb  ·                          E1 TOKEN
+  11 Domri, Chaos Bringer               IRZh8W  ·                          L7
+  12 Fellwar Stone                      EG0S9B  ·                          TAP
+  13 Indatha Triome                     erzHFw  ·                          TAP
+  14 Sanctum Lurker                     lrxQP7  hand→battlefield           
+  15 Jace                               hWA2Qe  None→battlefield           TOKEN
+  16 Jace                               hWA2Qe  ·                          L1 TOKEN
+  17 Jace                               hWA2Qe  ·                          L2 TOKEN
+  18 Wrenn and Realmbreaker             srDQAk  ·                          L7
+  19 Steam Vents                        uZETRq  ·                          TAP H1 V1 H1
+  20 Steam Vents                        uZETRq  ·                          H1 V1 H1
+  21 Steam Vents                        uZETRq  ·                          V1 H1
+  22 Steam Vents                        uZETRq  ·                          H1
+  23 Steam Vents                        uZETRq  ·                          
+  24 Steam Vents                        uZETRq  ·                          
+  25 Steam Vents                        uZETRq  ·                          
+  26 Prismari Command                   7k2-8d  None→opponentsCards        
+  27 Sanctum Lurker                     lrxQP7  battlefield→graveyard      
+=== T9 (27 eventos)
+   0 Indatha Triome                     erzHFw  ·                          
+   1 Fellwar Stone                      EG0S9B  ·                          
+   2 Overflowing Basin                  KzGzW8  ·                          
+   3 Hallowed Fountain                  EioxFx  ·                          
+   4 Undergrowth Stadium                1uGQWF  library→hand               
+   5 Undergrowth Stadium                1uGQWF  hand→battlefield           
+   6 Undergrowth Stadium                1uGQWF  ·                          TAP
+   7 Steam Vents                        uZETRq  ·                          TAP
+   8 Overflowing Basin                  KzGzW8  ·                          TAP
+   9 Indatha Triome                     erzHFw  ·                          TAP
+  10 Hallowed Fountain                  EioxFx  ·                          TAP
+  11 Mossfire Valley                    0DKC0J  ·                          TAP
+  12 Tam, the Possibility               2k7jEQ  ·                          TAP
+  13 Oko, Thief of Crowns               5akBF2  ·                          L11
+  14 Domri, Chaos Bringer               IRZh8W  ·                          L8
+  15 Wrenn and Realmbreaker             srDQAk  ·                          L8
+  16 Jace                               hWA2Qe  ·                          L3 TOKEN
+  17 Wrenn and Realmbreaker             srDQAk  ·                          L1
+  18 Wrenn and Realmbreaker Emblem      sq5bxH  None→battlefield           TOKEN
+  19 Oko, Thief of Crowns               5akBF2  ·                          L12
+  20 Oko, Thief of Crowns               5akBF2  ·                          L13
+  21 Food                               j5eCqD  None→battlefield           TOKEN
+  22 Domri, Chaos Bringer               IRZh8W  ·                          L9
+  23 Jace                               hWA2Qe  ·                          L2 TOKEN
+  24 Stomping Ground                    sMyUMr  library→graveyard          
+  25 Wurm                               df6cPD  None→opponentsCards        
+  26 Spider                             iEcc92  None→opponentsCards        
+=== T10 (39 eventos)
+   0 Undergrowth Stadium                1uGQWF  ·                          
+   1 Tam, the Possibility               2k7jEQ  ·                          
+   2 Steam Vents                        uZETRq  ·                          
+   3 Indatha Triome                     erzHFw  ·                          
+   4 Mossfire Valley                    0DKC0J  ·                          
+   5 Overflowing Basin                  KzGzW8  ·                          
+   6 Hallowed Fountain                  EioxFx  ·                          
+   7 Tezzeret the Seeker                tFboDQ  library→hand               
+   8 Stomping Ground                    sMyUMr  graveyard→battlefield      
+   9 Hallowed Fountain                  EioxFx  ·                          TAP
+  10 Fellwar Stone                      EG0S9B  ·                          TAP
+  11 Steam Vents                        uZETRq  ·                          TAP
+  12 Overflowing Basin                  KzGzW8  ·                          TAP
+  13 Stomping Ground                    sMyUMr  ·                          TAP
+  14 Way of the Mind Sculptor           qyXiog  graveyard→battlefield      
+  15 Jace                               hWA2Qe  ·                          L3 TOKEN
+  16 Jace                               hWA2Qe  ·                          L4 TOKEN
+  17 Jace                               hWA2Qe  ·                          L5 TOKEN
+  18 Jace                               hWA2Qe  ·                          L6 TOKEN
+  19 Jace                               hWA2Qe  ·                          L7 TOKEN
+  20 Jace                               hWA2Qe  ·                          L6 TOKEN
+  21 Jace                               hWA2Qe  ·                          L5 TOKEN
+  22 Jace                               hWA2Qe  ·                          L4 TOKEN
+  23 Vronos, Masked Inquisitor          gaA28U  library→hand               
+  24 City of Brass                      1Pt7oL  library→hand               
+  25 City of Brass                      1Pt7oL  hand→battlefield           
+  26 Oko, Thief of Crowns               5akBF2  ·                          L14
+  27 Food                               j5eCqD  ·                          E1 TOKEN
+  28 Food                               j5eCqD  ·                          E1 TOKEN
+  29 Domri, Chaos Bringer               IRZh8W  ·                          L10
+  30 Undergrowth Stadium                1uGQWF  ·                          TAP
+  31 Plaza of Heroes                    cHFcPA  ·                          TAP
+  32 Indatha Triome                     erzHFw  ·                          TAP
+  33 Tezzeret the Seeker                tFboDQ  hand→battlefield           L4
+  34 Tezzeret the Seeker                tFboDQ  ·                          L3
+  35 Tezzeret the Seeker                tFboDQ  ·                          L2
+  36 Tezzeret the Seeker                tFboDQ  ·                          L1
+  37 Ichormoon Gauntlet                 lqREkT  library→battlefield        
+  38 Forceful Denial                    e2yv79  None→opponentsCards        
+=== T11 (85 eventos)
+   0 Indatha Triome                     erzHFw  ·                          
+   1 Stomping Ground                    sMyUMr  ·                          
+   2 Undergrowth Stadium                1uGQWF  ·                          
+   3 Steam Vents                        uZETRq  ·                          
+   4 Fellwar Stone                      EG0S9B  ·                          
+   5 Overflowing Basin                  KzGzW8  ·                          
+   6 Plaza of Heroes                    cHFcPA  ·                          
+   7 Hallowed Fountain                  EioxFx  ·                          
+   8 Kiora of Salt and Sand             DH4net  library→hand               
+   9 Stomping Ground                    sMyUMr  ·                          TAP
+  10 Overflowing Basin                  KzGzW8  ·                          TAP
+  11 Fellwar Stone                      EG0S9B  ·                          TAP
+  12 Kiora of Salt and Sand             DH4net  hand→battlefield           
+  13 Kiora of Salt and Sand             DH4net  battlefield→graveyard      
+  14 Wooded Foothills                   dwYub0  graveyard→battlefield      
+  15 Wooded Foothills                   dwYub0  ·                          TAP
+  16 Wooded Foothills                   dwYub0  battlefield→graveyard      
+  17 Jetmir's Garden                    6JODoc  library→battlefield        TAP
+  18 Undergrowth Stadium                1uGQWF  ·                          TAP
+  19 Hallowed Fountain                  EioxFx  ·                          TAP
+  20 Steam Vents                        uZETRq  ·                          TAP
+  21 Kiora of Salt and Sand             DH4net  graveyard→battlefield      
+  22 Wrenn and Realmbreaker             srDQAk  ·                          L2
+  23 City of Brass                      1Pt7oL  ·                          
+  24 Tezzeret the Seeker                tFboDQ  ·                          L2
+  25 Food                               j5eCqD  ·                          E2 TOKEN
+  26 Jace                               hWA2Qe  ·                          L5 TOKEN
+  27 Food                               ByYpJb  ·                          E2 TOKEN
+  28 Domri, Chaos Bringer               IRZh8W  ·                          L11
+  29 Food                               TOgAop  ·                          E2 TOKEN
+  30 Wrenn and Realmbreaker             srDQAk  ·                          L2
+  31 Oko, Thief of Crowns               5akBF2  ·                          L15
+  32 Oko, Thief of Crowns               5akBF2  ·                          L3
+  33 Tezzeret the Seeker                tFboDQ  ·                          L3
+  34 Food                               j5eCqD  ·                          E3 TOKEN
+  35 Jace                               hWA2Qe  ·                          L6 TOKEN
+  36 Food                               ByYpJb  ·                          E3 TOKEN
+  37 Domri, Chaos Bringer               IRZh8W  ·                          L12
+  38 Food                               TOgAop  ·                          E3 TOKEN
+  39 Wrenn and Realmbreaker             srDQAk  ·                          L3
+  40 Oko, Thief of Crowns               5akBF2  ·                          L4
+  41 Tezzeret the Seeker                tFboDQ  ·                          L4
+  42 Food                               j5eCqD  ·                          E4 TOKEN
+  43 Jace                               hWA2Qe  ·                          L7 TOKEN
+  44 Food                               ByYpJb  ·                          E4 TOKEN
+  45 Domri, Chaos Bringer               IRZh8W  ·                          L13
+  46 Food                               TOgAop  ·                          E4 TOKEN
+  47 Wrenn and Realmbreaker             srDQAk  ·                          L4
+  48 Oko, Thief of Crowns               5akBF2  ·                          L5
+  49 Jace                               hWA2Qe  ·                          L6 TOKEN
+  50 Jace                               hWA2Qe  ·                          L5 TOKEN
+  51 Jace                               hWA2Qe  ·                          L4 TOKEN
+  52 Staff of Compleation               E7YFQM  library→hand               
+  53 Flux Channeler                     cLG0X5  library→hand               
+  54 Undergrowth Stadium                1uGQWF  ·                          
+  55 Steam Vents                        uZETRq  ·                          
+  56 Fellwar Stone                      EG0S9B  ·                          
+  57 Overflowing Basin                  KzGzW8  ·                          
+  58 Stomping Ground                    sMyUMr  ·                          
+  59 Hallowed Fountain                  EioxFx  ·                          
+  60 Jetmir's Garden                    6JODoc  ·                          
+  61 Food                               TOgAop  ·                          TAP E4 TOKEN
+  62 Food                               TOgAop  ·                          E4 TOKEN
+  63 Dack Fayden                        ArHeKF  library→hand               
+  64 Wooded Foothills                   dwYub0  graveyard→battlefield      
+  65 Wooded Foothills                   dwYub0  ·                          TAP
+  66 Wooded Foothills                   dwYub0  battlefield→graveyard      
+  67 Zagoth Triome                      sJtEdG  library→battlefield        TAP
+  68 Hallowed Fountain                  EioxFx  ·                          TAP
+  69 Stomping Ground                    sMyUMr  ·                          TAP
+  70 Mossfire Valley                    0DKC0J  ·                          TAP
+  71 Flux Channeler                     cLG0X5  hand→battlefield           
+  72 Undergrowth Stadium                1uGQWF  ·                          TAP
+  73 Jetmir's Garden                    6JODoc  ·                          TAP
+  74 Indatha Triome                     erzHFw  ·                          TAP
+  75 Dihada, Binder of Wills            QCtsmG  hand→battlefield           L5
+  76 Dihada, Binder of Wills            QCtsmG  ·                          L6
+  77 Tezzeret the Seeker                tFboDQ  ·                          L5
+  78 Food                               j5eCqD  ·                          E5 TOKEN
+  79 Jace                               hWA2Qe  ·                          L5 TOKEN
+  80 Food                               ByYpJb  ·                          E5 TOKEN
+  81 Domri, Chaos Bringer               IRZh8W  ·                          L14
+  82 Food                               TOgAop  ·                          E5 TOKEN
+  83 Wrenn and Realmbreaker             srDQAk  ·                          L5
+  84 Oko, Thief of Crowns               5akBF2  ·                          L6

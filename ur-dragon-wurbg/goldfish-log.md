@@ -1,6 +1,309 @@
 # Goldfish Log — The Ur-Dragon
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 0,1% → 0,1% (+0,06 ± 0,05 pp), até T4 +0,13 ± 0,11 pp, até T5 +0,49 ± 0,22 pp, comandante que nunca entra -0,25 ± 0,14 pp. Modo resiliência: comandante em campo até T3 0,1% → 0,1% (+0,05 ± 0,04 pp), até T4 +0,11 ± 0,11 pp, até T5 +0,34 ± 0,23 pp, comandante que nunca entra -0,26 ± 0,25 pp. A correção joga o terreno virado primeiro em média 0,50 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,14 vez(es) por partida (teria custado uma jogada).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- Terrenos virados do deck: `ETB_TAPPED_LANDS` e slow lands com menos de 2 outros terrenos; choques pagam 2 de vida (já era assim). Fetches ficam no grupo desvirado: o ensaio mede o resultado real (inclusive a Triome buscada que entra virada).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8088 (80.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1401       0.1376      -0.0025 ±0.0014  
+  *commander_cast_turn__ate_T3                  0.0005       0.0011      +0.0006 ±0.0005  
+  *commander_cast_turn__ate_T4                  0.0221       0.0234      +0.0013 ±0.0011  
+  *commander_cast_turn__ate_T5                  0.1587       0.1636      +0.0049 ±0.0022  
+  *len_library                                 42.6230      42.0164      -0.6066 ±0.1572  
+  *cards_drawn_extra                           36.0690      36.6378      +0.5688 ±0.1497  
+  *len_graveyard                               19.5709      19.9034      +0.3325 ±0.0945  
+  *commander_cast_turn__ate_T6                  0.3948       0.4027      +0.0079 ±0.0026  
+  *smothering_tithe_treasures                   0.4525       0.4636      +0.0111 ±0.0038  
+  *len_battlefield                             28.9387      29.1655      +0.2268 ±0.0782  
+  *urdragon_attack_draws_total                 14.5999      14.8555      +0.2556 ±0.0887  
+  *len_creature_cast_turn                      12.2704      12.3966      +0.1262 ±0.0444  
+  *game_over                                    0.3109       0.3179      +0.0070 ±0.0026  
+  *library_emptied                              0.3109       0.3179      +0.0070 ±0.0026  
+  *lethal_proxy_turn__nunca                     0.4363       0.4290      -0.0073 ±0.0028  
+  *lethal_proxy_turn__ate_T6                    0.0567       0.0612      +0.0045 ±0.0018  
+  *first_color_screw_turn__ate_T3               0.1838       0.1917      +0.0079 ±0.0032  
+  *dragons_free_entry_total                     2.3097       2.3461      +0.0364 ±0.0158
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8089 (80.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.2668       0.2642      -0.0026 ±0.0025  
+  *commander_cast_turn__ate_T3                  0.0005       0.0010      +0.0005 ±0.0004  
+  *commander_cast_turn__ate_T4                  0.0171       0.0182      +0.0011 ±0.0011  
+  *commander_cast_turn__ate_T5                  0.1177       0.1211      +0.0034 ±0.0023  
+  *first_color_screw_turn__ate_T3               0.1838       0.1917      +0.0079 ±0.0032  
+  *first_color_screw_turn__ate_T4               0.2185       0.2259      +0.0074 ±0.0033  
+  *first_color_screw_turn__ate_T6               0.2505       0.2575      +0.0070 ±0.0033  
+  *first_color_screw_turn__ate_T5               0.2398       0.2465      +0.0067 ±0.0033  
+  *first_color_screw_turn__nunca                0.7361       0.7294      -0.0067 ±0.0033  
+  *triome_cycles_total                          0.1079       0.1016      -0.0063 ±0.0032  
+  *len_library                                 59.2508      58.9272      -0.3236 ±0.1675  
+  *cards_drawn_extra                           20.4662      20.7700      +0.3038 ±0.1575  
+  *commander_cast_turn__ate_T6                  0.3069       0.3118      +0.0049 ±0.0027  
+  *len_smart_wipe_log                           0.4471       0.4544      +0.0073 ±0.0041  
+  *smart_wipes_total                            0.4471       0.4544      +0.0073 ±0.0041  
+  *urdragon_attack_draws_total                  8.5143       8.6647      +0.1504 ±0.0858  
+  *lethal_proxy_turn__ate_T6                    0.0292       0.0315      +0.0023 ±0.0013  
+  *color_screw_turns                            1.0033       1.0217      +0.0184 ±0.0110
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `urdragon_goldfish_v1_ANTES_278149f.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos ? (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## Mulligan com escolha do fundo (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. O comandante custa 9 de mana, então o efeito aparece no fim da distribuição, não em T3–T4: comandante que nunca entra em 8 turnos 15,2% → 14,0% (−1,14 ± 0,27 pp); em campo até T5 +0,52 ± 0,21 pp e até T6 +0,66 ± 0,28 pp (N=10.000, padrão; resiliência com o mesmo sinal: nunca −1,19 ± 0,32 pp).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8667 (86.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1515       0.1401      -0.0114 ±0.0027  
+   commander_cast_turn__ate_T3                  0.0006       0.0005      -0.0001 ±0.0002  
+   commander_cast_turn__ate_T4                  0.0215       0.0221      +0.0006 ±0.0008  
+  *commander_cast_turn__ate_T5                  0.1535       0.1587      +0.0052 ±0.0021  
+  *own_interaction_used                         0.8189       0.8316      +0.0127 ±0.0028  
+  *commander_cast_count                         0.8485       0.8599      +0.0114 ±0.0027  
+  *commander_in_play                            0.8486       0.8600      +0.0114 ±0.0027  
+  *urdragon_free_permanents_total               2.4304       2.4666      +0.0362 ±0.0114  
+  *len_life_paid                                2.3053       2.3174      +0.0121 ±0.0041  
+  *fetches_cracked_total                        1.3173       1.3264      +0.0091 ±0.0036  
+  *len_battlefield                             28.6873      28.9387      +0.2514 ±0.0983  
+  *commander_cast_turn__ate_T6                  0.3882       0.3948      +0.0066 ±0.0028  
+  *arcane_denial_draws_total                    0.1174       0.1201      +0.0027 ±0.0012  
+  *sarkhan_triumph_cast_total                   0.4300       0.4368      +0.0068 ±0.0030  
+  *commander_damage_dealt                      23.5533      24.0171      +0.4638 ±0.2072  
+  *len_library                                 43.0598      42.6230      -0.4368 ±0.1959  
+  *dragon_hoard_draws_total                     0.4349       0.4441      +0.0092 ±0.0043  
+  *path_scry_turn__ate_T3                       0.8419       0.8388      -0.0031 ±0.0015
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8659 (86.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.2787       0.2668      -0.0119 ±0.0032  
+   commander_cast_turn__ate_T3                  0.0006       0.0005      -0.0001 ±0.0002  
+   commander_cast_turn__ate_T4                  0.0166       0.0171      +0.0005 ±0.0008  
+  *commander_cast_turn__ate_T5                  0.1140       0.1177      +0.0037 ±0.0019  
+  *own_interaction_used                         0.7788       0.7907      +0.0119 ±0.0030  
+  *commander_cast_count                         0.8536       0.8682      +0.0146 ±0.0039  
+  *commander_in_play                            0.5777       0.5880      +0.0103 ±0.0035  
+  *len_life_paid                                2.2108       2.2213      +0.0105 ±0.0039  
+  *urdragon_free_permanents_total               1.7124       1.7394      +0.0270 ±0.0106  
+  *fetches_cracked_total                        1.2360       1.2439      +0.0079 ±0.0034  
+  *path_scry_turn__ate_T3                       0.8474       0.8441      -0.0033 ±0.0016  
+  *life                                        32.6539      32.5684      -0.0855 ±0.0422  
+  *path_scry_turn__ate_T4                       0.8480       0.8448      -0.0032 ±0.0016  
+  *commander_damage_dealt                      32.5655      32.7875      +0.2220 ±0.1172  
+  *path_scry_turn__ate_T5                       0.8509       0.8478      -0.0031 ±0.0017  
+  *color_screw_turns                            1.0261       1.0033      -0.0228 ±0.0130  
+  *len_smart_attack_log                         1.0823       1.0921      +0.0098 ±0.0057  
+  *smart_attacks_taken_total                    1.0823       1.0921      +0.0098 ±0.0057
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** com um comandante de 9 mana a vantagem do mulligan está em manter ramp e terrenos suficientes (Sol Ring, Arcane Signet, Birds, Delighted Halfling, Farseek/Nature's Lore/Three Visits ficam protegidos) em vez de devolver uma carta ao acaso; o ganho aparece na probabilidade de o comandante entrar até o fim, não nos primeiros turnos.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `urdragon_goldfish_v1_ANTES_4679c80.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** `remove_permanent()` desviava o comandante direto pra zona
+de comando sem passar pelo cemitério (CR 903.9a é ação baseada em
+estado, não substituição). Este deck tem 0 cartas "whenever ~ dies"
+(reconfirmado por grep), então a correção não move NENHUMA métrica —
+é puramente estrutural, pra não herdar o bug em silêncio numa troca de
+carta futura.
+
+**Resultado:** modo padrão idêntico, 0/3000 mismatches de
+bit-identidade (nenhum call site de `remove_permanent` roda fora do
+modo de resiliência).
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 partidas com o comandante preso no cemitério + 2 testes
+dirigidos.
+
+---
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Correção de design no mesmo dia:** 1ª versão rolava os 3 tipos
+(criatura/artefato/encantamento) independentemente, permitindo
+(raramente) 2 sweepers no mesmo turno de oponente. Usuário apontou o
+problema ("alternância de remoções, aleatória") — redesenhado pra 1
+rolagem "algum wipe acontece" + escolha ponderada de UM tipo só (pesos
+0.4/0.2/0.15). Detalhes completos em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Resultado (A/B 2000 jogos mesma seed_base, design unificado final):**
+% de jogos com pelo menos 1 wipe de qualquer tipo sobe de 37,0% pra
+62,2% (antes = commit `8b84daf`, só wipe de criatura). Avg wipes totais
+por jogo: 0,416 → 0,882. 21,9% dos jogos "depois" sofrem pelo menos 1
+artifact wipe, 17,2% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (2.000
+seeds) + regressão de 20.000 partidas, 0 exceções + testes dirigidos
+(no máximo 1 tipo por chamada; distribuição ponderada correta).
+
+---
+
+## Bug de design: modelo assumia 100% da mesa mirando em mim, sempre — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron — "se sempre
+for 3 contra 1, aí não consigo fazer nada, nunca!". Detalhes em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS`, mesmo
+padrão do Megatron.
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques sofridos 2,98→1,19,
+vida final média 35,28→38,14, rodadas com zero interação 21,8%→58,7%.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds) + regressão
+de 20.000 partidas, 0 exceções.
+
+---
+
+## Bug de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron — um wipe
+simétrico suprime ataque de TODOS os oponentes na mesma rodada, não só
+do próprio wiper. Detalhes em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `state.wiped_this_round`, `POST_WIPE_ATTACK_HASTE_
+FACTOR = 0.15`, mesmo padrão do Megatron.
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques de oponente sofridos
+2,98→2,91, vida final média 35,28→35,40.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds) + regressão
+de 20.000 partidas, 0 exceções.
+
+---
+
+## Bug de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron (board wipe é
+sorcery, ataque vem de criatura — se simétrico, o mesmo oponente não
+ataca no turno em que wipou). Detalhes em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `try_smart_opponent_turn()` simula 3 turnos de oponente
+de verdade por rodada, wipe e ataque mutuamente exclusivos no mesmo
+turno.
+
+**Resultado (A/B mesma seed):** dano proxy no modo resiliência
+310,33→43,29 — queda bem mais acentuada que o Megatron, porque este
+deck depende inteiramente da comandante resolver E atacar; nunca
+resolver em 8 turnos subiu de 31,6%→45,0%.
+
+**Validação:** teste dirigido (exclusão mútua 100%) + regressão de
+20.000 partidas, 0 exceções + modo padrão intocado.
+
+---
+
+## Modo de resiliência portado do Megatron — 2026-09-20
+
+**Gatilho:** usuário pediu pra portar o modo de resiliência (6
+categorias de interação de oponente: board wipe, graveyard wipe,
+graveyard snipe, remoção inteligente, ataque, discard aleatório, +
+counterspell) do Megatron pro Ur-Dragon, com resultado separado do
+goldfish padrão e o original preservado. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**2 limitações estruturais reais deste deck** (não são bugs, são
+diferenças genuínas de arquitetura vs. o Megatron): sem `sacrifice()`
+central (motor é ETB/ataque, não sacrifício — mas isso na verdade
+SIMPLIFICA o port, zero gatilhos de morte pra replicar) e sem
+`toughness` rastreado por criatura nenhuma (motor só rastreia poder de
+saída) — por isso o ataque de oponente aqui nunca é bloqueado,
+diferente do Megatron.
+
+**Validação:** `simulate_one`/`run_batch` confirmados 100%
+bit-idênticos ao original em 5.000 seeds, mesmo com `cast_card`/
+`enter_battlefield` alterados pro hook do counterspell. Regressão de
+20.000 partidas em cada modo, 0 exceções.
+
+**Resultado (A/B 2000 jogos mesma seed):** nunca resolve em 8 turnos
+sobe de 21,3%→31,6%, dano proxy cai de 990,50→310,33 (menos de 1/3) —
+os alvos mais removidos são Roaming Throne (16,1%) e Dragon Tempest
+(14,4%), os 2 multiplicadores centrais do motor de dano. Tabela
+completa em `checklist-oraculo.md`.
 
 ---
 
@@ -2614,6 +2917,721 @@ em campo de graça como se fosse um Dragão de verdade). Resumo numérico
 | Avg dragons_free_entry_total | 1,1575 | 1,1495 |
 
 20.000 partidas de regressão (seed 7600000+), 0 exceções.
+
+---
+
+## Fichas de Dragão como criaturas + Draconic Visitor (Ur-Dragon × Vihaan) — 2026-09-25
+
+**Pedido:** *"A carta Draconic Visitor, avalie ela como possível inclusao
+tanto no Ur-Dragon, quanto no Vihan, e me diga aonde ela seria melhor e
+pq, ou se não vale incluir em nenhum dos 2!"* O motor de fichas de Dragão
+foi corrigido primeiro; detalhes em `checklist-oraculo.md`.
+
+### Antes/depois do motor de fichas (2.000 seeds, 7.600.000+, 8 turnos)
+
+| Métrica | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Dragões em campo (fim) | 26,74 | 68,86 | 10,41 | 18,77 |
+| Fichas de Dragão | 18,38 | 59,44 | 6,73 | 14,67 |
+| Compras da Ur-Dragon | 14,35 | 108,06 | 5,65 | 23,57 |
+| Cartas extras | 22,84 | 31,47 | 11,75 | 16,83 |
+| Dano de ETB (mediana) | 10 | 30 | 0 | 0 |
+| Eventos de dano de ETB | 12,57 | 128,65 | 4,51 | 35,35 |
+| Vitória por dano de comandante | 34,15% | 34,70% | 19,05% | 19,55% |
+| Turno do comandante | 7,115 | 7,112 | 7,537 | 7,534 |
+| Letal ≤T8 (métrica nova) | — | 49,25% | — | 25,85% |
+| Letal ≤T6 | — | 3,10% | — | 1,60% |
+| Partidas que bateram no teto de 400 fichas | — | 9,0% | — | 2,0% |
+
+Tudo se move na direção esperada: fichas agora atacam, compram pela
+Ur-Dragon e disparam Scourge/Tempest/Terror. Médias sem teto (dano total
+~50 mil) não servem pra decidir nada; só as métricas limitadas acima.
+
+### A/B pareado — Visitor no lugar de 7 candidatas + controle (N=3.000, troca posicional)
+
+Diferença pareada (Visitor − base) com IC95%. Controle: Farseek (ramp de
+2; cortar deve atrasar o comandante, e atrasa).
+
+**Padrão** (base: letal ≤T8 49,1%, turno cmd 7,10, dano cmd 34,7%)
+
+| Sai | turno letal | letal ≤T6 | letal ≤T8 | turno cmd | cartas extras | dano cmd |
+|---|---|---|---|---|---|---|
+| Hellkite Courser | +0,035 ±0,010 | −0,8pp ±0,4 | −1,4pp ±0,6 | +0,043 | −1,13 ±0,35 | −3,0pp ±0,6 |
+| Dragonlord Dromoka | −0,009 ±0,007 | +0,1pp ±0,2 | +0,4pp ±0,5 | +0,023 | +0,13 ±0,25 | −0,4pp ±0,4 |
+| Balefire Dragon | −0,008 ±0,009 | 0,0pp ±0,3 | +0,4pp ±0,6 | +0,042 | +0,38 ±0,34 | −1,1pp ±0,5 |
+| Savage Ventmaw | +0,028 ±0,010 | −0,3pp ±0,2 | −1,5pp ±0,6 | +0,095 | −1,27 ±0,36 | −3,0pp ±0,6 |
+| Sarkhan Unbroken | −0,014 ±0,009 | 0,0pp ±0,2 | +0,6pp ±0,7 | +0,028 | +0,27 ±0,31 | −0,7pp ±0,5 |
+| Bladewing the Risen | −0,005 ±0,007 | 0,0pp ±0,2 | +0,1pp ±0,5 | +0,028 | +0,27 ±0,29 | −0,6pp ±0,4 |
+| Hellkite Charger | +0,016 ±0,008 | −0,1pp ±0,2 | −0,6pp ±0,6 | +0,023 | −1,01 ±0,32 | −3,1pp ±0,7 |
+| Farseek (controle) | +0,018 ±0,011 | −0,2pp ±0,3 | −0,9pp ±0,8 | +0,092 | −0,45 ±0,43 | −2,6pp ±0,7 |
+
+**Resiliência** (base: letal ≤T8 25,7%): Dromoka +0,4pp ±0,4; Balefire
++0,2pp ±0,6; Sarkhan Unbroken −0,2pp ±0,6; Bladewing −0,1pp ±0,5; Courser
+−1,9pp ±0,6; Ventmaw −1,0pp ±0,6; Charger −0,7pp ±0,6; Farseek −0,5pp
+±0,7. O turno do comandante piora em todos: +0,01 a +0,09.
+
+### Condicional e decomposição
+
+- A Visitor resolve em **43,7%** das partidas até o T8 (média T6,95) no
+  modo padrão e em 27,7% na resiliência. Isso é 5× mais que no Vihaan
+  (8,2%): o motor de compra da Ur-Dragon, os redutores de custo de Dragão
+  e o Herald's Horn acham e baixam a carta.
+- Nessas partidas, contra a lista base (corte: Sarkhan Unbroken):
+  - letal ≤T8: 76,1% → +1,5pp ±1,5 (resiliência −0,4pp ±2,1);
+  - Dragões +18;
+  - +46 Dragões criados pela Visitor.
+  É efeito teto: as partidas em que ela resolve já são as partidas
+  ganhas.
+- **Decomposição**, Visitor × Dragão 5/5 voador genérico de mesmo custo no
+  mesmo slot (só harness), nas partidas em que resolveu:
+  - letal ≤T8: +0,5pp ±0,9 (resiliência +1,3pp ±1,2);
+  - turno do comandante: +0,03 (mais tarde);
+  - dano de comandante: −1,1pp ±0,6.
+  **O texto da Visitor vale ~zero aqui.** Ele troca a mana de Treasure
+  (Goldspan, Old Gnawbone, Ancient Copper, Tithe, Magda) que paga a
+  comandante de 9 e os Dragões grandes por Dragões extras em partidas que
+  já estavam decididas.
+
+### Comparação Ur-Dragon × Vihaan (Regras 4 e 5: deck primeiro, simulador de apoio)
+
+| | Ur-Dragon | Vihaan |
+|---|---|---|
+| Motores que a carta alimenta | Tribal: o corpo Dragão entra em Eminence, redutores, Scourge/Tempest/Terror/Lathliss/Miirym e no ataque da Ur-Dragon. O texto converte 5 fontes de Treasure | O texto converte ~30 fontes de Treasure/Construct em 5/5 voadores, multiplicados por Anointed/Manufactor/Xorn. Adiciona o infinito Plunderer + Altar |
+| O que a carta desliga | Mana de Treasure (ramp pra comandante de 9), Treasure de 2 manas do Goldspan, tutor da Magda | Animar Treasures (o comandante), Revel in Riches, ~14 consumidores de Treasure |
+| Com que frequência resolve até o T8 | 43,7% | 8,2% |
+| Valor do TEXTO quando resolve (× 5/5 genérico) | ~0 (+0,5pp ±0,9 até T8) | **+7,4pp ±2,4 / +11,5pp ±3,7 até T10** |
+| Incondicional contra os cortes fracos | neutro (±0,6pp), comandante sai mais tarde | neutro a levemente positivo (+0,1 a +0,2pp), diluído pela frequência baixa |
+
+**Veredito:** a Visitor rende mais no **Vihaan**, como finisher e troca de
+modo. Lá o texto dela é o que faz a diferença: ~30 geradores de Treasure
+viram geradores de 5/5 voadores, com multiplicadores de ficha e um
+infinito de 3 peças compatível com o B3. O custo é desligar o próprio
+comandante enquanto ela vive. Esse custo é reversível: basta sacrificá-la
+num dos outlets da lista.
+
+No Ur-Dragon ela é "só mais um Dragão 5/5 de 5". O deck já está saturado
+de Dragões e pagadores, e o texto troca a mana de que a comandante de 9
+precisa por corpos em partidas já ganhas. Nenhum corte melhora de forma
+mensurável. Recomendação aqui: **não incluir**. No máximo é troca lateral
+por Dragonlord Dromoka ou Balefire Dragon, sem ganho medido. Nunca no
+lugar de Hellkite Courser, Savage Ventmaw ou Hellkite Charger, que pioram
+de forma significativa. `lista.md` não muda.
+
+---
+
+## Tiamat (candidata) + correções de custo, Orb, descarte e resiliência — 2026-09-28
+
+**Pedido:** *"Avalia os prós e contras de incluir Tiamat no Ur-Dragon, a
+carta está em anexo para facilitar"*. Detalhe cláusula a cláusula e
+escopo em `checklist-oraculo.md`, na seção de mesma data.
+
+### Antes/depois da base (2.000 seeds, 7.600.000+, 8 turnos, mesma seed em todas as colunas)
+
+Colunas cumulativas:
+- (a) original;
+- (b) custo: CR 601.2f + Hall + Rhythm mv 3;
+- (c) Triumph só criatura + descarte protege terreno/ramp/redutor antes
+  da comandante;
+- (d) Orb: topo 7, mana colorida, antes da comandante;
+- (e) resiliência: contramágica impedida/respondida, Heroic/Teferi,
+  shroud do Greaves, lifelink da Dromoka.
+
+| Métrica | (a) | (b) | (c) | (d) | (e) final |
+|---|---|---|---|---|---|
+| Padrão: turno da comandante | 7,112 | 7,155 | 7,150 | 7,108 | 7,108 |
+| Padrão: letal ≤T8 | 49,25% | 46,50% | 46,40% | 46,55% | 46,55% |
+| Padrão: letal ≤T6 | 3,10% | 2,45% | 2,45% | 2,40% | 2,40% |
+| Padrão: vitória por dano de comandante | 34,70% | 32,65% | 32,75% | 33,70% | 33,70% |
+| Padrão: cartas extras | 31,47 | 29,70 | 29,74 | 30,27 | 30,27 |
+| Padrão: Dragões em campo (fim) | 68,86 | 58,88 | 58,72 | 60,11 | 60,11 |
+| Padrão: vida | 40,00 | 40,00 | 40,00 | 40,00 | 47,81 |
+| Resil.: turno da comandante | 7,534 | 7,574 | 7,570 | 7,532 | 7,497 |
+| Resil.: letal ≤T8 | 25,85% | 23,45% | 23,45% | 24,05% | 25,35% |
+| Resil.: dano de comandante | 19,55% | 17,95% | 17,90% | 18,30% | 19,35% |
+| Resil.: Dragões em campo (fim) | 18,77 | 16,41 | 16,47 | 16,41 | 21,66 |
+| Resil.: vida | 38,34 | 38,37 | 38,36 | 38,37 | 41,76 |
+
+Leitura:
+- (b) **piora tudo, e é o esperado.** O deck estava pagando Dragões e a
+  comandante com menos mana colorida do que a regra permite. Letal ≤T8
+  cai 2,75pp.
+- (c) quase não mexe na base: ela raramente estoura a mão antes da
+  comandante (7,9% das partidas). Com a Tiamat, isso sobe pra 22%, e a
+  política antiga jogava fora Herald's Horn/Triumph pra guardar Dragão
+  de 7.
+- (d) adianta a comandante em 0,04 turno. A mana da Orb passa a pagar a
+  Ur-Dragon na 1ª fase principal.
+- (e) no modo padrão só muda a vida (lifelink da Dromoka; não há
+  oponente). Na resiliência, dois ganhos:
+  - Heroic/Teferi agora salvam o board: +5,3 Dragões no fim, +1,3pp de
+    letal;
+  - Dromoka, Rhythm e Cavern impedem contramágica: a comandante sai 0,035
+    turno antes.
+
+### A/B pareado — Tiamat no lugar de 7 candidatas + controle (N=3.000, troca posicional, código final)
+
+Diferença pareada (Tiamat − base) com IC95%. Controle: Farseek. Cortar
+ramp de 2 deve atrasar a comandante, e atrasa (+0,07 turno).
+
+**Padrão** (base N=3.000: letal ≤T8 46,3%, ≤T6 3,0%, turno cmd 7,10,
+dano cmd 33,7%)
+
+| Sai | turno letal | letal ≤T6 | letal ≤T8 | turno cmd | cartas extras | dano cmd |
+|---|---|---|---|---|---|---|
+| Hellkite Courser | −0,037 ±0,013 | +0,5pp ±0,4 | +1,6pp ±0,8 | +0,020 | −0,66 ±0,39 | −1,5pp ±0,6 |
+| **Dragonlord Dromoka** | −0,089 ±0,013 | +1,2pp ±0,4 | **+4,0pp ±0,8** | −0,006 | +0,73 ±0,37 | +0,9pp ±0,5 |
+| **Balefire Dragon** | −0,086 ±0,012 | +0,9pp ±0,4 | **+4,1pp ±0,8** | +0,005 | +0,90 ±0,36 | +0,8pp ±0,5 |
+| Savage Ventmaw | −0,039 ±0,012 | +0,6pp ±0,4 | +1,2pp ±0,8 | +0,056 | −0,67 ±0,41 | −0,8pp ±0,6 |
+| **Sarkhan Unbroken** | −0,081 ±0,012 | +0,9pp ±0,4 | **+3,9pp ±0,8** | +0,004 | +0,61 ±0,37 | +0,3pp ±0,5 |
+| **Bladewing the Risen** | −0,071 ±0,011 | +0,8pp ±0,4 | **+3,5pp ±0,8** | +0,004 | +0,70 ±0,34 | +0,5pp ±0,4 |
+| Hellkite Charger | −0,060 ±0,012 | +1,0pp ±0,4 | +2,6pp ±0,8 | −0,007 | −0,53 ±0,37 | −1,8pp ±0,7 |
+| Farseek (controle) | −0,054 ±0,015 | +0,8pp ±0,5 | +2,6pp ±1,0 | +0,066 | −0,03 ±0,47 | −1,2pp ±0,7 |
+
+**Resiliência** (base: letal ≤T8 24,9%, turno cmd 7,48, dano cmd 20,0%),
+letal ≤T8:
+- Dromoka +3,7pp ±0,8;
+- Sarkhan Unbroken +3,3pp ±0,8;
+- Balefire +3,1pp ±0,7;
+- Bladewing +3,0pp ±0,8;
+- Charger +2,5pp ±0,7;
+- Farseek +2,1pp ±0,9;
+- Ventmaw +1,8pp ±0,8;
+- Courser +1,6pp ±0,8.
+
+O turno da comandante fica neutro (−0,007 a +0,010) contra os 4 cortes
+fracos. Só atrasa contra Ventmaw (+0,06) e Farseek (+0,08).
+
+### Condicional, decomposição e sensibilidade
+
+- **Frequência:** a Tiamat é conjurada até o T8 em **39,4%** das partidas
+  (média T7,35) no padrão e em 24,6% na resiliência. Pela
+  hipergeométrica, ver a Tiamat ou o Triumph até o T6 dá 24,7%; o motor
+  de compra da Ur-Dragon, o Horn e a Sylvan sobem isso.
+- **Quando conjurada** (corte: Dromoka), letal ≤T8 78,7% → **+10,6pp
+  ±1,9** (resiliência 59,1% → +14,4pp ±2,8). Comandante: −0,011 turno.
+  Dragões no fim: +25.
+- **Decomposição:** Tiamat × Dragão 7/7 voador lendário genérico de mesmo
+  custo `{2}{W}{U}{B}{R}{G}`, no mesmo slot (só no harness). A diferença
+  é o valor do TEXTO (a busca):
+  - em todas as partidas: +3,4pp ±0,8 (resiliência +3,1pp ±0,7);
+  - quando conjurada: **+9,3pp ±1,8** (resiliência +12,9pp ±2,6);
+  - sem custo em turno da comandante (+0,005).
+  Quase todo o ganho é a busca, não o corpo. É o oposto da Draconic
+  Visitor (texto ≈ 0 aqui).
+- **Ordem de conjuração** (código anterior às correções da Orb e da
+  resiliência, corte Dromoka):
+  - "Tiamat antes de tudo": letal +3,6pp, comandante **+0,047 turno**,
+    dano cmd −1,0pp;
+  - "fila normal": letal **+3,8pp**, comandante −0,006, dano cmd +0,8pp.
+  Linha adotada: fila normal. Na mesa, ramp e comandante primeiro; a
+  Tiamat entra com mana sobrando.
+- **Quais 5 buscar** (código final, corte Dromoka), letal ≤T8:
+
+  | Lista | Padrão | Resil. | Dano cmd (padrão) |
+  |---|---|---|---|
+  | atual: Scourge, Terror, Lathliss, Miirym, Utvara | +4,0pp | +3,7pp | +0,9pp |
+  | mana primeiro: Goldspan, Gnawbone, Copper, Morophon, Ventmaw | +3,8pp | +3,1pp | +1,9pp |
+  | misto: Scourge, Terror, Gnawbone, Goldspan, Morophon | +4,3pp | +3,9pp | +1,7pp |
+
+  As três empatam dentro do IC (±0,8). O misto tem o melhor letal, com
+  quase o mesmo dano de comandante do "mana primeiro".
+
+### Deck primeiro (Regras 4 e 5), simulador de apoio
+
+**Prós, pelos motores do deck:**
+1. **Custo real.** Eminence sempre abate 1: sai por 6. Com qualquer
+   outro redutor (Servant, Dragonspeaker, Sarkhan Soul Aflame, Horn,
+   Incubator) sai por 5, o piso WUBRG. Com Morophon (Dragão) sai por
+   {1}, ou {0} com mais um redutor. Pede as mesmas 5 cores da
+   comandante, e a base já é feita pra isso: Cavern, Haven, Courtyard,
+   Orb e Path pagam pip de qualquer cor pra Dragão.
+2. **A busca é o texto que mais vale na lista.** São 21 "Dragon cards"
+   (Firdoch Core e Morophon entram por Changeling). Um cast põe na mão o
+   pacote inteiro de dano de ETB (Scourge + Terror + Lathliss + Miirym)
+   ou o de mana (Gnawbone + Goldspan + Morophon).
+3. **Multiplicadores que já estão na lista:**
+   - Roaming Throne: busca 10;
+   - Sarkhan's Triumph (instantânea): 1 tutor vira 6 Dragões;
+   - Haven of the Spirit Dragon: devolve pra mão, reconjura, mais 5.
+4. **Gatilhos de ETB que ela mesma dispara:**
+   - Terror: 7 de dano;
+   - Scourge e Tempest: X de dano;
+   - Lathliss: 5/5;
+   - Miirym: cópia 7/7 não lendária;
+   - compra: Great Henge (com +1 contador), Garruk's Uprising, Temur
+     Ascendancy, Elemental Bond.
+5. **Alimenta o ataque da Ur-Dragon.** Enche a mão de permanentes caros
+   pro "put onto the battlefield" de cada ataque.
+6. **Formato:** não é Game Changer. Tutor de criatura é aceito em B3/B4.
+
+**Contras:**
+1. **"If you cast it".** Os 6 caminhos grátis do deck dão só um 7/7:
+   ataque da Ur-Dragon, Magda, Bladewing, Haunting Voyage, Sarkhan −8 e
+   cópia da Miirym. Na mesa, segure a Tiamat pra conjurar e nunca a
+   ponha pelo ataque da comandante, se houver outra opção.
+2. **Tira 5 Dragões da biblioteca.** Piora quem cava Dragão depois:
+   Herald's Horn (upkeep), sacrifício da Orb (topo 7) e Sarkhan Unbroken
+   −8.
+3. **Mão estoura.** São +5 cartas em T6–8. Mitigação: o Dragão
+   descartado vira alvo de Bladewing, Haunting Voyage e Haven.
+4. **Mais um 7 de mana numa curva já pesada.** Morta na mão inicial;
+   conjurada de fato em só 39% das partidas até o T8.
+5. **Se furar a fila, atrasa a comandante** (medido acima).
+6. **Revela 5 cartas** pra mesa.
+7. **US$ 22,91.**
+
+**Corte.** Os 4 cortes fracos empatam no simulador (+3,5 a +4,1pp, IC
+±0,8). O deck desempata:
+- **Dragonlord Dromoka:** manter. "Your opponents can't cast spells
+  during your turn" protege o turno inteiro de ataque da Ur-Dragon contra
+  remoção instantânea, fog e contramágica em QUALQUER magia. O modelo só
+  mede a contramágica na comandante: o valor dela é piso, não teto.
+- **Balefire Dragon:** manter. O wipe unilateral ao conectar é 📊 (board
+  de oponente), então também é piso.
+- **Bladewing the Risen:** manter. Com Tiamat, o descarte por mão cheia
+  alimenta a reanimação dela.
+- **Sarkhan Unbroken: cortar este.** Ele é o candidato com o valor
+  **inteiro** modelado (+1 compra/mana, −2 ficha, −8). Ainda assim é teto:
+  o modo de resiliência nunca ataca planeswalker neste arquivo. E compete
+  com a Tiamat pelo mesmo recurso, os Dragões na biblioteca que o −8 põe
+  em campo.
+- **Nunca** Courser, Ventmaw, Charger ou Farseek: ganho menor, e perde
+  tempo de comandante ou dano de comandante.
+
+**Veredito:** incluir a Tiamat no lugar do Sarkhan Unbroken. É a
+primeira candidata desta série cujo texto mede grande no Ur-Dragon (+9,3pp
+quando conjurada, contra ≈0 da Visitor). Na mesa:
+- fila normal (ramp e comandante primeiro);
+- Triumph → Tiamat quando as 5 cores estiverem prontas;
+- busca mista: Scourge, Terror, Gnawbone, Goldspan, Morophon; Throne em
+  campo → pegar os 10.
+Esta rodada **não altera `lista.md`**: a troca é decisão do usuário.
+
+Escopo (Regra #7):
+- 📊 que continua não medido: Dromoka além da contramágica, wipe da
+  Balefire, ward, bônus do oponente nas contramágicas.
+- Não varrido: ataque de oponente a planeswalker neste arquivo. Ele
+  favorece o Sarkhan Unbroken, então a recomendação de cortar o Sarkhan
+  fica de pé mesmo assim.
+
+---
+
+## Varredura das demais cartas e mecânicas — 2026-09-28 (2ª rodada do dia)
+
+**Pedido:** *"Verifique as demais cartas e mecânicas em busca de erros e
+conserte pfv"*. Achados, método e escopo em `checklist-oraculo.md`, na
+seção de mesma data.
+
+### Antes/depois (2.000 seeds, 7.600.000+, 8 turnos)
+
+Antes = código do commit da Tiamat. Métricas limitadas (medianas e %),
+porque as médias sem teto explodem: dano proxy médio 37 mil → 1 milhão
+com as cópias da Twinflame.
+
+| Métrica | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Turno da comandante | 7,108 | 7,032 | 7,497 | 7,452 |
+| Letal ≤T6 | 2,40% | 3,55% | 1,40% | 1,70% |
+| Letal ≤T8 | 46,55% | **49,70%** | 25,35% | **27,05%** |
+| Vitória por dano de comandante | 33,70% | **39,50%** | 19,35% | **24,65%** |
+| Derrota por grimório vazio (nova) | — (0, não existia) | 1,95% | — | 0,65% |
+| Grimório esvaziado (flag antiga) | 25,25% | 27,50% | 11,10% | 11,80% |
+| Cartas extras (média) | 30,27 | 33,13 | 16,64 | 18,24 |
+| Compras da Ur-Dragon (mediana) | 7 | 8 | 2 | 2 |
+| Dragões em campo no fim (mediana) | 13 | 15 | 3 | 4 |
+| Dano proxy (mediana) | 22 | 32,5 | 0 | 0 |
+| Vida (mediana; agora com custos de vida) | 40 | 34 | 39 | 33 |
+| Partidas no teto de 400 fichas | 7,0% | 0,3% | 1,7% | 0,05% |
+
+**Correções que puxam pra BAIXO:**
+- a Roaming Throne custava 1 em vez de 4;
+- Ancient Tomb e Cultivate/Kodama's;
+- taxa de comandante;
+- custos de vida;
+- dois terrenos virados no mesmo turno;
+- Hoard sem mana fantasma;
+- deck-out: 16% das partidas eram "letais" no turno em que o piloto
+  decaria antes do dano.
+
+**Correções que puxam pra CIMA:**
+- cópias da Miirym com o texto do Dragão copiado (Scourge, Terror,
+  Utvara, Twinflame, Ur-Dragon, Courser, Bladewing...);
+- Throne dobrando o gatilho da Ur-Dragon sem ela atacar;
+- Twinflame dobrando o dano de comandante;
+- comandante conjurada assim que fica conjurável;
+- Sarkhan Unbroken ativando antes do loop;
+- Sarkhan, Soul Aflame copiando Dragão;
+- Firdoch animado;
+- mana de Treasure/Klauth/Ventmaw pagando pip.
+
+**Saldo:** +3,2pp de letal ≤T8 no modo padrão, +1,7pp na resiliência. O
+teto de fichas quase some (7% → 0,3%): o piloto agora segura atacantes
+pra não decar. Os 1,95% de derrota por deck-out que sobram vêm de compra
+obrigatória que o piloto não controla no ataque: Elemental Bond/Garruk's
+em ficha de Lathliss, Great Henge, Up the Beanstalk.
+
+**Regressão:**
+- 20.000 + 20.000 partidas da lista (padrão + resiliência, seed
+  8.000.000+): 0 exceções.
+- 20.000 + 20.000 com Tiamat no lugar do Sarkhan Unbroken: 0 exceções,
+  13.345 conjurações.
+
+### Tiamat revista no código corrigido (A/B pareado, N=3.000, mesmas seeds)
+
+Base: letal ≤T8 49,5% no padrão e 27,0% na resiliência. Diferença
+pareada da Tiamat no lugar de cada carta, IC95%:
+
+| Sai | letal ≤T8 padrão | letal ≤T8 resil. | turno cmd (padrão) | dano cmd (padrão) |
+|---|---|---|---|---|
+| Dragonlord Dromoka | +3,8pp ±0,9 | +3,2pp ±0,8 | −0,012 | 0,0pp |
+| Balefire Dragon | +3,8pp ±0,8 | +3,0pp ±0,8 | +0,008 | −1,1pp |
+| Bladewing the Risen | +3,2pp ±0,8 | +2,7pp ±0,8 | +0,004 | −1,9pp |
+| Sarkhan Unbroken | +2,3pp ±0,8 | +2,8pp ±0,7 | **+0,020** | −1,1pp |
+| Farseek (controle) | +2,2pp ±1,0 | +2,0pp ±0,9 | +0,070 | −2,4pp |
+
+**O que mudou em relação à recomendação anterior (mesmo dia): o desempate
+do corte.**
+- **Sarkhan Unbroken ficou mais valioso.** O +1 dele ("draw a card, then
+  add one mana of any color") só era ativado DEPOIS do loop de
+  conjuração, então a mana nunca ajudava a descer nada na main 1.
+  Corrigido, cortar o Sarkhan atrasa a comandante (+0,02 turno) e rende
+  ~1pp a menos de letal no padrão que cortar o Bladewing.
+- **Na resiliência os dois empatam.** Lá o Sarkhan agora apanha de ataque
+  de oponente.
+
+> ⚠️ **SUPERADA** (mesmo dia): esta recomendação ignorou que a Bladewing é
+> peça do infinito Miirym + Bladewing + Terror of the Peaks, registrado na
+> `auditoria.md` desde 2026-08-27. Ver a seção "Combos no simulador +
+> Tiamat reavaliada".
+
+**Recomendação atualizada:** incluir a Tiamat no lugar do **Bladewing the
+Risen**.
+- O papel do Bladewing, recursão de Dragão, já tem mais dois na lista:
+  Haunting Voyage e Haven of the Spirit Dragon.
+- O custo dele ({3}{B}{B}{R}{R}) é o mais pesado em pip entre os
+  candidatos.
+- O Sarkhan Unbroken alimenta o motor de mana que leva a comandante de 9
+  pra mesa.
+- Dromoka e Balefire continuam fora do corte pelo mesmo motivo de antes:
+  o valor real deles é 📊 (piso no simulador).
+- Sarkhan Unbroken continua sendo um corte aceitável: empata na
+  resiliência, que é o modo mais próximo da mesa. `lista.md` não muda.
+
+---
+
+## Combos no simulador + Tiamat reavaliada (Bladewing é peça de combo) — 2026-09-28
+
+**Pedido:** *"Bladewing não tem um combo no deck? Vc avaliou isso na sua
+consideração?"* e *"Como vc ainda erra por não seguir as regras que
+criei?"*.
+
+**O erro.** A recomendação anterior (cortar Bladewing pra Tiamat) não
+considerou o infinito **Miirym + Bladewing the Risen + Terror of the
+Peaks**. Ele está na `auditoria.md` desde 2026-08-27, e o Commander
+Spellbook o confirmou ao vivo hoje (id 380-1110-3362). A Regra #4 manda
+comparar com os motores e as outras cartas do deck; eu listei os motores
+de memória, sem ler a documentação do deck nem consultar o Spellbook.
+Ganhou um adendo obrigatório no `CLAUDE.md`: ler a documentação do deck e
+rodar o Spellbook antes e depois de cada troca.
+
+**Commander Spellbook ao vivo** (`find-my-combos`, lista atual): 3 combos
+já montados.
+- Old Gnawbone + Hellkite Charger (1800-3398): combates infinitos.
+- Miirym + Bladewing + Terror (380-1110-3362): dano infinito.
+- Dragon Tempest + Ancient Gold Dragon (2855-5982): dano quase infinito.
+
+Com Tiamat no lugar do Sarkhan: os mesmos 3. Com Tiamat no lugar da
+**Bladewing: o combo Miirym + Bladewing + Terror some.**
+
+### O simulador não executava 2 dos 3
+
+| Combo | Antes | Agora |
+|---|---|---|
+| Miirym + Bladewing + Terror | a Terror só mirava oponente; a Bladewing nunca morria, então o loop nunca acontecia | `try_bladewing_loop`: o matador mira a Bladewing, a cópia da Miirym a devolve, e cada volta dispara Scourge/Tempest/Terror/Lathliss no oponente e as compras obrigatórias. Para no letal, no deck-out ou quando a próxima volta decaria |
+| Old Gnawbone + Hellkite Charger | teto de 1 combate extra por turno ("evitar runaway") | repete enquanto os Treasures pagam o {5}{R}{R}, até o letal (trava de segurança: 60) |
+| Dragon Tempest + Ancient Gold | já modelado (fichas Faerie Dragon disparam o Tempest) | — |
+
+📝 Variante pela regra, que o Spellbook não lista: Scourge of Valkas ou
+Dragon Tempest também matam a Bladewing ("X damage to any target") quando
+X ≥ a resistência dela.
+
+Antes/depois do modelo de combo (2.000 seeds, 7.600.000+):
+
+| | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Letal ≤T6 | 3,55% | 4,00% | 1,70% | 2,00% |
+| Letal ≤T8 | 49,70% | 50,35% | 27,05% | 28,10% |
+| Deck-out | 1,95% | 2,00% | 0,65% | 0,65% |
+
+### Com que frequência o combo sai (Regra 7 de `user-standing-rules.md`), N=3.000
+
+| | até T6 | até T8 | até T10 |
+|---|---|---|---|
+| Lista atual (padrão) | 0,4% | 5,8% | 13,0% |
+| Lista atual (resiliência) | 0,1% | 2,5% | 8,6% |
+| Tiamat no lugar do Sarkhan Unbroken (padrão) | 0,8% | **8,4%** | **17,0%** |
+| Tiamat no lugar do Sarkhan Unbroken (resiliência) | 0,4% | 3,9% | 11,6% |
+| Hipergeométrica: as 3 peças na mão, sem tutor nem compra extra | 0,18% | 0,29% | 0,43% |
+
+- O combo é 20× mais frequente que a hipergeométrica pura: o motor de
+  compra da Ur-Dragon, Herald's Horn, Sarkhan's Triumph, Orb, Magda e
+  Haunting Voyage acham e põem as peças.
+- **A Tiamat busca as 3 peças de uma vez** (todas são Dragões com nomes
+  diferentes) e sobe a frequência em ~45% relativos.
+- Continua tardio: menos de 1% até o T6, e é combo de 3 peças. Compatível
+  com Bracket 3 pelo critério de "rápido E provável" da Regra 7, mas é
+  informação que o grupo pode querer saber.
+
+### A/B pareado da Tiamat com os combos modelados (N=3.000)
+
+Base: letal ≤T8 50,2% (padrão) / 28,0% (resiliência); combo 5,8% / 2,5%.
+
+| Sai | letal ≤T8 padrão | letal ≤T8 resil. | combo Bladewing (padrão) | turno cmd |
+|---|---|---|---|---|
+| Dragonlord Dromoka | +3,6pp ±0,9 | +2,9pp ±0,8 | +3,5pp | −0,013 |
+| Balefire Dragon | +3,6pp ±0,8 | +2,8pp ±0,7 | +3,4pp | +0,007 |
+| Bladewing the Risen | +3,0pp ±0,8 | +2,6pp ±0,8 | **−5,8pp (some)** | +0,004 |
+| Sarkhan Unbroken | +2,0pp ±0,8 | +2,6pp ±0,7 | **+2,6pp** | +0,020 |
+| Farseek (controle) | +2,0pp ±1,0 | +1,7pp ±0,9 | +2,4pp | +0,069 |
+
+### Recomendação corrigida
+
+**Incluir a Tiamat no lugar do Sarkhan Unbroken. Manter a Bladewing.**
+1. **Bladewing:** é peça de infinito, e a Tiamat busca as 3 peças numa
+   conjuração só. Cortar a Bladewing desliga o combo inteiro (5,8% →
+   0%). Cortar o Sarkhan mantém o combo e ainda o torna mais frequente
+   (5,8% → 8,4%).
+2. **O letal proxy subestima combo.** O goldfish não tem bloqueio (Regra
+   #5): dano de combate entra livre, e o infinito, que ignora
+   bloqueador, ganho de vida e fog, aparece com o mesmo peso de um
+   ataque. Na mesa, o combo vale mais que a diferença de +1pp no padrão
+   entre cortar Bladewing ou Sarkhan (na resiliência os dois empatam em
+   +2,6pp).
+3. **Dromoka e Balefire** continuam fora do corte: valor 📊 (piso). A
+   Dromoka ainda protege o turno do combo ("Your opponents can't cast
+   spells during your turn").
+4. **O custo de cortar o Sarkhan Unbroken** é real e medido: a
+   comandante sai ~0,02 turno depois, porque o +1 dele é mana. É o preço
+   da troca.
+
+`lista.md` não muda: a troca é decisão do usuário.
+
+### Validação
+
+- `test_urdragon_goldfish.py`: 88/88. São 5 testes novos: loop letal;
+  sem matador não há loop; o loop para antes de decar; Scourge como
+  matador; Gnawbone + Charger repete combates.
+- 20.000 + 20.000 partidas (padrão + resiliência, seed 8.000.000+): 0
+  exceções.
+
+---
+
+## Tiamat: candidatas a corte além do Sarkhan Unbroken — 2026-09-28
+
+**Pedido:** *"Se não for o Sarkhan, quais outras candidatas a corte?"*
+
+**Processo** (Regra 10 + adendo da Regra #4):
+1. Curva dos 63 não-terrenos: CMC1 5, CMC2 13, CMC3 16, CMC4 3, CMC5 7,
+   CMC6 10, CMC7 7, CMC8 1, CMC9 1.
+2. Oráculo de todas as candidatas no cache.
+3. Commander Spellbook antes/depois de CADA troca (Tiamat no lugar de X):
+   - só 7 trocas mudam combo, as das peças: Miirym, Bladewing, Terror
+     (infinito de dano), Old Gnawbone, Hellkite Charger (combates
+     infinitos), Dragon Tempest, Ancient Gold (dano quase infinito);
+   - nas outras 28, os 3 combos continuam.
+4. A/B pareado N=3.000 de 27 candidatas (Farseek de controle), com os 3
+   combos executados pelo simulador.
+
+Base: letal ≤T8 50,2% (padrão) / 28,0% (resiliência); combo da Bladewing
+5,8%; deck-out 1,8%.
+
+| Sai | letal ≤T8 padrão | letal ≤T8 resil. | turno cmd (padrão) | dano cmd | combo Bladewing | deck-out |
+|---|---|---|---|---|---|---|
+| Garruk's Uprising | +4,3 ±0,9 | +3,4 ±0,9 | −0,012 | +0,2 | +4,2 | −0,7 |
+| Elemental Bond | +4,1 ±0,9 | +3,4 ±0,9 | −0,009 | +0,6 | +4,8 | −0,6 |
+| Rhythm of the Wild 📊 | +3,7 ±0,9 | +2,7 ±0,8 | −0,014 | −2,5 | +2,9 | −0,1 |
+| Dragonlord Dromoka 📊 | +3,6 ±0,9 | +2,9 ±0,8 | −0,013 | +0,2 | +3,5 | +0,2 |
+| Balefire Dragon 📊 | +3,6 ±0,8 | +2,8 ±0,7 | +0,007 | −1,0 | +3,4 | −0,2 |
+| Magda, Brazen Outlaw | +3,2 ±0,9 | +2,9 ±0,8 | +0,003 | −0,7 | +3,8 | −0,1 |
+| Temur Ascendancy | +3,1 ±0,9 | +2,7 ±0,9 | −0,009 | −1,1 | +4,0 | −0,7 |
+| Bladewing the Risen (combo) | +3,0 ±0,8 | +2,6 ±0,8 | +0,004 | −1,6 | **−5,8** | −0,3 |
+| Sylvan Library | +3,0 ±0,9 | +2,5 ±0,9 | +0,030 | −1,3 | +2,1 | −0,3 |
+| Utvara Hellkite | +3,0 ±1,0 | +2,4 ±0,9 | −0,003 | +0,7 | +4,3 | −0,9 |
+| Up the Beanstalk | +2,6 ±0,9 | +2,3 ±0,9 | +0,019 | −0,1 | +3,0 | 0,0 |
+| Orb of Dragonkind | +2,2 ±0,9 | +2,6 ±0,9 | +0,055 | −2,4 | +2,5 | −0,3 |
+| Sarkhan Unbroken | +2,0 ±0,8 | +2,6 ±0,7 | +0,020 | −1,0 | +2,6 | +0,3 |
+| Return of the Wildspeaker | +2,2 ±0,7 | +2,0 ±0,7 | +0,005 | −0,7 | +1,8 | −0,1 |
+| Dragon's Hoard | +2,0 ±0,9 | +2,1 ±0,9 | +0,068 | −2,0 | +2,4 | −0,2 |
+| Kodama's Reach | +2,2 ±0,9 | +1,7 ±0,9 | +0,086 | −2,3 | +2,7 | −0,4 |
+| Skyshroud Claim | +1,8 ±0,9 | +2,1 ±0,9 | +0,102 | −3,2 | +2,7 | −0,2 |
+| Herald's Horn | +1,9 ±0,9 | +1,9 ±0,8 | +0,045 | −1,5 | +2,1 | −0,1 |
+| Farseek (controle) | +2,0 ±1,0 | +1,7 ±0,9 | +0,069 | −2,1 | +2,4 | −0,2 |
+| Atarka, World Render | +1,5 ±0,8 | +1,6 ±0,7 | +0,005 | −3,8 | +2,8 | −0,1 |
+| Savage Ventmaw | +1,4 ±0,9 | +1,4 ±0,8 | +0,056 | −1,7 | +2,9 | −0,3 |
+| Dragon Broodmother | +1,5 ±0,8 | +1,0 ±0,7 | −0,004 | −0,1 | +2,8 | −0,4 |
+| Klauth, Unrivaled Ancient | +0,8 ±0,8 | +1,2 ±0,7 | +0,049 | −1,4 | +1,8 | −0,4 |
+| Morophon, the Boundless | +0,7 ±0,8 | +1,2 ±0,7 | +0,034 | −3,5 | −0,8 | −0,1 |
+| Hellkite Courser | +1,2 ±0,9 | +0,8 ±0,8 | +0,020 | −2,7 | +3,2 | −0,3 |
+| Firdoch Core | +0,6 ±1,0 | +1,1 ±0,9 | +0,086 | −3,0 | +2,2 | −0,1 |
+| Ancient Copper Dragon | +0,7 ±0,8 | 0,0 ±0,8 | +0,069 | −1,9 | +1,6 | −0,2 |
+
+(pp, exceto turno cmd; 📊 = valor real não medido pelo simulador, o
+número é piso.)
+
+**Leitura do simulador:**
+- As ~10 primeiras empatam dentro do IC (±0,9).
+- O fundo é claro:
+  - cortar ramp/rock (Kodama's, Skyshroud, Farseek, Hoard, Firdoch,
+    Orb) atrasa a comandante 0,05–0,10 turno;
+  - cortar Dragão-motor grande (Ancient Copper, Firdoch, Morophon,
+    Klauth, Courser, Atarka) perde mais letal e dano de comandante.
+- **Achado novo:** Elemental Bond e Garruk's Uprising lideram por
+  anti-sinergia de regra. "Draw a card" delas é obrigatório. Com a
+  Ur-Dragon comprando por atacante e a Utvara/Bladewing criando fichas
+  4/4–6/6, elas forçam o piloto a segurar atacantes pra não decar e param
+  o loop da Bladewing antes do letal. Sem elas: combo +4,2–4,8pp,
+  deck-out −0,6–0,7pp.
+
+> ⚠️ **PARCIALMENTE SUPERADA** (mesmo dia): a Magda como 2ª candidata estava
+> errada; ver a seção "Magda + Firdoch Core + Morophon".
+
+**Deck primeiro (Regras #4/#5), desempate:**
+1. **Elemental Bond: melhor alternativa ao Sarkhan.**
+   - Só tem uma cláusula (compra obrigatória por criatura de poder ≥3).
+   - Já é coberta pela Garruk's Uprising (poder ≥4, mais trample) e pela
+     Temur Ascendancy (compra opcional, mais haste).
+   - A compra obrigatória atrapalha os dois finais do deck (ataque em
+     massa da Ur-Dragon e loop da Bladewing). Com a Tiamat, a vantagem de
+     carta vem do tutor.
+   - Curva: sai um 3 (16 → 15).
+2. **Magda, Brazen Outlaw.**
+   - O papel dela, tutor de Dragão via 5 Treasures, é o mesmo da Tiamat.
+     A Tiamat faz isso 5× e sem esperar Treasure: a Magda gera 1–2 por
+     turno (ela mesma atacando como 2/1, o Firdoch virando), porque os
+     outros Treasures do deck viram mana na hora.
+   - Não é Dragão nem peça de combo.
+   - Custo: sai um 2 (curva 13 → 12, fica mais pesada que no corte do
+     Bond).
+3. **Temur Ascendancy.**
+   - O haste dela repete o do Dragon Tempest (todo Dragão do deck voa) e
+     do riot do Rhythm.
+   - A compra é opcional.
+   - Perde −1,1pp de dano de comandante (haste da Ur-Dragon no turno em
+     que desce, quando o Tempest não está em campo). Terceira opção.
+
+**Não cortar, e por quê:**
+
+| Grupo | Cartas | Motivo |
+|---|---|---|
+| Peças de combo (Spellbook) | Miirym, Bladewing, Terror, Old Gnawbone, Hellkite Charger, Dragon Tempest, Ancient Gold | cortar desliga um combo |
+| Garruk's Uprising | — | mesmo número do Bond, mas o trample é 📊 (sem bloqueio no goldfish): na mesa vale contra bloqueador voador e chump |
+| Valor 📊 | Dromoka, Balefire, Rhythm of the Wild | o simulador só mede piso; o Rhythm ainda custa −2,5pp de dano de comandante |
+| Ramp e rocks | Kodama's, Skyshroud, Farseek, Orb, Hoard, Firdoch | atrasam a comandante de 9 |
+| Dragões-motor grandes | Atarka, Klauth, Morophon (deixa a Tiamat por {1}), Ancient Copper, Courser, Ventmaw, Broodmother | perdem mais letal e dano de comandante |
+| Interação | remoção, contramágica, wipes, proteção | fora do A/B de propósito: valor 📊, o simulador as veria como corte grátis |
+
+`lista.md` não muda: a troca é decisão do usuário.
+
+---
+
+## Magda + Firdoch Core + Morophon: conceito "Dwarf" e Treasure persistente — 2026-09-28
+
+**Cobrança:** *"Vc esqueceu que com ela em campo, toda vez que eu tap o
+Firdoch Core eu gero um tesouro. Fica chato ter que te lembrar isso o
+tempo todo!"* (sobre minha avaliação de cortar a Magda pra Tiamat).
+
+**O que o simulador fazia de verdade.** O tap do Firdoch Core → Treasure
+já estava modelado desde 28/08, e o log citava. Só que meu resumo tratou a
+Magda como tutor lento e eu não enumerei o conceito. Varrendo "Dwarf" e
+"Treasure que você controla" (oráculo e rulings ao vivo), 4 furos, todos
+subestimando a Magda:
+
+| # | Cláusula | Antes | Agora |
+|---|---|---|---|
+| 1 | "Whenever a **Dwarf** you control becomes tapped" | Morophon (Changeling = Dwarf) atacando não gerava Treasure; fichas-cópia dele e do Firdoch, nem o Sarkhan copiando Morophon | todo Dwarf que vira conta (Magda, Firdoch, Morophon, cópias); cada combate extra do Charger desvira e vira de novo |
+| 2 | "**Other Dwarves** you control get +1/+0" | nenhum | Firdoch animado, Morophon e cópias ganham +1 por Magda |
+| 3 | "Sacrifice five **Treasures**" | só contava os da própria Magda | Treasure de QUALQUER fonte (Goldspan, Old Gnawbone, Ancient Copper, Tithe, Firdoch) |
+| 4 | Treasure é permanente | virava mana na hora e o que sobrava sumia no fim do turno | `treasure_stock`: persiste, gasta só o necessário, o tutor sacrifica o que sobrou |
+
+Também corrigido: a ficha-cópia do Morophon se dava o próprio anthem
+("Other creatures"); tinha uma nota 📝 "erro de 1, raro" (o dado existia).
+
+### Antes/depois (2.000 seeds, 7.600.000+)
+
+| | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Letal ≤T6 | 4,00% | 4,75% | 2,00% | 2,65% |
+| Letal ≤T8 | 50,35% | **54,65%** | 28,10% | **31,35%** |
+| Turno da comandante | 7,036 | **6,903** | 7,452 | 7,303 |
+| Vitória por dano de comandante | 38,75% | 42,30% | 24,40% | 27,65% |
+| Dragões em campo no fim (mediana) | 15 | 18 | 3 | 4 |
+| Dano proxy (mediana) | 32,5 | 66 | 0 | 1 |
+| Deck-out | 2,00% | 2,10% | 0,65% | 0,80% |
+
+O maior salto da rodada inteira: o motor de Treasure do deck (Magda,
+Goldspan, Old Gnawbone, Ancient Copper, Tithe) estava subestimado.
+
+### A Magda no código corrigido (N=3.000)
+
+- Em campo em **44%** das partidas até o T8 (padrão), 21% na resiliência.
+- **0,49 tutores por partida** (0,36 na resiliência): cada um põe um
+  Dragão ou artefato direto no campo.
+
+### A/B da Tiamat com o modelo corrigido (N=3.000, pareado, IC95%)
+
+Base: letal ≤T8 54,4% padrão / 31,1% resil.; combo da Bladewing 6,6%.
+
+| Sai | letal ≤T8 padrão | letal ≤T8 resil. | turno cmd | dano cmd | combo Bladewing | deck-out |
+|---|---|---|---|---|---|---|
+| Garruk's Uprising | +4,5 ±0,9 | +4,3 ±0,9 | −0,015 | +0,5 | +5,3 | −0,9 |
+| Elemental Bond | +4,0 ±0,9 | +4,3 ±0,9 | −0,014 | +0,6 | **+6,1** | −0,8 |
+| Dragonlord Dromoka 📊 | +3,6 ±0,9 | +3,8 ±0,8 | −0,012 | −0,7 | +4,4 | 0,0 |
+| Temur Ascendancy | +2,8 ±0,9 | +3,4 ±0,9 | −0,011 | −1,8 | +5,1 | −0,7 |
+| Bladewing the Risen | +2,9 ±0,8 | +3,0 ±0,8 | +0,004 | −2,1 | **−6,6** | −0,3 |
+| Sarkhan Unbroken | +2,2 ±0,9 | +3,3 ±0,7 | +0,014 | −1,4 | +3,5 | +0,2 |
+| Farseek (controle) | +2,1 ±1,0 | +2,1 ±1,0 | +0,066 | −2,7 | +3,1 | −0,4 |
+| **Magda, Brazen Outlaw** | **+0,4 ±0,9** | **+1,6 ±0,9** | **+0,076** | **−2,5** | +3,2 | −0,4 |
+
+**A Magda sai do fim da fila de cortes pro fundo dela**: cortá-la rende
++0,4pp no padrão (zero estatístico, abaixo do Farseek de controle),
+atrasa a comandante 0,076 turno e perde 2,5pp de dano de comandante. A
+avaliação anterior ("segunda candidata") estava errada e é **superada**.
+
+### Recomendação corrigida
+
+1. **Elemental Bond** continua a primeira: +4,0 / +4,3pp e o combo da
+   Bladewing quase dobra (6,6% → 12,7%). A compra obrigatória dela segura
+   atacantes e para o loop antes do letal. A Garruk's Uprising empata no
+   número, mas o trample dela é 📊 (sem bloqueio no goldfish).
+2. **Temur Ascendancy** vira a segunda: +2,8 / +3,4pp. O haste repete o do
+   Dragon Tempest e do riot, e a compra é opcional. Custo: −1,8pp de dano
+   de comandante (haste da Ur-Dragon quando o Tempest não está em campo).
+3. **Sarkhan Unbroken** é a terceira: +2,2 / +3,3pp, mas atrasa a
+   comandante 0,014 turno (o +1 dele é mana).
+4. **Magda: não cortar.** Ela é tutor (0,49 por partida), fonte de dano
+   (Dwarf) e o motor que o Firdoch Core e o Morophon alimentam.
+5. Continuam intocáveis: peças de combo (Miirym, Bladewing, Terror, Old
+   Gnawbone, Hellkite Charger, Dragon Tempest, Ancient Gold), Dromoka,
+   Balefire, Rhythm 📊, ramp e Dragões-motor grandes.
+
+`lista.md` não muda: a troca é decisão do usuário.
+
+**Escopo (Regra #7).** Varrido: os conceitos "Dwarf que você controla" e
+"Treasure que você controla" em todas as fontes e consumidores da lista.
+Método: oráculo + rulings ao vivo, grep e testes dirigidos. Não varrido:
+a política de gastar Treasure vs guardar pro tutor além do "só o que
+sobrou" (📝), e o mesmo conceito de Treasure nos outros 8 simuladores que
+têm Treasure (Vihaan, Megatron, Toph, Ulalek...): checar lá é trabalho
+futuro.
+
+### Validação
+
+- `test_urdragon_goldfish.py`: 98/98. São 10 testes novos (Firdoch tap,
+  1× por turno, Morophon Dwarf, +1/+0, persistência, gasto só do
+  necessário, tutor com Treasure de qualquer fonte, não sacrifica o já
+  gasto, Goldspan dobra, motor em 2 turnos). 11 falham no código anterior.
+- 20.000 + 20.000 partidas (padrão + resiliência, seed 8.000.000+): 0
+  exceções.
 
 ---
 

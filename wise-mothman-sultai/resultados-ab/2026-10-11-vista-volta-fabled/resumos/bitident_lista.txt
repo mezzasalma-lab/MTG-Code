@@ -1,0 +1,6 @@
+Bit-identidade da lista atual: vivo (SWAPS=()) == ANTES congelado + w1 'no lugar' (Prismatic Vista -> Fabled Passage); 4 fatias x 2.500 sementes (9.600.000..9.609.999) x 2 modos
+vivo (SWAPS=()) == ANTES + w1 no lugar: 5000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + w1 no lugar: 5000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + w1 no lugar: 5000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + w1 no lugar: 5000 identicas, 0 divergencias
+total: 20000 identicas, 0 divergencias

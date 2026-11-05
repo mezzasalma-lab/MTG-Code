@@ -1,0 +1,177 @@
+base (lista atual, com Blasphemous Act)                        n=99 incluidos=4 quase=98 id=RWB
+-Blasphemous Act (sem entrar nada)                             n=98 incluidos=4 quase=94 id=RWB
+CONTROLE -Smothering Tithe                                     n=98 incluidos=1 quase=96 id=RWB
+CONTROLE -Ashnod's Altar                                       n=98 incluidos=3 quase=67 id=RWB
+CONTROLE -Mayhem Devil                                         n=98 incluidos=4 quase=95 id=RWB
++Blasphemous Edict (sem cortar)                                n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Blasphemous Edict (a troca)                  n=99 incluidos=4 quase=94 id=RWB
++By Invitation Only (sem cortar)                               n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +By Invitation Only (a troca)                 n=99 incluidos=4 quase=94 id=RWB
++Barter in Blood (sem cortar)                                  n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Barter in Blood (a troca)                    n=99 incluidos=4 quase=94 id=RWB
++Tergrid's Shadow (sem cortar)                                 n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Tergrid's Shadow (a troca)                   n=99 incluidos=4 quase=94 id=RWB
++Rankle's Prank (sem cortar)                                   n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Rankle's Prank (a troca)                     n=99 incluidos=4 quase=94 id=RWB
++Taste of Death (sem cortar)                                   n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Taste of Death (a troca)                     n=99 incluidos=4 quase=94 id=RWB
++Necrotic Hex (sem cortar)                                     n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Necrotic Hex (a troca)                       n=99 incluidos=4 quase=94 id=RWB
++Liliana, Dreadhorde General (sem cortar)                      n=100 incluidos=4 quase=101 id=RWB
+-Blasphemous Act +Liliana, Dreadhorde General (a troca)        n=99 incluidos=4 quase=97 id=RWB
++Zodiark, Umbral God (sem cortar)                              n=100 incluidos=4 quase=100 id=RWB
+-Blasphemous Act +Zodiark, Umbral God (a troca)                n=99 incluidos=4 quase=96 id=RWB
++Meathook Massacre II (sem cortar)                             n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Meathook Massacre II (a troca)               n=99 incluidos=4 quase=94 id=RWB
++Mythos of Snapdax (sem cortar)                                n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Mythos of Snapdax (a troca)                  n=99 incluidos=4 quase=94 id=RWB
++Tragic Arrogance (sem cortar)                                 n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Tragic Arrogance (a troca)                   n=99 incluidos=4 quase=94 id=RWB
++Winnowing (sem cortar)                                        n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Winnowing (a troca)                          n=99 incluidos=4 quase=94 id=RWB
++Slaughter the Strong (sem cortar)                             n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Slaughter the Strong (a troca)               n=99 incluidos=4 quase=94 id=RWB
++Living Death (sem cortar)                                     n=100 incluidos=4 quase=99 id=RWB
+-Blasphemous Act +Living Death (a troca)                       n=99 incluidos=4 quase=95 id=RWB
++Scrap Mastery (sem cortar)                                    n=100 incluidos=4 quase=99 id=RWB
+-Blasphemous Act +Scrap Mastery (a troca)                      n=99 incluidos=4 quase=95 id=RWB
++All Is Dust (sem cortar)                                      n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +All Is Dust (a troca)                        n=99 incluidos=4 quase=94 id=RWB
+
+Combos INCLUIDOS na base (4):
+  - Anointed Procession + Gleaming Splendor + Smothering Tithe -> ['Infinite card draw for any number of players', 'Infinite draw triggers for any number of players', 'Near-infinite Treasure tokens']
+  - Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches -> ['Win the game at the beginning of your next upkeep']
+  - Gleaming Splendor + Goldspan Dragon + Smothering Tithe -> ['Infinite card draw for any number of players', 'Infinite draw triggers for any number of players', 'Near-infinite Treasure tokens']
+  - Gleaming Splendor + Smothering Tithe + Xorn -> ['Infinite card draw for any number of players', 'Infinite draw triggers for any number of players', 'Near-infinite Treasure tokens']
+
+[-Blasphemous Act (sem entrar nada)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[CONTROLE -Smothering Tithe] combos que SUMIRAM: ['Anointed Procession + Gleaming Splendor + Smothering Tithe', 'Gleaming Splendor + Goldspan Dragon + Smothering Tithe', 'Gleaming Splendor + Smothering Tithe + Xorn'] | NOVOS: []
+   'quase' que sumiram: 5 | 'quase' novos: 3
+      quase novo + Anointed Procession + Gleaming Splendor + Smothering Tithe
+      quase novo + Gleaming Splendor + Goldspan Dragon + Smothering Tithe
+      quase novo + Gleaming Splendor + Smothering Tithe + Xorn
+
+[CONTROLE -Ashnod's Altar] combos que SUMIRAM: ["Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches"] | NOVOS: []
+   'quase' que sumiram: 32 | 'quase' novos: 1
+      quase novo + Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches
+
+[CONTROLE -Mayhem Devil] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 3 | 'quase' novos: 0
+
+[+Blasphemous Edict (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Blasphemous Edict (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+By Invitation Only (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +By Invitation Only (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Barter in Blood (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Barter in Blood (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Tergrid's Shadow (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Tergrid's Shadow (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Rankle's Prank (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Rankle's Prank (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Taste of Death (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Taste of Death (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Necrotic Hex (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Necrotic Hex (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Liliana, Dreadhorde General (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 3
+      quase novo + Ashnod's Altar + Chivalric Alliance + Liliana, Dreadhorde General
+      quase novo + Ashnod's Altar + Golgari Thug + Liliana, Dreadhorde General + Pitiless Plunderer
+      quase novo + Ashnod's Altar + Liliana, Dreadhorde General + Pegasus Refuge
+
+[-Blasphemous Act +Liliana, Dreadhorde General (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 3
+      quase novo + Ashnod's Altar + Chivalric Alliance + Liliana, Dreadhorde General
+      quase novo + Ashnod's Altar + Golgari Thug + Liliana, Dreadhorde General + Pitiless Plunderer
+      quase novo + Ashnod's Altar + Liliana, Dreadhorde General + Pegasus Refuge
+
+[+Zodiark, Umbral God (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 2
+      quase novo + Animation Module + Ashnod's Altar + Zodiark, Umbral God
+      quase novo + Animation Module + Krark-Clan Ironworks + Zodiark, Umbral God
+
+[-Blasphemous Act +Zodiark, Umbral God (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 2
+      quase novo + Animation Module + Ashnod's Altar + Zodiark, Umbral God
+      quase novo + Animation Module + Krark-Clan Ironworks + Zodiark, Umbral God
+
+[+Meathook Massacre II (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Meathook Massacre II (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Mythos of Snapdax (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Mythos of Snapdax (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Tragic Arrogance (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Tragic Arrogance (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Winnowing (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Winnowing (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Slaughter the Strong (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +Slaughter the Strong (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0
+
+[+Living Death (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 1
+      quase novo + Ashnod's Altar + Dualcaster Mage + Living Death
+
+[-Blasphemous Act +Living Death (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 1
+      quase novo + Ashnod's Altar + Dualcaster Mage + Living Death
+
+[+Scrap Mastery (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 1
+      quase novo + Codex Shredder + Krark-Clan Ironworks + Scrap Mastery
+
+[-Blasphemous Act +Scrap Mastery (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 1
+      quase novo + Codex Shredder + Krark-Clan Ironworks + Scrap Mastery
+
+[+All Is Dust (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 | 'quase' novos: 0
+
+[-Blasphemous Act +All Is Dust (a troca)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 | 'quase' novos: 0

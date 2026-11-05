@@ -1,0 +1,639 @@
+{
+ "deck": "ms-bumbleflower-bant",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Ms. Bumbleflower",
+   "incluidos": {
+    "Heliod, Sun-Crowned + Walking Ballista": {
+     "id": "1274-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ],
+     "usa": [
+      "Heliod, Sun-Crowned",
+      "Walking Ballista"
+     ],
+     "prerequisitos": ""
+    },
+    "Devoted Druid + Swift Reconfiguration": {
+     "id": "3807-4762",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ],
+     "usa": [
+      "Devoted Druid",
+      "Swift Reconfiguration"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Faerie Mastermind + Mirrormade + Smothering Tithe": {
+     "id": "184-2210-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite colored mana",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Faerie Mastermind + Kinnan, Bonder Prodigy + Smothering Tithe": {
+     "id": "129-184-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for all players",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Devoted Druid + Machine God's Effigy": {
+     "id": "1562-4762",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite blue mana",
+      "Infinite green mana"
+     ]
+    },
+    "Copy Enchantment + Faerie Mastermind + Smothering Tithe": {
+     "id": "184-736-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite colored mana",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Archangel of Thune + Walking Ballista": {
+     "id": "2919-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Jumbo Cactuar + Swords to Plowshares": {
+     "id": "3779-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain"
+     ]
+    },
+    "Devoted Druid + Tyvar, the Pummeler": {
+     "id": "4762-6189",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creatures you control until end of turn"
+     ]
+    },
+    "Faeburrow Elder + Freed from the Real": {
+     "id": "570-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Fathom Mage + Wizard Class": {
+     "id": "589-1017",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Clever Impersonator + Faerie Mastermind + Smothering Tithe": {
+     "id": "184-4682-4753",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite colored mana",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Enter the Infinite + Psychosis Crawler": {
+     "id": "953-2384",
+     "bracketTag": "C",
+     "produz": [
+      "Infinite card draw",
+      "Near-infinite lifeloss",
+      "Infinite draw triggers"
+     ]
+    },
+    "Cleric Class + Walking Ballista": {
+     "id": "104-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Faerie Mastermind + Smothering Tithe + Training Grounds": {
+     "id": "184-4682-4893",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for all players",
+      "Infinite draw triggers for all players",
+      "Near-infinite colored mana"
+     ]
+    },
+    "Smothering Tithe + Stasis": {
+     "id": "1025-4682",
+     "bracketTag": "R",
+     "produz": [
+      "Mass Land Denial",
+      "Players skip their untap steps",
+      "Lock"
+     ]
+    },
+    "Consecrated Sphinx + Wedding Ring": {
+     "id": "2022-3283",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite card draw for opponents that control a Wedding Ring"
+     ]
+    },
+    "Heliod, Sun-Crowned + Triskelion": {
+     "id": "1274-1495",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Biomancer's Familiar + Faerie Mastermind + Smothering Tithe": {
+     "id": "184-1912-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for all players",
+      "Infinite draw triggers for all players",
+      "Near-infinite colored mana"
+     ]
+    },
+    "Heliod, Sun-Crowned + Spike Feeder": {
+     "id": "1274-2290",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Pensive Professor + Wizard Class": {
+     "id": "1017-7414",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Devoted Druid": {
+     "id": "4762-5455",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana",
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Faeburrow Elder + Pemmin's Aura": {
+     "id": "570-3525",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Devoted Druid + Vizier of Remedies": {
+     "id": "978-4762",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Enter the Infinite + Twenty-Toed Toad": {
+     "id": "953-5850",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game",
+      "Infinite card draw",
+      "Infinite draw triggers"
+     ]
+    },
+    "Body of Research + Simic Ascendancy": {
+     "id": "648-2021",
+     "bracketTag": "S",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Faeburrow Elder + Staff of Domination": {
+     "id": "570-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Benthic Biomancer + Wizard Class": {
+     "id": "1017-2541",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Infinite self-discard triggers"
+     ]
+    },
+    "Devoted Druid + Luxior, Giada's Gift": {
+     "id": "3774-4762",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Devoted Druid + Haldir, Lórien Lieutenant": {
+     "id": "4762-6315",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinite power and toughness for certain creatures until end of turn"
+     ]
+    },
+    "Ms. Bumbleflower + Shrieking Drake + Smothering Tithe": {
+     "id": "751-4682-5943",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite +1/+1 counters",
+      "Near-infinite creature ETB",
+      "Near-infinite storm count"
+     ]
+    },
+    "Fractured Identity + Transcendence": {
+     "id": "190-3473",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Light of Promise + Walking Ballista": {
+     "id": "338-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Deepglow Skate + Myojin of Cryptic Dreams": {
+     "id": "1437-2431",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite proliferate"
+     ]
+    },
+    "Emiel the Blessed + Faeburrow Elder + Lightning Greaves": {
+     "id": "570-876-4499",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite blinking",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Cephalid Illusionist + Lightning Greaves": {
+     "id": "876-2904",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Kwain, Itinerant Meddler + Mind Over Matter": {
+     "id": "4067-5162",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite looting",
+      "Infinite self-discard triggers",
+      "Infinite draw triggers"
+     ]
+    },
+    "Loran of the Third Path + Mind Over Matter": {
+     "id": "1668-4067",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Near-infinite card draw for target opponent"
+     ]
+    },
+    "Psychic Possession + Wedding Ring": {
+     "id": "2022-2245",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite card draw for opponents that control a Wedding Ring",
+      "Infinite draw triggers"
+     ]
+    },
+    "Estrid's Invocation + Faerie Mastermind + Smothering Tithe": {
+     "id": "184-4682-4948",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite colored mana",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "The Destined White Mage + Walking Ballista": {
+     "id": "3693-6996",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Fractured Identity + Leveler": {
+     "id": "190-1068",
+     "bracketTag": "R",
+     "produz": [
+      "Exile each opponent's library"
+     ]
+    },
+    "Court of Vantress + Faerie Mastermind + Smothering Tithe": {
+     "id": "184-1469-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite colored mana",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Sunbond + Walking Ballista": {
+     "id": "3693-4017",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Faeburrow Elder + High Alert": {
+     "id": "570-4896",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite red mana",
+      "Infinite green mana",
+      "Infinite black mana"
+     ]
+    },
+    "Conclave Sledge-Captain + Simic Ascendancy": {
+     "id": "2021-3021",
+     "bracketTag": "S",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Faeburrow Elder + Vigean Graftmage": {
+     "id": "570-4019",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Faerie Mastermind + Krark-Clan Ironworks + Smothering Tithe": {
+     "id": "184-4659-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for all players",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Spider-Man, Peter Parker + Walking Ballista": {
+     "id": "3693-6824",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Enduring Renewal + Walking Ballista": {
+     "id": "678-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Faerie Mastermind + Mirage Mirror + Smothering Tithe": {
+     "id": "184-2500-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite colored mana",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Faeburrow Elder + Sword of the Paruns": {
+     "id": "570-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Faeburrow Elder + Lightning Greaves + Monk Gyatso": {
+     "id": "570-876-7070",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Urban Daggertooth + Walking Ballista": {
+     "id": "3693-5017",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite proliferate"
+     ]
+    },
+    "Faerie Mastermind + Nyxbloom Ancient + Smothering Tithe": {
+     "id": "184-3430-4682",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for all players",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Chain Stasis + Faeburrow Elder": {
+     "id": "195-570",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Faerie Mastermind + Mirror Room // Fractured Realm + Smothering Tithe": {
+     "id": "184-4682-5921",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for all players",
+      "Infinite draw triggers for all players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Heroic Feast + Walking Ballista": {
+     "id": "3693-7743",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Devoted Druid + Hexavus": {
+     "id": "2028-4762",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Faeburrow Elder + Gauntlets of Light": {
+     "id": "570-1995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-white mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Curiosity + Walking Ballista + Wizard Class": {
+     "id": "1017-1089-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite damage"
+     ]
+    },
+    "Barrenton Medic + Swift Reconfiguration": {
+     "id": "2335-3807",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to permanents you control",
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Charismatic Conqueror + Fractured Identity": {
+     "id": "190-5344",
+     "bracketTag": "S",
+     "produz": [
+      "Draw the game",
+      "Infinite creature tokens for opponents",
+      "Infinite creature ETB for opponents"
+     ]
+    },
+    "Cephalid Aristocrat + Lightning Greaves": {
+     "id": "876-2796",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Bellowing Aegisaur + Walking Ballista": {
+     "id": "1617-3693",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on most creatures you control"
+     ]
+    },
+    "Devoted Druid + One with the Stars": {
+     "id": "3785-4762",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [
+     "Cyclonic Rift",
+     "Rhystic Study",
+     "Smothering Tithe"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Devoted Druid + Swift Reconfiguration",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Heliod, Sun-Crowned + Walking Ballista",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

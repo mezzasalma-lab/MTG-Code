@@ -1,0 +1,26 @@
+Fração de partidas com resultado IDÊNTICO entre pares de variantes (N=10.000, sementes 3.000.000+i), só dos brutos arquivados.
+Serve de controle (Regra #10 item 4): variante que não difere da outra é vácua; aqui se vê quais diferem.
+
+[padrao] N=10000
+  antes                      x depois                       idênticas=  9991 ( 99.91%)
+  antes                      x so_staff                     idênticas= 10000 (100.00%)
+  antes                      x so_bottom                    idênticas=  9991 ( 99.91%)
+  antes                      x so_tiebreak                  idênticas=  9828 ( 98.28%)
+  depois                     x so_bottom                    idênticas= 10000 (100.00%)
+  depois                     x so_staff                     idênticas=  9991 ( 99.91%)
+  depois                     x so_tiebreak                  idênticas=  9819 ( 98.19%)
+  so_staff                   x so_bottom                    idênticas=  9991 ( 99.91%)
+  so_bottom                  x so_tiebreak                  idênticas=  9819 ( 98.19%)
+  so_staff                   x so_tiebreak                  idênticas=  9828 ( 98.28%)
+
+[resiliencia] N=10000
+  antes                      x depois                       idênticas=  9991 ( 99.91%)
+  antes                      x so_staff                     idênticas= 10000 (100.00%)
+  antes                      x so_bottom                    idênticas=  9991 ( 99.91%)
+  antes                      x so_tiebreak                  idênticas=  9828 ( 98.28%)
+  depois                     x so_bottom                    idênticas= 10000 (100.00%)
+  depois                     x so_staff                     idênticas=  9991 ( 99.91%)
+  depois                     x so_tiebreak                  idênticas=  9819 ( 98.19%)
+  so_staff                   x so_bottom                    idênticas=  9991 ( 99.91%)
+  so_bottom                  x so_tiebreak                  idênticas=  9819 ( 98.19%)
+  so_staff                   x so_tiebreak                  idênticas=  9828 ( 98.28%)

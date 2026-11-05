@@ -1,0 +1,40 @@
+nomes verificados: 140 | NAO reconhecidos: []
+base: 2 combos, 92 quase
+Loyal Tutor                        | combos 2 | novos: [] | quase novos c/ a peça: 0
+Nicol Bolas, Dragon-God            | combos 4 | novos: [('Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + Oath of Teferi', 'R'), ('Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + The Chain Veil', 'R')] | quase novos c/ a peça: 3
+Carth the Lion                     | combos 3 | novos: [('Carth the Lion + Teferi, Temporal Archmage + The Chain Veil', 'E')] | quase novos c/ a peça: 2
+Commodore Guff                     | combos 2 | novos: [] | quase novos c/ a peça: 0
+Doubling Season                    | combos 2 | novos: [] | quase novos c/ a peça: 11
+The Theorist, Jace Beleren         | combos 2 | novos: [] | quase novos c/ a peça: 0
+Interplanar Beacon                 | combos 2 | novos: [] | quase novos c/ a peça: 0
+Chromatic Lantern                  | combos 2 | novos: [] | quase novos c/ a peça: 0
+Farseek                            | combos 2 | novos: [] | quase novos c/ a peça: 0
+Deepglow Skate                     | combos 2 | novos: [] | quase novos c/ a peça: 2
+Swords to Plowshares               | combos 2 | novos: [] | quase novos c/ a peça: 1
+Karn's Bastion                     | combos 2 | novos: [] | quase novos c/ a peça: 0
+Atraxa, Praetors' Voice            | combos 2 | novos: [] | quase novos c/ a peça: 0
+Jace, Multiverse Architect         | combos 2 | novos: [] | quase novos c/ a peça: 0
+Tekuthal, Inquiry Dominus          | combos 2 | novos: [] | quase novos c/ a peça: 1
+Teferi, Master of Time             | combos 5 | novos: [('Ichormoon Gauntlet + Teferi, Master of Time + The Chain Veil', 'R'), ('Ichormoon Gauntlet + Oath of Teferi + Teferi, Master of Time', 'R'), ('Aminatou, the Fateshifter + Ichormoon Gauntlet + Teferi, Master of Time', 'R')] | quase novos c/ a peça: 3
+Narset, Parter of Veils            | combos 2 | novos: [] | quase novos c/ a peça: 1
+Ugin, the Spirit Dragon            | combos 2 | novos: [] | quase novos c/ a peça: 2
+Liliana, Dreadhorde General        | combos 2 | novos: [] | quase novos c/ a peça: 2
+Nature's Lore                      | combos 2 | novos: [] | quase novos c/ a peça: 0
+Lae'zel, Vlaakith's Champion       | combos 2 | novos: [] | quase novos c/ a peça: 4
+Evolution Sage                     | combos 2 | novos: [] | quase novos c/ a peça: 0
+Spark Double                       | combos 3 | novos: [('Aminatou, the Fateshifter + Oath of Teferi + Spark Double', 'S')] | quase novos c/ a peça: 11
+Three Visits                       | combos 2 | novos: [] | quase novos c/ a peça: 0
+Oath of Ajani                      | combos 2 | novos: [] | quase novos c/ a peça: 0
+Teferi, Time Raveler               | combos 3 | novos: [('Displacer Kitten + Sol Ring + Teferi, Time Raveler', 'E')] | quase novos c/ a peça: 12
+Brokers Ascendancy                 | combos 2 | novos: [] | quase novos c/ a peça: 0
+Delighted Halfling                 | combos 2 | novos: [] | quase novos c/ a peça: 0
+Path to Exile                      | combos 2 | novos: [] | quase novos c/ a peça: 0
+Vorinclex, Monstrous Raider        | combos 3 | novos: [("Vorinclex, Monstrous Raider + Vraska, Betrayal's Sting", 'S')] | quase novos c/ a peça: 7
+Mutational Advantage               | combos 2 | novos: [] | quase novos c/ a peça: 0
+Tomik, Orzhov Lawmage              | combos 2 | novos: [] | quase novos c/ a peça: 0
+Gideon's Memorial                  | combos 2 | novos: [] | quase novos c/ a peça: 0
+Reflecting Pool                    | combos 2 | novos: [] | quase novos c/ a peça: 0
+Godless Shrine                     | combos 2 | novos: [] | quase novos c/ a peça: 0
+Chandra, Torch of Defiance         | combos 2 | novos: [] | quase novos c/ a peça: 2
+Chandra, Chill of Compliance       | combos 2 | novos: [] | quase novos c/ a peça: 0
+controle positivo: True | controle de corte (sem a Consultation some): True

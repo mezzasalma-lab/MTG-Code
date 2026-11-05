@@ -1,0 +1,361 @@
+=== T1 (11 eventos)
+   0 The Chain Veil                     gOEMcl  library→hand               
+   1 Way of the Pyromancer              Mx2xT9  library→hand               
+   2 Narset Transcendent                3GCAAj  library→hand               
+   3 Bloom Tender                       4EC0LN  library→hand               
+   4 Fire-Lit Thicket                   K3ntx5  library→hand               
+   5 Ripples of Potential               Hl5e_w  library→hand               
+   6 Bountiful Promenade                ZrtJxr  library→hand               
+   7 The Chain Veil                     gOEMcl  hand→library               
+   8 Narset Transcendent                3GCAAj  hand→library               
+   9 Way of the Paradox                 sfI4vQ  library→hand               
+  10 Fire-Lit Thicket                   K3ntx5  hand→battlefield           
+=== T2 (5 eventos)
+   0 Vronos, Masked Inquisitor          gaA28U  library→hand               
+   1 Bountiful Promenade                ZrtJxr  hand→battlefield           
+   2 Bountiful Promenade                ZrtJxr  ·                          TAP
+   3 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+   4 Bloom Tender                       4EC0LN  hand→battlefield           
+=== T3 (8 eventos)
+   0 Bountiful Promenade                ZrtJxr  ·                          
+   1 Fire-Lit Thicket                   K3ntx5  ·                          
+   2 Watery Grave                       61hHaN  library→hand               
+   3 Watery Grave                       61hHaN  hand→battlefield           
+   4 Bountiful Promenade                ZrtJxr  ·                          TAP
+   5 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+   6 Watery Grave                       61hHaN  ·                          TAP
+   7 Tam, the Possibility               2k7jEQ  commandZone→battlefield    
+=== T4 (14 eventos)
+   0 Watery Grave                       61hHaN  ·                          
+   1 Bountiful Promenade                ZrtJxr  ·                          
+   2 Fire-Lit Thicket                   K3ntx5  ·                          
+   3 Way of the Necromancer             aVxbYR  library→hand               
+   4 Bountiful Promenade                ZrtJxr  ·                          TAP
+   5 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+   6 Way of the Pyromancer              Mx2xT9  hand→battlefield           
+   7 Jace                               HIMvHf  None→battlefield           TOKEN
+   8 Jace                               HIMvHf  ·                          L1 TOKEN
+   9 Jace                               HIMvHf  ·                          L2 TOKEN
+  10 Jace                               HIMvHf  ·                          L3 TOKEN
+  11 Bloom Tender                       4EC0LN  ·                          TAP
+  12 Way of the Paradox                 sfI4vQ  hand→battlefield           
+  13 Jace                               HIMvHf  ·                          L8 TOKEN
+=== T5 (14 eventos)
+   0 Bloom Tender                       4EC0LN  ·                          
+   1 Bountiful Promenade                ZrtJxr  ·                          
+   2 Fire-Lit Thicket                   K3ntx5  ·                          
+   3 Promise of Loyalty                 QAmR2g  library→hand               
+   4 Jace                               HIMvHf  ·                          L7 TOKEN
+   5 Jace                               HIMvHf  ·                          L6 TOKEN
+   6 Jace                               HIMvHf  ·                          L5 TOKEN
+   7 Ketria Triome                      OdYQZG  library→hand               
+   8 Ketria Triome                      OdYQZG  hand→battlefield           
+   9 Bloom Tender                       4EC0LN  ·                          TAP
+  10 Watery Grave                       61hHaN  ·                          TAP
+  11 Vronos, Masked Inquisitor          gaA28U  hand→battlefield           L5
+  12 Vronos, Masked Inquisitor          gaA28U  ·                          L6
+  13 Goblin Wizard                      cSQm9D  None→opponentsCards        
+=== T6 (20 eventos)
+   0 Bloom Tender                       4EC0LN  ·                          
+   1 Watery Grave                       61hHaN  ·                          
+   2 Tamiyo, Field Researcher           mfEuxm  library→hand               
+   3 Watery Grave                       61hHaN  ·                          TAP
+   4 Bountiful Promenade                ZrtJxr  ·                          TAP
+   5 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+   6 Way of the Necromancer             aVxbYR  hand→battlefield           
+   7 Jace                               HIMvHf  ·                          L6 TOKEN
+   8 Jace                               HIMvHf  ·                          L7 TOKEN
+   9 Vronos, Masked Inquisitor          gaA28U  ·                          L5
+  10 Vronos, Masked Inquisitor          gaA28U  ·                          L4
+  11 Jace                               HIMvHf  ·                          L6 TOKEN
+  12 Jace                               HIMvHf  ·                          L5 TOKEN
+  13 Jace                               HIMvHf  ·                          L4 TOKEN
+  14 Teferi, Hero of Dominaria          nKgDl1  library→hand               
+  15 Ertai's Scorn                      osii4k  None→opponentsCards        
+  16 Promise of Loyalty                 hgoa6K  None→opponentsCards        
+  17 Bloom Tender                       4EC0LN  ·                          V1
+  18 Tam, the Possibility               2k7jEQ  battlefield→commandZone    
+  19 Tam, the Possibility               2k7jEQ  ·                          imposto1
+=== T7 (28 eventos)
+   0 Watery Grave                       61hHaN  ·                          
+   1 Bountiful Promenade                ZrtJxr  ·                          
+   2 Fire-Lit Thicket                   K3ntx5  ·                          
+   3 City of Brass                      1Pt7oL  library→hand               
+   4 City of Brass                      1Pt7oL  hand→battlefield           
+   5 City of Brass                      1Pt7oL  ·                          TAP
+   6 Ketria Triome                      OdYQZG  ·                          TAP
+   7 Bountiful Promenade                ZrtJxr  ·                          TAP
+   8 City of Brass                      1Pt7oL  ·                          
+   9 Bountiful Promenade                ZrtJxr  ·                          
+  10 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+  11 Watery Grave                       61hHaN  ·                          TAP
+  12 Bountiful Promenade                ZrtJxr  ·                          TAP
+  13 City of Brass                      1Pt7oL  ·                          TAP
+  14 Tam, the Possibility               2k7jEQ  commandZone→battlefield    imposto1
+  15 Tam, the Possibility               2k7jEQ  battlefield→commandZone    imposto1
+  16 Tam, the Possibility               2k7jEQ  ·                          imposto2
+  17 Jace                               HIMvHf  ·                          L3 TOKEN
+  18 Jace                               HIMvHf  ·                          L2 TOKEN
+  19 Jace                               HIMvHf  ·                          L1 TOKEN
+  20 Garruk, Curse Breaker              2-dPXK  library→hand               
+  21 Vronos, Masked Inquisitor          gaA28U  ·                          L5
+  22 Bloom Tender                       4EC0LN  ·                          TAP V1
+  23 Bloom Tender                       4EC0LN  ·                          V1
+  24 Vronos, Masked Inquisitor          gaA28U  ·                          L4
+  25 Vronos, Masked Inquisitor          gaA28U  ·                          L3
+  26 Vronos, Masked Inquisitor          gaA28U  ·                          L4
+  27 Jace                               HIMvHf  ·                          L2 TOKEN
+=== T8 (29 eventos)
+   0 City of Brass                      1Pt7oL  ·                          
+   1 Ketria Triome                      OdYQZG  ·                          
+   2 Watery Grave                       61hHaN  ·                          
+   3 Bountiful Promenade                ZrtJxr  ·                          
+   4 Fire-Lit Thicket                   K3ntx5  ·                          
+   5 Overflowing Basin                  KzGzW8  library→hand               
+   6 Overflowing Basin                  KzGzW8  hand→battlefield           
+   7 Overflowing Basin                  KzGzW8  ·                          TAP
+   8 Overflowing Basin                  KzGzW8  ·                          
+   9 Bountiful Promenade                ZrtJxr  ·                          TAP
+  10 Ketria Triome                      OdYQZG  ·                          TAP
+  11 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+  12 Overflowing Basin                  KzGzW8  ·                          TAP
+  13 Watery Grave                       61hHaN  ·                          TAP
+  14 Garruk, Curse Breaker              2-dPXK  hand→battlefield           L5
+  15 Garruk, Curse Breaker              2-dPXK  ·                          L2
+  16 Beast                              lh9k9s  None→battlefield           TOKEN
+  17 Domri, Chaos Bringer               IRZh8W  library→hand               
+  18 Jace                               HIMvHf  ·                          L3 TOKEN
+  19 Vronos, Masked Inquisitor          gaA28U  ·                          L5
+  20 Bloom Tender                       4EC0LN  ·                          TAP V1
+  21 Domri, Chaos Bringer               IRZh8W  hand→battlefield           L5
+  22 Domri, Chaos Bringer               IRZh8W  ·                          TAP L5
+  23 Domri, Chaos Bringer               IRZh8W  ·                          L5
+  24 Domri, Chaos Bringer               IRZh8W  ·                          TAP L5
+  25 Domri, Chaos Bringer               IRZh8W  ·                          L5
+  26 Domri, Chaos Bringer               IRZh8W  ·                          L6
+  27 Loran of the Third Path            4SjFJX  None→opponentsCards        
+  28 Way of the Paradox                 sfI4vQ  battlefield→graveyard      
+=== T9 (34 eventos)
+   0 Overflowing Basin                  KzGzW8  ·                          
+   1 Ketria Triome                      OdYQZG  ·                          
+   2 Bloom Tender                       4EC0LN  ·                          V1
+   3 Watery Grave                       61hHaN  ·                          
+   4 Bountiful Promenade                ZrtJxr  ·                          
+   5 Fire-Lit Thicket                   K3ntx5  ·                          
+   6 Displacer Kitten                   uM2cHA  library→hand               
+   7 Bloom Tender                       4EC0LN  ·                          TAP V1
+   8 Displacer Kitten                   uM2cHA  hand→battlefield           
+   9 Ketria Triome                      OdYQZG  ·                          TAP
+  10 Overflowing Basin                  KzGzW8  ·                          TAP
+  11 Bountiful Promenade                ZrtJxr  ·                          TAP
+  12 Watery Grave                       61hHaN  ·                          TAP
+  13 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+  14 Teferi, Hero of Dominaria          nKgDl1  hand→battlefield           L4
+  15 Garruk, Curse Breaker              2-dPXK  battlefield→exile          
+  16 Garruk, Curse Breaker              2-dPXK  exile→battlefield          L5
+  17 Garruk, Curse Breaker              2-dPXK  ·                          L2
+  18 Beast                              ikUHE4  None→battlefield           TOKEN
+  19 Teferi, Hero of Dominaria          nKgDl1  ·                          L5
+  20 Teferi, Temporal Archmage          v6rwOt  library→hand               
+  21 Domri, Chaos Bringer               IRZh8W  ·                          L7
+  22 Vronos, Masked Inquisitor          gaA28U  ·                          L6
+  23 Jace                               HIMvHf  ·                          L4 TOKEN
+  24 Beast                              lh9k9s  ·                          TAP TOKEN
+  25 Damning Verdict                    wUJyh2  None→opponentsCards        
+  26 Displacer Kitten                   uM2cHA  battlefield→graveyard      
+  27 Garruk, Curse Breaker              2-dPXK  ·                          L3
+  28 Teferi, Hero of Dominaria          nKgDl1  ·                          L6
+  29 Domri, Chaos Bringer               IRZh8W  ·                          L8
+  30 Vronos, Masked Inquisitor          gaA28U  ·                          L7
+  31 Jace                               HIMvHf  ·                          L5 TOKEN
+  32 Bloom Tender                       4EC0LN  ·                          TAP V2
+  33 Bloom Tender                       4EC0LN  ·                          TAP V1
+=== T10 (59 eventos)
+   0 Overflowing Basin                  KzGzW8  ·                          
+   1 Ketria Triome                      OdYQZG  ·                          
+   2 Bloom Tender                       4EC0LN  ·                          V1
+   3 Watery Grave                       61hHaN  ·                          
+   4 Bountiful Promenade                ZrtJxr  ·                          
+   5 Fire-Lit Thicket                   K3ntx5  ·                          
+   6 Ichormoon Gauntlet                 lqREkT  library→hand               
+   7 Watery Grave                       61hHaN  ·                          TAP
+   8 Ketria Triome                      OdYQZG  ·                          TAP
+   9 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+  10 Ichormoon Gauntlet                 lqREkT  hand→battlefield           
+  11 Bloom Tender                       4EC0LN  ·                          TAP V1
+  12 Overflowing Basin                  KzGzW8  ·                          TAP
+  13 Teferi, Temporal Archmage          v6rwOt  hand→battlefield           L5
+  14 Teferi, Temporal Archmage          v6rwOt  ·                          L4
+  15 Teferi, Temporal Archmage          v6rwOt  ·                          L3
+  16 Bloom Tender                       4EC0LN  ·                          V1
+  17 Ketria Triome                      OdYQZG  ·                          
+  18 Overflowing Basin                  KzGzW8  ·                          
+  19 Watery Grave                       61hHaN  ·                          
+  20 Bloom Tender                       4EC0LN  ·                          TAP V1
+  21 Tamiyo, Field Researcher           mfEuxm  hand→battlefield           L4
+  22 Teferi, Hero of Dominaria          nKgDl1  ·                          L7
+  23 Way of the Deathbringer            dufFfj  library→hand               
+  24 Watery Grave                       61hHaN  ·                          TAP
+  25 Ketria Triome                      OdYQZG  ·                          TAP
+  26 Overflowing Basin                  KzGzW8  ·                          TAP
+  27 Way of the Deathbringer            dufFfj  hand→battlefield           
+  28 Jace                               HIMvHf  ·                          L1 TOKEN
+  29 Jace                               HIMvHf  ·                          L10 TOKEN
+  30 Jace                               HIMvHf  ·                          L7 TOKEN
+  31 Elspeth, Sun's Champion            SqKm8P  library→hand               
+  32 Tamiyo, Field Researcher           mfEuxm  ·                          L5
+  33 Teferi, Temporal Archmage          v6rwOt  ·                          L4
+  34 Garruk, Curse Breaker              2-dPXK  ·                          L4
+  35 Teferi, Hero of Dominaria          nKgDl1  ·                          L8
+  36 Domri, Chaos Bringer               IRZh8W  ·                          L9
+  37 Vronos, Masked Inquisitor          gaA28U  ·                          L8
+  38 Jace                               HIMvHf  ·                          L8 TOKEN
+  39 Bloom Tender                       4EC0LN  ·                          TAP V2
+  40 Tamiyo, Field Researcher           mfEuxm  ·                          L4
+  41 Tamiyo, Field Researcher           mfEuxm  ·                          L3
+  42 Garruk, Curse Breaker              2-dPXK  ·                          L3
+  43 Garruk, Curse Breaker              2-dPXK  ·                          L2
+  44 Garruk, Curse Breaker              2-dPXK  ·                          L1
+  45 Beast                              L5tPNC  None→battlefield           TOKEN
+  46 Eldrazi Angel                      KnpnT0  None→opponentsCards        
+  47 City of Brass                      1Pt7oL  ·                          TAP
+  48 Bountiful Promenade                ZrtJxr  ·                          TAP
+  49 Ripples of Potential               Hl5e_w  hand→battlefield           
+  50 Tamiyo, Field Researcher           mfEuxm  ·                          L4
+  51 Teferi, Temporal Archmage          v6rwOt  ·                          L5
+  52 Garruk, Curse Breaker              2-dPXK  ·                          L2
+  53 Teferi, Hero of Dominaria          nKgDl1  ·                          L9
+  54 Domri, Chaos Bringer               IRZh8W  ·                          L10
+  55 Vronos, Masked Inquisitor          gaA28U  ·                          L9
+  56 Jace                               HIMvHf  ·                          L9 TOKEN
+  57 Bloom Tender                       4EC0LN  ·                          TAP V3
+  58 Ripples of Potential               Hl5e_w  battlefield→graveyard      
+=== T11 (128 eventos)
+   0 Overflowing Basin                  KzGzW8  ·                          
+   1 City of Brass                      1Pt7oL  ·                          
+   2 Ketria Triome                      OdYQZG  ·                          
+   3 Bloom Tender                       4EC0LN  ·                          V3
+   4 Watery Grave                       61hHaN  ·                          
+   5 Bountiful Promenade                ZrtJxr  ·                          
+   6 Fire-Lit Thicket                   K3ntx5  ·                          
+   7 Sanctum Lurker                     lrxQP7  library→hand               
+   8 Watery Grave                       61hHaN  ·                          TAP
+   9 Bountiful Promenade                ZrtJxr  ·                          TAP
+  10 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+  11 Sanctum Lurker                     lrxQP7  hand→battlefield           
+  12 Jace                               HIMvHf  ·                          L10 TOKEN
+  13 Teferi, Hero of Dominaria          nKgDl1  ·                          L1
+  14 Teferi, Hero of Dominaria Emblem   n-C1mO  None→battlefield           TOKEN
+  15 Tamiyo, Field Researcher           mfEuxm  ·                          L5
+  16 Teferi, Temporal Archmage          v6rwOt  ·                          L6
+  17 Garruk, Curse Breaker              2-dPXK  ·                          L3
+  18 Teferi, Hero of Dominaria          nKgDl1  ·                          L2
+  19 Domri, Chaos Bringer               IRZh8W  ·                          L11
+  20 Vronos, Masked Inquisitor          gaA28U  ·                          L10
+  21 Jace                               HIMvHf  ·                          L11 TOKEN
+  22 Bloom Tender                       4EC0LN  ·                          V4
+  23 Tamiyo, Field Researcher           mfEuxm  ·                          L6
+  24 Teferi, Temporal Archmage          v6rwOt  ·                          L7
+  25 Garruk, Curse Breaker              2-dPXK  ·                          L4
+  26 Teferi, Hero of Dominaria          nKgDl1  ·                          L3
+  27 Domri, Chaos Bringer               IRZh8W  ·                          L12
+  28 Vronos, Masked Inquisitor          gaA28U  ·                          L11
+  29 Jace                               HIMvHf  ·                          L12 TOKEN
+  30 Bloom Tender                       4EC0LN  ·                          V5
+  31 Tamiyo, Field Researcher           mfEuxm  ·                          L7
+  32 Teferi, Temporal Archmage          v6rwOt  ·                          L8
+  33 Garruk, Curse Breaker              2-dPXK  ·                          L5
+  34 Teferi, Hero of Dominaria          nKgDl1  ·                          L4
+  35 Domri, Chaos Bringer               IRZh8W  ·                          L13
+  36 Vronos, Masked Inquisitor          gaA28U  ·                          L12
+  37 Jace                               HIMvHf  ·                          L13 TOKEN
+  38 Bloom Tender                       4EC0LN  ·                          V6
+  39 Jace                               HIMvHf  ·                          L1 TOKEN
+  40 Jace                               HIMvHf  ·                          L10 TOKEN
+  41 Mossfire Valley                    0DKC0J  library→hand               
+  42 Mossfire Valley                    0DKC0J  hand→battlefield           
+  43 Domri, Chaos Bringer               IRZh8W  ·                          L1
+  44 Bountiful Promenade                ZrtJxr  ·                          
+  45 Fire-Lit Thicket                   K3ntx5  ·                          
+  46 Watery Grave                       61hHaN  ·                          
+  47 Kasmina, Enigma Sage               ix-dsZ  library→hand               
+  48 Bloom Tender                       4EC0LN  ·                          TAP V6
+  49 City of Brass                      1Pt7oL  ·                          TAP
+  50 Mossfire Valley                    0DKC0J  ·                          TAP
+  51 Tam, the Possibility               2k7jEQ  commandZone→battlefield    imposto2
+  52 Watery Grave                       61hHaN  ·                          TAP
+  53 Overflowing Basin                  KzGzW8  ·                          TAP
+  54 Kasmina, Enigma Sage               ix-dsZ  hand→battlefield           L2
+  55 Kasmina, Enigma Sage               ix-dsZ  ·                          L3
+  56 Tamiyo, Field Researcher           mfEuxm  ·                          L8
+  57 Teferi, Temporal Archmage          v6rwOt  ·                          L9
+  58 Garruk, Curse Breaker              2-dPXK  ·                          L6
+  59 Teferi, Hero of Dominaria          nKgDl1  ·                          L5
+  60 Domri, Chaos Bringer               IRZh8W  ·                          L2
+  61 Vronos, Masked Inquisitor          gaA28U  ·                          L13
+  62 Jace                               HIMvHf  ·                          L11 TOKEN
+  63 Bloom Tender                       4EC0LN  ·                          TAP V7
+  64 Kasmina, Enigma Sage               ix-dsZ  ·                          L4
+  65 Tamiyo, Field Researcher           mfEuxm  ·                          L9
+  66 Teferi, Temporal Archmage          v6rwOt  ·                          L10
+  67 Garruk, Curse Breaker              2-dPXK  ·                          L7
+  68 Teferi, Hero of Dominaria          nKgDl1  ·                          L6
+  69 Domri, Chaos Bringer               IRZh8W  ·                          L3
+  70 Vronos, Masked Inquisitor          gaA28U  ·                          L14
+  71 Jace                               HIMvHf  ·                          L12 TOKEN
+  72 Bloom Tender                       4EC0LN  ·                          TAP V8
+  73 Domri, Chaos Bringer               IRZh8W  ·                          L4
+  74 Kasmina, Enigma Sage               ix-dsZ  ·                          L5
+  75 Tamiyo, Field Researcher           mfEuxm  ·                          L10
+  76 Teferi, Temporal Archmage          v6rwOt  ·                          L11
+  77 Garruk, Curse Breaker              2-dPXK  ·                          L8
+  78 Teferi, Hero of Dominaria          nKgDl1  ·                          L7
+  79 Vronos, Masked Inquisitor          gaA28U  ·                          L15
+  80 Jace                               HIMvHf  ·                          L13 TOKEN
+  81 Bloom Tender                       4EC0LN  ·                          TAP V9
+  82 Teferi, Temporal Archmage          v6rwOt  ·                          L1
+  83 Teferi, Temporal Archmage Emblem   UpoBte  None→battlefield           TOKEN
+  84 Domri, Chaos Bringer               IRZh8W  ·                          L5
+  85 Kasmina, Enigma Sage               ix-dsZ  ·                          L6
+  86 Tamiyo, Field Researcher           mfEuxm  ·                          L11
+  87 Teferi, Temporal Archmage          v6rwOt  ·                          L2
+  88 Garruk, Curse Breaker              2-dPXK  ·                          L9
+  89 Teferi, Hero of Dominaria          nKgDl1  ·                          L8
+  90 Vronos, Masked Inquisitor          gaA28U  ·                          L16
+  91 Jace                               HIMvHf  ·                          L14 TOKEN
+  92 Bloom Tender                       4EC0LN  ·                          TAP V10
+  93 Tamiyo, Field Researcher           mfEuxm  ·                          L4
+  94 Tamiyo, Field Researcher Emblem    KmVfxG  None→battlefield           TOKEN
+  95 Sol Ring                           9m2YGk  library→hand               
+  96 Plaza of Heroes                    cHFcPA  library→hand               
+  97 Arcane Signet                      ade7Rn  library→hand               
+  98 Ketria Triome                      OdYQZG  ·                          TAP
+  99 Sol Ring                           9m2YGk  hand→battlefield           
+ 100 Bountiful Promenade                ZrtJxr  ·                          TAP
+ 101 Fire-Lit Thicket                   K3ntx5  ·                          TAP
+ 102 Arcane Signet                      ade7Rn  hand→battlefield           
+ 103 Vronos, Masked Inquisitor          gaA28U  ·                          L4
+ 104 Elspeth, Sun's Champion            SqKm8P  hand→battlefield           L4
+ 105 Vronos, Masked Inquisitor          gaA28U  ·                          L5
+ 106 Vronos, Masked Inquisitor          gaA28U  ·                          L6
+ 107 Elspeth, Sun's Champion            SqKm8P  ·                          L5
+ 108 Soldier                            yhh-gr  None→battlefield           TOKEN
+ 109 Soldier                            3r5W2v  None→battlefield           TOKEN
+ 110 Soldier                            ACe7eL  None→battlefield           TOKEN
+ 111 Soldier                            DuTCEj  None→battlefield           TOKEN
+ 112 Mossfire Valley                    0DKC0J  ·                          
+ 113 Overflowing Basin                  KzGzW8  ·                          
+ 114 City of Brass                      1Pt7oL  ·                          
+ 115 Ketria Triome                      OdYQZG  ·                          
+ 116 Bountiful Promenade                ZrtJxr  ·                          
+ 117 Fire-Lit Thicket                   K3ntx5  ·                          
+ 118 Watery Grave                       61hHaN  ·                          
+ 119 Bloom Tender                       4EC0LN  ·                          V10
+ 120 Aminatou, the Fateshifter          bNL100  library→hand               
+ 121 Jace                               HIMvHf  ·                          L2 TOKEN
+ 122 Teferi, Hero of Dominaria          nKgDl1  ·                          L9
+ 123 The Eternal Wanderer               EpYLYb  library→hand               
+ 124 The Eternal Wanderer               EpYLYb  hand→battlefield           L5
+ 125 Vronos, Masked Inquisitor          gaA28U  ·                          L7
+ 126 Aminatou, the Fateshifter          bNL100  hand→battlefield           L3
+ 127 Vronos, Masked Inquisitor          gaA28U  ·                          L8

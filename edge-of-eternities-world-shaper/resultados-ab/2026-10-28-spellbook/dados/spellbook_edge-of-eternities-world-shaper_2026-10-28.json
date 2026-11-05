@@ -1,0 +1,323 @@
+{
+ "deck": "edge-of-eternities-world-shaper",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Hearthhull, the Worldseed",
+   "incluidos": {
+    "Dakmor Salvage + The Gitrog Monster": {
+     "id": "250-779",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ],
+     "usa": [
+      "The Gitrog Monster",
+      "Dakmor Salvage"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Mayhem Devil + Smaug the Impenetrable": {
+     "id": "1678-7839",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite artifact ETB",
+      "Infinite artifact LTB"
+     ]
+    },
+    "Basking Broodscale + Mazirek, Kraul Death Priest": {
+     "id": "317-5641",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Horizon Explorer + Springbloom Druid + Springheart Nantuko": {
+     "id": "5702-6763-7401",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite landfall triggers"
+     ]
+    },
+    "Dakmor Salvage + Noose Constrictor + The Gitrog Monster": {
+     "id": "250-779-4444",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinitely large creature until end of turn",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Glacial Chasm + Szarel, Genesis Shepherd + The Gitrog Monster": {
+     "id": "250-3946-6701",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Dakmor Salvage + Putrid Imp + The Gitrog Monster": {
+     "id": "250-779-5014",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + Oblivion Crown + The Gitrog Monster": {
+     "id": "250-779-3535",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinitely large creature until end of turn",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Glacial Chasm + Oracle of Mul Daya + Szarel, Genesis Shepherd": {
+     "id": "3946-5449-6701",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Exploration Broodship + Glacial Chasm + Szarel, Genesis Shepherd": {
+     "id": "3946-6701-6762",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Dakmor Salvage + Skirge Familiar + The Gitrog Monster": {
+     "id": "250-779-1742",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite black mana",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + The Gitrog Monster + Wild Mongrel": {
+     "id": "250-530-779",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinitely large creature until end of turn",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Mayhem Devil + Silverclad Ferocidons": {
+     "id": "1678-4767",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent sacrifices all permanents they control",
+      "Near-infinite damage",
+      "Mass Land Denial"
+     ]
+    },
+    "Ayula's Influence + Dakmor Salvage + The Gitrog Monster": {
+     "id": "250-779-2657",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite creature tokens",
+      "Near-infinite creature ETB"
+     ]
+    },
+    "Chains of Mephistopheles + Dakmor Salvage + The Gitrog Monster": {
+     "id": "250-779-2894",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Magmatic Galleon + Mayhem Devil": {
+     "id": "1527-1678",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Dakmor Salvage + Olivia's Dragoon + The Gitrog Monster": {
+     "id": "250-779-2891",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Borborygmos Enraged + Dakmor Salvage + The Gitrog Monster": {
+     "id": "250-779-4298",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite damage",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Horizon Explorer + Perilous Forays + Rampaging Baloths": {
+     "id": "880-4488-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Horizon Explorer + Omnath, Locus of Rage + Perilous Forays": {
+     "id": "880-4862-6763",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite damage",
+      "Put all lands with a basic land type from your library onto the battlefield tapped"
+     ]
+    },
+    "Dakmor Salvage + Seismic Assault + The Gitrog Monster": {
+     "id": "250-779-1272",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite damage",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + Patchwork Gnomes + The Gitrog Monster": {
+     "id": "250-779-3442",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + Oona's Prowler + The Gitrog Monster": {
+     "id": "250-779-3759",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + The Gitrog Monster + Volrath's Dungeon": {
+     "id": "250-779-1915",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + Soul of Windgrace + Surly Badgersaur + The Gitrog Monster": {
+     "id": "250-779-833-2546",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite self-discard triggers",
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + The Gitrog Monster + Trespasser il-Vec": {
+     "id": "250-779-1158",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + Land's Edge + The Gitrog Monster": {
+     "id": "250-779-3872",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite damage",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + Earsplitting Rats + The Gitrog Monster": {
+     "id": "250-779-1307",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + Grotesque Hybrid + The Gitrog Monster": {
+     "id": "250-779-3170",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    },
+    "Dakmor Salvage + The Gitrog Monster + Tunneler Wurm": {
+     "id": "250-779-4177",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Near-infinite self-discard triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Dakmor Salvage + The Gitrog Monster",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

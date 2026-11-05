@@ -1,0 +1,10 @@
+nomes verificados: 96 | NAO reconhecidos: []
+base: 2 combos, 134 quase
+Fractured Sanity novos: [] | quase novos com a peca: 1
+Screeching Scorchbeast novos: [] | quase novos com a peca: 0
+Inexorable Tide novos: [] | quase novos com a peca: 1
+Branching Evolution novos: [] | quase novos com a peca: 2
+Loading Zone novos: [] | quase novos com a peca: 3
+The Earth Crystal novos: [] | quase novos com a peca: 2
+as_seis_juntas novos: [] | quase novos com a peca: 9
+controle positivo: True | controle de corte (Ascension+Mindcrank some ao cortar o Mindcrank): True

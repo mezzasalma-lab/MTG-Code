@@ -1,0 +1,472 @@
+{
+ "sim": "resultados-ab/2026-10-07-comparacao-stefano/codigo/mothman_goldfish_v1_HM.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "opps_eliminated_total",
+  "horrigan_etb_prolifs",
+  "horrigan_attack_prolifs",
+  "horrigan_attacks",
+  "horrigan_attack_damage",
+  "master_activations",
+  "master_act_mine",
+  "master_act_opp",
+  "master_act_on_opp_turn",
+  "master_etb_rad",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "counters_placed_total",
+  "cards_milled_opp_total",
+  "cards_milled_self_total",
+  "library_min",
+  "draws_total",
+  "kozilek_shuffles_total"
+ ],
+ "compacto": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "horrigan_attacks",
+  "master_activations",
+  "master_act_opp",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total"
+ ],
+ "variantes": {
+  "base": {},
+  "frank__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__muldrotha_the_gravetide": {
+   "SWAPS": [
+    [
+     "Muldrotha, the Gravetide",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__muldrotha_the_gravetide": {
+   "SWAPS": [
+    [
+     "Muldrotha, the Gravetide",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__generous_patron": {
+   "SWAPS": [
+    [
+     "Generous Patron",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__generous_patron": {
+   "SWAPS": [
+    [
+     "Generous Patron",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__tear_asunder": {
+   "SWAPS": [
+    [
+     "Tear Asunder",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__tear_asunder": {
+   "SWAPS": [
+    [
+     "Tear Asunder",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__agathas_soul_cauldron": {
+   "SWAPS": [
+    [
+     "Agatha's Soul Cauldron",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__agathas_soul_cauldron": {
+   "SWAPS": [
+    [
+     "Agatha's Soul Cauldron",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__nuclear_fallout": {
+   "SWAPS": [
+    [
+     "Nuclear Fallout",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__nuclear_fallout": {
+   "SWAPS": [
+    [
+     "Nuclear Fallout",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__wave_goodbye": {
+   "SWAPS": [
+    [
+     "Wave Goodbye",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__wave_goodbye": {
+   "SWAPS": [
+    [
+     "Wave Goodbye",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__hedge_shredder": {
+   "SWAPS": [
+    [
+     "Hedge Shredder",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__hedge_shredder": {
+   "SWAPS": [
+    [
+     "Hedge Shredder",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__heroic_intervention": {
+   "SWAPS": [
+    [
+     "Heroic Intervention",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__heroic_intervention": {
+   "SWAPS": [
+    [
+     "Heroic Intervention",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__zellix_sanity_flayer": {
+   "SWAPS": [
+    [
+     "Zellix, Sanity Flayer",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__zellix_sanity_flayer": {
+   "SWAPS": [
+    [
+     "Zellix, Sanity Flayer",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__vats": {
+   "SWAPS": [
+    [
+     "V.A.T.S.",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__vats": {
+   "SWAPS": [
+    [
+     "V.A.T.S.",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__bojuka_bog": {
+   "SWAPS": [
+    [
+     "Bojuka Bog",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__bojuka_bog": {
+   "SWAPS": [
+    [
+     "Bojuka Bog",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__yavimaya_hollow": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__yavimaya_hollow": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__evolution_witness": {
+   "SWAPS": [
+    [
+     "Evolution Witness",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__evolution_witness": {
+   "SWAPS": [
+    [
+     "Evolution Witness",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__soulguide_lantern": {
+   "SWAPS": [
+    [
+     "Soul-Guide Lantern",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__soulguide_lantern": {
+   "SWAPS": [
+    [
+     "Soul-Guide Lantern",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__kozilek_butcher_of_truth": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__kozilek_butcher_of_truth": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "frank__an_offer_you_cant_refuse",
+  "master__an_offer_you_cant_refuse",
+  "frank__didnt_say_please",
+  "master__didnt_say_please",
+  "frank__negate",
+  "master__negate",
+  "frank__muldrotha_the_gravetide",
+  "master__muldrotha_the_gravetide",
+  "frank__generous_patron",
+  "master__generous_patron",
+  "frank__tear_asunder",
+  "master__tear_asunder",
+  "frank__agathas_soul_cauldron",
+  "master__agathas_soul_cauldron",
+  "frank__nuclear_fallout",
+  "master__nuclear_fallout",
+  "frank__toxic_deluge",
+  "master__toxic_deluge",
+  "frank__arcane_denial",
+  "master__arcane_denial",
+  "frank__wave_goodbye",
+  "master__wave_goodbye",
+  "frank__hedge_shredder",
+  "master__hedge_shredder",
+  "frank__heroic_intervention",
+  "master__heroic_intervention",
+  "frank__zellix_sanity_flayer",
+  "master__zellix_sanity_flayer",
+  "frank__vats",
+  "master__vats",
+  "frank__bojuka_bog",
+  "master__bojuka_bog",
+  "frank__yavimaya_hollow",
+  "master__yavimaya_hollow",
+  "frank__evolution_witness",
+  "master__evolution_witness",
+  "frank__coldeyed_selkie",
+  "master__coldeyed_selkie",
+  "frank__soulguide_lantern",
+  "master__soulguide_lantern",
+  "frank__kozilek_butcher_of_truth",
+  "master__kozilek_butcher_of_truth"
+ ],
+ "regressao": []
+}

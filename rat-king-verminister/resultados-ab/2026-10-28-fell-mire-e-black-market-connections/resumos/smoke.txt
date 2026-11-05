@@ -1,0 +1,7 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=53 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=['Rat Colony']
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=53 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=['Rat Colony']
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: FELL_MIRE_LAND_ENABLED=True, FELL_MIRE_COUNTS_FOR_KEEP=True, BMC_MODES_NEED_LIFEGAIN=True, TAPPED_FIRST_COUNTS_MANA=True

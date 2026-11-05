@@ -1,0 +1,926 @@
+{
+ "deck": "thranduil-sultai",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Thranduil, the Elvenking",
+   "incluidos": {
+    "Devoted Druid + Tyvar, the Pummeler": {
+     "id": "4762-6189",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creatures you control until end of turn"
+     ],
+     "usa": [
+      "Tyvar, the Pummeler",
+      "Devoted Druid"
+     ],
+     "prerequisitos": "Devoted Druid does not have summoning sickness."
+    },
+    "Devoted Druid + Immaculate Magistrate + Thranduil, the Elvenking": {
+     "id": "2207-4762-7821",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on creatures you control",
+      "Infinite green mana"
+     ],
+     "usa": [
+      "Thranduil, the Elvenking",
+      "Devoted Druid",
+      "Immaculate Magistrate"
+     ],
+     "prerequisitos": "You control two or more Elves."
+    },
+    "Agatha's Soul Cauldron + Devoted Druid + Incubation Druid": {
+     "id": "3990-4613-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana"
+     ],
+     "usa": [
+      "Devoted Druid",
+      "Agatha's Soul Cauldron",
+      "Incubation Druid"
+     ],
+     "prerequisitos": ""
+    },
+    "Agatha's Soul Cauldron + Devoted Druid + Immaculate Magistrate": {
+     "id": "2207-4613-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite +1/+1 counters on creatures you control"
+     ],
+     "usa": [
+      "Agatha's Soul Cauldron",
+      "Immaculate Magistrate",
+      "Devoted Druid"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Priest of Titania + Staff of Domination": {
+     "id": "1376-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Elvish Archdruid + Staff of Domination": {
+     "id": "2645-3151",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Marwyn, the Nurturer + Staff of Domination": {
+     "id": "2436-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Staff of Domination": {
+     "id": "527-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Bloom Tender + Freed from the Real": {
+     "id": "4222-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Priest of Titania + Umbral Mantle": {
+     "id": "1376-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Flourishing Defenses + High Perfect Morcant": {
+     "id": "1084-7151",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite proliferate"
+     ]
+    },
+    "Elvish Archdruid + Umbral Mantle": {
+     "id": "2816-3151",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Marwyn, the Nurturer + Umbral Mantle": {
+     "id": "2436-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Devoted Druid + Hazel's Brewmaster": {
+     "id": "4762-5856",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Umbral Mantle": {
+     "id": "527-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Staff of Domination + Wirewood Channeler": {
+     "id": "1902-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Bloom Tender + Staff of Domination": {
+     "id": "2645-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Bloom Tender + Pemmin's Aura": {
+     "id": "3525-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Freed from the Real + Incubation Druid": {
+     "id": "3990-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Devoted Druid + Machine God's Effigy": {
+     "id": "1562-4762",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite blue mana",
+      "Infinite green mana"
+     ]
+    },
+    "Jumbo Cactuar + Selvala, Heart of the Wilds": {
+     "id": "527-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite colored mana"
+     ]
+    },
+    "Freed from the Real + Selvala, Heart of the Wilds": {
+     "id": "527-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Incubation Druid + Pemmin's Aura": {
+     "id": "3525-3990",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Umbral Mantle + Wirewood Channeler": {
+     "id": "1902-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Devoted Druid + Mikaeus, the Unhallowed": {
+     "id": "628-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Pemmin's Aura + Selvala, Heart of the Wilds": {
+     "id": "527-3525",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Devoted Druid + Quillspike": {
+     "id": "75-4762",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Incubation Druid + Umbral Mantle": {
+     "id": "2816-3990",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Lightning Greaves + Selvala, Heart of the Wilds + Temur Sabertooth": {
+     "id": "215-527-876",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Bristly Bill, Spine Sower + Devoted Druid": {
+     "id": "4762-5455",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana",
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Priest of Titania + Sword of the Paruns": {
+     "id": "1376-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Elvish Archdruid + Sword of the Paruns": {
+     "id": "3151-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Jumbo Cactuar": {
+     "id": "182-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss",
+      "Each opponent loses the game"
+     ]
+    },
+    "Marwyn, the Nurturer + Sword of the Paruns": {
+     "id": "2436-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Wall of Blood": {
+     "id": "182-2749",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Sword of the Paruns": {
+     "id": "527-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Imperious Perfect + Intruder Alarm": {
+     "id": "1636-2205",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Dionus, Elvish Archdruid + Temur Sabertooth": {
+     "id": "215-6111",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite storm count",
+      "Infinite mana Elves you control can produce"
+     ]
+    },
+    "Incubation Druid + Vigean Graftmage": {
+     "id": "3990-4019",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Devoted Druid + Luxior, Giada's Gift": {
+     "id": "3774-4762",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Devoted Druid + Haldir, Lórien Lieutenant": {
+     "id": "4762-6315",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinite power and toughness for certain creatures until end of turn"
+     ]
+    },
+    "Sword of the Paruns + Wirewood Channeler": {
+     "id": "1902-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Devoted Druid + Thranduil, the Elvenking + Timberwatch Elf": {
+     "id": "4762-7821-7823",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creatures you control until end of turn"
+     ]
+    },
+    "Cephalid Illusionist + Lightning Greaves": {
+     "id": "876-2904",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Devoted Druid + Ezuri, Renegade Leader + Leyline of Abundance": {
+     "id": "1588-3099-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite power and toughness for certain creatures until end of turn",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Deathbloom Ritualist + Staff of Domination": {
+     "id": "2645-3443",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Bloom Tender + Sword of the Paruns": {
+     "id": "5168-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Devoted Druid + Greenhilt Trainee + Thranduil, the Elvenking": {
+     "id": "4762-7821-7822",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creatures you control until end of turn"
+     ]
+    },
+    "Bloom Tender + Vigean Graftmage": {
+     "id": "4019-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Deathbloom Ritualist + Umbral Mantle": {
+     "id": "2816-3443",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Jarad, Golgari Lich Lord + Phyrexian Devourer": {
+     "id": "182-4899",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Priest of Titania + Temur Sabertooth + Tyvar, Jubilant Brawler": {
+     "id": "215-1376-4927",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite blinking of some creatures"
+     ]
+    },
+    "Elvish Archdruid + Temur Sabertooth + Tyvar, Jubilant Brawler": {
+     "id": "215-3151-4927",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite blinking of some creatures"
+     ]
+    },
+    "Bloom Tender + Chain Stasis": {
+     "id": "195-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Deathbloom Ritualist + Freed from the Real": {
+     "id": "3443-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Devoted Druid + Ezuri, Renegade Leader + Nyxbloom Ancient": {
+     "id": "1588-3430-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite power and toughness for certain creatures until end of turn"
+     ]
+    },
+    "Hatred + Jarad, Golgari Lich Lord": {
+     "id": "182-1877",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Devoted Druid + Hexavus": {
+     "id": "2028-4762",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Devoted Druid + Ezuri, Renegade Leader + Mana Reflection": {
+     "id": "579-1588-4762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite power and toughness for certain creatures until end of turn",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Temur Sabertooth + Tyvar, Jubilant Brawler + Wirewood Channeler": {
+     "id": "215-1902-4927",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite blinking"
+     ]
+    },
+    "Dino DNA + Lightning Greaves + Selvala, Heart of the Wilds": {
+     "id": "527-876-4790",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite copies of cards exiled with Dino DNA",
+      "Infinite death triggers"
+     ]
+    },
+    "Devoted Druid + Thranduil, the Elvenking + Tromell, Seymour's Butler": {
+     "id": "4762-6602-7821",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite green mana",
+      "Infinite proliferate"
+     ]
+    },
+    "Agatha's Soul Cauldron + Gilder Bairn + Incubation Druid": {
+     "id": "3990-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite proliferate"
+     ]
+    },
+    "Deathbloom Ritualist + Sword of the Paruns": {
+     "id": "3443-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite colored mana"
+     ]
+    },
+    "Deathbloom Ritualist + Pemmin's Aura": {
+     "id": "3443-3525",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Crab Umbra + Selvala, Heart of the Wilds": {
+     "id": "527-1268",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Cephalid Aristocrat + Lightning Greaves": {
+     "id": "876-2796",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Temur Sabertooth + Tyvar, Jubilant Brawler": {
+     "id": "215-527-4927",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite blinking"
+     ]
+    },
+    "Devoted Druid + One with the Stars": {
+     "id": "3785-4762",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Immaculate Magistrate + Sage of Hours": {
+     "id": "1494-2207",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Deadeye Navigator + Gwenna, Eyes of Gaea + Lightning Greaves": {
+     "id": "876-1409-2661",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Agatha's Soul Cauldron + Knacksaw Clique + Selvala, Heart of the Wilds": {
+     "id": "527-800-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Exile each opponent's library",
+      "Infinite colored mana"
+     ]
+    },
+    "Deadeye Navigator + Selvala, Heart of the Wilds + Tyvar, Jubilant Brawler": {
+     "id": "527-1409-4927",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Hullbreaker Horror + Selvala, Heart of the Wilds + Tyvar, Jubilant Brawler": {
+     "id": "513-527-4927",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Elvish Archdruid + Ringing Strike Mastery": {
+     "id": "3151-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Agatha's Soul Cauldron + Gilder Bairn + Selvala, Heart of the Wilds": {
+     "id": "527-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite proliferate"
+     ]
+    },
+    "Agatha's Soul Cauldron + Bloom Tender + Gilder Bairn": {
+     "id": "4613-4687-5168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite mana of colors among permanents you control",
+      "Infinite proliferate"
+     ]
+    },
+    "Ringing Strike Mastery + Selvala, Heart of the Wilds": {
+     "id": "527-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Agatha's Soul Cauldron + Arwen, Weaver of Hope + Grist, the Hunger Tide": {
+     "id": "414-1453-4613",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill",
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Priest of Titania + Ringing Strike Mastery": {
+     "id": "1376-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Deathbloom Ritualist + Temur Sabertooth + Tyvar, Jubilant Brawler": {
+     "id": "215-3443-4927",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite blinking"
+     ]
+    },
+    "Marwyn, the Nurturer + Ringing Strike Mastery": {
+     "id": "2436-7500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Singing Bell Strike": {
+     "id": "527-5090",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Crab Umbra + Wirewood Channeler": {
+     "id": "1268-1902",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Agatha's Soul Cauldron + Gilder Bairn + Marwyn, the Nurturer": {
+     "id": "2436-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite proliferate"
+     ]
+    },
+    "Crab Umbra + Deathbloom Ritualist": {
+     "id": "1268-3443",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Marwyn, the Nurturer + Singing Bell Strike": {
+     "id": "2436-5090",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Lilysplash Mentor + Selvala, Heart of the Wilds + Tyvar, Jubilant Brawler": {
+     "id": "527-4927-5900",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Deathbloom Ritualist + Ringing Strike Mastery": {
+     "id": "3443-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Ringing Strike Mastery + Wirewood Channeler": {
+     "id": "1902-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Tidespout Tyrant + Tyvar, Jubilant Brawler": {
+     "id": "527-542-4927",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Agatha's Soul Cauldron + Cinderhaze Wretch + Incubation Druid": {
+     "id": "1242-3990-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Agatha's Soul Cauldron + Devoted Druid + Solarion": {
+     "id": "4613-4762-7347",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Agatha's Soul Cauldron + Arwen, Weaver of Hope + Inquisitive Puppet": {
+     "id": "1453-4613-5507",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Agatha's Soul Cauldron + Deathbloom Ritualist + Gilder Bairn": {
+     "id": "3443-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite proliferate"
+     ]
+    },
+    "Agatha's Soul Cauldron + Gilder Bairn + Priest of Titania": {
+     "id": "1376-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite proliferate"
+     ]
+    },
+    "Agatha's Soul Cauldron + Cinderhaze Wretch + Immaculate Magistrate": {
+     "id": "1242-2207-4613",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Agatha's Soul Cauldron + Elvish Archdruid + Gilder Bairn": {
+     "id": "3151-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite green mana",
+      "Infinite proliferate"
+     ]
+    },
+    "Agatha's Soul Cauldron + Gilder Bairn + Wirewood Channeler": {
+     "id": "1902-4613-4687",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite proliferate"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "R",
+    "game_changers": [
+     "Rhystic Study"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Devoted Druid + Immaculate Magistrate + Thranduil, the Elvenking",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Agatha's Soul Cauldron + Devoted Druid + Incubation Druid",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 4,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Devoted Druid + Tyvar, the Pummeler",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 3,
+      "lock": false,
+      "tag": "P"
+     },
+     {
+      "combo": "Agatha's Soul Cauldron + Devoted Druid + Immaculate Magistrate",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3",
+  "4"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

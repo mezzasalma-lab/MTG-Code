@@ -1,0 +1,19 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1990 (99.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   evolution_sage_proliferates                  0.7290       0.7510      +0.0220 ±0.0290  
+   face_combat_damage_total                    15.5110      15.5100      -0.0010 ±0.0014  
+   opp_attacks_on_pw_total                      2.4445       2.4455      +0.0010 ±0.0014  
+   pw_combat_damage_total                       2.5835       2.5845      +0.0010 ±0.0014  
+   len_hand                                     5.3820       5.3835      +0.0015 ±0.0022  
+   mana_held_back                               6.6575       6.6635      +0.0060 ±0.0093  
+   len_graveyard                                4.3220       4.3170      -0.0050 ±0.0080  
+   life                                   500000006856.5775 500000006856.5900      +0.0125 ±0.0226  
+   all_will_be_one_triggers_total             154.5775     155.2660      +0.6885 ±1.2734  
+   ichormoon_counters_total                     1.1425       1.1335      -0.0090 ±0.0176  
+   legend_rule_total                            6.2675       6.2925      +0.0250 ±0.0490  
+   len_activations_this_turn                    4.8255       4.8305      +0.0050 ±0.0098  
+   mana_spent_this_turn                         4.2890       4.2865      -0.0025 ±0.0049  
+   oath_etbs_total                              0.4970       0.5015      +0.0045 ±0.0088  
+   pw_activations_total                         9.5040       9.5095      +0.0055 ±0.0108  

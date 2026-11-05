@@ -120,6 +120,7 @@ Construção coesa: Lord Skitter, Marrow-Gnawer, Piper of the Swarm e Plague of 
 Reavaliando com o critério certo:
 - **Game Changers: 0** ✅ (critério de Bracket 2)
 - **Combo de 2 peças antes do turno 6:** não há — Thrumming Stone + Rat Colony é uma sinergia forte de valor, mas depende de ter as duas peças em mão/campo simultaneamente e de já ter Rat Colonies suficientes reveladas; não é um combo de 2 cartas garantido e replicável cedo, é um teto de explosividade condicional
+  > **[CORRIGIDO em 2026-10-25, ver seção 15]** Esta linha foi escrita sem consultar o Commander Spellbook. Ele acha **2 combos na lista** (Marrow-Gnawer + Thornbite Staff, infinito de 2 cartas; Ayara + Plague of Vermin). A frase continua verdadeira para Thrumming Stone + Rat Colony e para "antes do turno 6" no sentido de probabilidade, mas não para "não há combo de 2 peças".
 - **Mass land denial:** não há
 - **Turnos extras encadeados:** não há
 - **Duração esperada:** o plano principal (tribal + aristocrats + Skullclamp) é de vitória **incremental e disruptível** — exatamente a descrição oficial de Bracket 2 ("vitórias incrementais, telegrafadas no tabuleiro, disruptíveis"), não uma vitória rápida e consistente turno 4-6 como se espera de Bracket 3+
@@ -196,6 +197,30 @@ simétrico de verdade" já citado na seção 12.
 nenhum critério de reclassificação foi acionado.
 
 `lista.md` agora tem 100/100 cartas reais.
+
+## 15. Commander Spellbook rodado pela primeira vez neste deck: 2 combos na lista (2026-10-25)
+
+Arquivo: `resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/` (`resumos/spellbook.txt`, `dados/spellbook_rat_king_2026-10-25.json`). Procedimento da Regra #4/adendo e da regra 7 de `user-standing-rules.md`: 57 nomes resolvidos antes (**0 não reconhecidos**), controle positivo (Basalt Monolith + Rings of Brighthearth aparece; Necropotence é marcada Game Changer no `estimate-bracket`) e controle de corte (sem o Rings o combo some) passaram.
+
+| combo | peças | resultado | tag | pré-requisito |
+|---|---|---|---|---|
+| 2178-3126 | **Marrow-Gnawer + Thornbite Staff** | fichas, ETB, LTB e gatilhos de sacrifício infinitos | R (Ruthless) | Staff preso ao Marrow; "um Rat adicional". Mana total: Marrow 5 + Staff 2 + Equip 4 |
+| 884-5035 | **Ayara + Plague of Vermin** | quase infinitas fichas, ETB e vida | O (Oddball) | {6}{B}; "você tem mais vida que os oponentes" (paga tudo menos 1) |
+
+**A consequência escondida na lista:** o Thornbite Staff entrou no deck como "equipamento genérico", e a nota do simulador dizia que o auto-attach em Shaman "nunca dispara nesta lista" (conferido só pelo `type_line` das cartas). O Mercenary de Black Market Connections tem changeling e é Shaman. Marrow-Gnawer ({T}, sacrifique um Rat: X fichas) com o "untap quando uma criatura morre" do Staff é o loop inteiro.
+
+**"Quase" (uma carta de distância, informativo; não são sugestões de troca):** Mirkwood Bats + Plague of Vermin ("each opponent loses the game"), Hell's Caretaker + Thornbite Staff, Avatar of Woe / Visara the Dreadful / Endbringer + Thornbite Staff (locks), Pitiless Plunderer + Spawnsire of Ulamog, e Rat Colony + Secret Salvage + Syr Konrad + uma carta que exila cemitério (Tormod's Crypt, Surgical Extraction, Tormod's Cryptkeeper). Lista completa e tags em `resumos/spellbook.txt`.
+
+**Quando sai (regra 7 de `user-standing-rules.md`):** forma fechada, 99 cartas, compra do T1, sem tutor: as duas peças entre as primeiras 7+N cartas = T6 1,61%, T8 2,16%, T10 2,80%, T12 3,53%. No simulador (20.000 partidas, padrão, 12 turnos, agora executando os dois combos): **combo executado até T6 0,12% (Marrow + Staff) e 0,29% (Ayara + Plague), T8 1,43% e 1,14%, T10 4,25% e 4,99%, T12 6,75% e 12,62%**; qualquer um dos dois: T6 0,41%, T8 2,51%, T10 8,53%, T12 17,56%. O deck tem tutores que alcançam as peças (Emeritus // Demonic Tutor, Ratcatcher e Karumonix para o Marrow-Gnawer), mas nenhum busca as duas juntas.
+
+**Bracket (decidido por você em 2026-10-28: Bracket 2; ver o fim desta seção):** o `estimate-bracket` do Spellbook devolve `bracketTag = R` para a lista, com Marrow + Staff marcado `relevant`, `definitelyTwoCard`, `speed` 5. Os números acima dizem que é um evento de cauda até o T6, mas a seção 11 acima afirmava que não havia combo de 2 peças, e há. **Não consultei nesta rodada o texto oficial atual do critério de Bracket**, então não afirmo em que Bracket o deck cai; o `references/commander-rules.md` do repositório só traz a regra genérica (Bracket 3: combos de 3 peças aceitáveis; Bracket 4: de 2 peças esperados). Opções que existem (você escolhe): manter o Bracket 2 declarado sabendo do combo e da cauda; ou tratar o deck como Bracket 3.
+
+**DECISÃO REGISTRADA em 2026-10-28:** o usuário respondeu **"Bracket 2"** à pergunta "mantém o Bracket 2 declarado sabendo do combo Marrow + Staff, ou passa a tratar como Bracket 3?". Fica **Bracket 2**. Registro o que sustenta a decisão e o que NÃO foi verificado:
+- Os dois combos são evento de cauda no simulador, e a rodada 4 não os mexeu: até T6, com 10.000 partidas × 8 turnos, Marrow + Staff **0,13%** (antes 0,12%), Ayara + Plague **0,23%** (antes 0,22%), qualquer um **0,36%** (antes 0,34%); modo resiliência 0,17% (antes 0,15%) (`resultados-ab/2026-10-28-fell-mire-e-black-market-connections/resumos/combos_antes_depois.txt`).
+- O `estimate-bracket` do Spellbook (2026-10-25) segue devolvendo `R` para a lista, com Marrow + Staff `relevant`/`definitelyTwoCard`/`speed` 5. **Eu não li o texto oficial atual do critério de Bracket** (nem na rodada 3 nem agora), então o Bracket 2 é **a sua decisão**, não uma conclusão minha de que o texto oficial o aceita.
+- A rodada 4 não alterou a lista.
+
+**Simulador:** antes desta rodada ele não executava nenhum dos dois combos (o Staff era inerte; a ficha de Rat não disparava Ayara); a seção "Rodada 3" do `goldfish-log.md` tem as 21 correções e os números.
 
 ## Links
 

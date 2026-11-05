@@ -1,0 +1,777 @@
+{
+ "deck": "lorwyn-eclipsed-dance-of-elements",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Ashling, the Limitless",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Staff of Domination": {
+     "id": "527-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Aggravated Assault + Selvala, Heart of the Wilds": {
+     "id": "527-3750",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite combat phases",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Umbral Mantle": {
+     "id": "527-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Animar, Soul of Elements + Ashling, the Limitless + Greenwarden of Murasa": {
+     "id": "3771-4477-7182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Jumbo Cactuar + Selvala, Heart of the Wilds": {
+     "id": "527-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite colored mana"
+     ]
+    },
+    "Freed from the Real + Selvala, Heart of the Wilds": {
+     "id": "527-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Faeburrow Elder + Freed from the Real": {
+     "id": "570-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Faeburrow Elder + Najeela, the Blade-Blossom": {
+     "id": "570-2011",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite combat phases",
+      "Infinite creature ETB"
+     ]
+    },
+    "Pemmin's Aura + Selvala, Heart of the Wilds": {
+     "id": "527-3525",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Ashling, the Limitless + Ashnod's Altar + Greenwarden of Murasa": {
+     "id": "2034-4477-7182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashling, the Limitless + Greenwarden of Murasa + Temur Battlecrier": {
+     "id": "4477-6556-7182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Hullbreaker Horror + Maelstrom Wanderer + Selvala, Heart of the Wilds": {
+     "id": "513-527-955",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Faeburrow Elder + Pemmin's Aura": {
+     "id": "570-3525",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Ashling's Command + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-6974",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Najeela, the Blade-Blossom + Selvala, Heart of the Wilds": {
+     "id": "527-2011",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens with haste",
+      "Infinite colored mana",
+      "Infinite combat phases"
+     ]
+    },
+    "Maelstrom Wanderer + Selvala, Heart of the Wilds + Temur Sabertooth": {
+     "id": "215-527-955",
+     "bracketTag": "S",
+     "produz": [
+      "Cast a subset of spells in your library",
+      "Infinite colored mana",
+      "Infinite creature ETB"
+     ]
+    },
+    "Faeburrow Elder + Staff of Domination": {
+     "id": "570-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Sword of the Paruns": {
+     "id": "527-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Mindslaver + Muldrotha, the Gravetide": {
+     "id": "1167-5131",
+     "bracketTag": "S",
+     "produz": [
+      "You control one opponent on each of their turns",
+      "Lock"
+     ]
+    },
+    "Blasphemous Act + Soulfire Grand Master": {
+     "id": "2484-4560",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Ashling, the Limitless + Greenwarden of Murasa + Mana Echoes": {
+     "id": "2440-4477-7182",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite colorless mana"
+     ]
+    },
+    "Ashling, the Limitless + Burnt Offering + Greenwarden of Murasa": {
+     "id": "1777-4477-7182",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite black mana"
+     ]
+    },
+    "Ashling, the Limitless + Food Chain + Greenwarden of Murasa": {
+     "id": "3519-4477-7182",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite colored mana that can only be spent to cast creature spells"
+     ]
+    },
+    "Ashnod's Altar + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-2034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashling, the Limitless + Greenwarden of Murasa + Sacrifice": {
+     "id": "1181-4477-7182",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature sacrifice triggers",
+      "Infinite storm count",
+      "Infinite creature ETB"
+     ]
+    },
+    "Faeburrow Elder + High Alert": {
+     "id": "570-4896",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite red mana",
+      "Infinite green mana",
+      "Infinite black mana"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Molten Echoes": {
+     "id": "339-677-2506",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Freed from the Real + Jegantha, the Wellspring": {
+     "id": "339-4222",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite black mana that can't be spent to pay generic mana costs",
+      "Infinite green mana that can't be spent to pay generic mana costs",
+      "Infinite red mana that can't be spent to pay generic mana costs"
+     ]
+    },
+    "Faeburrow Elder + Vigean Graftmage": {
+     "id": "570-4019",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Palinchron + Yarok, the Desecrated": {
+     "id": "2499-3542",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Deadeye Navigator + Maelstrom Wanderer + Selvala, Heart of the Wilds": {
+     "id": "527-955-1409",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Avenger of Zendikar + Horde of Notions + Phyrexian Altar": {
+     "id": "677-2567-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Cast a subset of spells in your graveyard",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Faeburrow Elder + Sword of the Paruns": {
+     "id": "570-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Seedcradle Witch + Selvala, Heart of the Wilds": {
+     "id": "527-2024",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creatures you control until end of turn",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Phyrexian Altar": {
+     "id": "339-677-955-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Chain Stasis + Faeburrow Elder": {
+     "id": "195-570",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Mirrorform + Omnath, Locus of Rage": {
+     "id": "4862-7181",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Faeburrow Elder + Gauntlets of Light": {
+     "id": "570-1995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-white mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Filigree Sages + Timeless Lotus": {
+     "id": "2544-4851",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite black mana",
+      "Infinite green mana",
+      "Infinite red mana"
+     ]
+    },
+    "Goblin Bombardment + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-5147",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Jegantha, the Wellspring + Pemmin's Aura": {
+     "id": "339-3525",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite black mana that can't be spent to pay generic mana costs",
+      "Infinite green mana that can't be spent to pay generic mana costs",
+      "Infinite red mana that can't be spent to pay generic mana costs"
+     ]
+    },
+    "Muldrotha, the Gravetide + Second Chance": {
+     "id": "1530-5131",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Doppelgang + Greenwarden of Murasa": {
+     "id": "4477-5352",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite storm count",
+      "Infinite creature tokens"
+     ]
+    },
+    "Emiel the Blessed + Maelstrom Wanderer + Selvala, Heart of the Wilds": {
+     "id": "527-955-4499",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Maelstrom Wanderer + Selvala, Heart of the Wilds + Tidespout Tyrant": {
+     "id": "527-542-955",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Altar of Dementia + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-5256",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Crab Umbra + Selvala, Heart of the Wilds": {
+     "id": "527-1268",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Gauntlets of Light + Selvala, Heart of the Wilds": {
+     "id": "527-1995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Meticulous Excavation + Selvala, Heart of the Wilds": {
+     "id": "527-1350--85",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "High Alert + Selvala, Heart of the Wilds": {
+     "id": "527-4896",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Lilysplash Mentor + Maelstrom Wanderer + Selvala, Heart of the Wilds": {
+     "id": "527-955-5900",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Ringing Strike Mastery + Selvala, Heart of the Wilds": {
+     "id": "527-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Viscera Seer": {
+     "id": "339-677-955-2292",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Singing Bell Strike": {
+     "id": "527-5090",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Umbral Collar Zealot": {
+     "id": "339-677-955-6798",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Spawning Pit": {
+     "id": "339-677-955-3899",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite charge counters on a permanent",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Blasting Station + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-413-677-955",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Body of Research + Subterfuge": {
+     "id": "648-7190",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite combat damage to one opponent"
+     ]
+    },
+    "Bartolomé del Presidio + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-2921",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashling, the Limitless + Greenwarden of Murasa + Heliod, the Radiant Dawn // Heliod, the Warped Eclipse": {
+     "id": "4477-4668-7182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Ashling, the Limitless + Greenwarden of Murasa + Rakdos, Lord of Riots": {
+     "id": "2906-4477-7182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Carrion Feeder + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-2438",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Maelstrom Wanderer + Springleaf Parade + The Unbeatable Squirrel Girl": {
+     "id": "955-7686-7763",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colored mana",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Ashling, the Limitless + Ezzaroot Channeler + Greenwarden of Murasa": {
+     "id": "3497-4477-7182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Thermopod": {
+     "id": "339-677-955-5231",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Phantom Train": {
+     "id": "339-677-955-6797",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashling, the Limitless + Greenwarden of Murasa + Hamza, Guardian of Arashin": {
+     "id": "7-4477-7182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature tokens with haste",
+      "Infinite death triggers"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Yahenni, Undying Partisan": {
+     "id": "339-677-955-3967",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Woe Strider": {
+     "id": "339-677-955-997",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bloodflow Connoisseur + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-2511",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Shilgengar, Sire of Famine": {
+     "id": "339-677-955-5686",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact tokens",
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashling, the Limitless + Greenwarden of Murasa + Sami, Wildcat Captain": {
+     "id": "4477-6747-7182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Vish Kal, Blood Arbiter": {
+     "id": "339-574-677-955",
+     "bracketTag": "E",
+     "produz": [
+      "Destroy all creatures opponents control",
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB"
+     ]
+    },
+    "Grimgrin, Corpse-Born + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-728-955",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Evereth, Viceroy of Plunder + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-6495",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Hammerhead, Maggia Boss + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-8095",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bloodthrone Vampire + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-4247",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Loot, the Anomaly + Maelstrom Wanderer": {
+     "id": "339-677-955-8227",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Scarland Thrinax": {
+     "id": "339-677-955-8250",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Defiant Salvager + Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer": {
+     "id": "339-677-955-8249",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Horde of Notions + Jegantha, the Wellspring + Maelstrom Wanderer + Reaper of Flight Moonsilver": {
+     "id": "339-677-955-7272",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

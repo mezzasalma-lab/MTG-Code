@@ -1,0 +1,202 @@
+{
+ "estimate_bracket": {
+  "bracketTag": "R",
+  "game_changers_na_lista": [],
+  "banidas": [],
+  "mass_land_denial": [],
+  "extra_turn": [],
+  "combos_classificados": [
+   {
+    "combo": "Marrow-Gnawer + Thornbite Staff",
+    "relevant": true,
+    "borderlineRelevant": true,
+    "definitelyTwoCard": true,
+    "arguablyTwoCard": true,
+    "speed": 5,
+    "lock": false,
+    "bracketTag_do_combo": "R"
+   },
+   {
+    "combo": "Ayara, First of Locthwain + Plague of Vermin",
+    "relevant": true,
+    "borderlineRelevant": true,
+    "definitelyTwoCard": false,
+    "arguablyTwoCard": true,
+    "speed": 3,
+    "lock": false,
+    "bracketTag_do_combo": "O"
+   }
+  ]
+ },
+ "estimate_bracket_controle_positivo": {
+  "game_changers": [
+   "Necropotence"
+  ],
+  "bracketTag": "R"
+ },
+ "reconhece": {
+  "Ashcoat of the Shadow Swarm": "Ashcoat of the Shadow Swarm",
+  "Ayara, First of Locthwain": "Ayara, First of Locthwain",
+  "Basalt Monolith": "Basalt Monolith",
+  "Big Apple, 3 a.m.": "Big Apple, 3 a.m.",
+  "Black Market Connections": "Black Market Connections",
+  "Bojuka Bog": "Bojuka Bog",
+  "Bontu's Monument": "Bontu's Monument",
+  "Cabal Coffers": "Cabal Coffers",
+  "Castle Locthwain": "Castle Locthwain",
+  "Cover of Darkness": "Cover of Darkness",
+  "Crypt Ghast": "Crypt Ghast",
+  "Crypt of Agadeem": "Crypt of Agadeem",
+  "Culling the Weak": "Culling the Weak",
+  "Damnation": "Damnation",
+  "Dark Ritual": "Dark Ritual",
+  "Deadly Dispute": "Deadly Dispute",
+  "Deadly Rollick": "Deadly Rollick",
+  "Dictate of Erebos": "Dictate of Erebos",
+  "Echoing Return": "Echoing Return",
+  "Emeritus of Woe // Demonic Tutor": "Emeritus of Woe // Demonic Tutor",
+  "Fell the Profane // Fell Mire": "Fell the Profane // Fell Mire",
+  "Gray Merchant of Asphodel": "Gray Merchant of Asphodel",
+  "Jet Medallion": "Jet Medallion",
+  "Karumonix, the Rat King": "Karumonix, the Rat King",
+  "Kindred Dominance": "Kindred Dominance",
+  "Lord Skitter, Sewer King": "Lord Skitter, Sewer King",
+  "Marrow-Gnawer": "Marrow-Gnawer",
+  "Mind Stone": "Mind Stone",
+  "Ninja Teen": "Ninja Teen",
+  "Nykthos, Shrine to Nyx": "Nykthos, Shrine to Nyx",
+  "Piper of the Swarm": "Piper of the Swarm",
+  "Pitiless Plunderer": "Pitiless Plunderer",
+  "Plague of Vermin": "Plague of Vermin",
+  "Priest of Forgotten Gods": "Priest of Forgotten Gods",
+  "Rat Colony": "Rat Colony",
+  "Rat King, Verminister": "Rat King, Verminister",
+  "Ratcatcher": "Ratcatcher",
+  "Reanimate": "Reanimate",
+  "Rings of Brighthearth": "Rings of Brighthearth",
+  "Ripples of Undeath": "Ripples of Undeath",
+  "Secret Salvage": "Secret Salvage",
+  "Skullclamp": "Skullclamp",
+  "Sol Ring": "Sol Ring",
+  "Species Specialist": "Species Specialist",
+  "Swamp": "Swamp",
+  "Swarmyard": "Swarmyard",
+  "Swarmyard Massacre": "Swarmyard Massacre",
+  "Syr Konrad, the Grim": "Syr Konrad, the Grim",
+  "Takenuma, Abandoned Mire": "Takenuma, Abandoned Mire",
+  "The Soul Stone": "The Soul Stone",
+  "Thornbite Staff": "Thornbite Staff",
+  "Three Tree City": "Three Tree City",
+  "Thrumming Stone": "Thrumming Stone",
+  "Urborg, Tomb of Yawgmoth": "Urborg, Tomb of Yawgmoth",
+  "Valley Rotcaller": "Valley Rotcaller",
+  "Withering Torment": "Withering Torment",
+  "Zulaport Cutthroat": "Zulaport Cutthroat"
+ },
+ "nao_reconhecidos": [],
+ "incluidos": {
+  "Ayara, First of Locthwain + Plague of Vermin": {
+   "produz": [
+    "Near-infinite creature tokens for all players",
+    "Near-infinite creature ETB",
+    "Near-infinite lifegain",
+    "Near-infinite lifegain triggers"
+   ],
+   "id": "884-5035",
+   "bracket": "O",
+   "descricao": "Cast Plague of Vermin by paying {6}{B}.\nResolve Plague of Vermin, choosing to pay all but one life and create that many black Rat tokens.\nFor each Rat tokens that enters the battlefield, Ayara triggers, causing you to gain that many life and each opponent to lose that many life."
+  },
+  "Marrow-Gnawer + Thornbite Staff": {
+   "produz": [
+    "Infinite creature tokens",
+    "Infinite creature ETB",
+    "Infinite creature LTB",
+    "Infinite creature sacrifice triggers"
+   ],
+   "id": "2178-3126",
+   "bracket": "R",
+   "descricao": "Activate Marrow-Gnawer by tapping it and sacrificing another Rat.\nWhen the Rat dies, Marrow-Gnawer triggers, untapping itself.\nResolve the Marrow-Gnawer ability from step 1, creating a number of 1/1 Rat creature tokens equal to the number of Rats you control.\nRepeat."
+  }
+ },
+ "quase": {
+  "Mirkwood Bats + Plague of Vermin": {
+   "produz": [
+    "Each opponent loses the game",
+    "Near-infinite creature tokens",
+    "Near-infinite creature ETB"
+   ],
+   "id": "2612-5035",
+   "bracket": "O"
+  },
+  "Avatar of Woe + Thornbite Staff": {
+   "produz": [
+    "Destroy any number of creatures",
+    "Destroy each creature that enters the battlefield under an opponent's control",
+    "Lock"
+   ],
+   "id": "2178-4698",
+   "bracket": "S"
+  },
+  "Thornbite Staff + Visara the Dreadful": {
+   "produz": [
+    "Destroy each creature that enters the battlefield under an opponent's control",
+    "Destroy any number of creatures",
+    "Lock"
+   ],
+   "id": "2178-4117",
+   "bracket": "S"
+  },
+  "Endbringer + Thornbite Staff": {
+   "produz": [
+    "Destroy each creature that enters the battlefield under an opponent's control",
+    "Destroy any number of creatures opponents control",
+    "Lock"
+   ],
+   "id": "2178-4100",
+   "bracket": "S"
+  },
+  "Hell's Caretaker + Thornbite Staff": {
+   "produz": [
+    "Infinite death triggers",
+    "Infinite creature ETB",
+    "Infinite creature LTB"
+   ],
+   "id": "2178-3358",
+   "bracket": "E"
+  },
+  "Pitiless Plunderer + Spawnsire of Ulamog": {
+   "produz": [
+    "Infinite death triggers",
+    "Infinite creature ETB",
+    "Infinite creature LTB"
+   ],
+   "id": "2143-4871",
+   "bracket": "E"
+  },
+  "Rat Colony + Secret Salvage + Surgical Extraction + Syr Konrad, the Grim": {
+   "produz": [
+    "Near-infinite damage"
+   ],
+   "id": "1819-5509-5510-5511",
+   "bracket": "E"
+  },
+  "Rat Colony + Secret Salvage + Syr Konrad, the Grim + Tormod's Crypt": {
+   "produz": [
+    "Near-infinite damage"
+   ],
+   "id": "1819-4211-5509-5510",
+   "bracket": "E"
+  },
+  "Rat Colony + Secret Salvage + Syr Konrad, the Grim + Tormod's Cryptkeeper": {
+   "produz": [
+    "Near-infinite damage"
+   ],
+   "id": "1819-4797-5509-5510",
+   "bracket": "E"
+  }
+ },
+ "controle_positivo_basalt_rings": true,
+ "controle_de_corte_combo_sumiu_sem_o_rings": true,
+ "controle_positivo_n_combos": 3,
+ "controle_corte_n_combos": 2
+}

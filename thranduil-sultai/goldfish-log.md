@@ -1,6 +1,224 @@
 # Goldfish Log — Thranduil (Sultai)
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem das habilidades emprestadas determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+> **Dados brutos e como reproduzir as tabelas da seção The Pride of Hull Clade (2026-10-03):** [`resultados-ab/2026-10-03-pride-of-hull-clade/LEIAME.md`](resultados-ab/2026-10-03-pride-of-hull-clade/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+---
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O payoff entra antes dos terrenos em **19,3%** das partidas (14,0% na resiliência). Efeito pequeno: **+0,14 tokens de Elfo por partida (+48%)** e **+0,35 contadores da Company (+49%)**; neutro em magias, comandante e finishers.
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `lands_played_total` | 6.987 -> 7.037 (+0.050 ± 0.006) * | 6.519 -> 6.546 (+0.027 ± 0.005) * |
+| `landfall_elf_tokens` | 0.291 -> 0.431 (+0.140 ± 0.010) * | 0.141 -> 0.231 (+0.090 ± 0.008) * |
+| `thranduils_company_counters` | 0.710 -> 1.061 (+0.350 ± 0.025) * | 0.315 -> 0.548 (+0.232 ± 0.019) * |
+| `spells_cast` | 11.837 -> 11.854 (+0.017 ± 0.013) * | 10.031 -> 10.030 (-0.001 ± 0.009) |
+| `extra_draws` | 12.316 -> 12.336 (+0.021 ± 0.048) | 6.730 -> 6.725 (-0.005 ± 0.030) |
+| `commander_cast_turn__ate_T3` | - | 0.057 -> 0.058 (+0.000 ± 0.001) |
+| `commander_cast_turn__ate_T4` | - | 0.288 -> 0.289 (+0.000 ± 0.002) |
+| `commander_cast_turn__ate_T5` | - | 0.516 -> 0.516 (+0.000 ± 0.002) |
+| `finisher_turn__ate_T6` | 0.213 -> 0.215 (+0.002 ± 0.002) * | 0.117 -> 0.117 (+0.001 ± 0.001) |
+| `finisher_turn__nunca` | 0.391 -> 0.391 (-0.000 ± 0.002) | 0.658 -> 0.658 (-0.000 ± 0.002) |
+| `finishers_activated` | 1.862 -> 1.871 (+0.009 ± 0.007) * | - |
+| partidas com resultado idêntico ao da base | 80.7% | 86.0% |
+
+**Validação:** testes dirigidos 7/7; bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
+
+---
+
+## Terreno virado primeiro em T1/T2 + ordem das habilidades emprestadas determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 11,0% → 11,7% (+0,67 ± 0,25 pp), até T4 +1,35 ± 0,34 pp, até T5 +0,48 ± 0,22 pp; comandante que nunca chega a entrar na partida +0,03 ± 0,07 pp. Modo resiliência: comandante em campo até T3 5,6% → 5,7% (+0,18 ± 0,19 pp), até T4 +0,57 ± 0,39 pp, até T5 +0,18 ± 0,45 pp; comandante que nunca chega a entrar na partida +0,08 ± 0,19 pp. A correção joga o terreno virado primeiro em média 0,36 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,22 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,015 ± 0,007 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+- **Ordem de iteração de `set` de strings dependia de `PYTHONHASHSEED`.** A mesma semente dava resultados diferentes em processos diferentes (o hash de `str` muda a cada execução do Python). Medido: 3 `PYTHONHASHSEED` diferentes, 1.500 sementes × 2 modos, comparando o estado final campo a campo (`resumos/determinismo.txt`). Aqui: `gy_borrow_sources = {c for c in state.graveyard ...}` era iterado como set; com mana limitada, a ORDEM decide qual finisher emprestado (Elvish Warmaster etc.) ativa. É o caso com efeito de jogo medido: controle (chave desligada) 14 sementes divergentes em 1.500 (padrão) e 36 (resiliência), em campos de jogo (`finishers_activated`, `mana_spent_this_turn`, `cards_milled_total`, `trystan_transforms_total`…); correção: 0.
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `DETERMINISTIC_SET_ORDER_ENABLED` (padrão `True`): as fontes emprestadas do cemitério passam a ser iteradas na ordem do cemitério (`dict.fromkeys(state.graveyard)`), não na do hash do set. Com a chave em `False` o laço antigo (ordem do hash) volta.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8330 (83.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.9713       6.9868      +0.0155 ±0.0075  
+   commander_cast_turn__nunca                   0.0276       0.0279      +0.0003 ±0.0007  
+  *commander_cast_turn__ate_T3                  0.1101       0.1168      +0.0067 ±0.0025  
+  *commander_cast_turn__ate_T4                  0.5444       0.5579      +0.0135 ±0.0034  
+  *commander_cast_turn__ate_T5                  0.8493       0.8541      +0.0048 ±0.0022  
+  *finishers_activated                          1.8109       1.8623      +0.0514 ±0.0129  
+  *finisher_turn__ate_T6                        0.2017       0.2131      +0.0114 ±0.0030  
+  *battlefield_count                           19.9272      20.0678      +0.1406 ±0.0394  
+  *finisher_turn__ate_T5                        0.0635       0.0692      +0.0057 ±0.0020  
+  *elvish_warmaster_tokens                      0.6151       0.6342      +0.0191 ±0.0071  
+  *spells_cast                                 11.7748      11.8370      +0.0622 ±0.0234  
+  *thranduil_gy_ability_borrows                 0.6236       0.6474      +0.0238 ±0.0093  
+  *cards_milled_total                           7.2489       7.4030      +0.1541 ±0.0619  
+  *edric_death_turn__ate_T4                     0.0304       0.0335      +0.0031 ±0.0013  
+  *creature_engine_draws                        1.7781       1.8542      +0.0761 ±0.0320  
+  *extra_draws                                 12.1208      12.3156      +0.1948 ±0.0826  
+  *elrond_draws                                 0.2324       0.2432      +0.0108 ±0.0048  
+  *elves_milled_to_gy                           1.2022       1.2276      +0.0254 ±0.0121  
+  *rhystic_study_draws                          0.6146       0.6285      +0.0139 ±0.0069
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7316 (73.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.5178       6.5195      +0.0017 ±0.0084  
+   commander_cast_turn__nunca                   0.0690       0.0698      +0.0008 ±0.0019  
+   commander_cast_turn__ate_T3                  0.0556       0.0574      +0.0018 ±0.0019  
+  *commander_cast_turn__ate_T4                  0.2825       0.2882      +0.0057 ±0.0039  
+   commander_cast_turn__ate_T5                  0.5146       0.5164      +0.0018 ±0.0045  
+  *spells_cast                                  9.9772      10.0314      +0.0542 ±0.0198  
+  *edric_death_turn__ate_T4                     0.0305       0.0333      +0.0028 ±0.0012  
+  *len_creature_cast_turn                       7.6709       7.7162      +0.0453 ±0.0199  
+  *finisher_turn__ate_T6                        0.1107       0.1165      +0.0058 ±0.0026  
+  *first_blue_screw_turn__ate_T6                0.0494       0.0516      +0.0022 ±0.0012  
+  *edric_death_turn__ate_T6                     0.0820       0.0849      +0.0029 ±0.0016  
+  *first_blue_screw_turn__ate_T3                0.0151       0.0169      +0.0018 ±0.0010  
+  *cards_milled_total                           4.8322       4.9058      +0.0736 ±0.0411  
+  *first_blue_screw_turn__ate_T5                0.0452       0.0473      +0.0021 ±0.0012  
+  *edric_death_turn__ate_T5                     0.0570       0.0593      +0.0023 ±0.0013  
+  *commander_in_play                            0.6506       0.6430      -0.0076 ±0.0044  
+  *first_blue_screw_turn__ate_T4                0.0338       0.0357      +0.0019 ±0.0011  
+  *takenuma_channel_activations                 0.0911       0.0949      +0.0038 ±0.0023  
+  *edric_death_turn__ate_T3                     0.0134       0.0150      +0.0016 ±0.0010
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `thranduil_goldfish_v1_ANTES_0ee4972.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Determinismo:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, controle × correção (`resumos/determinismo.txt`).
+- **Invariante genérica "campos negativos" (regressão):** 1 partida em 20.000 (resiliência, semente 5.008.802) termina com `mana_spent_this_turn` = -1 com a correção ligada; 0 com a chave desligada. Rastreei a escrita: vem de `try_devoted_druid_burst` (`-= 1`, o ganho líquido de mana do Devoted Druid: {T}: Add {G}, depois põe um contador -1/-1 pra desvirar), ou seja, mana bônus por desenho, não custo não cobrado. A diferença 1 × 0 é só a partida seguir outro caminho depois que a ordem dos terrenos mudou.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## The Pride of Hull Clade — avaliação como possível inclusão — 2026-10-03
+
+**Pedido:** *"Avalie a possível inclusão de The Pride of Hull Clade no Thranduil."*
+Regras #3/#4/#5: oráculo e rulings ao vivo → motores e combos do deck (Spellbook antes/depois, controle positivo) → enumeração por script → simulador só como apoio.
+
+**Oráculo (Scryfall ao vivo, 2026-10-03; salvo no cache):** {10}{G}, Legendary Creature — Crocodile Elk Turtle 2/15, Defender (Murders at Karlov Manor, 2024-02-09, legal em Commander, não é Game Changer, ~US$1,68).
+*This spell costs {X} less to cast, where X is the total toughness of creatures you control.* / *{2}{U}{U}: Until end of turn, target creature you control gets +1/+0, gains "Whenever this creature deals combat damage to a player, draw cards equal to its toughness," and can attack as though it didn't have defender.*
+**Rulings (6, 2024-02-02):** a toughness é lida ao mover a magia para a pilha (e não muda se a toughness mudar ao pagar mana); o custo **não cai abaixo de {G}**; o MV continua 11; a compra usa a toughness "como existia por último" se o alvo sair de campo antes do gatilho resolver.
+
+### O que a carta toca nos motores reais do Thranduil (`resumos/enumeracao.txt`, varredura por script no oráculo ao vivo)
+
+- **A Pride não é Elfo.** A lista tem 45 criaturas (com o comandante): **44 Elfos e 1 não-Elfo (Roaming Throne)**. Logo a Pride **não recebe** nenhum anthem/pump de Elfo (Elvish Archdruid, Imperious Perfect, Thranduil Sindarin Liege, Ezuri +3/+3) e **não dispara** nenhum gatilho de "Elf you control enters" (Marwyn, Elvish Warmaster, Dionus…).
+- **Ela é lendária mas não é Elfo lendário:** o motor do comandante ("Whenever another legendary Elf you control enters, draw two cards, then discard a card") tem **21 Elfos lendários** na lista; a Pride **não dispara** esse gatilho.
+- **Anti-sinergias estruturais** (efeitos que punem não-Elfo, todos na lista): **Ruthless Winnower** (todo upkeep, inclusive o seu, sacrifica um não-Elfo: a Pride é sacrificada se for o único), **Kindred Dominance** e **Raise the Palisade** (escolhem um tipo e destroem/devolvem o resto). **Underrealm Lich** transforma cada compra em "olhe 3, 1 vai pra mão, 2 pro cemitério": com uma compra grande da Pride, 2 cartas por compra vão pro cemitério (risco de grimório vazio).
+- **Conectores a favor:** Beast Whisperer (conjurar a Pride compra 1), Elrond, Moon-Reader (a ativação é habilidade de criatura: compra 1, 1×/turno), Edric (o alvo que conecta compra mais 1), **Arwen, Weaver of Hope** (a Pride entra com contadores iguais à toughness da Arwen: aumenta a compra), **Fauna Shaman** (descarta criatura e busca a Pride direto). Finale of Devastation alcançaria a Pride só com X=11.
+- **Combos (Commander Spellbook, antes e depois):** base = 4 combos (todos em torno de Devoted Druid). Pride sem cortar: **0 combos novos**; aparece 1 "quase" (Pride + **Body of Research**, carta que NÃO está na lista: Fractal com contadores = tamanho do grimório, ativa a Pride nele e compra o grimório inteiro, 8 de mana, precisa de haste e de nenhum bloqueio). Controle positivo ok: cortar Devoted Druid remove os 4 combos; cortar Immaculate Magistrate remove 2. **Nenhuma das 8 candidatas testadas está em combo** (cortar Deathbloom Ritualist remove 9 "quase combos").
+
+### Medição no simulador (apoio; N=6.000 sementes 3.000.000+i pareadas, 8 turnos, troca posicional; harness sem alterar `thranduil_goldfish_v1.py`)
+
+O simulador original **não rastreava toughness**; o harness acrescenta: toughness impresso (cache) + anthem de Elfo + contadores da Marwyn; ficha de Elfo = 1. Custo da Pride = max({G}, 11 − toughness total). **Toughness total mediana: T3 3,4 · T4 8,2 · T5 14,4 · T6 21,2.** Probabilidade de a Pride custar só {G} (toughness ≥10): T4 35% · T5 76% · T6 92%; de haver {2}{U}{U} sobrando: T5 76% · T6 86% (`resumos/toughness_por_turno.txt`).
+Ativação modelada em 3 modos: `off` (só o corpo), `trample_line` (linha deliberada: no turno em que Ezuri já pagou +3/+3 e trample, ativa no Elfo de maior toughness; compra = toughness + 3, dobrada pela Roaming Throne), `ceiling` (teto irreal: ativa nela mesma todo turno, sem bloqueio).
+
+| Pride entra no lugar de | conjurada (até T8) | fin ≤T8 (pp) | cmd ≤T5 (pp) | cartas extra (linha Ezuri) | spells |
+|---|---|---|---|---|---|
+| Oversold Cemetery | 14,0% (T6,00) | +0,6 ±0,5 | −0,1 ±0,1 | +0,47 ±0,12 | −0,06 ±0,03 |
+| Deathbloom Ritualist | 14,7% (T6,10) | −0,5 ±0,5 | −0,1 ±0,1 | +0,43 ±0,11 | +0,06 ±0,03 |
+| Underrealm Lich | 14,7% (T6,12) | −0,1 ±0,4 | +0,0 ±0,1 | +0,39 ±0,11 | +0,06 ±0,02 |
+| Kindred Summons | 15,9% (T6,17) | −1,0 ±0,5 | −0,1 ±0,1 | +0,30 ±0,11 | +0,08 ±0,02 |
+| Bloodline Bidding | 14,8% (T6,14) | −0,8 ±0,4 | −0,1 ±0,1 | +0,29 ±0,10 | +0,08 ±0,03 |
+| Trystan's Command | 15,7% (T6,06) | +0,7 ±0,4 | +0,0 ±0,1 | +0,19 ±0,11 | +0,01 ±0,03 |
+| Finale of Devastation | 14,8% (T6,12) | −0,8 ±0,5 | +0,1 ±0,1 | +0,59 ±0,12 | +0,04 ±0,03 |
+| Ruthless Winnower | 14,8% (T6,14) | +0,5 ±0,4 | +0,1 ±0,1 | +0,32 ±0,09 | +0,06 ±0,02 |
+| **controle** Priest of Titania | 15,4% (T6,22) | −6,6 ±0,7 | −1,5 ±0,4 | −0,64 ±0,18 | −0,35 ±0,05 |
+| **controle** Elvish Mystic | 14,7% (T6,20) | −1,7 ±0,6 | −1,4 ±0,4 | +0,11 ±0,14 | −0,13 ±0,04 |
+
+Base: finalizador ≤T8 60,8%, comandante ≤T5 85,0%, compras extra 12,09. Os controles doem como esperado. Sem a ativação (`off`) o efeito é o do corpo: dentro do ruído. **Condicional** (só as partidas em que a Pride foi conjurada, 10 turnos, n ≈ 1.200–1.400 por candidata, `resumos/condicional_10t.txt`): na linha Ezuri a Pride ativa 0,40–0,46 vez por partida conjurada e compra em média 6,4–7,0 cartas por partida (≈15 por ativação); descontado o que o {2}{U}{U} deixa de jogar (spells −0,6 a +0,4), o saldo sobre a base é **+2,1 a +5,5 cartas**; o efeito no finalizador fica em ±2pp (IC ±1,3 a ±2,0). `ceiling` rende +13 a +17 cartas, mas supõe ausência de bloqueio e de remoção: é teto, não expectativa.
+
+### O que a medição NÃO diz (Regra #5)
+- **Bloqueio, remoção e oponente real** não existem no goldfish: o ganho da ativação depende de o Elfo grande **conectar**. Isso é 📊 estrutural (a linha 'conecta' é assumida); a Pride sozinha não ataca (defender) sem pagar {2}{U}{U} de novo.
+- **Winnower:** o simulador modela o sacrifício no SEU upkeep (o não-Elfo de menor MV primeiro: Roaming Throne antes da Pride), então essa anti-sinergia entra na medição quando os dois estão em campo. **Kindred Dominance e Raise the Palisade** são jogadas pelo simulador **sem** afetar o próprio campo (convenção do arquivo: tipo escolhido = Elfo, sem destruir/devolver os próprios não-Elfos): com a Pride em campo, a Pride (e a Throne) também seriam destruídas/devolvidas, e isso é raciocínio de oráculo, não medição.
+- **Underrealm Lich:** o simulador modela a substituição da compra (`draw()`: 1 pra mão, 2 pro cemitério) e o harness compra a Pride por `draw()`, então o mill entra na medição; **não existe** a derrota por grimório vazio (a compra só para).
+
+**Escopo verificado nesta rodada:** oráculo + 6 rulings (lidos ao vivo, salvos); enumeração por script das 99 cartas (tipo, Elfo/não-Elfo, toughness, anthems, fontes de compra, efeitos anti não-Elfo, fontes de U); Spellbook antes/depois em 8 trocas candidatas + 2 controles positivos; A/B pareado de 8 trocas + 2 controles em 3 modos de ativação (8 e 10 turnos); condicional; toughness por turno; bit-identidade do harness contra o simulador original sem patch (300/300 em 12 campos e 300/300 no dict completo); tabelas refeitas dos `.json.xz` byte a byte.
+**Não verificado:** conexão do atacante contra bloqueadores reais; destruição/devolução da Pride por Kindred Dominance e Raise the Palisade; derrota por grimório vazio com Underrealm Lich; Elfos com toughness `*` (Jarad: base 1 no harness, subestima); interação da Pride com Agatha's Soul Cauldron e Thranduil (habilidades ativadas de Elfos do cemitério); auditoria carta-a-carta do `.py` (a carta não está na lista).
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## London mulligan sem embaralhar o fundo — 2026-09-24
+
+Detalhes em `checklist-oraculo.md`. Efeito só nas partidas com 2+ mulligans
+(257 de 2.000, mesmas seeds). Médias nessas partidas, antes → depois:
+
+| métrica | antes | depois |
+|---|---|---|
+| tyvar_bellicose_mana_counters | 2,91 | 4,19 |
+| vannifar_evolves | 0,195 | 0,304 |
+| roaming_throne_doublings | 0,304 | 0,510 |
+
+Regressão 20.000 + 20.000 partidas: 0 exceções.
+
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "Faz o deck do Thranduil agora" — seguindo o porte
+concluído no Nekusar, Azula e Beorn. Detalhes completos em
+`checklist-oraculo.md`.
+
+**Achado:** deck nasce com CR 903.9a correta desde o início. Auditoria
+dos pontos de sacrifício pré-existentes (disciplina obrigatória, não
+opcional) achou 3 bugs reais: (1) taxa de comandante (CR 903.8) nunca
+modelada; (2) desconto de Urza's Incubator não alcançava o cast da
+própria comandante (apesar dela ser Elfo), porque `_resolve_cast`
+ignorava `effective_mv()`; (3) `Prime Speaker Vannifar` podia
+sacrificar o próprio comandante sem preferência, e **nenhuma criatura
+sacrificada por ela ia pro cemitério** (bug mais amplo que só o
+comandante — qualquer sacrifício via Vannifar simplesmente desaparecia
+do jogo).
+
+**Resultado:** modo padrão diverge em 3,08% das seeds (615/20000) —
+mudança real e intencional do fix da Vannifar (criaturas sacrificadas
+agora vão pro cemitério de verdade, alimentando cartas como Agatha's
+Soul Cauldron). A/B (10k seeds): métricas principais dentro de margem
+pequena, "comandante nunca conjurada" quase idêntico (3,20%/3,19%),
+turno médio de cast idêntico (4,51).
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério, 33,18% das partidas com
+recast pagando a taxa CR 903.8 + 22 testes dirigidos.
 
 ---
 

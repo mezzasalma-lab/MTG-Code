@@ -1,0 +1,567 @@
+{
+ "deck": "marvel-fantastic-four",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Invisible Woman",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Cephalid Illusionist + Lightning Greaves": {
+     "id": "876-2904",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Dualcaster Mage + Quantum Misalignment": {
+     "id": "147-5362",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Mister Fantastic, Reed Richards + The Locust God": {
+     "id": "1339-7687",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite creature tokens with haste",
+      "Infinite draw triggers"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Quantum Misalignment": {
+     "id": "618-5362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Naru Meha, Master Wizard + Quantum Misalignment": {
+     "id": "141-5362",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite magecraft triggers",
+      "Infinite creature tokens"
+     ]
+    },
+    "Blazing Sunsteel + Mirage Mirror": {
+     "id": "2500-2723",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Mirage Mirror + Mirror-Mad Phantasm": {
+     "id": "2084-2500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Cephalid Aristocrat + Lightning Greaves": {
+     "id": "876-2796",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Angel of Destiny + Seize the Day": {
+     "id": "2481-2790",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Mister Fantastic + Unstoppable Plan": {
+     "id": "6286-7163",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana nonland permanents you control can produce",
+      "Infinite untap of nonland permanents you control"
+     ]
+    },
+    "Mirror-Mad Phantasm + Quantum Misalignment": {
+     "id": "2084-5362",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Biorhythm + Cleansing Nova": {
+     "id": "5248-7299",
+     "bracketTag": "P",
+     "produz": [
+      "Draw the game",
+      "Each opponent loses the game"
+     ]
+    },
+    "Stella Lee, Wild Card": {
+     "id": "5534--28",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite copies of one instant or sorcery",
+      "Infinite magecraft triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Mister Fantastic",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Cephalid Illusionist + Lightning Greaves": {
+     "id": "876-2904",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Dualcaster Mage + Quantum Misalignment": {
+     "id": "147-5362",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Mister Fantastic, Reed Richards + The Locust God": {
+     "id": "1339-7687",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite creature tokens with haste",
+      "Infinite draw triggers"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Quantum Misalignment": {
+     "id": "618-5362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Naru Meha, Master Wizard + Quantum Misalignment": {
+     "id": "141-5362",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite magecraft triggers",
+      "Infinite creature tokens"
+     ]
+    },
+    "Blazing Sunsteel + Mirage Mirror": {
+     "id": "2500-2723",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Mirage Mirror + Mirror-Mad Phantasm": {
+     "id": "2084-2500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Cephalid Aristocrat + Lightning Greaves": {
+     "id": "876-2796",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Angel of Destiny + Seize the Day": {
+     "id": "2481-2790",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Mister Fantastic + Unstoppable Plan": {
+     "id": "6286-7163",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana nonland permanents you control can produce",
+      "Infinite untap of nonland permanents you control"
+     ]
+    },
+    "Mirror-Mad Phantasm + Quantum Misalignment": {
+     "id": "2084-5362",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Biorhythm + Cleansing Nova": {
+     "id": "5248-7299",
+     "bracketTag": "P",
+     "produz": [
+      "Draw the game",
+      "Each opponent loses the game"
+     ]
+    },
+    "Stella Lee, Wild Card": {
+     "id": "5534--28",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite copies of one instant or sorcery",
+      "Infinite magecraft triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Human Torch",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Cephalid Illusionist + Lightning Greaves": {
+     "id": "876-2904",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Dualcaster Mage + Quantum Misalignment": {
+     "id": "147-5362",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Mister Fantastic, Reed Richards + The Locust God": {
+     "id": "1339-7687",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite creature tokens with haste",
+      "Infinite draw triggers"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Quantum Misalignment": {
+     "id": "618-5362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Naru Meha, Master Wizard + Quantum Misalignment": {
+     "id": "141-5362",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite magecraft triggers",
+      "Infinite creature tokens"
+     ]
+    },
+    "Blazing Sunsteel + Mirage Mirror": {
+     "id": "2500-2723",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Mirage Mirror + Mirror-Mad Phantasm": {
+     "id": "2084-2500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Cephalid Aristocrat + Lightning Greaves": {
+     "id": "876-2796",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Angel of Destiny + Seize the Day": {
+     "id": "2481-2790",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Mister Fantastic + Unstoppable Plan": {
+     "id": "6286-7163",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana nonland permanents you control can produce",
+      "Infinite untap of nonland permanents you control"
+     ]
+    },
+    "Mirror-Mad Phantasm + Quantum Misalignment": {
+     "id": "2084-5362",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Biorhythm + Cleansing Nova": {
+     "id": "5248-7299",
+     "bracketTag": "P",
+     "produz": [
+      "Draw the game",
+      "Each opponent loses the game"
+     ]
+    },
+    "Stella Lee, Wild Card": {
+     "id": "5534--28",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite copies of one instant or sorcery",
+      "Infinite magecraft triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "The Thing",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Cephalid Illusionist + Lightning Greaves": {
+     "id": "876-2904",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Dualcaster Mage + Quantum Misalignment": {
+     "id": "147-5362",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Mister Fantastic, Reed Richards + The Locust God": {
+     "id": "1339-7687",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite creature tokens with haste",
+      "Infinite draw triggers"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Quantum Misalignment": {
+     "id": "618-5362",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Naru Meha, Master Wizard + Quantum Misalignment": {
+     "id": "141-5362",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite magecraft triggers",
+      "Infinite creature tokens"
+     ]
+    },
+    "Blazing Sunsteel + Mirage Mirror": {
+     "id": "2500-2723",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage"
+     ]
+    },
+    "Mirage Mirror + Mirror-Mad Phantasm": {
+     "id": "2084-2500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Cephalid Aristocrat + Lightning Greaves": {
+     "id": "876-2796",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Angel of Destiny + Seize the Day": {
+     "id": "2481-2790",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Mister Fantastic + Unstoppable Plan": {
+     "id": "6286-7163",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana nonland permanents you control can produce",
+      "Infinite untap of nonland permanents you control"
+     ]
+    },
+    "Mirror-Mad Phantasm + Quantum Misalignment": {
+     "id": "2084-5362",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Biorhythm + Cleansing Nova": {
+     "id": "5248-7299",
+     "bracketTag": "P",
+     "produz": [
+      "Draw the game",
+      "Each opponent loses the game"
+     ]
+    },
+    "Stella Lee, Wild Card": {
+     "id": "5534--28",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite copies of one instant or sorcery",
+      "Infinite magecraft triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

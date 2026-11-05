@@ -1,0 +1,3 @@
+lista.md: 100 cartas | fisicas esperadas: 94 | no arquivo: 94
+OK
+faltantes com preco USD: {'Beast Whisperer': '9.41', 'Devoted Druid': '1.47', 'Maralen, Fae Ascendant': '0.30', 'Buried Alive': '2.69', 'Deadly Rollick': '27.91', 'Awaken the Honored Dead': '0.44'} | soma: 42.22

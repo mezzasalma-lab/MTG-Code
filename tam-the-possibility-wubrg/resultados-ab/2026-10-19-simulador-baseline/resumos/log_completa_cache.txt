@@ -1,0 +1,4 @@
+nomes vistos que faltam no cache: 570
+resolvidas: 569 | nao encontradas: []
+entradas de 2 faces sem card_faces no cache: 59
+acrescentadas: 569 | faces completadas: 85 | cache: 5423 | sem oraculo (nao terreno): 8 ['Gigantosaurus', 'Grizzly Bears', 'Ordinary Bear', 'Yargle, Goliath of Otaria', 'Yargle, Glutton of Urborg', 'Snail', 'Knight', 'Human Soldier']

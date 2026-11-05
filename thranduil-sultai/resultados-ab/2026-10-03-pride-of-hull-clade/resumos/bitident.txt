@@ -1,0 +1,1 @@
+Thranduil: simulate_one original x remendado: 300/300 idênticas (dict completo); sim_state do harness x original: 300/300 idênticas em 12 campos

@@ -1,0 +1,4 @@
+{"sim": "tam_goldfish_v1.py", "turns": 12,
+ "destaque": ["cleared_T6", "cleared_T8", "cleared_T10", "cleared_T12", "first_elim_T6", "first_elim_T8", "died_any", "self_lost", "m_pw_entered", "pws_T6", "mana_T6"],
+ "variantes": {"base": {}}, "regressao": ["base"], "variantes_10000": ["base"],
+ "compacto": ["cleared_T6", "cleared_T8", "cleared_T10", "cleared_T12", "first_elim_T6", "first_elim_T8", "died_any", "self_lost", "pws_T6", "mana_T6"]}

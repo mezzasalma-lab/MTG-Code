@@ -1,0 +1,2 @@
+padrao       N=20000: partidas com carta A MAIS = 0 {} | A MENOS = 0 {} | excecoes = 0 {} | exemplos {}
+resiliencia  N=20000: partidas com carta A MAIS = 0 {} | A MENOS = 0 {} | excecoes = 0 {} | exemplos {}

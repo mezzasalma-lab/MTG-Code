@@ -1,0 +1,7 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=53 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=['Rat Colony']
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=53 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=['Rat Colony']
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: TREASURE_MANA_ENABLED=True, THORNBITE_STAFF_ENABLED=True, ROTCALLER_EXACT_X=True, MARROW_X_AFTER_SACRIFICE=True, BIG_APPLE_PER_OPPONENT=True, AYARA_TOKEN_TRIGGER=True, AYARA_SACRIFICE_TOKENS=True, PLAGUE_PAYS_WITH_AYARA=True, JET_MEDALLION_BLACK_SPELLS=True, COST_REDUCTION_COLORED_FLOOR=True, GRAY_MERCHANT_ETB=True, NINJA_TEEN_LEVELS_AND_DRAIN=True, RAT_KING_REANIMATE_COST=True, SOUL_STONE_SHARED_TAP=True, PRIEST_EXACT=True, EMERITUS_ENTERS_PREPARED=True, EXTORT_ENABLED=True, ZULAPORT_SELF_DEATH=True, SACRIFICE_COST_NEEDS_FODDER=True, BONTU_TRIGGER_ONCE=True, NINJA_TEEN_SNEAK_RULING=True

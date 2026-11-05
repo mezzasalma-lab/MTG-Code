@@ -1,0 +1,91 @@
+=== BEORN, variante so_gatilho_beorn, modo padrao, N=10000 ===
+Comandante conjurada (Beorn)
+   commander_cast_turn__ate_T3                   0.1742 ±  0.0074   ( 17.4%)
+   commander_cast_turn__ate_T4                   0.6203 ±  0.0095   ( 62.0%)
+   commander_cast_turn__ate_T5                   0.8969 ±  0.0060   ( 89.7%)
+   commander_cast_turn__ate_T6                   0.9379 ±  0.0047   ( 93.8%)
+   commander_cast_turn__nunca                    0.0132 ±  0.0022   (  1.3%)
+Primeiro finisher relevante
+   finisher_turn__ate_T4                         0.0216 ±  0.0028   (  2.2%)
+   finisher_turn__ate_T5                         0.0804 ±  0.0053   (  8.0%)
+   finisher_turn__ate_T6                         0.1846 ±  0.0076   ( 18.5%)
+   finisher_turn__nunca                          0.5519 ±  0.0097   ( 55.2%)
+   finishers_resolved                            0.6050 ±  0.0155
+Mesa (media no fim do turno 8)
+   bear_count_final                              9.4686 ±  0.1376
+   counters_on_board_final                      20.1989 ±  0.7929
+   battlefield_count                            22.7831 ±  0.1942
+   hand_size                                    10.3496 ±  0.1789
+   lands_played_total                            7.1006 ±  0.0274
+   ramp_pieces_in_play                           3.4831 ±  0.0422
+Compra e gatilhos
+   extra_draws                                  22.7811 ±  0.3735
+   spells_cast                                  13.7755 ±  0.0951
+   beorn_bear_draws                              3.8111 ±  0.0338
+   beorn_combat_triggers                         3.4024 ±  0.0328
+   combat_damage_draws                           8.2963 ±  0.3141
+   roaming_throne_doublings                      1.1762 ±  0.0831
+   war_room_draws                                0.1482 ±  0.0107
+   cards_discarded_to_hand_size                  6.4088 ±  0.2112
+Interacao propria (proxy)
+   removal_cast                                  0.7097 ±  0.0141
+   own_interaction_used                          0.4412 ±  0.0116
+Herd Heirloom
+   heirloom_cast_turn__ate_T3                    0.0000 ±  0.0000   (  0.0%)
+   heirloom_cast_turn__ate_T4                    0.0000 ±  0.0000   (  0.0%)
+   heirloom_cast_turn__ate_T5                    0.0000 ±  0.0000   (  0.0%)
+   heirloom_cast_turn__ate_T6                    0.0000 ±  0.0000   (  0.0%)
+   heirloom_cast_turn__nunca                     1.0000 ±  0.0000   (100.0%)
+   heirloom_mana_uses                            0.0000 ±  0.0000   (  0.0%)
+   heirloom_draw_activations                     0.0000 ±  0.0000   (  0.0%)
+   heirloom_draws                                0.0000 ±  0.0000   (  0.0%)
+   heirloom_mana_turns_reserved_for_draw         0.0000 ±  0.0000   (  0.0%)
+Modo de resiliencia (oponente)
+
+=== BEORN, variante so_gatilho_beorn, modo resiliencia, N=10000 ===
+Comandante conjurada (Beorn)
+   commander_cast_turn__ate_T3                   0.0819 ±  0.0054   (  8.2%)
+   commander_cast_turn__ate_T4                   0.3304 ±  0.0092   ( 33.0%)
+   commander_cast_turn__ate_T5                   0.5485 ±  0.0098   ( 54.9%)
+   commander_cast_turn__ate_T6                   0.6499 ±  0.0093   ( 65.0%)
+   commander_cast_turn__nunca                    0.0319 ±  0.0034   (  3.2%)
+Primeiro finisher relevante
+   finisher_turn__ate_T4                         0.0177 ±  0.0026   (  1.8%)
+   finisher_turn__ate_T5                         0.0627 ±  0.0048   (  6.3%)
+   finisher_turn__ate_T6                         0.1378 ±  0.0068   ( 13.8%)
+   finisher_turn__nunca                          0.6635 ±  0.0093   ( 66.3%)
+Mesa (media no fim do turno 8)
+   lands_played_total                            6.7145 ±  0.0292
+   ramp_pieces_in_play                           2.7701 ±  0.0347
+Compra e gatilhos
+   extra_draws                                  12.2880 ±  0.2536
+   spells_cast                                  11.5490 ±  0.0797
+   beorn_bear_draws                              2.6724 ±  0.0346
+   beorn_combat_triggers                         2.6317 ±  0.0313
+   combat_damage_draws                           3.3089 ±  0.1740
+   roaming_throne_doublings                      0.4236 ±  0.0384
+   war_room_draws                                0.1274 ±  0.0093
+   cards_discarded_to_hand_size                  2.7230 ±  0.1271
+Interacao propria (proxy)
+   removal_cast                                  0.6326 ±  0.0137
+   own_interaction_used                          0.4135 ±  0.0113
+Herd Heirloom
+   heirloom_cast_turn__ate_T3                    0.0000 ±  0.0000   (  0.0%)
+   heirloom_cast_turn__ate_T4                    0.0000 ±  0.0000   (  0.0%)
+   heirloom_cast_turn__ate_T5                    0.0000 ±  0.0000   (  0.0%)
+   heirloom_cast_turn__ate_T6                    0.0000 ±  0.0000   (  0.0%)
+   heirloom_cast_turn__nunca                     1.0000 ±  0.0000   (100.0%)
+   heirloom_mana_uses                            0.0000 ±  0.0000   (  0.0%)
+   heirloom_draw_activations                     0.0000 ±  0.0000   (  0.0%)
+   heirloom_draws                                0.0000 ±  0.0000   (  0.0%)
+   heirloom_mana_turns_reserved_for_draw         0.0000 ±  0.0000   (  0.0%)
+Modo de resiliencia (oponente)
+   smart_removals_total                          0.5839 ±  0.0144
+   smart_wipes_total                             0.6594 ±  0.0137
+   smart_artifact_wipes_total                    0.2300 ±  0.0089
+   smart_enchantment_wipes_total                 0.1339 ±  0.0069
+   smart_counters_total                          0.1006 ±  0.0064
+   smart_discards_total                          1.2772 ±  0.0215
+   smart_attacks_taken_total                     1.1755 ±  0.0213
+   life                                         38.1436 ±  0.0371
+

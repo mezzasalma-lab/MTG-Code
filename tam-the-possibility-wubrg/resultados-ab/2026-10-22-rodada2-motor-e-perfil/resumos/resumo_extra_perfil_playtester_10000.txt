@@ -1,0 +1,32 @@
+
+== variante perfil_playtester, modo padrao, N=10000 ==
+partidas em que o teto de ativacoes de lealdade por turno apertou: 38 (0.38%); teto de magias: 0 (0.00%)
+combo Orrery+Tezzeret+Chain Veil montado: 287 (2.87%); fechou a partida: 108 (1.08%); pagamento conjurado da mao: 24
+turnos extras (Gauntlet -12): tomados 1.351 por partida; jogados 0.476; partidas com >= 2 -12 no mesmo turno nao identificaveis no bruto
+mesa limpa ate' T12: 9052 partidas; turno da mesa limpa (mediana / Q1-Q3): 10.0 / 9.0-10.0
+   pws_T4             mediana    1.0  Q1-Q3 0.0-1.0  max 5.0
+   pws_T6             mediana    3.0  Q1-Q3 2.0-4.0  max 19.0
+   pws_T8             mediana    5.0  Q1-Q3 4.0-7.0  max 25.0
+   pws_T10            mediana    6.0  Q1-Q3 4.0-8.0  max 25.0
+   mana_T4            mediana    4.0  Q1-Q3 3.0-5.0  max 13.0
+   mana_T6            mediana    7.0  Q1-Q3 5.0-8.0  max 22.0
+   mana_T8            mediana   10.0  Q1-Q3 8.0-14.0  max 46.0
+   loyalty_T8         mediana   32.0  Q1-Q3 22.0-47.0  max 1632.0
+   m_pw_entered       mediana    9.0  Q1-Q3 6.0-12.0  max 96.0
+   m_ultimates_used   mediana    3.0  Q1-Q3 2.0-7.0  max 53.0
+
+== variante perfil_playtester, modo resiliencia, N=10000 ==
+partidas em que o teto de ativacoes de lealdade por turno apertou: 37 (0.37%); teto de magias: 0 (0.00%)
+combo Orrery+Tezzeret+Chain Veil montado: 291 (2.91%); fechou a partida: 84 (0.84%); pagamento conjurado da mao: 12
+turnos extras (Gauntlet -12): tomados 1.230 por partida; jogados 0.429; partidas com >= 2 -12 no mesmo turno nao identificaveis no bruto
+mesa limpa ate' T12: 7382 partidas; turno da mesa limpa (mediana / Q1-Q3): 10.0 / 9.0-11.0
+   pws_T4             mediana    1.0  Q1-Q3 0.0-1.0  max 4.0
+   pws_T6             mediana    2.0  Q1-Q3 2.0-3.0  max 12.0
+   pws_T8             mediana    4.0  Q1-Q3 2.0-5.0  max 25.0
+   pws_T10            mediana    5.0  Q1-Q3 3.0-7.0  max 25.0
+   mana_T4            mediana    4.0  Q1-Q3 3.0-5.0  max 12.0
+   mana_T6            mediana    6.0  Q1-Q3 5.0-8.0  max 22.0
+   mana_T8            mediana    9.0  Q1-Q3 7.0-12.0  max 54.0
+   loyalty_T8         mediana   22.0  Q1-Q3 12.0-35.0  max 2050.0
+   m_pw_entered       mediana    9.0  Q1-Q3 6.0-12.0  max 97.0
+   m_ultimates_used   mediana    3.0  Q1-Q3 1.0-7.0  max 44.0

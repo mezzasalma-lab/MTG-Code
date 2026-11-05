@@ -1,0 +1,7 @@
+IGUAL  ablacao_vihaan.txt
+IGUAL  ab_vihaan_10000_cor-off.txt
+IGUAL  ab_vihaan_10000_cor-sim.txt
+IGUAL  ab_vihaan_10000_cor-best.txt
+IGUAL  castabilidade_cor_vihaan.txt
+IGUAL  enumeracao.txt
+6/6 tabelas byte a byte iguais

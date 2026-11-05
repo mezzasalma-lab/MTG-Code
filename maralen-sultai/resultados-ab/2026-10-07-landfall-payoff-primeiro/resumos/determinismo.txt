@@ -1,0 +1,3 @@
+Determinismo entre processos: 3 PYTHONHASHSEED (11, 22, 33) x 1.500 sementes (1_000_000+i) x 2 modos, campo a campo no estado final, arquivo vivo com a chave ligada (varredura-2026-10-05/scripts/det_check.sh)
+maralen-sultai             padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+maralen-sultai             resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

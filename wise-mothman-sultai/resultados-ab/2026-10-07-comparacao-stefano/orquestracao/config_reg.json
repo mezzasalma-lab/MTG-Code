@@ -1,0 +1,98 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "opps_eliminated_total",
+  "horrigan_etb_prolifs",
+  "horrigan_attack_prolifs",
+  "horrigan_attacks",
+  "horrigan_attack_damage",
+  "master_activations",
+  "master_act_mine",
+  "master_act_opp",
+  "master_act_on_opp_turn",
+  "master_etb_rad",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "counters_placed_total",
+  "cards_milled_opp_total",
+  "cards_milled_self_total",
+  "library_min",
+  "draws_total",
+  "kozilek_shuffles_total"
+ ],
+ "compacto": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "horrigan_attacks",
+  "master_activations",
+  "master_act_opp",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total"
+ ],
+ "variantes": {
+  "base": {},
+  "frank_offer_no_lugar": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "ambos_no_lugar": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "ambos_chaves_extremas_remove_append": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Toxic Deluge",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": false,
+   "HORRIGAN_PROLIF_TIMES": 0,
+   "MASTER_OPP_TURN": false,
+   "MASTER_TAKE_OPP": false
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "frank_offer_no_lugar",
+  "ambos_no_lugar",
+  "ambos_chaves_extremas_remove_append"
+ ],
+ "regressao": [
+  "base",
+  "frank_offer_no_lugar",
+  "ambos_no_lugar",
+  "ambos_chaves_extremas_remove_append"
+ ]
+}

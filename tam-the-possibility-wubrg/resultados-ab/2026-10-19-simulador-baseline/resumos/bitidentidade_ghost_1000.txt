@@ -1,0 +1,2 @@
+padrao       N=1000: partidas com resultado diferente (ghost x desligado) = 0 []
+resiliencia  N=1000: partidas com resultado diferente (ghost x desligado) = 0 []

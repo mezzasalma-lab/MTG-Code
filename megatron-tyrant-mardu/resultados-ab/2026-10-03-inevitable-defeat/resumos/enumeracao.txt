@@ -1,0 +1,39 @@
+nomes distintos lidos de lista.md (comandante + 99 cartas, básicas contadas uma vez): 85 | sem entrada no cache: []
+
+## REMOÇÃO/INTERAÇÃO (exile|destroy|damage|shuffle ... target/all)
+  - Ayara, Widow of the Realm [Legendary Creature] Ayara, Widow of the Realm ({1}{B}{B}): {T}, Sacrifice another creature or artifact: Ayara deals X damage to target opponent or battle and you gain X life, where X is the sacrificed permanent's mana value. {5}{R/P}: Transform Ayara
+  - Blasphemous Act [Sorcery] This spell costs {1} less to cast for each creature on the battlefield. Blasphemous Act deals 13 damage to each creature.
+  - Cityscape Leveler [Artifact Creature] Trample When you cast this spell and whenever this creature attacks, destroy up to one target nonland permanent. Its controller creates a tapped Powerstone token. Unearth {8}
+  - Decree of Pain [Sorcery] Destroy all creatures. They can't be regenerated. Draw a card for each creature destroyed this way. Cycling {3}{B}{B} ({3}{B}{B}, Discard this card: Draw a card.) When you cycle this card, all creatures get -2/-2 until end of turn
+  - Demonic Junker [Artifact] Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.) When this Vehicle enters, for each player, destroy up to one target creature that player controls. If a creature you controlled was destroye
+  - Generous Gift [Instant] Destroy target permanent. Its controller creates a 3/3 green Elephant creature token.
+  - Heartless Conscription [Sorcery] Exile all creatures. For each card exiled this way, you may play that card for as long as it remains exiled, and mana of any type can be spent to cast that spell. Exile Heartless Conscription.
+  - Path to Exile [Instant] Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.
+  - Clever Concealment [Instant] Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.) Any number of target nonland permanents you control phase out. (Treat them and an
+  - Summon: Bahamut [Enchantment Creature] (As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.) I, II — Destroy up to one target nonland permanent. III — Draw two cards. IV — Mega Flare — This creature deals damage equal to the total mana
+  - Swords to Plowshares [Instant] Exile target creature. Its controller gains life equal to its power.
+  - Vandalblast [Sorcery] Destroy target artifact you don't control. Overload {4}{R} (You may cast this spell for its overload cost. If you do, change "target" in its text to "each.")
+
+## PERDA DE VIDA DE OPONENTE (alimenta o 2º flip do Megatron)
+  - Megatron, Tyrant [Legendary Artifact Creature] Megatron, Tyrant | {3}{R}{W}{B} | Legendary Artifact Creature — Robot More Than Meets the Eye {1}{R}{W}{B} (You may cast this card converted for {1}{R}{W}{B}.) Your opponents can't cast spells during combat. At the beginning of ea
+  - Ayara, Widow of the Realm [Legendary Creature] Ayara, Widow of the Realm ({1}{B}{B}): {T}, Sacrifice another creature or artifact: Ayara deals X damage to target opponent or battle and you gain X life, where X is the sacrificed permanent's mana value. {5}{R/P}: Transform Ayara
+  - Black Market Connections [Enchantment] At the beginning of your first main phase, choose one or more — • Sell Contraband — Create a Treasure token. You lose 1 life. • Buy Information — Draw a card. You lose 2 life. • Hire a Mercenary — Create a 3/2 colorless Shapeshift
+  - Combustible Gearhulk [Artifact Creature] First strike When this creature enters, target opponent may have you draw three cards. If the player doesn't, you mill three cards, then this creature deals damage to that player equal to the total mana value of those cards.
+
+## GANHO/PAGAMENTO DE VIDA (vida como recurso)
+  - Ayara, Widow of the Realm [Legendary Creature] Ayara, Widow of the Realm ({1}{B}{B}): {T}, Sacrifice another creature or artifact: Ayara deals X damage to target opponent or battle and you gain X life, where X is the sacrificed permanent's mana value. {5}{R/P}: Transform Ayara
+  - Black Market Connections [Enchantment] At the beginning of your first main phase, choose one or more — • Sell Contraband — Create a Treasure token. You lose 1 life. • Buy Information — Draw a card. You lose 2 life. • Hire a Mercenary — Create a 3/2 colorless Shapeshift
+  - Noxious Gearhulk [Artifact Creature] Menace When this creature enters, you may destroy another target creature. If a creature is destroyed this way, you gain life equal to its toughness.
+
+## EXILE (cartas que exilam / usam exílio)
+  - Ayara, Widow of the Realm [Legendary Creature] Ayara, Widow of the Realm ({1}{B}{B}): {T}, Sacrifice another creature or artifact: Ayara deals X damage to target opponent or battle and you gain X life, where X is the sacrificed permanent's mana value. {5}{R/P}: Transform Ayara
+  - Bygone Colossus [Artifact Creature] Warp {3} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)
+  - Faithless Looting [Sorcery] Draw two cards, then discard two cards. Flashback {2}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)
+  - Heartless Conscription [Sorcery] Exile all creatures. For each card exiled this way, you may play that card for as long as it remains exiled, and mana of any type can be spent to cast that spell. Exile Heartless Conscription.
+  - Mishra, Tamer of Mak Fawa [Legendary Creature] Permanents you control have "Ward—Sacrifice a permanent." Each artifact card in your graveyard has unearth {1}{B}{R}. ({1}{B}{R}: Return the card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of
+  - Nexus of Becoming [Artifact] At the beginning of combat on your turn, draw a card. Then you may exile an artifact or creature card from your hand. If you do, create a token that's a copy of the exiled card, except it's a 3/3 Golem artifact creature in additio
+  - Osgir, the Reconstructor [Legendary Creature] Vigilance {1}, Sacrifice an artifact: Target creature you control gets +2/+0 until end of turn. {X}, {T}, Exile an artifact card with mana value X from your graveyard: Create two tokens that are copies of the exiled card. Activate
+  - Path to Exile [Instant] Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.
+  - Rakdos, the Muscle [Legendary Creature] Flying, trample Whenever you sacrifice another creature, exile cards equal to its mana value from the top of target player's library. Until your next end step, you may play those cards, and mana of any type can be spent to cast th
+  - Swords to Plowshares [Instant] Exile target creature. Its controller gains life equal to its power.
+  - Tarrian's Journal [Legendary Artifact] Tarrian's Journal ({1}{B}): {T}, Sacrifice another artifact or creature: Draw a card. Activate only as a sorcery. {2}, {T}, Discard your hand: Transform Tarrian's Journal. // The Tomb of Aclazotz (): (Transforms from Tarrian's Jou
