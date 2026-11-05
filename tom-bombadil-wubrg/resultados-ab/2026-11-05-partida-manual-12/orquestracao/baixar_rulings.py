@@ -1,15 +1,21 @@
-import json,sys,urllib.request,urllib.parse,time,ssl
-names=["Narci, Fable Singer","Tom Bombadil","Starfield of Nyx","Historian's Boon","Goldberry, River-Daughter","Resurgent Belief","Nexus Mentality","Teferi's Protection","Soul Shatter","Martial Coup","All Is Dust","Bane of Progress","Power Conduit","Summon: Fenrir","Summon: Primal Odin","War of the Last Alliance","The Cruelty of Gix","There and Back Again","The Eldest Reborn","Jugan Defends the Temple","Satsuki, the Living Lore","Sanctum Weaver","Barbara Wright","Blasphemous Edict","Faeburrow Elder","O'aka, Traveling Merchant","In the Darkness Bind Them","Binding the Old Gods","Jace's Archivist","Lethal Scheme","Casualties of War","Prismatic Omen","Utopia Sprawl","Fertile Ground","Scholar of New Horizons","Flux Channeler"]
-out={}
-for n in names:
-    u="https://api.scryfall.com/cards/named?"+urllib.parse.urlencode({"exact":n})
+"""Baixa as rulings (Scryfall, ao vivo) das cartas da partida manual #12 (nomes lidos do próprio log) + The Ring Tempts You.
+Uso (da raiz do repositório): python3 -I <esta pasta>/orquestracao/baixar_rulings.py <saida.json>
+Fichas e cartas sem ruling entram com lista vazia; erro de rede entra como {"erro": ...} (nunca silencioso)."""
+import json, lzma, os, sys, time, urllib.parse, urllib.request
+aqui = os.path.dirname(os.path.abspath(__file__))
+T = json.load(lzma.open(os.path.join(aqui, "..", "dados", "partida.json.xz")))
+nomes = sorted({r["name"].split(" // ")[0] for t in T for r in t if not r["token"]} - {"Forest", "Plains", "Walker", "Plant Warrior"})
+nomes += ["The Ring Tempts You"]
+H = {"User-Agent": "MTG-Code-audit/1.0", "Accept": "application/json"}
+out = {}
+for n in nomes:
+    u = "https://api.scryfall.com/cards/named?" + urllib.parse.urlencode({"exact": n})
     try:
-        H={"User-Agent":"MTG-Code-audit/1.0","Accept":"application/json"}
-        c=json.load(urllib.request.urlopen(urllib.request.Request(u,headers=H)))
-        r=json.load(urllib.request.urlopen(urllib.request.Request(c["rulings_uri"],headers=H)))
-        out[n]={"oracle_id":c.get("oracle_id"),"rulings":[(x["published_at"],x["comment"]) for x in r["data"]]}
+        c = json.load(urllib.request.urlopen(urllib.request.Request(u, headers=H)))
+        r = json.load(urllib.request.urlopen(urllib.request.Request(c["rulings_uri"], headers=H)))
+        out[n] = {"oracle_id": c.get("oracle_id"), "rulings": [(x["published_at"], x["comment"]) for x in r["data"]]}
     except Exception as e:
-        out[n]={"erro":str(e)}
+        out[n] = {"erro": str(e)}
     time.sleep(0.12)
-json.dump(out,open(sys.argv[1],'w'),ensure_ascii=False,indent=1)
-print(len(out),'cartas')
+json.dump(out, open(sys.argv[1], "w"), ensure_ascii=False, indent=1)
+print(len(out), "cartas;", sum(1 for v in out.values() if "erro" in v), "com erro;", sum(len(v.get("rulings", [])) for v in out.values()), "rulings")

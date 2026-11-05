@@ -1,4 +1,4 @@
-"""[#11: FETCH exclui "God card"] Trace e verificações automáticas de uma partida manual do Archidekt playtester (Tom Bombadil).
+"""[#11: FETCH exclui "God card"] [#12: terreno repetido com o MESMO id = desfazer (não conta 2×); fetch parada no ÚLTIMO turno do log = nota, não violação] Trace e verificações automáticas de uma partida manual do Archidekt playtester (Tom Bombadil).
 Uso: python3 analisa_partida.py [dados/partida.json.xz]   (saída em Markdown no stdout)
 Cada elemento do JSON é um turno (rodada: meu turno + o do oponente); cada registro é o estado de um objeto
 quando ele mudou (zona, virada, marcadores). `opponentsCards` = interação que o usuário põe contra si (simulação).
@@ -80,12 +80,17 @@ anom = []          # estado do log que nenhuma carta da lista explica (não prov
 print("| turno | terrenos jogados da mão | saiu por fetch | veredito |")
 print("|---|---|---|---|")
 for i, t in enumerate(T, 1):
-    drops = [e["name"] for e in t if e["fromZone"] == "hand" and e["toZone"] == "battlefield" and is_land(e["name"])]
+    evs = [e for e in t if e["fromZone"] == "hand" and e["toZone"] == "battlefield" and is_land(e["name"])]
+    ids = list(dict.fromkeys(e["id"] for e in evs))                  # objetos distintos, na ordem do log
+    nome_de = {e["id"]: e["name"] for e in evs}
+    drops = [nome_de[x] for x in ids]
+    repet = len(evs) - len(ids)                                      # mesmo objeto de novo hand->battlefield = desfazer/refazer
     fetched = [e["name"] for e in t if e["fromZone"] == "library" and e["toZone"] == "battlefield" and is_land(e["name"])]
     bad = len(drops) > 1
     if bad:
         viol.append(f"T{i}: {len(drops)} terrenos jogados da mão")
-    print(f"| T{i} | {', '.join(drops) or '—'} | {', '.join(fetched) or '—'} | {'**VIOLA (mais de 1)**' if bad else 'ok'} |")
+    nota = f" (mesmo objeto jogado {repet + 1}×: desfazer/refazer)" if repet else ""
+    print(f"| T{i} | {', '.join(drops) or '—'}{nota} | {', '.join(fetched) or '—'} | {'**VIOLA (mais de 1)**' if bad else 'ok'} |")
 # 2) cada fetchland jogado foi pro cemitério e buscou um terreno no mesmo turno
 print()
 for i, t in enumerate(T, 1):
@@ -94,9 +99,11 @@ for i, t in enumerate(T, 1):
         if jog:
             gy = any(e["name"] == f and e["toZone"] == "graveyard" for e in t)
             busca = any(e["fromZone"] == "library" and e["toZone"] == "battlefield" and is_land(e["name"]) for e in t)
-            if not (gy and busca):
+            parada_no_fim = (i == len(T)) and not gy and not busca
+            if not (gy and busca) and not parada_no_fim:
                 viol.append(f"T{i}: {f} sem cemitério/busca")
-            print(f"- T{i}: {f} jogado → cemitério: {'sim' if gy else 'NÃO'} · terreno buscado: {'sim' if busca else 'NÃO'}")
+            print(f"- T{i}: {f} jogado → cemitério: {'sim' if gy else 'NÃO'} · terreno buscado: {'sim' if busca else 'NÃO'}"
+                  + (" · **fim do log: fetch parada em campo, não acionada (não é violação)**" if parada_no_fim else ""))
 if not FETCH & {e["name"] for t in T for e in t}:
     print("- (nenhum fetchland nesta partida)")
 # 2b) fontes viradas no fim do turno (último registro do objeto no turno; entrada já virada não conta) x magias lançadas.

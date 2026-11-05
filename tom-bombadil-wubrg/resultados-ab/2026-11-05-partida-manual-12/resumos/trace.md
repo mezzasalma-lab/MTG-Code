@@ -113,12 +113,12 @@
 | T4 | Nesting Grounds | — | ok |
 | T5 | Godless Shrine | — | ok |
 | T6 | Stomping Ground | — | ok |
-| T7 | Plains, Plains | — | **VIOLA (mais de 1)** |
+| T7 | Plains (mesmo objeto jogado 2×: desfazer/refazer) | — | ok |
 | T8 | Raugrin Triome | — | ok |
 | T9 | Karn's Bastion | — | ok |
 | T10 | Verdant Catacombs | — | ok |
 
-- T10: Verdant Catacombs jogado → cemitério: NÃO · terreno buscado: NÃO
+- T10: Verdant Catacombs jogado → cemitério: NÃO · terreno buscado: NÃO · **fim do log: fetch parada em campo, não acionada (não é violação)**
 
 | turno | fontes viradas no fim do turno | magias entrando em campo (MV) | magia/descarte mão→cemitério (MV) |
 |---|---|---|---|
@@ -159,5 +159,5 @@
 Saída de campo: Jugan Defends the Temple → cemitério (T6); In the Darkness Bind Them → cemitério (T8); The First Iroan Games → cemitério (T8)
 
 
-**Violações provadas pelo log: 2 — T7: 2 terrenos jogados da mão; T10: Verdant Catacombs sem cemitério/busca**
+**Violações provadas pelo log: 0**
 **Anomalias sem fonte no log: 1 — The First Iroan Games T7: incremento extra 2→3 no mesmo turno (entrou no T6; só +1 na fase principal 1 é automático)** (estado que nenhuma carta da lista explica; típico de ajuste manual/desfazer do playtester, não prova erro de jogo)

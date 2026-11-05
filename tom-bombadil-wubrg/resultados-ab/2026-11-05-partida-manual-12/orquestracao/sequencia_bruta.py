@@ -1,5 +1,6 @@
-import json,lzma,sys
-T=json.load(lzma.open('tom-bombadil-wubrg/resultados-ab/2026-11-05-partida-manual-12/dados/partida.json.xz'))
+import json,lzma,os,sys
+aqui=os.path.dirname(os.path.abspath(__file__))
+T=json.load(lzma.open(os.path.join(aqui,'..','dados','partida.json.xz')))
 a,b=int(sys.argv[1]),int(sys.argv[2])
 for i in range(a,b+1):
     print(f"\n--- T{i}")

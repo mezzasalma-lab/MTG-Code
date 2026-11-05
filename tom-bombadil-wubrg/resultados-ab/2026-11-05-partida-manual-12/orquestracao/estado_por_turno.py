@@ -1,5 +1,7 @@
-import json,lzma,sys
-T=json.load(lzma.open('tom-bombadil-wubrg/resultados-ab/2026-11-05-partida-manual-12/dados/partida.json.xz'))
+import json,lzma,os,sys
+aqui=os.path.dirname(os.path.abspath(__file__))
+T=json.load(lzma.open(sys.argv[1] if len(sys.argv)>1 else os.path.join(aqui,'..','dados','partida.json.xz')))
+# ATENÇÃO: o log NAO registra ficha que some (#11 e #12): fichas destruidas continuam 'vivas' neste dump (ex.: 2 Kraken; Wraith/Soldier mortos pela Austere T8)
 st={}
 def cnt(r):
     return ','.join(f"{k}={v['count']}" for k,v in r['counters'].items())
