@@ -1,7 +1,7 @@
 # Backup versionado da skill `mtg-commander`
 
 Cópia de segurança da skill **`mtg-commander`** (especialista em Commander/EDH, com as regras permanentes do usuário e o protocolo de avaliação de cartas/simuladores).
-Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10), em **2026-10-07** (ordem terreno × payoff de landfall) em **2026-10-22** (classes novas do Tam) e em **2026-10-23** (gatilho de fase preso a `can_attack`). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
+Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10), em **2026-10-07** (ordem terreno × payoff de landfall) em **2026-10-22** (classes novas do Tam) em **2026-10-23** (gatilho de fase preso a `can_attack`) e em **2026-11-05** (Tom #12). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
 
 > **Este backup é a cópia durável.** A pasta viva da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) é sincronizada com a conta do usuário, mas
 > **alterações feitas nela durante uma sessão não são gravadas na conta** e o próximo sync pode sobrescrevê-las. Para a skill da conta refletir a versão
@@ -89,6 +89,11 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 
 - `references/user-standing-rules.md` §21, item (d) do bullet do Rat King/Tam #6: acrescenta que o usuário **confirmou em 2026-11-04** (*"No TAM #6 sim, foi jogado na mão sem mudar o turno"*) o que o bruto mostrava, e que a leitura errada era a minha. Só esse espelho mudou; `mtg-commander.zip` e `SHA256SUMS` refeitos.
 - **Como foi feito (Regra #9):** espelho copiado do repositório; este README editado **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup`. A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
+
+## O que mudou na atualização de 2026-11-05 (Tom Bombadil, goldfish manual #12)
+
+- `references/user-standing-rules.md` §21: bullet novo (ficha que some não aparece no log; consultar o `rules-cache` antes de baixar a CR; o engano "marcador de saber é gatilho de upkeep" voltou; tirar marcador no capítulo final só com efeito instantâneo; `commandTax` do log é contador manual; lembrete do gerador de interação; palpite de intenção se pergunta) e `mtg-commander/references/protocolo-de-avaliacao.md` §8 (4 linhas novas no checklist de erros). `mtg-commander.zip` e `SHA256SUMS` refeitos.
+- **Como foi feito (Regra #9):** espelho copiado do repositório; `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
 
 ## Como restaurar / reinstalar
 
