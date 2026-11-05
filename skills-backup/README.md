@@ -92,7 +92,7 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 
 ## O que mudou na atualização de 2026-11-05 (Tom Bombadil, goldfish manual #12)
 
-- `references/user-standing-rules.md` §21: bullet novo (ficha que some não aparece no log; consultar o `rules-cache` antes de baixar a CR; o engano "marcador de saber é gatilho de upkeep" voltou; tirar marcador no capítulo final só com efeito instantâneo; `commandTax` do log é contador manual; lembrete do gerador de interação; palpite de intenção se pergunta) e `mtg-commander/references/protocolo-de-avaliacao.md` §8 (4 linhas novas no checklist de erros). `mtg-commander.zip` e `SHA256SUMS` refeitos.
+- `references/user-standing-rules.md` §21: bullet novo (ficha que some não aparece no log e o `opponentsCards` sub-registra as fichas do oponente; consultar o `rules-cache` antes de baixar a CR; o engano "marcador de saber é gatilho de upkeep" voltou; tirar marcador no capítulo final só com efeito instantâneo; `commandTax` do log é contador manual; lembrete do gerador de interação; palpite de intenção se pergunta) e `mtg-commander/references/protocolo-de-avaliacao.md` §8 (4 linhas novas no checklist de erros). `mtg-commander.zip` e `SHA256SUMS` refeitos.
 - **Como foi feito (Regra #9):** espelho copiado do repositório; `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
 
 ## Como restaurar / reinstalar
