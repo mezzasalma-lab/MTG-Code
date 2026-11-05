@@ -16,5 +16,6 @@ PASSA | rulings arquivadas: Saga sacrificada ao sair a habilidade da pilha; orde
 PASSA | CR 2026-09-25: 714.4, 714.3c, 602.5d/307.5, 603.3b, 702.62a, 701.54c, 302.6 (texto arquivado) | controle de corte falha como deve
 PASSA | analisa_partida.py: 0 violações provadas, 1 anomalia, Catacombs parada não é violação | controle de corte falha como deve
 PASSA | opponentsCards: 1 registro de Walker (T4) e 1 de Plant Warrior (T9; o usuário diz que eram 2 fichas) | controle de corte falha como deve
+PASSA | T9: 1 Wraith novo, criado depois da volta da ITDBT (cap. I) | controle de corte falha como deve
 
-18/18 testes passam
+19/19 testes passam

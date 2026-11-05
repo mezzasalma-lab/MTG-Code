@@ -231,5 +231,12 @@ def c18():
     return t18(d)
 teste("opponentsCards: 1 registro de Walker (T4) e 1 de Plant Warrior (T9; o usuário diz que eram 2 fichas)", t18, c18)
 
+# 19. T9: o Wraith do T9 (cap. I) é criado DEPOIS de a ITDBT voltar da Resurgent Belief (resposta de 2026-11-05: "ela criou mais um wraith")
+def t19(d):
+    volta = idx(9, lambda r: r["name"] == "In the Darkness Bind Them" and r["fromZone"] == "graveyard" and r["toZone"] == "battlefield", d)[0]
+    wr = idx(9, lambda r: r["token"] and r["name"] == "Wraith" and r["toZone"] == "battlefield", d)
+    return len(wr) == 1 and wr[0] > volta
+teste("T9: 1 Wraith novo, criado depois da volta da ITDBT (cap. I)", t19, lambda: t19(sem_evento(T, 9, 33, 33)))
+
 print(f"\n{sum(res)}/{len(res)} testes passam")
 sys.exit(0 if all(res) else 1)
