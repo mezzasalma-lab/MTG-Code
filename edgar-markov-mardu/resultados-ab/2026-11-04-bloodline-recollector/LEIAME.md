@@ -71,6 +71,16 @@ Tabelas inteiras (15 campos + os mais movidos) em `resumos/ab_*.txt`; esta tabel
 | `codigo/edgar_markov_goldfish_v1_VIVO_2026-11-04.py` | o simulador vivo usado como `antes` (== `edgar-markov-mardu/edgar_markov_goldfish_v1.py`, `cmp` em `--tudo`) | — | usado | — |
 | `codigo/edgar_markov_goldfish_v1_BR_PROXY.py` | o mesmo arquivo + a BR como corpo de Vampiro (**proxy-piso, não a carta completa**) | — | usado | — |
 
+## Atualização de 2026-11-05: a mesa do usuário tem 3 oponentes em média (mesa de 4)
+
+Resposta do usuário à pergunta que ficou em aberto: *"3 oponentes em media"* (sobre wipes ele não respondeu). Efeito na avaliação, **sem novo A/B** (o modo resiliência do simulador já assume `NUM_OPPONENTS = 3`, então as linhas "resiliência" acima já são de mesa de 4):
+
+- **A BR sobe de valor:** o gatilho checa 4 end steps por rodada (1 meu e 3 deles) e conta morte de qualquer jogador; Meathook X=1 também mata os x/1 dos oponentes; o Ophiomancer cria uma Cobra em CADA upkeep (4 por rodada) e vira combustível de outlet. O Craving se mira em si mesmo (dar 3 cartas a um de 3 oponentes só como finalização).
+- **Pagadores "each opponent" valem mais que o simulador mostra:** `lose_life_opponent` soma 1 por gatilho, não 1 por oponente, então os −0,18 (Zulaport) e −0,20 (Vindictive Vampire) do A/B são **pisos**; mais um motivo para não cortá-los.
+- **Call the Coppercoats e Charismatic Conqueror sobem** (o simulador é cego a eles): a Coppercoats mirando os 3 oponentes custa 7 de mana (`{2}{W}` + 2 × `{1}{W}`) e cria uma ficha por criatura deles; a Conqueror dispara com cada permanente que eles põem. Não cortar.
+- **Recomendação mantida: cortar o Bloodline Bidding** (o Awakening Hall faz o mesmo trabalho pesado). Jogos mais longos e wipes dão mais valor à recursão barata, então o **Sevinne's Reclamation deixa de ser uma boa 2ª opção**; só vale cortá-lo se a mesa quase não tiver wipe (pergunta ainda sem resposta).
+- Terrenos `Spectator Seating` e `Luxury Suite` entram desvirados com 2+ oponentes, então ficam melhores nesta mesa.
+
 ## Escopo (Regra #7): o que esta avaliação NÃO fez
 
 - **Não modelei a habilidade da carta** (preparar com 3 mortes e a cópia do Ancestral Craving): o simulador não a exerce (cap de 2 sacrifícios de ficha por turno, nunca criatura nomeada). Os números do A/B são o custo de cada corte e o valor do **corpo**, um piso. Modelar linhas deliberadas de 3 mortes seria um conserto do simulador (Regra #5), não feito aqui.
