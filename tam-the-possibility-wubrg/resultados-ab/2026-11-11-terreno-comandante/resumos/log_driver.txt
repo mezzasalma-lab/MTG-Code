@@ -1,0 +1,43 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: COMMANDER_ENABLING_LAND=True
+LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1723 (86.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T3                  0.8150       0.9070      +0.0920 ±0.0127  
+  *commander_cast_turn__ate_T4                  0.9540       0.9590      +0.0050 ±0.0031  
+   commander_cast_turn__ate_T5                  0.9740       0.9750      +0.0010 ±0.0014  
+   cleared_T8                                   0.1680       0.1740      +0.0060 ±0.0065  
+  *cleared_T10                                  0.6960       0.7050      +0.0090 ±0.0078  
+   first_elim_T6                                0.0415       0.0435      +0.0020 ±0.0034  
+   self_lost                                    0.0105       0.0105      +0.0000 ±0.0020  
+   m_pw_entered                                 9.8715       9.8405      -0.0310 ±0.1062  
+  *pws_T4                                       0.9515       1.0105      +0.0590 ±0.0138  
+  *pws_T6                                       3.1425       3.1900      +0.0475 ±0.0211  
+   pws_T8                                       5.3530       5.3830      +0.0300 ±0.0364  
+  *mana_T4                                      3.9860       4.0025      +0.0165 ±0.0119  
+   mana_T6                                      7.0230       7.0555      +0.0325 ±0.0370  
+  *mana_T8                                     11.1755      11.2745      +0.0990 ±0.0703  
+   lands_T4                                     3.7275       3.7310      +0.0035 ±0.0035  
+   lands_T6                                     5.2920       5.3070      +0.0150 ±0.0170  
+  *hand_T4                                      5.4440       5.3730      -0.0710 ±0.0150  
+   hand_T6                                      4.4305       4.4100      -0.0205 ±0.0271  
+  *tam_cast_by_T3                               0.8150       0.9070      +0.0920 ±0.0127  
+  *creatures_T3                                 1.2295       1.3175      +0.0880 ±0.0129  
+  *loyalty_T4                                   3.9890       4.2835      +0.2945 ±0.0635  
+  *first_pw_by_T4                               0.5855       0.6290      +0.0435 ±0.0101  
+  *first_pw_turn__ate_T4                        0.5855       0.6290      +0.0435 ±0.0101  
+  *m_attack_turns                               6.2310       6.3375      +0.1065 ±0.0256  
+  *pw_types_T4                                  0.9390       0.9955      +0.0565 ±0.0137  
+  *pw_types_T5                                  1.9570       2.0220      +0.0650 ±0.0173  
+  *m_tam_attacks                                5.0000       5.1085      +0.1085 ±0.0289  
+  *loyalty_T5                                   9.5765       9.9070      +0.3305 ±0.0886  
+  *pws_T5                                       2.0135       2.0795      +0.0660 ±0.0177  
+  *creatures_T4                                 1.9260       1.9605      +0.0345 ±0.0123  
+  *loyalty_T6                                  17.2155      17.6080      +0.3925 ±0.1684  
+  *m_opp_spells_total                          21.1280      21.0165      -0.1115 ±0.0493  
