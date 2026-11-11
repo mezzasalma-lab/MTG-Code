@@ -201,3 +201,69 @@ LOTE N=10000 sementes 3000000..3009999, 10 turnos, modo padrao
   *won_via_ascendancy                           0.2340       0.2350      +0.0010 ±0.0009  
   *turn                                         9.7123       9.7104      -0.0019 ±0.0017  
   *simic_ascendancy_growth_counters            14.3435      14.5523      +0.2088 ±0.1918  
+LOTE N=10000 sementes 3000000..3009999, 10 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7954 (79.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0285       0.0298      +0.0013 ±0.0009  
+  *commander_cast_turn__ate_T3                  0.2526       0.2296      -0.0230 ±0.0031  
+  *commander_cast_turn__ate_T4                  0.6025       0.5876      -0.0149 ±0.0029  
+  *commander_cast_turn__ate_T5                  0.7687       0.7583      -0.0104 ±0.0024  
+  *commander_cast_turn__ate_T6                  0.8552       0.8475      -0.0077 ±0.0020  
+  *opponent_forced_draws_total                 12.8769      12.4941      -0.3828 ±0.0523  
+  *interaction_plays                            2.7812       2.7289      -0.0523 ±0.0098  
+  *len_library                                 68.9294      69.2837      +0.3543 ±0.0669  
+  *mana_spent_this_turn                         8.9130       8.7067      -0.2063 ±0.0411  
+  *cards_drawn_extra                           20.6755      20.3815      -0.2940 ±0.0610  
+  *commander_damage_win                         0.3189       0.3010      -0.0179 ±0.0039  
+  *commander_cast_count                         1.6527       1.6311      -0.0216 ±0.0053  
+  *proxy_damage_total                          93.0961      89.4757      -3.6204 ±0.9190  
+  *commander_damage_dealt                      25.0340      23.4113      -1.6227 ±0.4557  
+  *next_uid                                    24.9143      24.5721      -0.3422 ±0.0979  
+  *len_graveyard                                7.7308       7.5965      -0.1343 ±0.0417  
+  *len_first_counter_this_turn                  1.8356       1.7966      -0.0390 ±0.0128  
+  *counters_placed_total                       34.7593      33.0059      -1.7534 ±0.5827  
+  *bumbleflower_triggers_this_turn              2.2859       2.2388      -0.0471 ±0.0175  
+
+[so_conta_uma_vez - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7973 (79.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0285       0.0298      +0.0013 ±0.0009  
+  *commander_cast_turn__ate_T3                  0.2526       0.2268      -0.0258 ±0.0032  
+  *commander_cast_turn__ate_T4                  0.6025       0.5853      -0.0172 ±0.0028  
+  *commander_cast_turn__ate_T5                  0.7687       0.7573      -0.0114 ±0.0023  
+  *commander_cast_turn__ate_T6                  0.8552       0.8475      -0.0077 ±0.0019  
+  *opponent_forced_draws_total                 12.8769      12.4760      -0.4009 ±0.0511  
+  *interaction_plays                            2.7812       2.7258      -0.0554 ±0.0097  
+  *len_library                                 68.9294      69.2981      +0.3687 ±0.0646  
+  *mana_spent_this_turn                         8.9130       8.6971      -0.2159 ±0.0399  
+  *cards_drawn_extra                           20.6755      20.3639      -0.3116 ±0.0587  
+  *commander_damage_win                         0.3189       0.3014      -0.0175 ±0.0039  
+  *proxy_damage_total                          93.0961      89.3092      -3.7869 ±0.8994  
+  *commander_cast_count                         1.6527       1.6315      -0.0212 ±0.0052  
+  *commander_damage_dealt                      25.0340      23.4416      -1.5924 ±0.4526  
+  *tapped_land_skipped_for_play_total           0.3218       0.3150      -0.0068 ±0.0020  
+  *len_first_counter_this_turn                  1.8356       1.7954      -0.0402 ±0.0127  
+  *len_graveyard                                7.7308       7.6014      -0.1294 ±0.0415  
+  *counters_placed_total                       34.7593      32.9697      -1.7896 ±0.5734  
+  *len_battlefield                             17.3607      17.1488      -0.2119 ±0.0687  
+
+[so_regras_de_mana - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9633 (96.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T3                  0.2526       0.2565      +0.0039 ±0.0015  
+  *commander_cast_turn__ate_T4                  0.6025       0.6050      +0.0025 ±0.0013  
+  *commander_cast_turn__ate_T5                  0.7687       0.7698      +0.0011 ±0.0009  
+   commander_cast_turn__ate_T6                  0.8552       0.8554      +0.0002 ±0.0005  
+  *tapped_land_skipped_for_play_total           0.3218       0.3256      +0.0038 ±0.0015  
+  *tapped_land_first_plays_total                0.4123       0.4105      -0.0018 ±0.0010  
+  *len_smart_removal_log                        0.9419       0.9450      +0.0031 ±0.0028  
+  *smart_removals_total                         0.9419       0.9450      +0.0031 ±0.0028  
+   len_smart_graveyard_snipe_log                0.3898       0.3917      +0.0019 ±0.0021  
+   smart_graveyard_snipes_total                 0.3898       0.3917      +0.0019 ±0.0021  
+   len_smart_attack_log                         1.7013       1.7048      +0.0035 ±0.0040  
+   smart_attacks_taken_total                    1.7013       1.7048      +0.0035 ±0.0040  
+   commander_in_play                            0.7481       0.7469      -0.0012 ±0.0015  
+   hand_size_no_max                             0.5780       0.5772      -0.0008 ±0.0010  
+   len_hand                                     3.7153       3.7274      +0.0121 ±0.0159  
+   len_smart_wipe_log                           0.9433       0.9452      +0.0019 ±0.0025  
+   smart_wipes_total                            0.9433       0.9452      +0.0019 ±0.0025  
+   jolrael_overdrive_x                          0.0040       0.0047      +0.0007 ±0.0010  
