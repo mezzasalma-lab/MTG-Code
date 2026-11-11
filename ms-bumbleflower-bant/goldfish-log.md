@@ -2,6 +2,8 @@
 
 > **Atualização 2026-11-11 (§ "Oakhollow Village"): o terreno rendia 2 mana (2 Forest + Oakhollow = 4) — bug do simulador, corrigido e validado** (comandante até o T3 **−2,50 ±0,32 pontos**: a mana fantasma saiu): [`resultados-ab/2026-11-11-oakhollow-mana/LEIAME.md`](resultados-ab/2026-11-11-oakhollow-mana/LEIAME.md)
 
+> **Atualização 2026-11-11 (§ "Proxy da Exotic Orchard"): decisão do usuário aplicada** (comandante até T3 +1,14 ±0,23 pontos no padrão): [`resultados-ab/2026-11-11-exotic-orchard/LEIAME.md`](resultados-ab/2026-11-11-exotic-orchard/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem de equipar determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
@@ -191,6 +193,15 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## 2026-11-11 — Proxy da Exotic Orchard (decisão do usuário; mesma do Kutzil, Megatron e Prismatic Bridge)
+
+Dados, scripts e escopo: `resultados-ab/2026-11-11-exotic-orchard/LEIAME.md`.
+- **Erro:** Antes: o simulador tratava a Exotic Orchard como terreno SEM cor nenhuma (`produces=set()`, tag `opponent_dependent`, leitura literal do oráculo com 0 terrenos de oponente).
+- **Correção:** `EXOTIC_ORCHARD_PROXY` (padrão ligada; desligada = `a62dc75` bit a bit): a Exotic Orchard conta como fonte das cores da identidade (G, W, U).
+- **Efeito** (pareado, N = 10.000, padrão / resiliência, em pontos): comandante até T3 **+1,14 ±0,23 / +1,05 ±0,22**, até T4 **+1,77 ±0,26 / +1,64 ±0,26**, até T5 +1,39 ±0,23 / +1,26 ±0,24; nunca conjurar -0,29 ±0,11 / -0,35 ±0,13; partidas idênticas ao antes 93,8% / 93,6%.
+- **Validação:** smoke 99 cartas; regressão 20.000 × 2 modos × 2 configurações: 0 exceções; bit-identidade 20.000 × 2: chave desligada idêntica em 40.000 de 40.000, ligada 30.598 sem a Orchard em campo idênticas e 9.402 com ela, 0 divergências; determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes.
+- **Os números anteriores do deck foram medidos com a Orchard sem cor** (em campo em 24% das partidas); linha de base não refeita. É um proxy de decisão do usuário, não a regra.
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
@@ -289,4 +300,3 @@ Origem: o pedido do usuário *"revisar e corrigir o Plaza e demais terrenos em t
 - **Validação:** smoke 99 cartas, 0 desconhecidas; **regressão 20.000 × 2 modos × 2 configurações: 0 exceções**; **bit-identidade 20.000 × 2: chaves desligadas idênticas ao `99fde54` em 40.000 de 40.000; ligadas, 30.511 sem Oakhollow em campo idênticas e 9.489 com ele; 0 divergências**; **determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes**.
 - **Os números anteriores do Bumbleflower (comandante, mesa limpa, etc.) foram medidos com a mana em dobro**: valem como "teto otimista" quando o Oakhollow estava em campo (~24% das partidas, 9.489 de 40.000 nos lotes de bit-identidade). **Não refiz** a linha de base inteira do deck.
 - **Não coberto:** só o Oakhollow foi lido à mão neste arquivo; o `{G}` da 3ª habilidade (`{G}, {T}`) ainda usa `color_sources` sem tipo de magia.
-

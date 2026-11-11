@@ -441,3 +441,6 @@ turns=10, 0 exceções, ~62s).
 
 Oráculo (scryfall-cache): `{T}: Add {C}.` 🐛 **corrigido**: o terreno era contado em `lands_available` E em `rocks_mana` (2 mana por 1 `{T}`; `OAKHOLLOW_COUNTS_ONCE`) · `{T}: Add {G}. Spend this mana only to cast a creature spell.` 🐛 **corrigido**: o `{G}` valia para qualquer magia e exigia `entered_turn < turn` (`OAKHOLLOW_MANA_RULES`) · `{G}, {T}: Put a +1/+1 counter on each Frog, Rabbit, Raccoon, or Squirrel you control that entered the battlefield this turn.` ✅ já existia; o `{G}` dessa habilidade ainda usa `color_sources` sem tipo de magia (**não corrigido, não medido**). Números e validação: `goldfish-log.md` (seção de 2026-11-11).
 
+## 2026-11-11 — Exotic Orchard: conferência do oráculo contra o simulador
+
+Oráculo (scryfall-cache): `{T}: Add one mana of any color that a land an opponent controls could produce.` 🐛 **proxy aplicado por decisão do usuário** (`EXOTIC_ORCHARD_PROXY`: fonte das cores da identidade, G, W, U); antes: o simulador tratava a Exotic Orchard como terreno SEM cor nenhuma (`produces=set()`, tag `opponent_dependent`, leitura literal do oráculo com 0 terrenos de oponente). Números e validação: `goldfish-log.md` (seção de 2026-11-11).
