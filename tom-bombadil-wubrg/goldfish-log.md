@@ -1,5 +1,7 @@
 # Tom Bombadil — goldfish log
 
+> **Partida manual #13 (2026-11-11) — bruto, 3 ledgers, 15 testes, rulings e regras conferidas:** [`resultados-ab/2026-11-11-partida-manual-13/LEIAME.md`](resultados-ab/2026-11-11-partida-manual-13/LEIAME.md)
+
 > **Partida manual #12 (2026-11-05) — bruto, ledgers, 19 testes, rulings e regras conferidas:** [`resultados-ab/2026-11-05-partida-manual-12/LEIAME.md`](resultados-ab/2026-11-05-partida-manual-12/LEIAME.md)
 
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
@@ -824,3 +826,23 @@ O usuário parou no T10 "para não se alongar".
 - **Linha legal do T9, pela leitura das regras (não jogada)**: com a Resurgent Belief no upkeep os 6 encantamentos voltam antes da compra, Jugan, Iroan e ITDBT ganham o 2º marcador no mesmo turno (cap. II no T9) e o cap. III cai no T10, onde a **Iroan III compra 2 cartas** (o Tom tem poder 4); o log tem o cap. II só no T10 e nenhuma compra da Iroan: o esquecimento custou um capítulo por Saga e essas 2 cartas. É a ordem de chamadas que o simulador tem (abaixo; só a ordem foi lida, não a lógica interna de `replenish_effect`).
 - **Sim × real**: `run_turn` do simulador é untap → `upkeep_step` (que chama `resolve_suspended`: a Resurgent Belief no upkeep) → compra → `precombat_lore_step` → ações (`try_nesting_grounds` só na fase principal, e só tira marcador de Saga abaixo do capítulo final). **Os erros do T8 e do T9 deste jogo não existem no simulador; nada a mudar no código.** Fold into Aether, Snuff Out, Soul Shatter, Austere Command e as fichas do oponente são 📊 (proxy): o simulador não tem oponente real.
 - **Não verificado nesta rodada**: cor da mana (só o total), pontos de vida, escolha de Ring-bearer a cada gatilho, se cada interação do gerador vale na hora ou na próxima magia (a Fold do T5 anulou a Jugan do T6: leitura de uma só ocorrência).
+
+### Partida manual #13 (2026-11-11) — 7 turnos; 0 violações provadas pelo log; 2 fichas esquecidas confirmadas pelo usuário · respostas em 2026-11-11
+
+Dados brutos, scripts, ledgers, testes e rulings em `tom-bombadil-wubrg/resultados-ab/2026-11-11-partida-manual-13/` (Regra #8; `LEIAME.md` tem o escopo). Simulador de interação On, **Mulligan (0)**, com foto da mão (Satsuki, Historian's Boon, Godless Shrine, The First Iroan Games, Command Tower, Wooded Foothills, The Cruelty of Gix). Oráculos do cache; rulings ao vivo de 23 cartas lidas antes de concluir; regras do `rules-cache/comprehensive-rules.txt` (CR de 2026-09-25, §18; nada baixado). O usuário parou no T7.
+
+| Turno | Evento principal |
+|---|---|
+| T1–T2 | Wooded Foothills → Ziatora's Proving Ground (virada) · Command Tower, **Satsuki** (2) |
+| T3 | Godless Shrine (desvirada) · **The First Iroan Games** (3): cap. I, Soldier |
+| T4 | Temple Garden · Bloom Tender · Iroan cap. II: 3 marcadores +1/+1 no Soldier (4/4) |
+| T5 | Serra's Sanctum · Iroan cap. III (marcador natural): compra **Goldberry e Fertile Ground** (o Soldier 4/4 já vale) · **Tom Bombadil** (5, com WUBRG exato) · **Historian's Boon** (4): Soldier · Satsuki dá o 4º marcador: cap. IV (**Angel** da Boon; Gold) · Iroan sacrificada → Tom traz **There and Back Again** (cap. I: o Anel tenta; **faltou o 2º Soldier**) · interação: **Song of the Dryads** no Tom |
+| T6 | Ketria Triome buscada (cap. II da There and Back Again; **clique do saber pulado**) · Fertile Ground (Soldier) · **Summon: Yojimbo** (Soldier; cap. I **exila a Song** e o Tom volta ao normal) · Goldberry · 8 de mana sem folga |
+| T7 | Cliques 2 → 3 na There and Back Again · **Goldberry tira 1 marcador (3 → 2) com o cap. III na pilha: a Saga NÃO é sacrificada** · Smaug (cap. III) · Tom traz **Binding the Old Gods** (Soldier) · **faltou o Angel da Boon** · sem mais jogadas, Gold sem uso |
+
+**Conferido e correto** (script + conta à mão; escopo no `LEIAME.md`): 1 terreno por turno de T1 a T7; **compras 16 = 16** (8, 1, 1, 1, 3, 1, 1); **mana fecha de T2 a T6** (T5: Tom 5 + Boon 4 = 9 de 10; T6: 8 de 8 supondo a Fertile Ground num terreno que vira depois); 1 gatilho do Tom por turno (T5 e T7).
+**Fichas (ledger do oráculo da Boon):** Soldier T5 **−1** (a There and Back Again é encantamento não-ficha entrando) e Angel T7 **−1** (o capítulo III disparou). O usuário confirmou os dois (*"Esqueci"*; *"Esqueci de criar o boon pq não sacrifiquei a saga"*). **O motivo dado no T7 está errado**: a Boon dispara quando o capítulo final **dispara**, não quando a Saga é sacrificada.
+**A jogada da Goldberry no T7 é legal** (pergunta do usuário *"É isso mesmo?"*): com o capítulo III na pilha, tirar o marcador (3 → 2) impede o sacrifício da Saga (CR 714.4: só sacrifica "se não é fonte de um capítulo que disparou e ainda não saiu da pilha", ao sair da pilha ela tem 2); o log tem essa ordem (a ficha do Smaug só aparece depois). **Depois** (com o gatilho do Tom na pilha) já seria tarde: as ações baseadas em estado rodam antes de a prioridade e do gatilho (CR 117.5, 704.3). Pelas rulings o próximo marcador dispara o capítulo III de novo (Smaug, Angel e o Tom 1×/turno). Limite: a ordem é a dos registros do log, que pode ser a dos cliques e não a da pilha.
+**Marcadores:** os 2 "incrementos extras" têm fonte: Iroan T5 (Satsuki, "{T}: Put a lore counter on each Saga you control", só em velocidade de feitiço) e There and Back Again T7 (1º clique = atraso do T6, cujo efeito, a Ketria Triome, foi aplicado; leitura minha, o usuário só confirmou *"Pulei, esqueci"*).
+**Em aberto (sem resposta):** quantas interações o gerador usou; se a Goldberry foi mesmo ativada em resposta ao capítulo III. **Não verificado:** vida (o log não a registra), cor da mana (só o total), em qual terreno a Fertile Ground ficou.
+

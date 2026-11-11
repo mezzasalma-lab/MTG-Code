@@ -1,0 +1,455 @@
+{
+ "Barbara Wright": {
+  "oracle_id": "0e61a062-f13a-4958-91de-909650c662a8",
+  "rulings": [
+   [
+    "2023-10-13",
+    "As a Saga with read ahead enters the battlefield, its controller chooses a number from one to that Saga's greatest chapter number. The Saga enters the battlefield with the chosen number of lore counters. Neither choosing the number nor putting the counters on the Saga use the stack, and neither can be responded to."
+   ],
+   [
+    "2023-10-13",
+    "Having multiple instances of read ahead doesn't cause anything unusual to happen. It functions the same way as having one instance of read ahead."
+   ],
+   [
+    "2023-10-13",
+    "The Doctor's companion ability allows you to have two commanders if one has the ability and the other is a legendary creature that is a Time Lord Doctor and has no other creature types. Creatures with the changeling ability, for example, can't be a second commander this way."
+   ],
+   [
+    "2023-10-13",
+    "Although Doctor's companion is a new variant of the partner ability, the rules for partner have not otherwise changed. Notably, Time Lord Doctors and cards with Doctor's companion do not interact with cards which have another partner ability."
+   ],
+   [
+    "2023-10-13",
+    "If your Commander deck has two commanders, you can include only cards whose own color identities are also found in your commanders' combined color identities."
+   ],
+   [
+    "2023-10-13",
+    "Both commanders start in the command zone, and the remaining 98 cards (or 58 cards in a Commander Draft game) of your deck are shuffled to become your library."
+   ],
+   [
+    "2023-10-13",
+    "Once the game begins, your two commanders are tracked separately. If you cast one, you won't have to pay an additional {2} the first time you cast the other. A player loses the game after having been dealt 21 combat damage from any one of them, not from both of them combined."
+   ],
+   [
+    "2023-10-13",
+    "If something refers to your commander while you have two commanders, it refers to one of them of your choice. If you are instructed to perform an action on your commander (e.g. put it from the command zone into your hand due to Command Beacon), you choose one of your commanders at the time the effect happens."
+   ],
+   [
+    "2023-10-13",
+    "An effect that checks whether you control your commander is satisfied if you control one or both of your two commanders."
+   ]
+  ]
+ },
+ "Binding the Old Gods": {
+  "oracle_id": "4050e5b3-07c2-461c-9852-a2c081c0198d",
+  "rulings": [
+   [
+    "2021-02-05",
+    "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   ],
+   [
+    "2021-02-05",
+    "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   ],
+   [
+    "2021-02-05",
+    "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the chapter III ability to trigger, but chapters I and II won't trigger again."
+   ],
+   [
+    "2021-02-05",
+    "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   ],
+   [
+    "2021-02-05",
+    "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   ],
+   [
+    "2021-02-05",
+    "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives more lore counters."
+   ],
+   [
+    "2021-02-05",
+    "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   ]
+  ]
+ },
+ "Bloom Tender": {
+  "oracle_id": "0c23fefe-9891-4dd8-9bb1-eebdb3274e31",
+  "rulings": [
+   [
+    "2025-11-17",
+    "Lands are normally colorless permanents, even if they tap for mana of a certain color."
+   ],
+   [
+    "2025-11-17",
+    "Bloom Tender can't produce colorless mana, even if you control a colorless permanent."
+   ],
+   [
+    "2025-11-17",
+    "For each color (white, blue, black, red, and green), check to see if you control a permanent of that color. You can count the same permanent for multiple colors. For example, if you control a green enchantment and a white-black creature, Bloom Tender's ability produces {W}{B}{G}."
+   ],
+   [
+    "2025-11-17",
+    "Bloom Tender won't produce more than one mana of any particular color. At most, it will produce {W}{U}{B}{R}{G}."
+   ],
+   [
+    "2025-11-17",
+    "The colors are white, blue, black, red, and green. Colorless is not a color."
+   ]
+  ]
+ },
+ "Clockspinning": {
+  "oracle_id": "3e1b32a9-27a4-4550-a644-ebe254e1f512",
+  "rulings": [
+   [
+    "2024-02-02",
+    "The mana value of a spell cast without paying its mana cost is determined by its mana cost, even though that cost wasn't paid."
+   ],
+   [
+    "2024-02-02",
+    "If you cast a card \"without paying its mana cost,\" such as with suspend, you can't choose to cast it for any alternative costs. You can, however, pay additional costs. If the card has any mandatory additional costs, you must pay those if you want to cast the card."
+   ],
+   [
+    "2024-02-02",
+    "If the card has {X} in its mana cost, you must choose 0 as the value of X when casting it without paying its mana cost."
+   ],
+   [
+    "2024-02-02",
+    "Suspend is a keyword that represents three abilities. The first is a static ability that allows you to exile the card from your hand with the specified number of time counters (the number before the dash) on it by paying its suspend cost (listed after the dash). The second is a triggered ability that removes a time counter from the suspended card at the beginning of each of your upkeeps. The third is a triggered ability that gives you the option to cast the card when the last time counter is removed."
+   ],
+   [
+    "2024-02-02",
+    "You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time."
+   ],
+   [
+    "2024-02-02",
+    "Cards exiled with suspend are exiled face up."
+   ],
+   [
+    "2024-02-02",
+    "Exiling a card with suspend isn't casting that card. This action doesn't use the stack and can't be responded to."
+   ],
+   [
+    "2024-02-02",
+    "If the spell requires any targets, those targets are chosen when the spell is finally cast, not when it's exiled."
+   ],
+   [
+    "2024-02-02",
+    "If an effect refers to a \"suspended card,\" that means a card that (1) has suspend, (2) is in exile, and (3) has one or more time counters on it."
+   ],
+   [
+    "2024-02-02",
+    "If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep."
+   ],
+   [
+    "2024-02-02",
+    "When the last time counter is removed, the second triggered ability of suspend (the one that lets you cast the card) triggers. It doesn't matter why the last time counter was removed or what effect removed it."
+   ],
+   [
+    "2024-02-02",
+    "If the second triggered ability is countered, the card can't be cast. It remains exiled with no time counters on it, and it's no longer suspended."
+   ],
+   [
+    "2024-02-02",
+    "Due to a recent rules change to suspend, you are no longer required to cast the suspended card as the second triggered ability of suspend resolves. Instead, as the second triggered ability resolves, you may cast the card. Timing permissions based on the card's type are ignored. If you don't cast the card, it remains exiled with no time counters on it, and it's no longer suspended."
+   ],
+   [
+    "2006-09-25",
+    "If the target is a permanent and it has no counter on it when Clockspinning resolves, nothing happens."
+   ],
+   [
+    "2006-09-25",
+    "Clockspinning can affect any kind of counter, not just a time counter. The type of counter isn't chosen until resolution. Whether to add or remove a counter isn't chosen until resolution."
+   ]
+  ]
+ },
+ "Command Tower": {
+  "oracle_id": "0895c9b7-ae7d-4bb3-af17-3b75deb50a25",
+  "rulings": [
+   [
+    "2020-11-10",
+    "If you don't have a commander, Command Tower's ability produces no mana."
+   ],
+   [
+    "2020-11-10",
+    "If you have two commanders, the ability adds one mana of any color in their combined color identities."
+   ],
+   [
+    "2020-11-10",
+    "If your commander is a card that has no colors in its color identity, Command Tower's ability produces no mana. It doesn't produce {C}."
+   ]
+  ]
+ },
+ "Fertile Ground": {
+  "oracle_id": "cf14d4e5-5965-45ad-97f7-26facf2884b5",
+  "rulings": []
+ },
+ "Godless Shrine": {
+  "oracle_id": "73864fcc-1bde-4bc0-831e-2b93e546e417",
+  "rulings": [
+   [
+    "2018-10-05",
+    "Unlike most dual lands, this land has two basic land types. It's not basic, so cards such as District Guide can't find it, but it does have the appropriate land types for effects such as that of Drowned Catacomb (from the Ixalan set)."
+   ],
+   [
+    "2018-10-05",
+    "If an effect puts this land onto the battlefield tapped, you may pay 2 life, but it still enters tapped."
+   ]
+  ]
+ },
+ "Goldberry, River-Daughter": {
+  "oracle_id": "fca3545a-2956-49f9-8465-1c8937deb294",
+  "rulings": [
+   [
+    "2023-06-16",
+    "To move a counter from one permanent to another, the counter is removed from the first permanent and put on the second. Any abilities that care about a counter being removed from or put onto a permanent will apply."
+   ]
+  ]
+ },
+ "Historian's Boon": {
+  "oracle_id": "ce1e6ae2-78c1-4bc6-bb73-bb025dd67a90",
+  "rulings": [
+   [
+    "2022-09-09",
+    "The final chapter ability of a Saga is the ability with the greatest chapter number among chapter abilities that Saga has."
+   ]
+  ]
+ },
+ "Ketria Triome": {
+  "oracle_id": "6bae00e8-06cf-4ac4-a1cc-757e454109fe",
+  "rulings": []
+ },
+ "Satsuki, the Living Lore": {
+  "oracle_id": "e41be9ad-3717-4f25-a8e0-c9947a2a0227",
+  "rulings": [
+   [
+    "2022-02-18",
+    "Putting a lore counter on a Saga will usually cause the next chapter ability to trigger. If it already has a number of lore counters on it equal to its final chapter number however, no abilities trigger. In particular, this doesn't cause the final chapter ability to trigger again."
+   ]
+  ]
+ },
+ "Serra's Sanctum": {
+  "oracle_id": "34187c71-6033-4058-aadc-2bc266f762be",
+  "rulings": []
+ },
+ "Song of the Dryads": {
+  "oracle_id": "7c3944fa-7c86-4979-85a9-86196aa94594",
+  "rulings": [
+   [
+    "2014-11-07",
+    "The enchanted permanent loses any card types, subtypes, and colors it previously had. It keeps any supertypes it had and its name remains unchanged. It gains “{T}: Add {G}” and loses all other abilities from its rules text. It will still have any abilities it gained from other effects."
+   ],
+   [
+    "2014-11-07",
+    "If the permanent was an Aura or an Equipment, it becomes unattached from whatever it was attached to."
+   ]
+  ]
+ },
+ "Summon: Yojimbo": {
+  "oracle_id": "ff70d743-280e-476f-a3b8-92026419419d",
+  "rulings": [
+   [
+    "2025-06-06",
+    "On turns where the effect of Summon: Yojimbo's second or third chapter ability is applying, your opponents can choose not to attack with a creature that must attack if able as long as there is no other player, planeswalker, or battle for that creature to attack that wouldn't require a cost."
+   ],
+   [
+    "2025-06-06",
+    "The value of X is determined only once, as Summon: Yojimbo's fourth chapter ability resolves."
+   ],
+   [
+    "2025-06-06",
+    "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the chapter III ability to trigger, but chapters I and II won't trigger again."
+   ],
+   [
+    "2025-06-06",
+    "As a Saga enters, its controller puts a lore counter on it. As your first main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   ],
+   [
+    "2025-06-06",
+    "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   ],
+   [
+    "2025-06-06",
+    "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives more lore counters."
+   ],
+   [
+    "2025-06-06",
+    "Due to a rules change that takes effect with this release (see below for details), a Saga that somehow loses all of its chapter abilities will not be sacrificed as a state-based action. It will also not gain a lore counter at the beginning of each of its controller's first main phases."
+   ],
+   [
+    "2025-06-06",
+    "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   ],
+   [
+    "2025-06-06",
+    "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   ],
+   [
+    "2025-06-06",
+    "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   ],
+   [
+    "2025-06-06",
+    "Saga creatures have two sections to their text boxes. The first section, above the type line, contains their chapter abilities, and the second section, below the type line, contains any other abilities (or italicized flavor text). Any abilities in the latter section aren't chapter abilities and apply no matter how many lore counters are on the creature."
+   ]
+  ]
+ },
+ "Temple Garden": {
+  "oracle_id": "f413a83d-a40d-434c-b20a-4c707c0527fa",
+  "rulings": [
+   [
+    "2025-11-17",
+    "If an effect puts this land onto the battlefield tapped, you may pay 2 life, but it still enters tapped."
+   ],
+   [
+    "2025-11-17",
+    "This land has two basic land types. It's not basic, so cards such as Tend the Sprigs can't find it, but it does have the appropriate land types for effects such as that of Great Arashin City (from the Tarkir: Dragonstorm release)."
+   ],
+   [
+    "2018-10-05",
+    "Unlike most dual lands, this land has two basic land types. It's not basic, so cards such as District Guide can't find it, but it does have the appropriate land types for effects such as that of Drowned Catacomb (from the Ixalan set)."
+   ]
+  ]
+ },
+ "The Cruelty of Gix": {
+  "oracle_id": "2b5c62af-af5f-4beb-9688-19604ca46918",
+  "rulings": [
+   [
+    "2022-09-09",
+    "You must search your library as the chapter II ability resolves, and you will lose 3 life."
+   ],
+   [
+    "2022-09-09",
+    "As a Saga with read ahead enters the battlefield, its controller chooses a number from one to that Saga’s greatest chapter number. The Saga enters the battlefield with the chosen number of lore counters. Neither choosing the number nor putting the counters on the Saga use the stack, and neither can be responded to."
+   ]
+  ]
+ },
+ "The First Iroan Games": {
+  "oracle_id": "58934f6d-1aa2-414c-85c6-955a1e26d675",
+  "rulings": [
+   [
+    "2020-01-24",
+    "A Gold token is a colorless Gold artifact token with \"Sacrifice this artifact: Add one mana of any color.\""
+   ],
+   [
+    "2020-01-24",
+    "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   ],
+   [
+    "2020-01-24",
+    "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   ],
+   [
+    "2020-01-24",
+    "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the III chapter ability to trigger, but I and II won't trigger again."
+   ],
+   [
+    "2020-01-24",
+    "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   ],
+   [
+    "2020-01-24",
+    "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   ],
+   [
+    "2020-01-24",
+    "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives lore counters. "
+   ],
+   [
+    "2020-01-24",
+    "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   ]
+  ]
+ },
+ "The Kami War": {
+  "oracle_id": "4d23b22b-31a5-4eec-b894-2dd5a7138c5a",
+  "rulings": [
+   [
+    "2022-02-18",
+    "Each face of a transforming double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a transforming double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   ],
+   [
+    "2022-02-18",
+    "Each transforming double-faced card in this set is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   ],
+   [
+    "2022-02-18",
+    "The mana value of a transforming double-faced card is the mana value of its front face, no matter which face is up."
+   ],
+   [
+    "2022-02-18",
+    "The back face of a transforming double-faced card usually has a color indicator that defines its color."
+   ],
+   [
+    "2022-02-18",
+    "A transforming double-faced card enters the battlefield with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or you cast it transformed, in which case it enters with its back face up."
+   ],
+   [
+    "2022-02-18",
+    "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter the battlefield at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Azusa's Many Journeys, the chapter III ability will cause it to be exiled and then remain in exile."
+   ]
+  ]
+ },
+ "There and Back Again": {
+  "oracle_id": "de4e5120-b958-4dcb-ad78-d0f726b7a881",
+  "rulings": [
+   [
+    "2023-06-16",
+    "As the Ring tempts you, you get an emblem named The Ring if you don't have one. Then your emblem gains its next ability and you choose a creature you control to become (or remain) your Ring-bearer."
+   ],
+   [
+    "2023-06-16",
+    "The Ring can tempt you even if you don't control a creature. In this case, abilities that trigger \"whenever the Ring tempts you\" will still trigger."
+   ],
+   [
+    "2023-06-16",
+    "If the creature you choose as your Ring-bearer was already your Ring-bearer, that still counts as choosing that creature as your Ring-bearer for the purpose of abilities that trigger \"whenever you choose a creature as your Ring-bearer\" or abilities that care about which creature was chosen as your Ring-bearer."
+   ],
+   [
+    "2023-06-16",
+    "The Ring gains its abilities in order from top to bottom. Once it gains an ability, it has that ability for the rest of the game."
+   ],
+   [
+    "2023-06-16",
+    "Each time the Ring tempts you, you must choose a creature if you control one."
+   ],
+   [
+    "2023-06-16",
+    "Each player can have only one emblem named The Ring and only one Ring-bearer at a time."
+   ],
+   [
+    "2023-06-16",
+    "Some spells and abilities that cause the Ring to tempt you may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. The Ring won't tempt you."
+   ]
+  ]
+ },
+ "Tom Bombadil": {
+  "oracle_id": "89a2d5bc-df06-47e8-8b4a-6d1f0a63c78d",
+  "rulings": [
+   [
+    "2023-06-16",
+    "An ability that triggers when another ability resolves, such as Tom Bombadil's triggered ability, triggers when all of its instructions (as modified by applicable replacement effects) have been followed and it has been removed from the stack. For example, if Tom Bombadil is returned to the battlefield by the final chapter ability of Elspeth Conquers Death, it will be on the battlefield in time to see that final chapter ability finish resolving and get removed from the stack, and thus Tom Bombadil's last ability will trigger."
+   ],
+   [
+    "2023-06-16",
+    "Damage dealt to creatures remains on those creatures until the cleanup step or until an effect removes that damage. If you control Tom Bombadil with at least 4 damage on it as well as a single Saga which has four or more lore counters on it, and that Saga leaves the battlefield later in the turn, Tom Bombadil will be destroyed. This will be true even if that Saga leaves the battlefield as a result of its final chapter ability leaving the stack; state-based actions will be checked before Tom Bombadil's triggered ability could get you another Saga."
+   ],
+   [
+    "2023-06-16",
+    "The final chapter ability of a Saga is the ability with the greatest chapter number among chapter abilities that Saga has."
+   ]
+  ]
+ },
+ "Wooded Foothills": {
+  "oracle_id": "6587a463-a108-4854-b6d1-944e89b8c8a4",
+  "rulings": []
+ },
+ "Ziatora's Proving Ground": {
+  "oracle_id": "f7e7b78c-c769-4720-8585-1874773eb342",
+  "rulings": []
+ },
+ "The Ring Tempts You": {
+  "oracle_id": "98737456-ac2a-420d-aa0e-778ba3a22cec",
+  "rulings": []
+ }
+}

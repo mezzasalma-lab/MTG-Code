@@ -1,4 +1,4 @@
-"""Baixa as rulings (Scryfall, ao vivo) das cartas da partida manual #12 (nomes lidos do próprio log) + The Ring Tempts You.
+"""Baixa as rulings (Scryfall, ao vivo) das cartas da partida manual #13 (nomes lidos do próprio log).
 Uso (da raiz do repositório): python3 -I <esta pasta>/orquestracao/baixar_rulings.py <saida.json>
 Fichas e cartas sem ruling entram com lista vazia; erro de rede entra como {"erro": ...} (nunca silencioso)."""
 import json, lzma, os, sys, time, urllib.parse, urllib.request
