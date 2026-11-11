@@ -1,0 +1,34 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1953 (97.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *bridge_first_cast_turn__ate_T3               0.0635       0.0725      +0.0090 ±0.0041  
+  *bridge_first_cast_turn__ate_T4               0.3595       0.3630      +0.0035 ±0.0026  
+  *bridge_first_cast_turn__ate_T5               0.7065       0.7115      +0.0050 ±0.0031  
+   bridge_first_cast_turn__ate_T6               0.8010       0.8015      +0.0005 ±0.0010  
+  *first_pw_hit_turn__ate_T4                    0.0295       0.0335      +0.0040 ±0.0028  
+   first_pw_hit_turn__ate_T5                    0.1675       0.1685      +0.0010 ±0.0024  
+   first_pw_hit_turn__ate_T6                    0.3750       0.3755      +0.0005 ±0.0017  
+   first_pw_hit_turn__nunca                     0.3920       0.3915      -0.0005 ±0.0022  
+   first_ult_turn__ate_T5                       0.0120       0.0130      +0.0010 ±0.0020  
+   first_ult_turn__ate_T6                       0.0645       0.0645      +0.0000 ±0.0024  
+   first_ult_turn__nunca                        0.6365       0.6375      +0.0010 ±0.0024  
+   lands_played_total                           6.2680       6.2650      -0.0030 ±0.0062  
+   pw_activations_total                        11.0950      11.0870      -0.0080 ±0.0981  
+   pw_draws_total                               7.4445       7.4155      -0.0290 ±0.1264  
+   pw_ultimates_used_total                      2.4435       2.4375      -0.0060 ±0.0536  
+   evolution_sage_proliferates                  1.2980       1.2825      -0.0155 ±0.0362  
+  *bridge_removed_count                         0.7470       0.7565      +0.0095 ±0.0058  
+  *removal_attempts_total                       0.9085       0.9200      +0.0115 ±0.0076  
+  *bridge_cast_count                            1.4655       1.4720      +0.0065 ±0.0051  
+  *bridge_in_play_end                           0.7185       0.7155      -0.0030 ±0.0028  
+   bridge_cast_turn__ate_T4                     0.1140       0.1115      -0.0025 ±0.0026  
+   urza_extra_lore_total                        0.0495       0.0480      -0.0015 ±0.0017  
+   urza_pw_cheated_total                        0.0575       0.0555      -0.0020 ±0.0024  
+   chain_veil_activations_total                 0.1475       0.1455      -0.0020 ±0.0028  
+   first_pw_hit_turn__ate_T3                    0.0040       0.0050      +0.0010 ±0.0014  
+   first_ult_turn__ate_T4                       0.0000       0.0005      +0.0005 ±0.0010  
+   protectors_removed_count                     0.0555       0.0550      -0.0005 ±0.0010  
+   bridge_no_hit                                0.1210       0.1075      -0.0135 ±0.0265  
+   gauntlet_extra_turns_total                   0.0895       0.0925      +0.0030 ±0.0060  
+   pw_life_lost_opponent_total                  1.1640       1.1520      -0.0120 ±0.0256  
