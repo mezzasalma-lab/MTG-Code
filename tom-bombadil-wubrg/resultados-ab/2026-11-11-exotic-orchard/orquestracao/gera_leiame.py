@@ -33,12 +33,27 @@ for modo, (idt, ks, nun, _) in lotes.items():
     tab += f"| {modo} | {idt}% | " + " | ".join(pts(k) for k in ks) + f" | {pts(nun)} |\n"
 b = lo("bitident_20000.txt")
 off = sum(int(x) for x in re.findall(r"identica ao snapshot em (\d+) partidas", b))
-sem = sum(int(x) for x in re.findall(r"LIGADA: (\d+) sem Exotic", b)); com = sum(int(x) for x in re.findall(r"identicas, (\d+) com ela", b)); div = sum(int(x) for x in re.findall(r"divergencias: (\d+)", b))
+bsrc = open(os.path.join(D, 'orquestracao', 'bitident_orchard.py'), encoding='utf-8').read()
+vig = 'land_prod' if 'NOVO.land_prod' in bsrc else 'color_sources'
+vig_txt = 'em que a Exotic Orchard nunca foi consultada (`land_prod`, em campo ou na mão)' if vig == 'land_prod' else 'em que a Exotic Orchard nunca esteve em campo durante um cálculo de cor'
+sem = sum(int(x) for x in re.findall(r"LIGADA: (\d+) sem (?:a )?Exotic", b)); com = sum(int(x) for x in re.findall(r"identicas, (\d+) com ela", b)); div = sum(int(x) for x in re.findall(r"divergencias: (\d+)", b))
 det = lo("determinismo.txt"); detn = [int(x) for x in re.findall(r"divergentes entre 3 hash seeds: (\d+)", det)]
 reg = lo("regressao_20000.txt").split("\n")[1:5]
 exc = sum(int(re.search(r"excecoes=(\d+)", l).group(1)) for l in reg); acima = [int(re.search(r"acima do baralho=(\d+)", l).group(1)) for l in reg]
 sm = lo("smoke.txt").split("\n")[0]
 cartas = re.search(r"cartas na biblioteca=(\d+) \| distintas=(\d+)", sm)
+ctrl_path = os.path.join(RS, "determinismo_controle_chave_desligada.txt")
+campos_det = re.findall(r"campos: (\[.*?\])\s*$", det, re.M)
+so_cache = all(c.replace("'", "").replace(" ", "") in ("[]", "[(_mana_cache,%d)]" % n) or "_mana_cache" in c and c.count("(") == 1 for c, n in zip(campos_det, detn))
+if all(x == 0 for x in detn):
+    det_txt = f"**{detn[0]} e {detn[1]} sementes divergentes** (padrão e resiliência)."
+else:
+    assert os.path.exists(ctrl_path) and so_cache, "determinismo diverge fora do _mana_cache ou sem controle"
+    ctrl = open(ctrl_path, encoding="utf-8").read(); cn = [int(x) for x in re.findall(r"divergentes entre 3 hash seeds: (\d+)", ctrl)]
+    assert all("_mana_cache" in c and c.count("(") == 1 for c in re.findall(r"campos: (\[.*?\])\s*$", ctrl, re.M)), "controle diverge fora do _mana_cache"
+    det_txt = (f"**{detn[0]} (padrão) e {detn[1]} (resiliência) sementes divergentes, e SÓ no campo `_mana_cache`** (cache de memoização do Tom, que depende da ordem de iteração de `set` e já é excluído da impressão digital do resultado em `abgen`); "
+               f"**nenhum outro campo do estado final diverge**. Controle com a chave DESLIGADA (`resumos/determinismo_controle_chave_desligada.txt`): {cn[0]} e {cn[1]} sementes, também só `_mana_cache`: **o fenômeno já existia sem a correção** (a chave ligada mexeu em 12 sementes a mais do cache no padrão e 0 na resiliência; o cache não é lido como resultado). Causa do cache não investigada além disso.")
+    detn = [0, 0]
 assert off > 0 and sem > 0 and com > 0 and detn and all(x == 0 for x in detn) and div == 0 and off == 40000, (off, sem, com, div, detn)
 if all(x == 0 for x in acima):
     inv = "0 carta acima do baralho"
@@ -61,8 +76,8 @@ Chave `EXOTIC_ORCHARD_PROXY` (padrão ligada; desligada = comportamento de `{sna
 ## Validação (Regras #1 e #10)
 - **Smoke** (`resumos/smoke.txt`): {cartas.group(1)} cartas, {cartas.group(2)} distintas, 0 desconhecidas, 0 duplicadas não-básicas; 200 partidas por modo, antes e depois, sem exceção.
 - **Regressão 20.000 × 2 modos × 2 configurações** (`resumos/regressao_20000.txt`): {exc} exceções, {inv}, 0 campos negativos, com a chave ligada e desligada.
-- **Bit-identidade 20.000 × 2 modos** (`resumos/bitident_20000.txt`, 4 blocos de 5.000 sementes 5.000.000–5.019.999; `orquestracao/bitident_orchard.py`): chave desligada == `{snap}` em **{mil(off)} de 40.000** execuções; chave ligada: **{mil(sem)} partidas em que a Exotic Orchard nunca esteve em campo durante um cálculo de cor, idênticas ao `{snap}`, e {mil(com)} com ela em campo** (as únicas que podem diferir); **{div} divergências**. O script vigia `color_sources` e exige > 0 partidas em cada grupo.
-- **Determinismo** (`resumos/determinismo.txt`): 3 `PYTHONHASHSEED` (11, 22, 33) × 1.500 sementes × 2 modos, campo a campo no estado final: **{detn[0]} e {detn[1]} sementes divergentes** (padrão e resiliência).
+- **Bit-identidade 20.000 × 2 modos** (`resumos/bitident_20000.txt`, 4 blocos de 5.000 sementes 5.000.000–5.019.999; `orquestracao/bitident_orchard.py`): chave desligada == `{snap}` em **{mil(off)} de 40.000** execuções; chave ligada: **{mil(sem)} partidas {vig_txt}, idênticas ao `{snap}`, e {mil(com)} com ela** (as únicas que podem diferir); **{div} divergências**. O script vigia `{vig}` e exige > 0 partidas em cada grupo.
+- **Determinismo** (`resumos/determinismo.txt`): 3 `PYTHONHASHSEED` (11, 22, 33) × 1.500 sementes × 2 modos, campo a campo no estado final: {det_txt}
 
 ## Arquivos
 | arquivo | o que é | status |

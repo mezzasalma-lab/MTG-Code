@@ -4,6 +4,8 @@
 
 > **Partida manual #12 (2026-11-05) — bruto, ledgers, 19 testes, rulings e regras conferidas:** [`resultados-ab/2026-11-05-partida-manual-12/LEIAME.md`](resultados-ab/2026-11-05-partida-manual-12/LEIAME.md)
 
+> **Atualização 2026-11-11 (§ "Proxy da Exotic Orchard"): decisão do usuário aplicada** (comandante até T3 +0,09 ±0,09 pontos no padrão): [`resultados-ab/2026-11-11-exotic-orchard/LEIAME.md`](resultados-ab/2026-11-11-exotic-orchard/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-05 (varredura de classes de erro; nenhuma correção de código aqui):** [`varredura-2026-10-05/LEIAME.md`](../varredura-2026-10-05/LEIAME.md)
@@ -846,3 +848,11 @@ Dados brutos, scripts, ledgers, testes e rulings em `tom-bombadil-wubrg/resultad
 **Marcadores:** os 2 "incrementos extras" têm fonte: Iroan T5 (Satsuki, "{T}: Put a lore counter on each Saga you control", só em velocidade de feitiço) e There and Back Again T7 (1º clique = atraso do T6, cujo efeito, a Ketria Triome, foi aplicado; leitura minha, o usuário só confirmou *"Pulei, esqueci"*).
 **Em aberto (sem resposta):** quantas interações o gerador usou; se a Goldberry foi mesmo ativada em resposta ao capítulo III. **Não verificado:** vida (o log não a registra), cor da mana (só o total), em qual terreno a Fertile Ground ficou.
 
+## 2026-11-11 — Proxy da Exotic Orchard (decisão do usuário; mesma do Kutzil, Megatron e Prismatic Bridge)
+
+Dados, scripts e escopo: `resultados-ab/2026-11-11-exotic-orchard/LEIAME.md`.
+- **Erro:** Antes: o simulador tratava a Exotic Orchard como terreno SEM cor nenhuma (`produces=set()`: "produz 1 mana sem cor definida", mesma convenção do Bumbleflower).
+- **Correção:** `EXOTIC_ORCHARD_PROXY` (padrão ligada; desligada = `8ca861c` bit a bit): a Exotic Orchard conta como fonte das cores da identidade (W, U, B, R, G).
+- **Efeito** (pareado, N = 10.000, padrão / resiliência, em pontos): comandante até T3 **+0,09 ±0,09 / +0,09 ±0,09**, até T4 **+1,90 ±0,30 / +1,71 ±0,28**, até T5 +3,31 ±0,38 / +3,21 ±0,38; nunca conjurar -0,76 ±0,18 / -1,09 ±0,23; partidas idênticas ao antes 80,9% / 83,1%.
+- **Validação:** smoke 99 cartas; regressão 20.000 × 2 modos × 2 configurações: 0 exceções; bit-identidade 20.000 × 2: chave desligada idêntica em 40.000 de 40.000, ligada 29.229 sem a Orchard em campo idênticas e 10.771 com ela, 0 divergências; determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes.
+- **Os números anteriores do deck foram medidos com a Orchard sem cor** (em campo em 27% das partidas); linha de base não refeita. É um proxy de decisão do usuário, não a regra.

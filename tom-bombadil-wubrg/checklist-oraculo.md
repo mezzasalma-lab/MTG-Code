@@ -389,3 +389,7 @@ Nenhuma linha de `tom_goldfish_v1.py` foi alterada. Rulings ao vivo de 29 cartas
 | In the Darkness Bind Them / The Ring Tempts You | cap. I–III: Wraith + o Anel tenta; IV: ganha controle por 1 turno + o Anel tenta. CR 701.54c: a partir do 2º tempt o Ring-bearer que ataca compra e descarta; do 3º, bloqueador é sacrificado; do 4º, perda de vida | o loot do Anel não foi auditado nesta rodada |
 | Fold into Aether, Snuff Out, Soul Shatter, Austere Command | interações do oponente simulado (Fold: anula a magia e o dono pode pôr uma criatura da mão; Austere: modos em sequência, ruling 2020-11-10; Soul Shatter: escolha no MV mais alto, ruling 2020-09-25) | 📊 proxy: o simulador não tem oponente real |
 | Fichas Walker (Zombie 2/2) e Plant Warrior (4/2 alcance) | fichas do oponente simulado (consultadas ao vivo no Scryfall) | 📊 proxy |
+
+## 2026-11-11 — Exotic Orchard: conferência do oráculo contra o simulador
+
+Oráculo (scryfall-cache): `{T}: Add one mana of any color that a land an opponent controls could produce.` 🐛 **proxy aplicado por decisão do usuário** (`EXOTIC_ORCHARD_PROXY`: fonte das cores da identidade, W, U, B, R, G); antes: o simulador tratava a Exotic Orchard como terreno SEM cor nenhuma (`produces=set()`: "produz 1 mana sem cor definida", mesma convenção do Bumbleflower). Números e validação: `goldfish-log.md` (seção de 2026-11-11).

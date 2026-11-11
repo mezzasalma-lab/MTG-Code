@@ -8,3 +8,5 @@
 23:22:37 rodada2 inicio
 23:41:14 rodada2 bitident fim
 23:42:51 rodada2 determinismo fim
+23:44:16 rodada2 determinismo controle fim
+23:44:16 rodada2 tudo fim
