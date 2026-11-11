@@ -1,0 +1,4 @@
+N = 5000 x 2 modos (sementes 5000000..5004999): chave DESLIGADA identica ao f9b8905 em 10000 partidas; chave LIGADA: 7370 sem desconto e identicas, 2630 com desconto (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5005000..5009999): chave DESLIGADA identica ao f9b8905 em 10000 partidas; chave LIGADA: 7416 sem desconto e identicas, 2584 com desconto (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5010000..5014999): chave DESLIGADA identica ao f9b8905 em 10000 partidas; chave LIGADA: 7294 sem desconto e identicas, 2706 com desconto (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5015000..5019999): chave DESLIGADA identica ao f9b8905 em 10000 partidas; chave LIGADA: 7435 sem desconto e identicas, 2565 com desconto (podem diferir); divergencias: 0

@@ -1,0 +1,23 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1475 (73.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0180       0.0170      -0.0010 ±0.0014  
+  *commander_cast_turn__ate_T3                  0.2020       0.2375      +0.0355 ±0.0081  
+  *commander_cast_turn__ate_T4                  0.6365       0.6685      +0.0320 ±0.0077  
+  *commander_cast_turn__ate_T5                  0.9055       0.9110      +0.0055 ±0.0032  
+  *commander_cast_turn__ate_T6                  0.9500       0.9530      +0.0030 ±0.0024  
+  *ulalek_copies_total                          1.5670       1.6770      +0.1100 ±0.0223  
+  *ulalek_cc_payments_safe                      1.5225       1.6315      +0.1090 ±0.0222  
+  *finisher_resolved_total                      0.4475       0.5190      +0.0715 ±0.0186  
+  *len_battlefield                             14.7015      14.9635      +0.2620 ±0.0695  
+  *first_finisher_turn__nunca                   0.7590       0.7345      -0.0245 ±0.0069  
+  *spell_token_copies_total                     1.7600       1.8950      +0.1350 ±0.0387  
+  *cast_trigger_extra_resolutions_total         0.5580       0.6180      +0.0600 ±0.0174  
+  *tutors_used_total                            0.4920       0.5195      +0.0275 ±0.0098  
+  *len_library                                 80.0145      79.8715      -0.1430 ±0.0578  
+  *cards_drawn_extra                            2.2385       2.3450      +0.1065 ±0.0455  
+  *first_creature_discount_events_total         0.0895       0.1005      +0.0110 ±0.0052  
+  *proxy_removal_total                          0.2915       0.3150      +0.0235 ±0.0119  
+  *lands_played_this_turn                       0.5045       0.5160      +0.0115 ±0.0061  
+  *first_finisher_turn__ate_T6                  0.0345       0.0410      +0.0065 ±0.0035  

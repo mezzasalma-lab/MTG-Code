@@ -1,5 +1,7 @@
 # Goldfish Log — Ulalek, Fused Atrocity
 
+> **Atualização 2026-11-11 (§ "Eldrazi Temple e Shrine"): os dois terrenos contavam 1 mana — corrigido e validado** (comandante até o T4 **+3,31 ±0,35 pontos**; finisher nunca resolvido −2,20 ±0,30): [`resultados-ab/2026-11-11-terrenos-restritos/LEIAME.md`](resultados-ab/2026-11-11-terrenos-restritos/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + Ruins of Oran-Rief entra virada (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
@@ -1173,6 +1175,16 @@ números abaixo já refletem essas correções, não a primeira leitura do log.
 - **Ajustes a considerar:** nenhum de lista — reforça que Roaming Throne, apesar de mais fraco nesse deck do que em decks de gatilho-em-campo puro (achado da Simulação #1), ainda é uma bomba real quando combinado com Myriad (Chittering Dispatcher) — os dois juntos multiplicam de forma não-óbvia (dobra o gatilho de ataque E o gatilho de saída de campo, dois pontos de dobra independentes na mesma carta).
 
 ---
+
+## 2026-11-11 — Eldrazi Temple e Shrine of the Forsaken Gods contavam 1 mana (classe (q) da Regra #10)
+
+Origem: o pedido do usuário *"revisar e corrigir o Plaza e demais terrenos em todos os simuladores"*. Dados, scripts e escopo: `resultados-ab/2026-11-11-terrenos-restritos/LEIAME.md`.
+- **Erro:** o docstring do arquivo tratava Eldrazi Temple (`{C}{C}` só para magia de Eldrazi incolor) e Shrine of the Forsaken Gods (`{C}{C}` só para magia incolor, com 7+ terrenos) como "terreno genérico de 1 mana". Não é impossibilidade estrutural: o tipo e a cor da magia estão no cache.
+- **Correção:** `RESTRICTED_LAND_BONUS` (padrão ligada; desligada = `f9b8905` bit a bit): desconto por magia no `effective_cost` = `min(Temples/Shrines não usados no turno, custo // 2)`.
+- **Efeito** (pareado, N = 10.000, padrão / resiliência): comandante até T3 **+2,69 ±0,32 / +2,60 ±0,31 pontos**, até T4 **+3,31 ±0,35 / +3,47 ±0,37**; finishers resolvidos +0,053 ±0,006 / +0,038 ±0,005 por partida; nunca resolver um finisher −2,20 ±0,30 / −1,76 ±0,29 pontos; partidas idênticas ao antes 74,6% / 75,9%.
+- **Validação:** smoke 99 cartas; **regressão 20.000 × 2 modos × 2 configurações: 0 exceções** (o invariante genérico "carta acima do baralho" dispara em ~70%/55% das partidas com a chave ligada **e** desligada e já disparava assim em 2026-10-05: limite do invariante neste simulador, provavelmente por causa das cópias de feitiço; não prova que nenhuma carta passa do baralho); **bit-identidade 20.000 × 2: chave desligada idêntica ao `f9b8905` em 40.000 de 40.000; ligada, 29.515 sem desconto idênticas e 10.485 com desconto; 0 divergências**; **determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes**.
+- **Os números anteriores do Ulalek foram medidos com 1 mana por Temple/Shrine**: subestimam o deck quando eles estavam em campo (~26% das partidas, 10.485 de 40.000). **Não refiz** a linha de base inteira.
+- **Não coberto:** as ativadas de Eldrazi incolor pagas com o `{C}{C}` do Temple; Cascading Cataracts, Corrupted Crossroads e a vida dos painlands/City of Brass/Mana Confluence (não alterados).
 
 ## Partida #2 — AAAA-MM-DD
 

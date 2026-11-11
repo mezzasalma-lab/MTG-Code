@@ -450,3 +450,10 @@ of Oran-Rief avg 0.66 contadores/partida.
   of the Heart (opponent-dependent), Sire of Seven Deaths (combate puro),
   Morophon (sem modelo de pip de cor / sem P/T por criatura), Void
   Grafter, Liberator.
+
+## 2026-11-11 — Eldrazi Temple e Shrine of the Forsaken Gods: conferência cláusula a cláusula do oráculo contra o simulador
+
+**Eldrazi Temple** (oráculo do `scryfall-cache`): `{T}: Add {C}.` ✅ · `{T}: Add {C}{C}. Spend this mana only to cast colorless Eldrazi spells or activate abilities of colorless Eldrazi.` 🐛 **corrigido para o lançamento de magias** (desconto por magia, `RESTRICTED_LAND_BONUS`); **ativadas de Eldrazi incolor pagas com esse `{C}{C}`: não modeladas** (o gasto das ativadas é `spend_mana` direto).
+**Shrine of the Forsaken Gods:** `{T}: Add {C}.` ✅ · `{T}: Add {C}{C}. Spend this mana only to cast colorless spells. Activate only if you control seven or more lands.` 🐛 **corrigido para magias incolores com 7+ terrenos**; ativadas incolores: não modeladas.
+Números e validação: `goldfish-log.md` (seção de 2026-11-11).
+
