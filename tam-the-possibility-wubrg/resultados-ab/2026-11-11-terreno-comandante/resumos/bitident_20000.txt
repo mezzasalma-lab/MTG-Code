@@ -1,0 +1,4 @@
+N = 5000 x 2 modos (sementes 5000000..5004999): chave DESLIGADA identica ao d4a122b em 10000 partidas; chave LIGADA: 8562 sem troca e identicas, 1438 com troca (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5005000..5009999): chave DESLIGADA identica ao d4a122b em 10000 partidas; chave LIGADA: 8395 sem troca e identicas, 1605 com troca (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5010000..5014999): chave DESLIGADA identica ao d4a122b em 10000 partidas; chave LIGADA: 8604 sem troca e identicas, 1396 com troca (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5015000..5019999): chave DESLIGADA identica ao d4a122b em 10000 partidas; chave LIGADA: 8631 sem troca e identicas, 1369 com troca (podem diferir); divergencias: 0
