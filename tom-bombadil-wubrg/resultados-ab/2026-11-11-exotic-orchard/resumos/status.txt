@@ -7,3 +7,4 @@
 22:06:05 tudo fim
 23:22:37 rodada2 inicio
 23:41:14 rodada2 bitident fim
+23:42:51 rodada2 determinismo fim
