@@ -1,0 +1,30 @@
+== fim do T1 (* = virado)
+  battlefield     (1): Tropical Island
+  hand            (7): Altar of the Brood, An Offer You Can't Refuse, Breeding Pool, Forest, Forest, Forest, Plaza of Heroes
+  graveyard       (0): 
+  opponentsCards  (0): 
+== fim do T2 (* = virado)
+  battlefield     (2): Breeding Pool*, Tropical Island
+  hand            (7): Altar of the Brood, An Offer You Can't Refuse, Forest, Forest, Forest, Plaza of Heroes, Urza's Saga
+  graveyard       (0): 
+  opponentsCards  (0): 
+== fim do T3 (* = virado)
+  battlefield     (4): Altar of the Brood, Breeding Pool*, Forest, Tropical Island
+  hand            (6): An Offer You Can't Refuse, Didn't Say Please, Forest, Forest, Plaza of Heroes, Urza's Saga
+  graveyard       (0): 
+  opponentsCards  (0): 
+== fim do T4 (* = virado)
+  battlefield     (6): Altar of the Brood, Breeding Pool*, Forest*, Forest*, The Wise Mothman, Tropical Island*
+  hand            (4): Evolution Witness, Forest, Nature's Lore, Six
+  graveyard       (6): An Offer You Can't Refuse, Didn't Say Please, Forest, Plaza of Heroes, Rejuvenating Springs, Urza's Saga
+  opponentsCards  (1): Dark Deal
+== fim do T5 (* = virado)
+  battlefield     (8): Altar of the Brood, Breeding Pool*, Forest, Forest*, Forest*, Six, The Wise Mothman*[+1 / +1x8], Tropical Island
+  hand            (3): Evolution Witness, Nature's Lore, Overgrown Tomb
+  graveyard       (7): An Offer You Can't Refuse, Didn't Say Please, Forest, Gyre Sage, Plaza of Heroes, Rejuvenating Springs, Urza's Saga
+  opponentsCards  (1): Dark Deal
+== fim do T6 (* = virado)
+  battlefield     (12): Altar of the Brood, Breeding Pool*, Evolution Witness[+1 / +1x5], Forest*, Forest*, Forest*, Overgrown Tomb*, Rejuvenating Springs, Six[+1 / +1x4], The Wise Mothman*[+1 / +1x8], Tropical Island, Zagoth Triome*
+  hand            (6): An Offer You Can't Refuse, Didn't Say Please, Gyre Sage, Memory Erosion, Plaza of Heroes, Urza's Saga
+  graveyard       (2): Forest, Nature's Lore
+  opponentsCards  (1): Dark Deal
