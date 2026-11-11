@@ -79,6 +79,8 @@ LANDFALL_PAYOFF_FIRST = True          # conjura Ruin Crab / Icetill Explorer / E
 FIRST_TURN_SKIPS_DRAW = False         # Commander e' multijogador: ninguem pula a compra do T1 (so' o 1o jogador no 1x1, CR 103.8a). True = o comportamento ate' 2026-10-20 (commit 4d85fbc), so' pra A/B e bit-identidade
 LANDFALL_PAYOFFS = frozenset({"Ruin Crab", "Icetill Explorer", "Evolution Sage"})
 LANDFALL_GUARD_DRYRUN = True             # True (padrao desde 2026-10-07) = o payoff so' passa na frente do terreno se um ensaio a seco do resto da fase mostrar que nenhuma jogada nao-terreno se perde (comandante, rocha, ...), como nos outros 5 simuladores; False = guarda ARITMETICA do comandante (custo <= mana de agora + 1), cega a cor/landfall/land drop extra: foi a arquivada em 2026-10-06 e superestimou o efeito (Ruin Crab +21% contra +13%)
+COMMANDER_LAND_OVERRIDES_ANYWHERE = 0   # diagnostico: trocas de terreno aplicadas EM QUALQUER ESTADO, inclusive nas copias do ensaio a seco da guarda do landfall (o contador do estado real nao as ve); nao afeta o jogo
+PLAZA_ENABLES_COMMANDER = True         # True (padrao desde 2026-11-11) = se o comandante esta no comando, NAO e' conjuravel agora e um terreno da mao/cemiterio (nao fetch, nao entra virado) o deixaria conjuravel NESTE turno (ensaio a seco com o terreno em campo e remocao imediata), joga esse terreno em vez do de maior pontuacao: a linha que o usuario errou no T4 da partida manual #3 (Plaza of Heroes da {B} so' para magia lendaria; o simulador a pontuava -4 e jogava um terreno G/U, 6,7% das partidas); False = o comportamento de c59226f, bit a bit
 
 # =========================================================
 # CARD DATABASE
@@ -450,6 +452,7 @@ class GameState:
     cards_in_hand_by_turn: dict = field(default_factory=dict)
     library_by_turn: dict = field(default_factory=dict)
     tapped_land_first_plays_total: int = 0
+    commander_land_overrides_total: int = 0      # vezes em que PLAZA_ENABLES_COMMANDER trocou o terreno escolhido por um que libera o comandante
     tapped_land_skipped_for_play_total: int = 0
     orb_mills_total: int = 0
     ascension_loops: int = 0
@@ -2556,6 +2559,30 @@ def tapped_first_pick(state: GameState, cands: list) -> Optional[str]:
     return pick
 
 
+def commander_enabling_land(state: GameState, cands: list) -> Optional[str]:
+    """PLAZA_ENABLES_COMMANDER: o comandante esta no comando, nao e' conjuravel com o campo atual e algum terreno JOGAVEL AGORA (entra desvirado; nem fetch nem MDFC) o deixaria conjuravel neste turno.
+    Ensaio a seco (CLAUDE.md Regra #10): o terreno entra em campo so' para a checagem e sai em seguida, com `next_uid` restaurado. Devolve o de maior `land_play_score` entre os que liberam, ou None."""
+    if not state.commander_in_cz or can_cast_name(state, COMMANDER, 0):
+        return None
+    ok = []
+    for c in cands:
+        cc = CARD_DB[c]
+        if "land" not in cc.types or "mdfc" in cc.tags or "fetch" in cc.tags or "fabled_passage" in cc.tags or land_enters_tapped(state, c):
+            continue
+        uid0 = state.next_uid
+        tmp = mk_perm(state, c)
+        tmp.entered_turn = state.turn - 1
+        state.battlefield.append(tmp)
+        try:
+            libera = can_cast_name(state, COMMANDER, 0)
+        finally:
+            state.battlefield.remove(tmp)
+            state.next_uid = uid0
+        if libera:
+            ok.append(c)
+    return max(ok, key=lambda c: (land_play_score(state, c), c)) if ok else None
+
+
 def graveyard_land_candidates(state: GameState) -> list:
     """Terrenos que posso jogar do cemiterio: Icetill Explorer (todos) e Muldrotha (1 por turno, tipo terreno). MDFC (Agadeem): jogavel como terreno de qualquer zona."""
     ok = has_perm(state, "Icetill Explorer") or (has_perm(state, "Muldrotha, the Gravetide") and "land" not in state.muldrotha_used)
@@ -2605,6 +2632,13 @@ def play_land_phase(state: GameState):
                 pick = None
         if pick is None:
             pick = max(cands, key=lambda c: (land_play_score(state, c), c))
+        if PLAZA_ENABLES_COMMANDER:
+            alt = commander_enabling_land(state, cands)
+            if alt is not None and alt != pick and not state.ghost:       # modo ghost: o ensaio roda, o resultado e' ignorado (prova que ele nao tem efeito colateral)
+                state.commander_land_overrides_total += 1
+                global COMMANDER_LAND_OVERRIDES_ANYWHERE
+                COMMANDER_LAND_OVERRIDES_ANYWHERE += 1
+                pick = alt
         if pick in hand_lands:
             state.hand.remove(pick)
         else:

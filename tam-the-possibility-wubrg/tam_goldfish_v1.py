@@ -52,6 +52,8 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 # =========================================================
 FETCH_LANDS_ENABLED = True
 TAPPED_LAND_FIRST_ENABLED = True
+COMMANDER_LAND_OVERRIDES_ANYWHERE = 0   # diagnostico: trocas de terreno aplicadas EM QUALQUER estado (inclusive copias de ensaio a seco); nao afeta o jogo
+COMMANDER_ENABLING_LAND = True          # True (padrao desde 2026-11-11) = se a Tam esta no comando, NAO e' conjuravel agora e um terreno da mao/impulso/cemiterio (nao fetch, nao entra virado) a deixaria conjuravel NESTE turno (ensaio a seco com o terreno em campo e remocao imediata), joga esse terreno em vez do de maior pontuacao (Plaza of Heroes da' qualquer cor so' para magia lendaria e era pontuada como incolor; o ensaio do terreno virado ignora o comandante); False = o comportamento de d4a122b, bit a bit
 TAPPED_LAND_FIRST_MAX_TURN = 2
 TAPPED_LAND_FIRST_GHOST = False          # so' validacao: roda o ensaio mas joga o padrao (a chave ligada + GHOST == chave desligada prova que o ensaio nao tem efeito colateral)
 NUM_OPPONENTS = 3
@@ -1719,6 +1721,28 @@ def tapped_first_pick(state: GameState, cands: list) -> Optional[str]:
     return pick
 
 
+def commander_enabling_land(state: GameState, cands: list) -> Optional[str]:
+    """COMMANDER_ENABLING_LAND: a Tam esta no comando, nao e' conjuravel com o campo atual e algum terreno JOGAVEL AGORA (entra desvirado, nao e' fetch) a deixaria conjuravel neste turno.
+    Ensaio a seco (CLAUDE.md Regra #10): o terreno entra em campo so' para a checagem e sai em seguida, com `next_uid` restaurado. Devolve o de maior `land_play_score` entre os que liberam, ou None."""
+    if not state.commander_in_cz or can_cast_name(state, "Tam, the Possibility", "cz"):
+        return None
+    ok = []
+    for c in cands:
+        if LANDS[c]["kind"] == "fetch" or land_enters_tapped(state, c):
+            continue
+        uid0 = state.next_uid
+        tmp = mk_perm(state, c)
+        state.battlefield.append(tmp)
+        try:
+            libera = can_cast_name(state, "Tam, the Possibility", "cz")
+        finally:
+            state.battlefield.remove(tmp)
+            state.next_uid = uid0
+        if libera:
+            ok.append(c)
+    return max(ok, key=lambda c: (land_play_score(state, c), c)) if ok else None
+
+
 def play_land_phase(state: GameState):
     while state.lands_played_this_turn < land_drops_available(state) and not state.game_over:
         cands = []
@@ -1742,6 +1766,13 @@ def play_land_phase(state: GameState):
                 pick = None
         if pick is None:
             pick = max(cands, key=lambda c: (land_play_score(state, c), c))
+        if COMMANDER_ENABLING_LAND:
+            alt = commander_enabling_land(state, cands)
+            if alt is not None and alt != pick and not state.ghost:       # modo ghost: o ensaio roda, o resultado e' ignorado (prova que ele nao tem efeito colateral)
+                state.m["commander_land_overrides"] += 1
+                global COMMANDER_LAND_OVERRIDES_ANYWHERE
+                COMMANDER_LAND_OVERRIDES_ANYWHERE += 1
+                pick = alt
         if pick in state.hand:
             state.hand.remove(pick)
         elif pick in state.impulse:

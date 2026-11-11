@@ -572,8 +572,8 @@ def rocks_mana(state: GameState) -> int:
         total += sum(1 for p in state.battlefield if is_creature_now(state, p) and p.counters > 0
                      and p.entered_turn < state.turn and p.card not in ("Birds of Paradise", "Elvish Mystic",
                                                                           "Devoted Druid", "Faeburrow Elder"))
-    if any(p.card == "Oakhollow Village" for p in state.battlefield):
-        total += 1  # {T}: Add G (so' pra criatura) -- aproximado como mana geral disponivel
+    if not OAKHOLLOW_COUNTS_ONCE and any(p.card == "Oakhollow Village" for p in state.battlefield):
+        total += 1  # {T}: Add G (so' pra criatura) -- aproximado como mana geral disponivel (comportamento antigo: contava o terreno 2 vezes)
     return total
 
 
@@ -600,7 +600,8 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
-def color_sources(state: GameState, color: str) -> int:
+def color_sources(state: GameState, color: str, creature_spell: bool = True) -> int:
+    """`creature_spell`: a magia a pagar e' de criatura (o {G} do Oakhollow Village so' vale para elas; padrao True = comportamento antigo para os chamadores sem magia)."""
     n = 0
     for p in state.battlefield:
         if p.uid == state.tapped_land_this_turn:
@@ -615,6 +616,9 @@ def color_sources(state: GameState, color: str) -> int:
         elif color == "G" and any(p.card == "Rishkar, Peema Renegade" for p in state.battlefield) \
                 and is_creature_now(state, p) and p.counters > 0 and p.entered_turn < state.turn:
             n += 1
+        elif OAKHOLLOW_MANA_RULES and color == "G" and p.card == "Oakhollow Village":
+            if creature_spell:
+                n += 1      # terreno: sem enjoo de invocacao; o {G} so' paga magia de criatura
         elif color == "G" and p.card in ("Elvish Mystic", "Devoted Druid", "Oakhollow Village") \
                 and p.entered_turn < state.turn:
             n += 1
@@ -626,13 +630,14 @@ def color_sources(state: GameState, color: str) -> int:
 def has_color_sources_for(state: GameState, name: str) -> bool:
     if name == "Obscuring Haze" and state.commander_in_play:
         return True  # "without paying its mana cost" -- dispensa cor tambem
+    cre = is_creature_card(name)
     for color, needed in CARD_DB[name].pips.items():
         if "/" in color:
             a, b = color.split("/")
-            if color_sources(state, a) < needed and color_sources(state, b) < needed:
+            if color_sources(state, a, cre) < needed and color_sources(state, b, cre) < needed:
                 return False
             continue
-        if color_sources(state, color) < needed:
+        if color_sources(state, color, cre) < needed:
             return False
     return True
 
@@ -1227,6 +1232,15 @@ def land_enters_tapped(state: GameState, name: str) -> bool:
 # total das cartas que saem da mao com cada candidato. Empate -> o virado. Com a chave em False o comportamento e' o antigo, bit a bit.
 # Correcao de 2026-10-05 (varredura de determinismo entre processos): iterar um `set`/`frozenset` de str segue a ordem do hash, que muda com PYTHONHASHSEED; a mesma semente dava
 # resultados diferentes em processos diferentes. Com a chave em False o laco antigo (ordem do hash) volta.
+# ---------------------------------------------------------------------------
+# Oakhollow Village (2026-11-11; pedido do usuario: "revisar e corrigir o Plaza e demais terrenos em todos os simuladores"). Oraculo: "{T}: Add {C}. / {T}: Add {G}. Spend this mana only to cast a creature
+# spell. / {G}, {T}: Put a +1/+1 counter on each Frog, Rabbit, Raccoon, or Squirrel you control that entered the battlefield this turn." UMA habilidade de {T} por vez: 1 mana por virada.
+#  - OAKHOLLOW_COUNTS_ONCE: `lands_available` ja' contava o terreno (esta em LAND_NAMES) e `rocks_mana` somava +1 de novo ("aproximado como mana geral disponivel"): 2 mana por 1 {T} (mana fantasma;
+#    teste dirigido: 2 Forest + Oakhollow = 4 de mana, 3 Forest = 3). True = conta 1; False = o comportamento de 99fde54, bit a bit.
+#  - OAKHOLLOW_MANA_RULES: `color_sources` tratava o terreno como criatura (so' fonte de G se `entered_turn < turn`: terreno nao tem enjoo de invocacao, CR 302.6) e como fonte de G para QUALQUER magia (o {G} vale so' para
+#    magia de criatura). True = sem enjoo e {G} so' para magia de criatura (o {C} segue valendo para o generico de qualquer magia); False = o comportamento antigo.
+OAKHOLLOW_COUNTS_ONCE = True
+OAKHOLLOW_MANA_RULES = True
 DETERMINISTIC_SET_ORDER_ENABLED = True
 TAPPED_LAND_FIRST_ENABLED = True
 TAPPED_LAND_FIRST_MAX_TURN = 2

@@ -1,0 +1,4 @@
+19:15:45 inicio
+19:16:05 smoke fim
+19:23:22 ab fim
+19:28:29 regressao fim

@@ -615,6 +615,7 @@ class GameState:
     tapped_lands_this_turn: Set[str] = field(default_factory=set)  # Farseek/Fabled Passage - terreno entra tapped esse turno, resetado em play_turn()
     tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
     tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
+    commander_land_overrides_total: int = 0   # correcao de 2026-11-11 (COMMANDER_ENABLING_LAND): vezes em que trocou o terreno por um que deixa a Bridge conjuravel neste turno
     evolution_sage_proliferates: int = 0
     payoff_first_casts: int = 0   # correcao de 2026-10-07 (LANDFALL_PAYOFF_FIRST): vezes em que um payoff de landfall foi conjurado ANTES do terreno do turno
     returned_land_landfall_total: int = 0   # correcao de 2026-10-05: terrenos que voltaram ao campo (blink) e dispararam landfall
@@ -1198,6 +1199,15 @@ TAPPED_LAND_FIRST_GHOST = False   # so' validacao: roda o ensaio mas ignora o re
 _TL_FORCED = None   # terreno imposto a play_land durante o ensaio a seco
 _TL_BUSY = False    # trava de recursao: o ensaio chama play_land de novo
 
+# ---------------------------------------------------------------------------
+# COMMANDER_ENABLING_LAND (2026-11-11; classe (o) da Regra #10 do CLAUDE.md, achada no Mothman na partida manual #3 e medida aqui em `varredura-2026-10-05/resumos/audit_terreno_comandante_pb_*`):
+# a ESCOLHA do terreno ignorava que OUTRO terreno da mao deixaria a Prismatic Bridge (lendaria, 5 cores) conjuravel NESTE turno. A Plaza of Heroes ("{T}: Add one mana of any color. Spend this
+# mana only to cast a legendary spell") tem `produces={"C"}`, entao a heuristica "terreno que cobre cor que falta" nunca a preferia. Agora, com a Bridge fora de campo e nao conjuravel,
+# se algum terreno da mao (nao fetch, nao entra virado; shockland so' se a propria politica pagaria os 2 de vida) a deixaria conjuravel neste turno (ensaio a seco: o terreno entra em campo
+# so' para a checagem e sai em seguida), joga o primeiro deles na ordem do deck. False = o comportamento de 1b7dd73, bit a bit.
+COMMANDER_ENABLING_LAND = True
+COMMANDER_LAND_OVERRIDES_ANYWHERE = 0   # diagnostico: trocas aplicadas EM QUALQUER estado (inclusive copias de ensaio a seco); nao afeta o jogo
+
 
 def _tl_is_tapped(state, name: str) -> bool:
     return name == "The World Tree"
@@ -1249,6 +1259,27 @@ def tapped_first_pick(state, lands_in_hand: list) -> str:
     return untapped[0]
 
 
+def commander_enabling_land(state: GameState, ordered: list):
+    """COMMANDER_ENABLING_LAND: a Bridge esta fora de campo, nao e' conjuravel agora e algum terreno da mao, jogado AGORA, a deixaria conjuravel neste turno (ensaio a seco: o terreno entra em
+    campo so' para a checagem e sai em seguida). Devolve o primeiro deles na ordem do deck, ou None."""
+    if state.bridge_in_play or can_cast(state, COMMANDER):
+        return None
+    ok = set()
+    for c in dict.fromkeys(ordered):
+        if has_tag(c, "fabled_passage") or "fetch" in C(c).tags or _tl_is_tapped(state, c):
+            continue
+        state.battlefield.append(c)
+        try:
+            if c in SHOCKLANDS and not _shock_pays_life(state, c):
+                continue          # entraria virada: nao libera neste turno
+            libera = can_cast(state, COMMANDER)
+        finally:
+            state.battlefield.remove(c)
+        if libera:
+            ok.add(c)
+    return next((c for c in ordered if c in ok), None)
+
+
 def play_land(state: GameState, log: List[Dict]):
     if state.land_played:
         return
@@ -1270,6 +1301,13 @@ def play_land(state: GameState, log: List[Dict]):
         ordered.remove(best)
         ordered.insert(0, best)
     choice = tapped_first_pick(state, ordered)
+    if COMMANDER_ENABLING_LAND and _TL_FORCED is None:      # no ensaio a seco do terreno virado o terreno e' imposto: a troca nao se aplica
+        alt = commander_enabling_land(state, ordered)
+        if alt is not None and alt != choice:
+            global COMMANDER_LAND_OVERRIDES_ANYWHERE
+            COMMANDER_LAND_OVERRIDES_ANYWHERE += 1
+            state.commander_land_overrides_total += 1
+            choice = alt
     state.hand.remove(choice)
     state.battlefield.append(choice)
     if choice == "The World Tree":
@@ -4453,6 +4491,7 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool, swap=None)
         "lands_played_total": state.lands_played_total,
         "tapped_land_first_plays_total": state.tapped_land_first_plays_total,
         "tapped_land_skipped_for_play_total": state.tapped_land_skipped_for_play_total,
+        "commander_land_overrides_total": state.commander_land_overrides_total,
         "pw_activations_total": state.pw_activations_total,
         "pw_draws_total": state.pw_draws_total,
         "pw_tokens_created_total": state.pw_tokens_created_total,

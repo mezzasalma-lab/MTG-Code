@@ -509,6 +509,8 @@ class GameState:
     mana_spent_this_turn: int = 0
     bonus_mana_pool: int = 0
     conduit_used_this_turn: bool = False
+    restricted_bonus_used_this_turn: int = 0       # RESTRICTED_LAND_BONUS: Temples/Shrines ja' usados neste turno
+    restricted_land_bonus_total: int = 0           # RESTRICTED_LAND_BONUS: mana a mais obtida no jogo inteiro (diagnostico)
 
     commander_in_play: bool = False
     commander_cast_turn: Optional[int] = None
@@ -1044,21 +1046,43 @@ def eldrazi_cost_discount(state: GameState, name: str) -> int:
     return d
 
 
-def effective_cost(state: GameState, name: str) -> int:
+def restricted_land_discount(state: GameState, name: str, cost: int, commit: bool = False) -> int:
+    """RESTRICTED_LAND_BONUS: desconto do {C}{C} do Eldrazi Temple (magia de Eldrazi incolor) e do Shrine of the Forsaken Gods (magia incolor; 7+ terrenos). `commit`: usa de verdade (pagamento)."""
+    if not RESTRICTED_LAND_BONUS or name not in CARD_DB or cost < 2:
+        return 0
+    tags = CARD_DB[name].tags
+    if "colorless" not in tags:
+        return 0
+    k = 0
+    if "eldrazi" in tags:
+        k += state.battlefield.count("Eldrazi Temple")
+    if sum(1 for n in state.battlefield if n in LAND_NAMES) >= 7:
+        k += state.battlefield.count("Shrine of the Forsaken Gods")
+    r = min(max(0, k - state.restricted_bonus_used_this_turn), cost // 2)
+    if commit and r > 0:
+        state.restricted_bonus_used_this_turn += r
+        state.restricted_land_bonus_total += r
+    return r
+
+
+def effective_cost(state: GameState, name: str, commit: bool = False) -> int:
     d = eldrazi_cost_discount(state, name)
     if name in WARP_COST:
-        return max(0, WARP_COST[name] - d)
+        c = max(0, WARP_COST[name] - d)
+        return c - restricted_land_discount(state, name, c, commit)
     if name in EVOKE_COST:
         # Mesma convencao ja usada pro WARP_COST acima: cast_card() sempre
         # escolhe o modo alternativo (mais barato) pra estas cartas, entao
         # a "castabilidade"/prioridade do loop guloso ja deve refletir o
         # custo de evoke, nao o cheio.
-        return max(0, EVOKE_COST[name] - d)
+        c = max(0, EVOKE_COST[name] - d)
+        return c - restricted_land_discount(state, name, c, commit)
     # Taxa de comandante real (CR 903.10a) -- ver comentario de
     # `commander_cast_count` no GameState. 0 em modo padrao ate' o cast
     # (unico) acontecer, entao nao muda nenhum resultado ja validado.
     tax = 2 * state.commander_cast_count if name == COMMANDER else 0
-    return max(0, CARD_DB[name].mv + tax - d)
+    c = max(0, CARD_DB[name].mv + tax - d)
+    return c - restricted_land_discount(state, name, c, commit)
 
 
 def can_cast(state: GameState, name: str) -> bool:
@@ -1239,10 +1263,12 @@ def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: boo
     if not free:
         if warp_mode:
             cost = max(0, WARP_COST[name] - eldrazi_cost_discount(state, name))
+            cost -= restricted_land_discount(state, name, cost, commit=True)
         elif evoke_mode:
             cost = max(0, EVOKE_COST[name] - eldrazi_cost_discount(state, name))
+            cost -= restricted_land_discount(state, name, cost, commit=True)
         else:
-            cost = effective_cost(state, name)
+            cost = effective_cost(state, name, commit=True)
         spend_mana(state, cost)
     if from_hand and name in state.hand:
         state.hand.remove(name)
@@ -1380,6 +1406,15 @@ def cast_card(state: GameState, name: str):
 # Correcao de 2026-10-05 (varredura de entrada de terrenos contra o oraculo, Regra 12): Ruins of Oran-Rief ("This land enters tapped.") entrava desvirado e produzia {C} no proprio turno.
 # Com a chave em False o comportamento antigo volta bit a bit.
 LAND_ENTRY_CONDITIONS_ENABLED = True
+# ---------------------------------------------------------------------------
+# RESTRICTED_LAND_BONUS (2026-11-11; pedido do usuario: "revisar e corrigir o Plaza e demais terrenos em todos os simuladores"). O docstring do arquivo dizia que Eldrazi Temple e Shrine of the Forsaken Gods
+# eram "tratadas como terreno generico de 1 mana". Oraculo (Scryfall, `scryfall-cache`):
+#   Eldrazi Temple: "{T}: Add {C}. / {T}: Add {C}{C}. Spend this mana only to cast colorless Eldrazi spells or activate abilities of colorless Eldrazi."
+#   Shrine of the Forsaken Gods: "{T}: Add {C}. / {T}: Add {C}{C}. Spend this mana only to cast colorless spells. Activate only if you control seven or more lands."
+# Cada um rende 1 {C} a mais, SO' para a magia elegivel. O modelo de mana e' agregado (sem pips), entao o bonus entra como DESCONTO por magia no `effective_cost`:
+# reducao = min(Temples/Shrines ainda nao usados no turno, custo // 2) (um {C}{C} paga 2 do custo com 1 virada; sobra de custo impar nao rende). Ficam FORA (declarado): habilidades ativadas de Eldrazi
+# incolor pagas com o {C}{C} do Temple (o gasto das ativadas e' `spend_mana` direto). False = o comportamento de f9b8905, bit a bit.
+RESTRICTED_LAND_BONUS = True
 TAPPED_LAND_FIRST_ENABLED = True
 TAPPED_LAND_FIRST_MAX_TURN = 2
 TAPPED_LAND_FIRST_GHOST = False   # so' validacao: roda o ensaio mas ignora o resultado (joga o padrao). Com a chave ligada + GHOST == chave desligada prova que o ensaio nao tem efeito colateral
@@ -1678,7 +1713,7 @@ def main_phase(state: GameState):
     # o pagamento interno dele, ja feito). Entrada em campo so' DEPOIS de
     # passar no counter.
     if not state.commander_in_play and can_cast(state, COMMANDER):
-        spend_mana(state, effective_cost(state, COMMANDER))
+        spend_mana(state, effective_cost(state, COMMANDER, commit=True))
         state.commander_cast_count += 1
         if not try_smart_opponent_counter(state):
             resolve_cast(state, COMMANDER, free=True, from_hand=False)
@@ -1851,6 +1886,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.mana_spent_this_turn = 0
     state.bonus_mana_pool = 0
     state.conduit_used_this_turn = False
+    state.restricted_bonus_used_this_turn = 0
     state.eye_of_ugin_used_this_turn = False
     state.colorless_creature_entered_this_turn = False
     state.tapped_phantom_mana_this_turn = 0
