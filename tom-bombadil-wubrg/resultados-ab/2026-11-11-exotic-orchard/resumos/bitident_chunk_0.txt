@@ -1,0 +1,8 @@
+DIVERGE (chave ligada, sem Exotic Orchard em campo) 5000119 padrao
+DIVERGE (chave ligada, sem Exotic Orchard em campo) 5000206 padrao
+DIVERGE (chave ligada, sem Exotic Orchard em campo) 5000279 padrao
+DIVERGE (chave ligada, sem Exotic Orchard em campo) 5000610 padrao
+DIVERGE (chave ligada, sem Exotic Orchard em campo) 5000630 padrao
+DIVERGE (chave ligada, sem Exotic Orchard em campo) 5000676 padrao
+DIVERGE (chave ligada, sem Exotic Orchard em campo) 5000706 padrao
+DIVERGE (chave ligada, sem Exotic Orchard em campo) 5000770 padrao
