@@ -639,6 +639,61 @@ no `play_land`/`play_turn`/mulligan):**
    (rodadas 4 e 5); os outros 18 simuladores, a rodada 3 e anteriores e os ~1.060 `.py` de
    resultados não foram revistos; a classe (l) só vale onde o ensaio usa o mana líquido
    (hoje só o Rat King).
+   **Classes novas, achadas na partida manual #3 do Mothman (2026-11-11), pedido do usuário
+   *"Vc vai precisar revisar e corrigir o Plaza e demais terrenos em todos os simuladores"*;
+   nenhuma morava na carta, e a revisão carta-a-carta de terrenos de rodadas anteriores não as
+   achou:**
+   (o) **a ESCOLHA do terreno ignora que outro terreno da mão deixa o COMANDANTE conjurável
+   NESTE turno**: a Plaza of Heroes (`{T}: Add one mana of any color. Spend this mana only to cast
+   a legendary spell`) era pontuada como terreno incolor (−4) e a escolha do Prismatic Bridge só
+   olhava "terreno que cobre cor que falta" pela lista `produces` (a Plaza tem `{C}`); o usuário
+   cometeu o mesmo erro no T4 (Mothman `{1}{B}{G}{U}` sem `{B}`) e o simulador jogava a mesma
+   linha errada. Mede-se por ensaio a seco (o terreno entra em campo só para a checagem do
+   comandante e sai em seguida, `next_uid` restaurado; **só lê**). Medido SEM a correção, partidas
+   com ao menos 1 ocasião perdida: **Mothman 6,69% (padrão) / 7,01% (resiliência), N=10.000; Tam
+   32,15% / 34,15% e Prismatic Bridge 4,15% / 4,10% (N=2.000)**. Chaves
+   `PLAZA_ENABLES_COMMANDER` (Mothman), `COMMANDER_ENABLING_LAND` (Tam, Prismatic Bridge); contador
+   global `COMMANDER_LAND_OVERRIDES_ANYWHERE` para a bit-identidade (o ensaio a seco da guarda do
+   landfall roda `play_land_phase` em cópias profundas, então o contador do estado real não vê
+   todas as trocas). Efeito no Mothman (N=10.000, pareado): comandante até o T4 **+1,01 ±0,20
+   pontos** (padrão) / +1,08 ±0,21 (resiliência); a mesa limpa no T8 fica no limite do ruído
+   (+0,28 ±0,24 / +0,58 ±0,29). **A política só olha o COMANDANTE**: terreno que libera outra
+   magia (a Plaza para uma lendária que não é o comandante) segue sem política. **NÃO medido:** os
+   outros 17 simuladores (API de estado diferente em cada um; `varredura-2026-10-05/scripts/
+   audit_terreno_comandante.py` e `..._pb.py` servem a Mothman/Tam e Prismatic Bridge);
+   **o Tam está dominado por T2/T3 (1.569 e 624 de 2.285 ocasiões), ou seja, é a classe (k) com a
+   Plaza só como parte**.
+   (p) **mana contada em dobro e `{T}` fora da regra do terreno**: Oakhollow Village no
+   Bumbleflower (`{T}: Add {C}` / `{T}: Add {G}. Spend this mana only to cast a creature spell`)
+   estava em `LAND_NAMES` (contado em `lands_available`) E somado de novo em `rocks_mana`
+   ("aproximado como mana geral disponível"): **2 Forest + Oakhollow = 4 de mana, 3 Forest = 3**
+   (teste dirigido, estado mínimo). Além disso `color_sources` tratava o terreno como criatura
+   (`entered_turn < turn`: terreno não tem enjoo de invocação, CR 302.6) e como fonte de `{G}`
+   para qualquer magia. Chaves `OAKHOLLOW_COUNTS_ONCE`, `OAKHOLLOW_MANA_RULES`. **Como achar:**
+   grep dos nomes de terreno restrito em linhas de acúmulo de mana (`total +=`) e teste dirigido
+   com estado mínimo (N Forest vs N−1 Forest + o terreno suspeito); só o Bumbleflower deu positivo
+   nos 31 nomes varridos, mas **a varredura é por grep, não por execução, e só nos nomes da
+   lista**.
+   (q) **mana restrita achatada para 1 genérica "por convenção"**: Ulalek tratava Eldrazi Temple
+   (`{T}: Add {C}{C}. Spend this mana only to cast colorless Eldrazi spells or activate abilities
+   of colorless Eldrazi`) e Shrine of the Forsaken Gods (`{T}: Add {C}{C}. Spend this mana only to
+   cast colorless spells. Activate only if you control seven or more lands`) como 1 mana: o
+   modelo é agregado, mas a magia conjurada, o tipo e a cor estão no cache, então não é
+   impossibilidade estrutural (Regra #7, item 2). Corrigido como desconto por magia no
+   `effective_cost` (chave `RESTRICTED_LAND_BONUS`). **Fica FORA:** as habilidades ativadas de
+   Eldrazi incolor pagas com o `{C}{C}` do Temple.
+   **Revisão dos terrenos em todos os simuladores (2026-11-11), escopo declarado
+   (`varredura-2026-10-05/resumos/revisao_terrenos_2026-11-11.md`):** inventário estático (189
+   terrenos de mana restrita/condicional em 46 decks, 20 com simulador); leitura à mão só dos
+   casos citados; **achados NÃO corrigidos e pendentes de decisão**: Exotic Orchard com convenção
+   INCONSISTENTE (Azula, Bumbleflower, Tam e Ur-Dragon: não produz nada; Kutzil, Megatron,
+   Prismatic Bridge, Edgar: qualquer cor da identidade; oráculo: "any color that a land an
+   opponent controls could produce"), Gemstone Caverns do Nekusar sem a cláusula da mão inicial,
+   Command Tower do Edgar com 5 cores (identidade W/B/R; inofensivo), Maralen/Nekusar/Ulalek com
+   modelo de mana agregado (sem pips: restrição de cor de terreno não rastreada por construção).
+   **Não lidos:** as habilidades ativadas dos terrenos (Boseiju, Takenuma, Eiganjo, Spawning Bed,
+   Urza's Cave, Cabal Coffers, Crypt of Agadeem, Big Apple etc.) além das linhas de acúmulo de
+   mana, e a classe (o) nos 17 simuladores acima.
 3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
    fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
    enxergam** dependência de ordem de hash. A única checagem que enxerga é

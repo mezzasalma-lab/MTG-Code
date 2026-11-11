@@ -1,7 +1,7 @@
 # Backup versionado da skill `mtg-commander`
 
 Cópia de segurança da skill **`mtg-commander`** (especialista em Commander/EDH, com as regras permanentes do usuário e o protocolo de avaliação de cartas/simuladores).
-Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10), em **2026-10-07** (ordem terreno × payoff de landfall) em **2026-10-22** (classes novas do Tam) em **2026-10-23** (gatilho de fase preso a `can_attack`) e em **2026-11-05** (Tom #12). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
+Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10), em **2026-10-07** (ordem terreno × payoff de landfall) em **2026-10-22** (classes novas do Tam) em **2026-10-23** (gatilho de fase preso a `can_attack`) em **2026-11-05** (Tom #12) e em **2026-11-11** (Mothman #3, terrenos de mana restrita, Tom #13). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
 
 > **Este backup é a cópia durável.** A pasta viva da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) é sincronizada com a conta do usuário, mas
 > **alterações feitas nela durante uma sessão não são gravadas na conta** e o próximo sync pode sobrescrevê-las. Para a skill da conta refletir a versão
@@ -94,6 +94,13 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 
 - `references/user-standing-rules.md` §21: bullet novo (ficha que some não aparece no log e o `opponentsCards` sub-registra as fichas do oponente; consultar o `rules-cache` antes de baixar a CR; o engano "marcador de saber é gatilho de upkeep" voltou; tirar marcador no capítulo final só com efeito instantâneo; `commandTax` do log é contador manual; lembrete do gerador de interação; palpite de intenção se pergunta) e `mtg-commander/references/protocolo-de-avaliacao.md` §8 (4 linhas novas no checklist de erros). `mtg-commander.zip` e `SHA256SUMS` refeitos.
 - **Como foi feito (Regra #9):** espelho copiado do repositório; `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
+
+## O que mudou na atualização de 2026-11-11 (Mothman #3, Plaza of Heroes e demais terrenos, Tom #13)
+
+- `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): Regra #10 ganha as classes **(o)** escolha do terreno ignora o comandante (Plaza of Heroes; Mothman, Tam e Prismatic Bridge medidos), **(p)** mana contada em dobro / terreno fora da regra do `{T}` (Oakhollow Village do Bumbleflower) e **(q)** mana restrita achatada para 1 genérica (Eldrazi Temple/Shrine do Ulalek), mais o **escopo declarado** da revisão dos terrenos (o que NÃO foi lido).
+- `references/user-standing-rules.md` §21: bullet novo (Mothman #3 e o pedido *"revisar e corrigir o Plaza e demais terrenos em todos os simuladores"*; Exotic Orchard com convenção inconsistente, decisão do usuário).
+- `mtg-commander/references/protocolo-de-avaliacao.md`: 5 linhas novas no checklist de erros (§8).
+- **Como foi feito (Regra #9):** espelhos copiados do repositório direto para o backup; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é MAIS ANTIGA que o backup: só tem `SKILL.md`, sem `references/`, e o comando a copiaria por cima do backup). `SHA256SUMS` e `mtg-commander.zip` refeitos do backup. **A skill da conta NÃO foi atualizada**; só o usuário consegue reenviar o zip.
 
 ## Como restaurar / reinstalar
 
