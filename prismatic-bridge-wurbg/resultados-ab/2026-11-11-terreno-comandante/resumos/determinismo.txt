@@ -1,0 +1,2 @@
+prismatic-bridge-wurbg     padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+prismatic-bridge-wurbg     resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

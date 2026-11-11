@@ -1,5 +1,7 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+> **Atualização 2026-11-11 (§ "O terreno que libera o comandante"): a Plaza of Heroes nunca era escolhida para liberar a Bridge — bug do simulador, corrigido e validado** (4,15% / 4,10% das partidas afetadas; Bridge até o T3 +0,56 ±0,15 pontos): [`resultados-ab/2026-11-11-terreno-comandante/LEIAME.md`](resultados-ab/2026-11-11-terreno-comandante/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
@@ -2309,6 +2311,15 @@ minoritária dos jogos.
 ---
 
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
+
+## O terreno que libera o comandante (2026-11-11): classe (o) da Regra #10, a mesma do Mothman
+
+Origem: partida manual #3 do Mothman (`../wise-mothman-sultai/goldfish-log.md` §26). Dados, scripts e escopo: `resultados-ab/2026-11-11-terreno-comandante/LEIAME.md`.
+- **Erro (medido ANTES, N = 2.000):** **4,15% (padrão) e 4,10% (resiliência)** das partidas tiveram ao menos uma ocasião em que outro terreno da mão deixaria a Bridge conjurável neste turno e o simulador jogou outro; sobretudo T4 e T5; o terreno que mais liberava era a **Plaza of Heroes** (`produces={"C"}` na heurística de cor que falta), seguida de City of Brass e Mana Confluence.
+- **Correção** (`COMMANDER_ENABLING_LAND`, padrão ligada; desligada = `1b7dd73` bit a bit): ensaio a seco de cada terreno da mão; se algum libera a Bridge neste turno, joga o primeiro deles na ordem do deck.
+- **Efeito** (pareado, N = 10.000, padrão / resiliência): Bridge conjurada até T3 **+0,56 ±0,15 / +0,57 ±0,15 pontos**, até T5 +0,46 ±0,13 / +0,45 ±0,13; primeiro planeswalker atingido até T4 +0,27 ±0,10 / +0,39 ±0,12; partidas idênticas ao antes 98,0% / 96,8%. Todos os deltas abaixo de 1 ponto, como esperado de uma classe que afeta ~4% das partidas.
+- **Validação:** smoke 99 cartas, 0 desconhecidas; **regressão 20.000 × 2 modos × 2 configurações: 0 exceções**; **bit-identidade 20.000 × 2: chave desligada idêntica ao `1b7dd73` em 40.000 de 40.000; chave ligada, 38.673 sem troca idênticas e 1.327 com troca; 0 divergências**; **determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes**.
+- **Não coberto:** a política só olha a Bridge; a escolha entre terrenos que liberam é a primeira na ordem do deck; sem calibração contra a mesa real.
 
 ## Partida #N — AAAA-MM-DD
 
