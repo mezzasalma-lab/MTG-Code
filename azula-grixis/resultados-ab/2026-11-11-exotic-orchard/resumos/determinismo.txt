@@ -1,0 +1,2 @@
+azula-grixis               padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+azula-grixis               resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

@@ -1,0 +1,23 @@
+LOTE N=10000 sementes 3000000..3009999, 10 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9360 (93.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0298       0.0263      -0.0035 ±0.0013  
+  *commander_cast_turn__ate_T3                  0.2296       0.2401      +0.0105 ±0.0022  
+  *commander_cast_turn__ate_T4                  0.5876       0.6040      +0.0164 ±0.0026  
+  *commander_cast_turn__ate_T5                  0.7583       0.7709      +0.0126 ±0.0024  
+  *commander_cast_turn__ate_T6                  0.8475       0.8572      +0.0097 ±0.0021  
+  *tapped_land_skipped_for_play_total           0.3189       0.3312      +0.0123 ±0.0029  
+  *tapped_land_first_plays_total                0.4137       0.4056      -0.0081 ±0.0021  
+  *commander_cast_count                         1.6311       1.6418      +0.0107 ±0.0039  
+  *opponent_forced_draws_total                 12.4941      12.5824      +0.0883 ±0.0353  
+  *interaction_plays                            2.7289       2.7434      +0.0145 ±0.0064  
+  *len_library                                 69.2837      69.1947      -0.0890 ±0.0457  
+  *cards_drawn_extra                           20.3815      20.4627      +0.0812 ±0.0422  
+  *len_graveyard                                7.5965       7.6464      +0.0499 ±0.0261  
+  *next_uid                                    24.5721      24.6451      +0.0730 ±0.0382  
+  *communal_brewing_ingredient_counters         0.2336       0.2364      +0.0028 ±0.0015  
+  *len_smart_discard_log                        1.7497       1.7590      +0.0093 ±0.0063  
+  *smart_discards_total                         1.7497       1.7590      +0.0093 ±0.0063  
+  *hand_size_no_max                             0.5738       0.5759      +0.0021 ±0.0015  
+  *life                                        37.3379      37.3237      -0.0142 ±0.0104  

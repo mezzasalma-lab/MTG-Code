@@ -1,5 +1,7 @@
 # Goldfish Log — Fire Lord Azula
 
+> **Atualização 2026-11-11 (§ "Proxy da Exotic Orchard"): decisão do usuário aplicada** (comandante até T3 +0,63 ±0,16 pontos no padrão): [`resultados-ab/2026-11-11-exotic-orchard/LEIAME.md`](resultados-ab/2026-11-11-exotic-orchard/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
@@ -143,6 +145,15 @@ pré-existente, confirmado pela bit-identidade 0/20000 acima).
 
 ---
 
+## 2026-11-11 — Proxy da Exotic Orchard (decisão do usuário; mesma do Kutzil, Megatron e Prismatic Bridge)
+
+Dados, scripts e escopo: `resultados-ab/2026-11-11-exotic-orchard/LEIAME.md`.
+- **Erro:** Antes: o simulador tratava a Exotic Orchard como terreno SEM cor nenhuma (`produces=set()`, leitura literal do oráculo com 0 terrenos de oponente).
+- **Correção:** `EXOTIC_ORCHARD_PROXY` (padrão ligada; desligada = `99fde54` bit a bit): a Exotic Orchard conta como fonte das cores da identidade (U, B, R).
+- **Efeito** (pareado, N = 10.000, padrão / resiliência, em pontos): comandante até T3 **+0,63 ±0,16 / +0,59 ±0,16**, até T4 **+2,46 ±0,32 / +2,26 ±0,32**, até T5 +1,92 ±0,28 / +1,92 ±0,29; nunca conjurar -0,62 ±0,15 / -0,68 ±0,16; partidas idênticas ao antes 91,2% / 91,6%.
+- **Validação:** smoke 99 cartas; regressão 20.000 × 2 modos × 2 configurações: 0 exceções; bit-identidade 20.000 × 2: chave desligada idêntica em 40.000 de 40.000, ligada 32.098 sem a Orchard em campo idênticas e 7.902 com ela, 0 divergências; determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes.
+- **Os números anteriores do deck foram medidos com a Orchard sem cor** (em campo em 20% das partidas); linha de base não refeita. É um proxy de decisão do usuário, não a regra.
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
@@ -271,4 +282,3 @@ bem mais porque os gaps corrigidos (mais mana colorida real disponível
 via rocks, X realmente pago, Fists escalando de verdade) alimentam ainda
 mais a cauda extrema do combo Zada+Veyran+Storm-Kiln Artist já documentado
 acima, não porque o comportamento típico do deck mudou de categoria.
-

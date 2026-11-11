@@ -400,3 +400,7 @@ inclusive uma sweep final de 20.000 partidas, ~18.5s, 0 exceções).
 - **✅ ~65 cartas/cláusulas com efeito real implementado e testado.**
 - **📊 ~8 cartas/cláusulas estruturais confirmadas** (opponent-dependent
   genuíno, mesma convenção de toda a sessão).
+
+## 2026-11-11 — Exotic Orchard: conferência do oráculo contra o simulador
+
+Oráculo (scryfall-cache): `{T}: Add one mana of any color that a land an opponent controls could produce.` 🐛 **proxy aplicado por decisão do usuário** (`EXOTIC_ORCHARD_PROXY`: fonte das cores da identidade, U, B, R); antes: o simulador tratava a Exotic Orchard como terreno SEM cor nenhuma (`produces=set()`, leitura literal do oráculo com 0 terrenos de oponente). Números e validação: `goldfish-log.md` (seção de 2026-11-11).
