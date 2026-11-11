@@ -72,8 +72,8 @@ com produces proprio, ela vira o terreno buscado de verdade.
 of the Spirit Dragon pagam pip de qualquer cor so' em magia de criatura
 Dragao (Courtyard tambem em habilidade de Dragao); a mana da Orb, em
 magia ou habilidade de Dragao; Treasure/Klauth/+1 do Sarkhan Unbroken,
-qualquer cor; Savage Ventmaw, {R}{R}{R}{G}{G}{G}. Exotic Orchard fica
-incolor (📊: depende dos terrenos dos oponentes).
+qualquer cor; Savage Ventmaw, {R}{R}{R}{G}{G}{G}. Exotic Orchard: proxy
+(EXOTIC_ORCHARD_PROXY, decisao do usuario em 2026-11-11) = qualquer cor da identidade (WUBRG); ANTES ficava incolor.
 
 Roaming Throne: tipo escolhido = **Dragon** (obvio e central pro tema,
 documentado ainda assim). Dobra qualquer gatilho de criatura Dragao —
@@ -161,7 +161,7 @@ LAND_PRODUCES = {
     "Breeding Pool": {"G", "U"},
     "Cavern of Souls": set(),            # produces "base" = incolor; "any color" real pra creature spell Dragao tratado a parte (DRAGON_ANY_COLOR_LANDS, color_sources)
     "Command Tower": set("WUBRG"),
-    "Exotic Orchard": set(),             # dependente de oponente, nao presumido (Regra 1)
+    "Exotic Orchard": set(),             # `produces` de CARD_DB fica vazio; o proxy (qualquer cor da identidade, WUBRG) entra em `land_prod` (EXOTIC_ORCHARD_PROXY, 2026-11-11)
     "Godless Shrine": {"W", "B"},
     "Hallowed Fountain": {"W", "U"},
     "Haven of the Spirit Dragon": set(), # idem Cavern — "any color" real pra Dragon creature spell tratado a parte
@@ -1385,6 +1385,19 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
+# ---------------------------------------------------------------------------
+# EXOTIC_ORCHARD_PROXY (2026-11-11; decisao do usuario, que escolheu o proxy do Kutzil/Megatron/Prismatic Bridge): oraculo da Exotic Orchard = "{T}: Add one mana of any color that a land an opponent
+# controls could produce." Goldfish solo, sem terrenos de oponente: o proxy e' "gera mana de qualquer cor da IDENTIDADE DO COMANDANTE" (na mesa real, com 3 oponentes, quase sempre ha' terreno deles de
+# alguma cor; o que fica de fora da identidade nao serve a nenhuma magia deste deck). Antes: este arquivo a tratava como terreno que nao produz cor nenhuma. False = o comportamento antigo, bit a bit.
+EXOTIC_ORCHARD_PROXY = True
+ORCHARD_PROXY_COLORS = frozenset({'W', 'U', 'B', 'R', 'G'})
+
+
+def land_prod(name, default):
+    """Cores que o terreno `name` produz: o proxy da Exotic Orchard quando ligado, senao `default` (o `produces` do CARD_DB)."""
+    return ORCHARD_PROXY_COLORS if (EXOTIC_ORCHARD_PROXY and name == "Exotic Orchard") else default
+
+
 def color_sources(state: GameState, color: str, dragon_creature_spell: bool = False,
                    legendary_spell: bool = False) -> int:
     """Conta fontes de mana em campo que produzem `color` — terrenos
@@ -1417,7 +1430,7 @@ def color_sources(state: GameState, color: str, dragon_creature_spell: bool = Fa
         elif legendary_spell and base == "Delighted Halfling":
             produces = set("WUBRG")
         else:
-            produces = c.produces
+            produces = land_prod(base, c.produces)
         if color not in produces:
             continue
         if is_creature_card(base) and card not in ready and base not in LAND_NAMES:
@@ -1514,7 +1527,7 @@ def source_color_sets(state: GameState, dragon_creature_spell: bool = False, leg
         elif legendary_spell and base == "Delighted Halfling":
             produces = set("WUBRG")
         else:
-            produces = set(c.produces)
+            produces = set(land_prod(base, c.produces))
         if not produces:
             continue
         if is_creature_card(base) and card not in ready and base not in LAND_NAMES:
@@ -2417,7 +2430,7 @@ def play_land(state: GameState):
             return -1  # fetch e sempre pelo menos tao boa quanto a melhor alternativa
         score = 0
         for color in "WUBRG":
-            if color_sources(state, color) == 0 and color in CARD_DB[card].produces:
+            if color_sources(state, color) == 0 and color in land_prod(card, CARD_DB[card].produces):
                 score += 1
         return -score
 

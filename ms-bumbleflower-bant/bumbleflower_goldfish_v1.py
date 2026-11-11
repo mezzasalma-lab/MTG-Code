@@ -600,6 +600,19 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
+# ---------------------------------------------------------------------------
+# EXOTIC_ORCHARD_PROXY (2026-11-11; decisao do usuario, que escolheu o proxy do Kutzil/Megatron/Prismatic Bridge): oraculo da Exotic Orchard = "{T}: Add one mana of any color that a land an opponent
+# controls could produce." Goldfish solo, sem terrenos de oponente: o proxy e' "gera mana de qualquer cor da IDENTIDADE DO COMANDANTE" (na mesa real, com 3 oponentes, quase sempre ha' terreno deles de
+# alguma cor; o que fica de fora da identidade nao serve a nenhuma magia deste deck). Antes: este arquivo a tratava como terreno que nao produz cor nenhuma. False = o comportamento antigo, bit a bit.
+EXOTIC_ORCHARD_PROXY = True
+ORCHARD_PROXY_COLORS = frozenset({'G', 'W', 'U'})
+
+
+def land_prod(name, default):
+    """Cores que o terreno `name` produz: o proxy da Exotic Orchard quando ligado, senao `default` (o `produces` do CARD_DB)."""
+    return ORCHARD_PROXY_COLORS if (EXOTIC_ORCHARD_PROXY and name == "Exotic Orchard") else default
+
+
 def color_sources(state: GameState, color: str, creature_spell: bool = True) -> int:
     """`creature_spell`: a magia a pagar e' de criatura (o {G} do Oakhollow Village so' vale para elas; padrao True = comportamento antigo para os chamadores sem magia)."""
     n = 0
@@ -607,7 +620,7 @@ def color_sources(state: GameState, color: str, creature_spell: bool = True) -> 
         if p.uid == state.tapped_land_this_turn:
             continue
         c = CARD_DB[p.card]
-        if color in c.produces:
+        if color in land_prod(p.card, c.produces):
             n += 1
         elif p.card == "Faeburrow Elder" and p.entered_turn < state.turn and faeburrow_colors(state) > 0:
             n += 1  # produz qualquer cor entre as ja controladas

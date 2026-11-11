@@ -82,10 +82,9 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
 - Contramagicas (Counterspell, Wash Away, An Offer You Can't Refuse) e
   remocao pontual sem alvo (Chaos Warp, Path-style) — 📊 `interaction_plays`,
   precisam de spell/permanente de oponente real.
-- Exotic Orchard — leitura literal do oraculo ("mana de uma cor que um
-  terreno que um oponente controla PODERIA produzir"): sem terrenos de
-  oponente modelados, produz 0 mana de verdade (nao e' julgamento de
-  valor, e' a leitura correta da regra com 0 terrenos qualificando).
+- Exotic Orchard — proxy (EXOTIC_ORCHARD_PROXY, decisao do usuario em 2026-11-11): sem terrenos de
+  oponente modelados, gera mana de qualquer cor da identidade do comandante (U/B/R), como Kutzil,
+  Megatron e Prismatic Bridge. ANTES (leitura literal com 0 terrenos de oponente): 0 cor.
 - Firebender Ascension (quest counters via "ataque causa uma triggered
   ability disparar") e Fire Nation Palace (firebending 4 concedido) —
   implementados de forma real mas aproximada (ver comentarios inline nos
@@ -476,6 +475,19 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
+# ---------------------------------------------------------------------------
+# EXOTIC_ORCHARD_PROXY (2026-11-11; decisao do usuario, que escolheu o proxy do Kutzil/Megatron/Prismatic Bridge): oraculo da Exotic Orchard = "{T}: Add one mana of any color that a land an opponent
+# controls could produce." Goldfish solo, sem terrenos de oponente: o proxy e' "gera mana de qualquer cor da IDENTIDADE DO COMANDANTE" (na mesa real, com 3 oponentes, quase sempre ha' terreno deles de
+# alguma cor; o que fica de fora da identidade nao serve a nenhuma magia deste deck). Antes: este arquivo a tratava como terreno que nao produz cor nenhuma. False = o comportamento antigo, bit a bit.
+EXOTIC_ORCHARD_PROXY = True
+ORCHARD_PROXY_COLORS = frozenset({'U', 'B', 'R'})
+
+
+def land_prod(name, default):
+    """Cores que o terreno `name` produz: o proxy da Exotic Orchard quando ligado, senao `default` (o `produces` do CARD_DB)."""
+    return ORCHARD_PROXY_COLORS if (EXOTIC_ORCHARD_PROXY and name == "Exotic Orchard") else default
+
+
 def color_sources(state: GameState, color: str) -> int:
     n = 0
     for card in state.battlefield:
@@ -486,7 +498,7 @@ def color_sources(state: GameState, color: str) -> int:
         if card == "Lava Tubes" and state.lava_tubes_depleted:
             continue
         c = CARD_DB[card]
-        if color in c.produces:
+        if color in land_prod(card, c.produces):
             n += 1
         elif "filter_ub" in c.tags and color in ("U", "B"):
             n += 1  # Darkwater Catacombs: {1},{T}: Add UB -- conta como fonte fixa das 2 cores

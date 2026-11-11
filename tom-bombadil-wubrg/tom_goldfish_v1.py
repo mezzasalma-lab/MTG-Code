@@ -69,8 +69,8 @@ Simplificacoes documentadas (omissoes explicitas, nunca inventadas):
   Summon: Fenrir III ("the creature with the greatest power"), Summon:
   Yojimbo IV ("opponents who control a creature with power 4+"), Scholar
   of New Horizons ("if an opponent controls more lands" -- sempre vai pra
-  mao), Exotic Orchard (cores de terreno de oponente -- mesma convencao
-  do Bumbleflower, produz 1 mana sem cor definida).
+  mao), Exotic Orchard (cores de terreno de oponente -- proxy desde 2026-11-11:
+  EXOTIC_ORCHARD_PROXY = qualquer cor da identidade, WUBRG; antes produzia 1 mana sem cor definida).
 - Combate: "ataca" = sem doenca de invocacao, sem bloqueio modelado
   (convencao de todos os simuladores). Por isso Summon: Primal Odin II
   ("that player loses the game") vira a metrica `odin_eliminations`
@@ -1874,6 +1874,19 @@ def vitality_mana_creatures(state: GameState) -> list:
     return out
 
 
+# ---------------------------------------------------------------------------
+# EXOTIC_ORCHARD_PROXY (2026-11-11; decisao do usuario, que escolheu o proxy do Kutzil/Megatron/Prismatic Bridge): oraculo da Exotic Orchard = "{T}: Add one mana of any color that a land an opponent
+# controls could produce." Goldfish solo, sem terrenos de oponente: o proxy e' "gera mana de qualquer cor da IDENTIDADE DO COMANDANTE" (na mesa real, com 3 oponentes, quase sempre ha' terreno deles de
+# alguma cor; o que fica de fora da identidade nao serve a nenhuma magia deste deck). Antes: este arquivo a tratava como terreno que nao produz cor nenhuma. False = o comportamento antigo, bit a bit.
+EXOTIC_ORCHARD_PROXY = True
+ORCHARD_PROXY_COLORS = frozenset({'W', 'U', 'B', 'R', 'G'})
+
+
+def land_prod(name, default):
+    """Cores que o terreno `name` produz: o proxy da Exotic Orchard quando ligado, senao `default` (o `produces` do CARD_DB)."""
+    return ORCHARD_PROXY_COLORS if (EXOTIC_ORCHARD_PROXY and name == "Exotic Orchard") else default
+
+
 def land_value(state: GameState, p: Permanent) -> int:
     if p.card == "Serra's Sanctum":
         return enchantment_count(state)
@@ -1921,7 +1934,7 @@ def _mana_units_uncached(state: GameState) -> list:
     land_colors = set()
     for p in state.battlefield:
         if is_land(p) and not p.phased_out:
-            land_colors |= set(CARD_DB[p.card].produces)
+            land_colors |= set(land_prod(p.card, CARD_DB[p.card].produces))
     for p in state.battlefield:
         if p.phased_out or p.tapped:
             continue
@@ -1930,7 +1943,7 @@ def _mana_units_uncached(state: GameState) -> list:
             n = land_value(state, p)
             if n <= 0:
                 continue
-            cols = set(CARD_DB[p.card].produces)
+            cols = set(land_prod(p.card, CARD_DB[p.card].produces))
             if p.card == "Reflecting Pool":
                 cols = set(land_colors)
             if omen or wt:
@@ -2779,9 +2792,9 @@ def land_option_score(state: GameState, name: str, from_fetch: bool = False) -> 
         spend = spendable_this_turn(state)
     finally:
         state.battlefield.remove(fake)
-    fix = len(set(CARD_DB[name].produces) & missing)
+    fix = len(set(land_prod(name, CARD_DB[name].produces)) & missing)
     urza = 1 if name == "Urza's Saga" else 0
-    return (spend, fix, urza, 1 if tapped else 0, len(CARD_DB[name].produces))
+    return (spend, fix, urza, 1 if tapped else 0, len(land_prod(name, CARD_DB[name].produces)))
 
 
 def play_land(state: GameState, log: list):
