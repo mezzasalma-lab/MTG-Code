@@ -1,0 +1,4 @@
+N = 5000 x 2 modos (sementes 5000000..5004999): chave DESLIGADA identica ao c59226f em 10000 partidas; chave LIGADA: 8880 sem troca e identicas, 1120 com troca (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5005000..5009999): chave DESLIGADA identica ao c59226f em 10000 partidas; chave LIGADA: 8978 sem troca e identicas, 1022 com troca (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5010000..5014999): chave DESLIGADA identica ao c59226f em 10000 partidas; chave LIGADA: 8801 sem troca e identicas, 1199 com troca (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5015000..5019999): chave DESLIGADA identica ao c59226f em 10000 partidas; chave LIGADA: 8905 sem troca e identicas, 1095 com troca (podem diferir); divergencias: 0

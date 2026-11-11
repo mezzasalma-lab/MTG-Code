@@ -405,3 +405,8 @@ Rulings ao vivo de 17 cartas em `resultados-ab/2026-11-11-partida-manual-3/resum
 | Rad counters (CR 728.1) | no início da fase principal 1 do jogador com rad: mila tantas cartas quanto rad counters; para cada carta não-terreno, perde 1 de vida e remove 1 rad | ✅ `rad_trigger_self` (conferência 5) |
 | Dark Deal (oponente simulado) | "Each player discards all the cards in their hand, then draws that many cards minus one" (ruling 2014-11-24: com 1 carta ou nenhuma, não compra) | 📊 proxy: o simulador não tem a carta (oponente simulado) |
 | Rejuvenating Springs | "enters tapped unless you have two or more opponents" (ruling 2020-11-10: conta os oponentes de agora) | ✅ (usada na conferência 6) |
+
+## 26. Plaza of Heroes e o comandante (2026-11-11): conferência cláusula a cláusula do oráculo contra o simulador
+
+Oráculo (scryfall-cache): `{T}: Add {C}.` ✅ · `{T}: Add one mana of any color. Spend this mana only to cast a legendary spell.` 🐛 **corrigido**: o simulador a pontuava como terreno incolor e nunca a escolhia para liberar o Mothman (lendário); a mana colorida para magia lendária já existia em `color_sources`, o erro era na ESCOLHA do terreno (`PLAZA_ENABLES_COMMANDER`) · `{T}: Add one mana of any color among legendary permanents you control.` ✅ já modelada. Rulings da Plaza lidas ao vivo antes de concluir (`../resultados-ab/2026-11-11-partida-manual-3/resumos/rulings_scryfall.json`). Números e validação: `goldfish-log.md` §26.
+

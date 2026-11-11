@@ -22,8 +22,8 @@ Partidas idênticas entre antes e depois: 90,1% (padrão) e 89,3% (resiliência)
 ## Validação (Regras #1 e #10)
 - **Smoke** (`resumos/smoke.txt`): 99 cartas, 91 distintas, 0 desconhecidas, 0 duplicadas não-básicas; 200 partidas por modo sem exceção.
 - **Regressão 20.000 × 2 modos** (`resumos/regressao_20000.txt`): 0 exceções, 0 carta acima do baralho, 0 campos negativos.
-- **Bit-identidade 20.000 × 2 modos** (`resumos/bitident_20000.txt`; `orquestracao/bitident.py`): (1) chave desligada == `c59226f` campo a campo; (2) chave ligada, toda partida em que NENHUMA troca ocorreu em estado nenhum (`COMMANDER_LAND_OVERRIDES_ANYWHERE == 0`) == `c59226f`; só as partidas com troca podem diferir. O script exige > 0 partidas em cada grupo (verificação vácua é falha).
-- **Determinismo** (`resumos/determinismo.txt`): 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, campo a campo no estado final.
+- **Bit-identidade 20.000 × 2 modos** (`resumos/bitident_20000.txt`, 4 blocos de 5.000 sementes 5.000.000–5.019.999 × 2 modos; `orquestracao/bitident.py`): (1) chave desligada == `c59226f` campo a campo em **40.000 de 40.000** execuções; (2) chave ligada: **35.564 sem troca em estado nenhum, idênticas a `c59226f`, e 4.436 com troca** (as únicas que podem diferir); **0 divergências**. O script exige > 0 partidas em cada grupo (verificação vácua é falha).
+- **Determinismo** (`resumos/determinismo.txt`): 3 `PYTHONHASHSEED` (11, 22, 33) × 1.500 sementes × 2 modos, campo a campo no estado final: **0 sementes divergentes** nos dois modos.
 - **Teste dirigido na partida real**: com a correção, a conferência da partida #3 passa 6/6 (`../2026-11-11-partida-manual-3/resumos/confere_simulador_DEPOIS_plaza.txt`).
 
 ## Arquivos
