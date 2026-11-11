@@ -1,0 +1,49 @@
+
+=== FIM T1
+battlefield (1) : Ziatora's Proving Ground(T)
+hand : Satsuki, the Living Lore, Historian's Boon, Godless Shrine, The First Iroan Games, Command Tower, The Cruelty of Gix, Serra's Sanctum
+graveyard (1) : Wooded Foothills
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T2
+battlefield (3) : Satsuki, the Living Lore, Command Tower(T), Ziatora's Proving Ground(T)
+hand : Historian's Boon, Godless Shrine, The First Iroan Games, The Cruelty of Gix, Serra's Sanctum, Summon: Yojimbo
+graveyard (1) : Wooded Foothills
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T3
+battlefield (6) : Satsuki, the Living Lore, Godless Shrine(T), The First Iroan Games{Lore=1}, Command Tower(T), Ziatora's Proving Ground(T), [Human Soldier]
+hand : Historian's Boon, The Cruelty of Gix, Serra's Sanctum, Summon: Yojimbo, Temple Garden
+graveyard (1) : Wooded Foothills
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T4
+battlefield (8) : Satsuki, the Living Lore, Godless Shrine, The First Iroan Games{Lore=2}, Command Tower(T), Ziatora's Proving Ground, Temple Garden(T), [Human Soldier]{+1 / +1=3}, Bloom Tender
+hand : Historian's Boon, The Cruelty of Gix, Serra's Sanctum, Summon: Yojimbo
+graveyard (1) : Wooded Foothills
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T5
+battlefield (15) : Satsuki, the Living Lore(T), Historian's Boon, Godless Shrine(T), Command Tower(T), Serra's Sanctum(T), Ziatora's Proving Ground(T), Temple Garden(T), [Human Soldier]{+1 / +1=3}, Bloom Tender(T), Tom Bombadil{Forest=1}, [Human Soldier]{Ringbearer=1}, [Gold], There and Back Again{Lore=1}, [The Ring]{Generic=1}, [Angel]
+hand : The Cruelty of Gix, Summon: Yojimbo, The Kami War // O-Kagachi Made Manifest, Goldberry, River-Daughter, Fertile Ground
+graveyard (2) : The First Iroan Games, Wooded Foothills
+commandZone (0) : 
+opponentsCards : Song of the Dryads
+
+=== FIM T6
+battlefield (21) : Satsuki, the Living Lore, Historian's Boon, Godless Shrine(T), Command Tower(T), Serra's Sanctum(T), Ziatora's Proving Ground(T), Summon: Yojimbo{Lore=1}, Temple Garden(T), [Human Soldier]{+1 / +1=3}, Bloom Tender, Goldberry, River-Daughter, Fertile Ground, Tom Bombadil, [Human Soldier]{Ringbearer=1}, [Gold], There and Back Again{Lore=1}, [The Ring]{Generic=1}, [Angel], Ketria Triome(T), [Human Soldier], [Human Soldier]
+hand : The Cruelty of Gix, The Kami War // O-Kagachi Made Manifest, Clockspinning
+graveyard (2) : The First Iroan Games, Wooded Foothills
+commandZone (0) : 
+opponentsCards : Song of the Dryads
+
+=== FIM T7
+battlefield (24) : Satsuki, the Living Lore, Historian's Boon, Godless Shrine, Command Tower, Serra's Sanctum, Ziatora's Proving Ground, Summon: Yojimbo{Lore=2}, Temple Garden, [Human Soldier]{+1 / +1=3}, Bloom Tender, Goldberry, River-Daughter(T){Lore=1}, Fertile Ground, Tom Bombadil, [Human Soldier]{Ringbearer=1}, [Gold], There and Back Again{Lore=2}, [The Ring]{Generic=1}, [Angel], Ketria Triome, [Human Soldier], [Human Soldier], [Smaug], Binding the Old Gods{Lore=1}, [Human Soldier]
+hand : The Cruelty of Gix, The Kami War // O-Kagachi Made Manifest, Clockspinning, Barbara Wright
+graveyard (2) : The First Iroan Games, Wooded Foothills
+commandZone (0) : 
+opponentsCards : Song of the Dryads

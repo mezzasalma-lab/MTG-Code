@@ -1,0 +1,116 @@
+
+--- T1
+ 0 Satsuki, the Living Lore         hand        library->hand              -   
+ 1 Historian's Boon                 hand        library->hand              -   
+ 2 Godless Shrine                   hand        library->hand              -   
+ 3 The First Iroan Games            hand        library->hand              -   
+ 4 Command Tower                    hand        library->hand              -   
+ 5 Wooded Foothills                 hand        library->hand              -   
+ 6 The Cruelty of Gix               hand        library->hand              -   
+ 7 Serra's Sanctum                  hand        library->hand              -   
+ 8 Wooded Foothills                 battlefield hand->battlefield          -   
+ 9 Wooded Foothills                 battlefield                            T   
+10 Wooded Foothills                 graveyard   battlefield->graveyard     -   
+11 Ziatora's Proving Ground         battlefield library->battlefield       T   
+
+--- T2
+ 0 Ziatora's Proving Ground         battlefield                            -   
+ 1 Summon: Yojimbo                  hand        library->hand              -   
+ 2 Command Tower                    battlefield hand->battlefield          -   
+ 3 Command Tower                    battlefield                            T   
+ 4 Ziatora's Proving Ground         battlefield                            T   
+ 5 Satsuki, the Living Lore         battlefield hand->battlefield          -   
+
+--- T3
+ 0 Command Tower                    battlefield                            -   
+ 1 Ziatora's Proving Ground         battlefield                            -   
+ 2 Temple Garden                    hand        library->hand              -   
+ 3 Godless Shrine                   battlefield hand->battlefield          -   
+ 4 Godless Shrine                   battlefield                            T   
+ 5 Command Tower                    battlefield                            T   
+ 6 Ziatora's Proving Ground         battlefield                            T   
+ 7 The First Iroan Games            battlefield hand->battlefield          -  Lore=1 
+ 8 [Human Soldier]                  battlefield None->battlefield          -   
+
+--- T4
+ 0 Godless Shrine                   battlefield                            -   
+ 1 Command Tower                    battlefield                            -   
+ 2 Ziatora's Proving Ground         battlefield                            -   
+ 3 Bloom Tender                     hand        library->hand              -   
+ 4 The First Iroan Games            battlefield                            -  Lore=2 
+ 5 [Human Soldier]                  battlefield                            -  +1 / +1=2 
+ 6 [Human Soldier]                  battlefield                            -  +1 / +1=3 
+ 7 Temple Garden                    battlefield hand->battlefield          -   
+ 8 Temple Garden                    battlefield                            T   
+ 9 Command Tower                    battlefield                            T   
+10 Bloom Tender                     battlefield hand->battlefield          -   
+
+--- T5
+ 0 Temple Garden                    battlefield                            -   
+ 1 Command Tower                    battlefield                            -   
+ 2 The Kami War                     hand        library->hand              -   
+ 3 Serra's Sanctum                  battlefield hand->battlefield          -   
+ 4 The First Iroan Games            battlefield                            -  Lore=3 
+ 5 Goldberry, River-Daughter        hand        library->hand              -   
+ 6 Fertile Ground                   hand        library->hand              -   
+ 7 Serra's Sanctum                  battlefield                            T   
+ 8 Temple Garden                    battlefield                            T   
+ 9 Godless Shrine                   battlefield                            T   
+10 Command Tower                    battlefield                            T   
+11 Ziatora's Proving Ground         battlefield                            T   
+12 Tom Bombadil                     battlefield commandZone->battlefield   -   
+13 Bloom Tender                     battlefield                            T   
+14 Historian's Boon                 battlefield hand->battlefield          -   
+15 [Human Soldier]                  battlefield None->battlefield          -   
+16 Satsuki, the Living Lore         battlefield                            T   
+17 The First Iroan Games            battlefield                            -  Lore=4 
+18 [Gold]                           battlefield None->battlefield          -   
+19 The First Iroan Games            graveyard   battlefield->graveyard     -   
+20 There and Back Again             battlefield library->battlefield       -  Lore=1 
+21 [The Ring]                       battlefield None->battlefield          -   
+22 [The Ring]                       battlefield                            -  Generic=1 
+23 [Human Soldier]                  battlefield                            -  Ringbearer=1 
+24 [Angel]                          battlefield None->battlefield          -   
+25 Song of the Dryads               opponentsCards None->opponentsCards       -   
+26 Tom Bombadil                     battlefield                            -  Forest=1 
+
+--- T6
+ 0 Godless Shrine                   battlefield                            -   
+ 1 Serra's Sanctum                  battlefield                            -   
+ 2 Command Tower                    battlefield                            -   
+ 3 Temple Garden                    battlefield                            -   
+ 4 Bloom Tender                     battlefield                            -   
+ 5 Satsuki, the Living Lore         battlefield                            -   
+ 6 Ziatora's Proving Ground         battlefield                            -   
+ 7 Clockspinning                    hand        library->hand              -   
+ 8 Ketria Triome                    battlefield library->battlefield       T   
+ 9 Temple Garden                    battlefield                            T   
+10 Godless Shrine                   battlefield                            T   
+11 Fertile Ground                   battlefield hand->battlefield          -   
+12 Command Tower                    battlefield                            T   
+13 [Human Soldier]                  battlefield None->battlefield          -   
+14 Serra's Sanctum                  battlefield                            T   
+15 Ziatora's Proving Ground         battlefield                            T   
+16 Summon: Yojimbo                  battlefield hand->battlefield          -  Lore=1 
+17 Tom Bombadil                     battlefield                            -   
+18 [Human Soldier]                  battlefield None->battlefield          -   
+19 Command Tower                    battlefield                            T   
+20 Goldberry, River-Daughter        battlefield hand->battlefield          -   
+
+--- T7
+ 0 Command Tower                    battlefield                            -   
+ 1 Ketria Triome                    battlefield                            -   
+ 2 Godless Shrine                   battlefield                            -   
+ 3 Temple Garden                    battlefield                            -   
+ 4 Ziatora's Proving Ground         battlefield                            -   
+ 5 Serra's Sanctum                  battlefield                            -   
+ 6 Barbara Wright                   hand        library->hand              -   
+ 7 Summon: Yojimbo                  battlefield                            -  Lore=2 
+ 8 There and Back Again             battlefield                            -  Lore=2 
+ 9 There and Back Again             battlefield                            -  Lore=3 
+10 Goldberry, River-Daughter        battlefield                            T   
+11 There and Back Again             battlefield                            -  Lore=2 
+12 [Smaug]                          battlefield None->battlefield          -   
+13 Goldberry, River-Daughter        battlefield                            T  Lore=1 
+14 Binding the Old Gods             battlefield library->battlefield       -  Lore=1 
+15 [Human Soldier]                  battlefield None->battlefield          -   
