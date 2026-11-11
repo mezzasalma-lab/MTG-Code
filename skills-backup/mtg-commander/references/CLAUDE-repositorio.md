@@ -657,12 +657,18 @@ no `play_land`/`play_turn`/mulligan):**
    landfall roda `play_land_phase` em cópias profundas, então o contador do estado real não vê
    todas as trocas). Efeito no Mothman (N=10.000, pareado): comandante até o T4 **+1,01 ±0,20
    pontos** (padrão) / +1,08 ±0,21 (resiliência); a mesa limpa no T8 fica no limite do ruído
-   (+0,28 ±0,24 / +0,58 ±0,29). **A política só olha o COMANDANTE**: terreno que libera outra
-   magia (a Plaza para uma lendária que não é o comandante) segue sem política. **NÃO medido:** os
-   outros 17 simuladores (API de estado diferente em cada um; `varredura-2026-10-05/scripts/
-   audit_terreno_comandante.py` e `..._pb.py` servem a Mothman/Tam e Prismatic Bridge);
-   **o Tam está dominado por T2/T3 (1.569 e 624 de 2.285 ocasiões), ou seja, é a classe (k) com a
-   Plaza só como parte**.
+   (+0,28 ±0,24 / +0,58 ±0,29). **Tam (validado em 2026-11-11):** comandante até o T3 **81,0% →
+   90,2% (+9,16 ±0,57 pontos)**, mesa limpa só no modo padrão (T8 +0,84 ±0,29, T10 +1,09 ±0,37);
+   **Prismatic Bridge (validado):** Bridge até o T3 +0,56 ±0,15 pontos (efeito pequeno: ~4% das
+   partidas). Cada um: regressão 20.000 × 2 modos × 2 configurações com 0 exceções,
+   bit-identidade 20.000 × 2 modos (chave desligada idêntica ao snapshot em 40.000 de 40.000;
+   ligada, as partidas sem troca idênticas e 0 divergências), determinismo com 3
+   `PYTHONHASHSEED` com 0 sementes divergentes. **A política só olha o COMANDANTE**: terreno que
+   libera outra magia (a Plaza para uma lendária que não é o comandante) segue sem política.
+   **NÃO medido:** os outros 17 simuladores (API de estado diferente em cada um;
+   `varredura-2026-10-05/scripts/audit_terreno_comandante.py` e `..._pb.py` servem a
+   Mothman/Tam e Prismatic Bridge). **O Tam tem 2.285 ocasiões perdidas em T2/T3 (1.569 e 624):
+   hipótese NÃO medida de que o ensaio do "terreno virado primeiro" (classe (k)) contribui.**
    (p) **mana contada em dobro e `{T}` fora da regra do terreno**: Oakhollow Village no
    Bumbleflower (`{T}: Add {C}` / `{T}: Add {G}. Spend this mana only to cast a creature spell`)
    estava em `LAND_NAMES` (contado em `lands_available`) E somado de novo em `rocks_mana`
@@ -673,15 +679,28 @@ no `play_land`/`play_turn`/mulligan):**
    grep dos nomes de terreno restrito em linhas de acúmulo de mana (`total +=`) e teste dirigido
    com estado mínimo (N Forest vs N−1 Forest + o terreno suspeito); só o Bumbleflower deu positivo
    nos 31 nomes varridos, mas **a varredura é por grep, não por execução, e só nos nomes da
-   lista**.
+   lista**. **Validado em 2026-11-11:** comandante até o T3 **−2,50 ±0,32 pontos** (a mana
+   fantasma saiu: só `OAKHOLLOW_COUNTS_ONCE` −2,79 ±0,33; só `OAKHOLLOW_MANA_RULES` +0,46 ±0,14;
+   as 3 variantes diferem entre si), bit-identidade 40.000/40.000 e 0 divergências, determinismo
+   0, regressão 0 exceções. **Os números anteriores do Bumbleflower foram medidos com a mana em
+   dobro (o Oakhollow estava em campo em ~24% das partidas); a linha de base não foi refeita.**
    (q) **mana restrita achatada para 1 genérica "por convenção"**: Ulalek tratava Eldrazi Temple
    (`{T}: Add {C}{C}. Spend this mana only to cast colorless Eldrazi spells or activate abilities
    of colorless Eldrazi`) e Shrine of the Forsaken Gods (`{T}: Add {C}{C}. Spend this mana only to
    cast colorless spells. Activate only if you control seven or more lands`) como 1 mana: o
    modelo é agregado, mas a magia conjurada, o tipo e a cor estão no cache, então não é
    impossibilidade estrutural (Regra #7, item 2). Corrigido como desconto por magia no
-   `effective_cost` (chave `RESTRICTED_LAND_BONUS`). **Fica FORA:** as habilidades ativadas de
-   Eldrazi incolor pagas com o `{C}{C}` do Temple.
+   `effective_cost` (chave `RESTRICTED_LAND_BONUS`). **Validado em 2026-11-11:** comandante até o
+   T4 **+3,31 ±0,35 pontos**, finisher nunca resolvido −2,20 ±0,30, bit-identidade 40.000/40.000 e
+   0 divergências, determinismo 0, regressão 0 exceções. **Fica FORA:** as habilidades ativadas
+   de Eldrazi incolor pagas com o `{C}{C}` do Temple; Cascading Cataracts e Corrupted Crossroads
+   não foram alterados; a linha de base do Ulalek (medida com 1 mana por Temple/Shrine) não foi
+   refeita. **Lição de método (harness):** o invariante genérico "carta acima do baralho" do
+   `abgen.regressao` dispara em ~70% (padrão) / ~55% (resiliência) das partidas do Ulalek com a
+   chave ligada E desligada (e já disparava assim em 2026-10-05): é falso positivo das cópias de
+   feitiço do deck (amostra de 300 partidas: Writhing Chrysalis, Roaming Throne, Sowing
+   Mycospawn acima da contagem 1; **causa não confirmada**), então **nesse simulador a regressão
+   prova só 0 exceções**.
    **Revisão dos terrenos em todos os simuladores (2026-11-11), escopo declarado
    (`varredura-2026-10-05/resumos/revisao_terrenos_2026-11-11.md`):** inventário estático (189
    terrenos de mana restrita/condicional em 46 decks, 20 com simulador); leitura à mão só dos
