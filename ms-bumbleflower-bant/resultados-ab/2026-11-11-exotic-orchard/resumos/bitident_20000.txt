@@ -1,0 +1,4 @@
+N = 5000 x 2 modos (sementes 5000000..5004999): chave DESLIGADA identica ao snapshot em 10000 partidas; chave LIGADA: 7646 sem Exotic Orchard em campo e identicas, 2354 com ela (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5005000..5009999): chave DESLIGADA identica ao snapshot em 10000 partidas; chave LIGADA: 7615 sem Exotic Orchard em campo e identicas, 2385 com ela (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5010000..5014999): chave DESLIGADA identica ao snapshot em 10000 partidas; chave LIGADA: 7660 sem Exotic Orchard em campo e identicas, 2340 com ela (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5015000..5019999): chave DESLIGADA identica ao snapshot em 10000 partidas; chave LIGADA: 7677 sem Exotic Orchard em campo e identicas, 2323 com ela (podem diferir); divergencias: 0
