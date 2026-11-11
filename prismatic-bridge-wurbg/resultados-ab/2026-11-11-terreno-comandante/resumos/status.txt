@@ -1,3 +1,4 @@
 21:06:29 inicio
 21:06:33 smoke fim
 21:07:58 ab fim
+21:09:43 regressao fim
