@@ -1,0 +1,22 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1816 (90.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.1295       0.1275      -0.0020 ±0.0031  
+  *commander_cast_turn__ate_T4                  0.0160       0.0180      +0.0020 ±0.0020  
+  *commander_cast_turn__ate_T5                  0.1430       0.1470      +0.0040 ±0.0034  
+  *commander_cast_turn__ate_T6                  0.3835       0.3885      +0.0050 ±0.0044  
+  *first_color_screw_turn__ate_T6               0.2305       0.2035      -0.0270 ±0.0071  
+  *first_color_screw_turn__nunca                0.7640       0.7910      +0.0270 ±0.0071  
+  *first_color_screw_turn__ate_T5               0.2250       0.1995      -0.0255 ±0.0069  
+  *first_color_screw_turn__ate_T4               0.2055       0.1840      -0.0215 ±0.0064  
+  *color_screw_turns                            0.8445       0.7400      -0.1045 ±0.0320  
+  *first_color_screw_turn__ate_T3               0.1775       0.1590      -0.0185 ±0.0059  
+  *len_graveyard                               18.6965      18.9520      +0.2555 ±0.1362  
+  *lethal_proxy_turn__nunca                     0.4525       0.4450      -0.0075 ±0.0043  
+  *own_interaction_used                         0.8200       0.8250      +0.0050 ±0.0031  
+  *len_library                                 43.7820      43.4335      -0.3485 ±0.2373  
+  *firdoch_entered_turn__ate_T3                 0.5870       0.5815      -0.0055 ±0.0038  
+  *cards_drawn_extra                           34.9875      35.3020      +0.3145 ±0.2202  
+  *sarkhan_copies_chosen_total                  0.3305       0.3390      +0.0085 ±0.0061  
+  *firdoch_entered_turn__ate_T4                 0.6065       0.6015      -0.0050 ±0.0037  

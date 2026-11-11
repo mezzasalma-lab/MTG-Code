@@ -3,3 +3,6 @@
 21:48:34 ab fim
 21:54:57 regressao fim
 22:05:00 bitident fim
+22:06:05 determinismo fim
+22:06:05 tudo fim
+23:22:37 rodada2 inicio
