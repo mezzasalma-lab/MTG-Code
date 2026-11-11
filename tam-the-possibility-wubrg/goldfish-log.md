@@ -1,5 +1,7 @@
 # Tam, the Possibility (WUBRG) — goldfish log
 
+> **Atualização 2026-11-11 (§12): o terreno que libera o comandante (Great Hall, Plaza, etc.) — bug do simulador, corrigido e validado** (comandante até o T3 **81,0% → 90,2%**, +9,16 ±0,57 pontos; A/B, regressão, bit-identidade e determinismo): [`resultados-ab/2026-11-11-terreno-comandante/LEIAME.md`](resultados-ab/2026-11-11-terreno-comandante/LEIAME.md)
+
 > **Goldfish manual #6 (2026-10-23, compilado em 2026-10-28, corrigido em 2026-10-29) — bruto, linha do tempo, 19 testes, replays e como reproduzir:** [`resultados-ab/2026-10-23-goldfish-manual-6/LEIAME.md`](resultados-ab/2026-10-23-goldfish-manual-6/LEIAME.md) (§11 deste log).
 
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
@@ -162,3 +164,13 @@ Log do playtester do Archidekt: 11 blocos (T1–T11) e a foto da mão inicial (7
 - **O Dack Fayden do T11 tem fonte no log (correção de 2026-10-29):** é a compra do 2º início de turno do bloco (o turno extra), não de um efeito de carta (a Staff nunca foi conjurada e o Dihada entra depois). O usuário "não lembrava" em 2026-10-28 e confirmou em 2026-11-04 que o turno extra foi jogado à mão. **Sem fonte no log:** a ficha de Jace do T4 não tem evento de saída (a Fracture é a explicação por eliminação).
 - **Cache:** o oráculo da **Forceful Denial** (carta do oponente no T10) entrou em `scryfall-cache/oracle-cache.json` (Regra 15).
 - **O log não tem:** vida de oponente nem a vida dele; combate; qual mana pagou o quê; os outros modos do Prismari Command.
+
+## 12. O terreno que libera o comandante (2026-11-11): classe (o) da Regra #10, a mesma do Mothman
+
+Origem: partida manual #3 do Mothman (`../wise-mothman-sultai/goldfish-log.md` §26). Dados, scripts e escopo: `resultados-ab/2026-11-11-terreno-comandante/LEIAME.md`.
+- **Erro (medido ANTES, N = 2.000):** **32,15% (padrão) e 34,15% (resiliência)** das partidas tiveram ao menos uma ocasião em que outro terreno da mão liberaria a Tam (`{1}{G}{U}`) neste turno e o simulador jogou outro; quase todas no **T2 (1.569) e no T3 (624)**; terrenos que liberavam: Great Hall of the Citadel, Plaza of Heroes, Boseiju, Yavimaya, Baxter Building.
+- **Correção** (`COMMANDER_ENABLING_LAND`, padrão ligada; desligada = `d4a122b` bit a bit): ensaio a seco de cada terreno jogável (entra em campo só para a checagem e sai com `next_uid` restaurado); se algum libera a Tam neste turno, joga o de maior `land_play_score` entre eles.
+- **Efeito** (pareado, N = 10.000, padrão / resiliência): **comandante até T3 81,02% → 90,18% (+9,16 ±0,57 pontos nos dois modos)**, até T4 +0,37 ±0,12 / +0,39 ±0,12; planeswalkers em campo no T4 +0,060 ±0,006 / +0,052 ±0,006 por partida; **mesa limpa só no modo padrão: T8 +0,84 ±0,29 e T10 +1,09 ±0,37 pontos** (resiliência dentro do ruído). Partidas idênticas ao antes: 86,6% / 83,8%.
+- **Validação:** smoke 99 cartas, 0 desconhecidas; **regressão 20.000 × 2 modos × 2 configurações: 0 exceções**; **bit-identidade 20.000 × 2: chave desligada idêntica ao `d4a122b` em 40.000 de 40.000; chave ligada, 34.192 sem troca idênticas e 5.808 com troca; 0 divergências**; **determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes**.
+- **Não coberto:** a política só olha a Tam (terreno que libera outra magia segue com `land_play_score`); escolha entre terrenos que liberam é por pontuação; o ensaio do terreno virado primeiro (classe (k)) não foi tocado nem medido para o comandante até T2; sem calibração contra a mesa real.
+

@@ -24,7 +24,7 @@ Também sobem, no padrão (N = 10.000): planeswalkers no T6 +0,054 ±0,010 e no 
 - **Smoke** (`resumos/smoke.txt`): 99 cartas, 99 distintas, 0 desconhecidas, 0 duplicadas não-básicas; 200 partidas por modo, antes e depois, sem exceção.
 - **Regressão 20.000 × 2 modos × 2 configurações** (`resumos/regressao_20000.txt`): 0 exceções, 0 carta acima do baralho, 0 campos negativos, com a chave ligada e com a chave desligada.
 - **Bit-identidade 20.000 × 2 modos** (`resumos/bitident_20000.txt`, 4 blocos de 5.000 sementes 5.000.000–5.019.999; `orquestracao/bitident_tam.py`): chave desligada == `d4a122b` em **40.000 de 40.000** execuções; chave ligada: **34.192 sem troca em estado nenhum, idênticas ao `d4a122b`, e 5.808 com troca** (as únicas que podem diferir); **0 divergências**. O script exige > 0 partidas em cada grupo (verificação vácua é falha).
-- **Determinismo** (`resumos/determinismo.txt`): __DET__
+- **Determinismo** (`resumos/determinismo.txt`): 3 `PYTHONHASHSEED` (11, 22, 33) × 1.500 sementes × 2 modos, campo a campo no estado final: **0 sementes divergentes** nos dois modos.
 
 ## Arquivos
 | arquivo | o que é | status |
