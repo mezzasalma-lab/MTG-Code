@@ -1,5 +1,7 @@
 # Goldfish Log — Ms. Bumbleflower
 
+> **Atualização 2026-11-11 (§ "Oakhollow Village"): o terreno rendia 2 mana (2 Forest + Oakhollow = 4) — bug do simulador, corrigido e validado** (comandante até o T3 **−2,50 ±0,32 pontos**: a mana fantasma saiu): [`resultados-ab/2026-11-11-oakhollow-mana/LEIAME.md`](resultados-ab/2026-11-11-oakhollow-mana/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem de equipar determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
@@ -277,4 +279,14 @@ regressão longa existe pra revelar.
 | Vida ganha | 2.7 |
 | Interação jogada | 3.5 |
 | Biblioteca esgotada | 9/20000 |
+
+## 2026-11-11 — Oakhollow Village rendia 2 mana por 1 `{T}` (classe (p) da Regra #10)
+
+Origem: o pedido do usuário *"revisar e corrigir o Plaza e demais terrenos em todos os simuladores"* (Mothman #3). Dados, scripts e escopo: `resultados-ab/2026-11-11-oakhollow-mana/LEIAME.md`.
+- **Erro:** a Oakhollow Village estava em `LAND_NAMES` (contada em `lands_available`) e `rocks_mana` somava +1 de novo: **2 Forest + Oakhollow = 4 de mana, 3 Forest = 3** (teste dirigido). Além disso o `{G}` do terreno exigia `entered_turn < turn` (terreno não tem enjoo, CR 302.6) e valia para qualquer magia (o oráculo: só magia de criatura).
+- **Correção:** chaves `OAKHOLLOW_COUNTS_ONCE` e `OAKHOLLOW_MANA_RULES` (padrão ligadas; desligadas = `99fde54` bit a bit).
+- **Efeito** (pareado, N = 10.000, padrão / resiliência): comandante até T3 **−2,50 ±0,32 / −2,30 ±0,31 pontos**, até T4 −1,35 ±0,26 / −1,49 ±0,29; dano proxy −9,4 ±1,8 (padrão); partidas idênticas ao antes 78,0% / 79,5%. Por chave (padrão, T3): mana em dobro **−2,79 ±0,33**; sem enjoo e `{G}` só para criatura **+0,46 ±0,14**.
+- **Validação:** smoke 99 cartas, 0 desconhecidas; **regressão 20.000 × 2 modos × 2 configurações: 0 exceções**; **bit-identidade 20.000 × 2: chaves desligadas idênticas ao `99fde54` em 40.000 de 40.000; ligadas, 30.511 sem Oakhollow em campo idênticas e 9.489 com ele; 0 divergências**; **determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes**.
+- **Os números anteriores do Bumbleflower (comandante, mesa limpa, etc.) foram medidos com a mana em dobro**: valem como "teto otimista" quando o Oakhollow estava em campo (~24% das partidas, 9.489 de 40.000 nos lotes de bit-identidade). **Não refiz** a linha de base inteira do deck.
+- **Não coberto:** só o Oakhollow foi lido à mão neste arquivo; o `{G}` da 3ª habilidade (`{G}, {T}`) ainda usa `color_sources` sem tipo de magia.
 

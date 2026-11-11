@@ -1,0 +1,4 @@
+N = 5000 x 2 modos (sementes 5000000..5004999): chaves DESLIGADAS identicas ao 99fde54 em 10000 partidas; chaves LIGADAS: 7587 sem Oakhollow em campo e identicas, 2413 com Oakhollow (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5005000..5009999): chaves DESLIGADAS identicas ao 99fde54 em 10000 partidas; chaves LIGADAS: 7616 sem Oakhollow em campo e identicas, 2384 com Oakhollow (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5010000..5014999): chaves DESLIGADAS identicas ao 99fde54 em 10000 partidas; chaves LIGADAS: 7683 sem Oakhollow em campo e identicas, 2317 com Oakhollow (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5015000..5019999): chaves DESLIGADAS identicas ao 99fde54 em 10000 partidas; chaves LIGADAS: 7625 sem Oakhollow em campo e identicas, 2375 com Oakhollow (podem diferir); divergencias: 0
