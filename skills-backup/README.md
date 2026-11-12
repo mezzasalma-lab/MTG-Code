@@ -1,7 +1,7 @@
 # Backup versionado da skill `mtg-commander`
 
 Cópia de segurança da skill **`mtg-commander`** (especialista em Commander/EDH, com as regras permanentes do usuário e o protocolo de avaliação de cartas/simuladores).
-Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10), em **2026-10-07** (ordem terreno × payoff de landfall) em **2026-10-22** (classes novas do Tam) em **2026-10-23** (gatilho de fase preso a `can_attack`) em **2026-11-05** (Tom #12) e em **2026-11-11** (Mothman #3, terrenos de mana restrita, Tom #13). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
+Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10), em **2026-10-07** (ordem terreno × payoff de landfall) em **2026-10-22** (classes novas do Tam) em **2026-10-23** (gatilho de fase preso a `can_attack`) em **2026-11-05** (Tom #12) em **2026-11-11** (Mothman #3, terrenos de mana restrita, Tom #13) e em **2026-11-12** (Exotic Orchard decidida e aplicada; Tom #13 entra na skill). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
 
 > **Este backup é a cópia durável.** A pasta viva da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) é sincronizada com a conta do usuário, mas
 > **alterações feitas nela durante uma sessão não são gravadas na conta** e o próximo sync pode sobrescrevê-las. Para a skill da conta refletir a versão
@@ -102,6 +102,13 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 - `mtg-commander/references/protocolo-de-avaliacao.md`: 5 linhas novas no checklist de erros (§8).
 - **2ª parte (mesmo dia):** as 5 validações fecharam (Mothman, Tam, Prismatic Bridge, Bumbleflower, Ulalek: regressão 20.000 × 2, bit-identidade 40.000/40.000 e determinismo sem divergência em todas) e os números finais entraram no `CLAUDE.md` e em `user-standing-rules.md` §21; `protocolo-de-avaliacao.md` ganhou a 6ª linha (invariante genérico que dispara com a chave desligada). **O Tom #13 NÃO está na skill** (só no repositório).
 - **Como foi feito (Regra #9):** espelhos copiados do repositório direto para o backup; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é MAIS ANTIGA que o backup: só tem `SKILL.md`, sem `references/`, e o comando a copiaria por cima do backup). `SHA256SUMS` e `mtg-commander.zip` refeitos do backup. **A skill da conta NÃO foi atualizada**; só o usuário consegue reenviar o zip.
+
+## O que mudou na atualização de 2026-11-12 (Exotic Orchard decidida e aplicada; Tom #13 entra na skill)
+
+- `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): Regra #10, trecho da revisão dos terrenos: a **Exotic Orchard saiu de "pendente de decisão" para "DECIDIDA e CORRIGIDA"** (proxy = qualquer cor da identidade do comandante, chave `EXOTIC_ORCHARD_PROXY`; aplicada e validada em Azula, Bumbleflower, Tom e Ur-Dragon, com os números de cada um e bit-identidade 40.000/40.000 e 0 divergências nos 4), o **estado final dos 12 simuladores que têm a carta** (a lista antiga estava errada: citava o Edgar, que não tem a carta, e omitia o Vihaan) e a lição de método (o grupo "sem a mudança" da bit-identidade tem de cobrir TODO ponto de leitura; o texto gerado por script também se confere).
+- `references/user-standing-rules.md` §21: o trecho da Exotic Orchard do bullet de 2026-11-11 foi reescrito com a decisão, e há um **bullet novo do Tom #13** (0 violações provadas pelo log; 2 fichas esquecidas confirmadas; a Boon dispara no capítulo final que DISPARA, não na Saga sacrificada; Goldberry tirando o marcador só vale com o capítulo III na pilha, CR 714.4/117.5/704.3, e a resposta do usuário não esclareceu a ordem; rulings lidas antes; a CR veio do `rules-cache`, nada foi baixado).
+- `mtg-commander/references/protocolo-de-avaliacao.md`: 3 linhas novas no checklist de erros (§8): critério de bit-identidade por um só ponto de leitura, texto gerado por script sem ler, lista de simuladores citada de memória.
+- **Como foi feito (Regra #9):** espelhos copiados do repositório direto para o backup (`cmp` igual nos 4); `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é MAIS ANTIGA que o backup e o comando a copiaria por cima). `SHA256SUMS` e `mtg-commander.zip` refeitos do backup. **A skill da conta NÃO foi atualizada**; só o usuário consegue reenviar `mtg-commander.zip` (Customize → Skills → Upload a skill).
 
 ## Como restaurar / reinstalar
 

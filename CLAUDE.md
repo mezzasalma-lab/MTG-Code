@@ -704,12 +704,31 @@ no `play_land`/`play_turn`/mulligan):**
    **Revisão dos terrenos em todos os simuladores (2026-11-11), escopo declarado
    (`varredura-2026-10-05/resumos/revisao_terrenos_2026-11-11.md`):** inventário estático (189
    terrenos de mana restrita/condicional em 46 decks, 20 com simulador); leitura à mão só dos
-   casos citados; **achados NÃO corrigidos e pendentes de decisão**: Exotic Orchard com convenção
-   INCONSISTENTE (Azula, Bumbleflower, Tam e Ur-Dragon: não produz nada; Kutzil, Megatron,
-   Prismatic Bridge, Edgar: qualquer cor da identidade; oráculo: "any color that a land an
-   opponent controls could produce"), Gemstone Caverns do Nekusar sem a cláusula da mão inicial,
-   Command Tower do Edgar com 5 cores (identidade W/B/R; inofensivo), Maralen/Nekusar/Ulalek com
-   modelo de mana agregado (sem pips: restrição de cor de terreno não rastreada por construção).
+   casos citados. **Exotic Orchard (convenção inconsistente entre simuladores): DECIDIDA e CORRIGIDA
+   em 2026-11-11.** Pedido do usuário: *"Kutzil, Megatron, Prismatic Bridge e Edgar como proxy, ou
+   seja, gera um terreno no minimo não da cor do comandante, idealmente sim, já que ele sempre gera
+   mana de alguma cor que meus adversários produzam"* (proxy = qualquer cor da IDENTIDADE do
+   comandante; o Edgar não tem a Exotic Orchard, então a lista anterior estava errada). Chave
+   `EXOTIC_ORCHARD_PROXY` (`land_prod(name, default)` em todo ponto que lê o que um terreno produz)
+   em Azula, Bumbleflower, Tom e Ur-Dragon, validada em cada um (N=10.000, modo padrão, pareado):
+   comandante até T4 Azula +2,46 ±0,32 e Bumbleflower +1,77 ±0,26 pontos, até T5 Tom +3,31 ±0,38;
+   **Ur-Dragon: o efeito é na COR, não no comandante** (`color_screw_turns` 0,9342 → 0,7857,
+   −0,1485 ±0,0179 por partida; partidas sem falta de cor +3,28 ±0,35 pontos; comandante MV 9 até T6
+   +0,37 ±0,19). Bit-identidade 40.000/40.000 e 0 divergências nos 4; regressão 0 exceções;
+   determinismo 0 sementes divergentes (no Tom só em `_mana_cache`, igual com a chave desligada).
+   **Estado final dos 12 simuladores que têm a carta:** proxy = identidade em Kutzil, Megatron,
+   Prismatic Bridge, Vihaan (só a Mythos lê o mapa), Azula, Bumbleflower, Tom e Ur-Dragon; **Tam**
+   usa as cores dos terrenos dos oponentes simulados (mantido; o usuário pode pedir para unificar);
+   Maralen, Nekusar e Ulalek contam 1 mana sem cor (modelo agregado). **Lição de método:** o grupo
+   "partidas sem a mudança" da bit-identidade tem de cobrir TODO ponto de leitura dela (a Orchard na
+   MÃO entra na pontuação de qual terreno jogar; com o critério só de `color_sources` o Tom deu 331
+   divergências falsas), e o texto gerado por script também se confere antes de commitar (o gerador
+   escreveu o deck como "Ur" e uma célula `n/d` onde `tabela_pareada` omite campo de diferença
+   exatamente 0). **Os números anteriores desses 4 decks foram medidos com a Orchard sem cor; as
+   linhas de base não foram refeitas.** **Achados NÃO corrigidos e pendentes de decisão**: Gemstone
+   Caverns do Nekusar sem a cláusula da mão inicial, Command Tower do Edgar com 5 cores (identidade
+   W/B/R; inofensivo), Maralen/Nekusar/Ulalek com modelo de mana agregado (sem pips: restrição de
+   cor de terreno não rastreada por construção).
    **Não lidos:** as habilidades ativadas dos terrenos (Boseiju, Takenuma, Eiganjo, Spawning Bed,
    Urza's Cave, Cabal Coffers, Crypt of Agadeem, Big Apple etc.) além das linhas de acúmulo de
    mana, e a classe (o) nos 17 simuladores acima.
