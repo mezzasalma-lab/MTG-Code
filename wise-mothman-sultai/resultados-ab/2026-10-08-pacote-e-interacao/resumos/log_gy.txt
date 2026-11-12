@@ -1,0 +1,2 @@
+ok 10000 padrao 10000 jogos; 87013 turnos registrados
+ok 10000 resiliencia 10000 jogos; 99407 turnos registrados

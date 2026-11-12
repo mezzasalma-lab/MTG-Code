@@ -1,0 +1,243 @@
+{
+ "sim": "resultados-ab/2026-10-07-comparacao-stefano/codigo/mothman_goldfish_v1_HM.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "opps_eliminated_total",
+  "horrigan_etb_prolifs",
+  "horrigan_attack_prolifs",
+  "horrigan_attacks",
+  "horrigan_attack_damage",
+  "master_activations",
+  "master_act_mine",
+  "master_act_opp",
+  "master_act_on_opp_turn",
+  "master_etb_rad",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "counters_placed_total",
+  "cards_milled_opp_total",
+  "cards_milled_self_total",
+  "library_min",
+  "draws_total",
+  "kozilek_shuffles_total"
+ ],
+ "compacto": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "horrigan_attacks",
+  "master_activations",
+  "master_act_opp",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total"
+ ],
+ "variantes": {
+  "base": {},
+  "frank__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__arcane_denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__toxic_deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__coldeyed_selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__wave_goodbye": {
+   "SWAPS": [
+    [
+     "Wave Goodbye",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__tear_asunder": {
+   "SWAPS": [
+    [
+     "Tear Asunder",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "frank__kozilek_butcher_of_truth": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__tear_asunder": {
+   "SWAPS": [
+    [
+     "Tear Asunder",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__an_offer_you_cant_refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "master__wave_goodbye": {
+   "SWAPS": [
+    [
+     "Wave Goodbye",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "ambos__offer_frank__negate_master": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Negate",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "ambos__offer_frank__tear_master": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Agent Frank Horrigan"
+    ],
+    [
+     "Tear Asunder",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "sens_frank_sem_proliferate__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Agent Frank Horrigan"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "HORRIGAN_PROLIF_TIMES": 0
+  },
+  "sens_master_sem_criatura_de_oponente__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "MASTER_TAKE_OPP": false
+  },
+  "sens_master_so_no_meu_turno__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "The Master, Transcendent"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "MASTER_OPP_TURN": false
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "frank__an_offer_you_cant_refuse",
+  "frank__negate",
+  "frank__arcane_denial",
+  "frank__toxic_deluge",
+  "frank__coldeyed_selkie",
+  "frank__didnt_say_please",
+  "frank__wave_goodbye",
+  "frank__tear_asunder",
+  "frank__kozilek_butcher_of_truth",
+  "master__tear_asunder",
+  "master__an_offer_you_cant_refuse",
+  "master__negate",
+  "master__wave_goodbye",
+  "ambos__offer_frank__negate_master",
+  "ambos__offer_frank__tear_master",
+  "sens_frank_sem_proliferate__negate",
+  "sens_master_sem_criatura_de_oponente__negate",
+  "sens_master_so_no_meu_turno__negate"
+ ],
+ "regressao": []
+}

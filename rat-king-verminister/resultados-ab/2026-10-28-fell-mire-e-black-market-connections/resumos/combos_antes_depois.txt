@@ -1,0 +1,23 @@
+Combos do Spellbook executados pelo simulador, antes x depois da rodada 4 (só dos brutos arquivados; indicadores 'até T' existem de T2 a T6; 8 turnos simulados).
+
+[padrao] N=10000
+  combo_marrow_staff_turn    até T4: antes  0.00%  depois  0.00%  dif +0.00 ±0.00 pontos
+  combo_marrow_staff_turn    até T5: antes  0.02%  depois  0.02%  dif +0.00 ±0.00 pontos
+  combo_marrow_staff_turn    até T6: antes  0.12%  depois  0.13%  dif +0.01 ±0.03 pontos
+  combo_ayara_plague_turn    até T4: antes  0.00%  depois  0.00%  dif +0.00 ±0.00 pontos
+  combo_ayara_plague_turn    até T5: antes  0.01%  depois  0.00%  dif -0.01 ±0.02 pontos
+  combo_ayara_plague_turn    até T6: antes  0.22%  depois  0.23%  dif +0.01 ±0.02 pontos
+  combo_any_turn             até T4: antes  0.00%  depois  0.00%  dif +0.00 ±0.00 pontos
+  combo_any_turn             até T5: antes  0.03%  depois  0.02%  dif -0.01 ±0.02 pontos
+  combo_any_turn             até T6: antes  0.34%  depois  0.36%  dif +0.02 ±0.04 pontos
+
+[resiliencia] N=10000
+  combo_marrow_staff_turn    até T4: antes  0.00%  depois  0.00%  dif +0.00 ±0.00 pontos
+  combo_marrow_staff_turn    até T5: antes  0.01%  depois  0.01%  dif +0.00 ±0.00 pontos
+  combo_marrow_staff_turn    até T6: antes  0.07%  depois  0.08%  dif +0.01 ±0.02 pontos
+  combo_ayara_plague_turn    até T4: antes  0.00%  depois  0.00%  dif +0.00 ±0.00 pontos
+  combo_ayara_plague_turn    até T5: antes  0.00%  depois  0.00%  dif +0.00 ±0.00 pontos
+  combo_ayara_plague_turn    até T6: antes  0.08%  depois  0.09%  dif +0.01 ±0.03 pontos
+  combo_any_turn             até T4: antes  0.00%  depois  0.00%  dif +0.00 ±0.00 pontos
+  combo_any_turn             até T5: antes  0.01%  depois  0.01%  dif +0.00 ±0.00 pontos
+  combo_any_turn             até T6: antes  0.15%  depois  0.17%  dif +0.02 ±0.04 pontos

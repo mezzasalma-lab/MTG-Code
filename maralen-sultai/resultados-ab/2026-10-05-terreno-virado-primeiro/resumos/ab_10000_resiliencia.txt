@@ -1,0 +1,67 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5828 (58.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8189       5.8224      +0.0035 ±0.0087  
+   commander_cast_turn__nunca                   0.0469       0.0476      +0.0007 ±0.0011  
+  *commander_cast_turn__ate_T3                  0.1475       0.1400      -0.0075 ±0.0027  
+  *commander_cast_turn__ate_T4                  0.4215       0.4176      -0.0039 ±0.0034  
+  *commander_cast_turn__ate_T5                  0.7659       0.7584      -0.0075 ±0.0031  
+  *len_tapped_lands_this_turn                   0.0932       0.1170      +0.0238 ±0.0039  
+  *cards_exiled_total                          14.8227      14.6914      -0.1313 ±0.0717  
+  *itlimoc_transform_turn__ate_T4               0.0162       0.0147      -0.0015 ±0.0009  
+  *maralen_free_casts_total                     2.4845       2.4705      -0.0140 ±0.0100  
+  *faerie_tokens                                0.4786       0.4650      -0.0136 ±0.0102  
+  *maralen_triggers_total                       7.6740       7.6161      -0.0579 ±0.0448  
+  *len_library                                 66.0182      66.1662      +0.1480 ±0.1187  
+  *tokens_created_total                       214.7286     254.7245     +39.9959 ±33.3693 
+  *len_smart_removal_log                        0.6488       0.6558      +0.0070 ±0.0060  
+  *smart_removals_total                         0.6488       0.6558      +0.0070 ±0.0060  
+  *len_smart_graveyard_snipe_log                0.2934       0.2881      -0.0053 ±0.0047  
+  *smart_graveyard_snipes_total                 0.2934       0.2881      -0.0053 ±0.0047  
+  *commander_cast_count                         1.5034       1.4974      -0.0060 ±0.0054  
+  *landfall_elf_tokens_total                    0.0935       0.0898      -0.0037 ±0.0033  
+
+[so_tapped_land_first - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8108 (81.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8189       5.8232      +0.0043 ±0.0068  
+   commander_cast_turn__nunca                   0.0469       0.0470      +0.0001 ±0.0008  
+  *commander_cast_turn__ate_T3                  0.1475       0.1515      +0.0040 ±0.0020  
+  *commander_cast_turn__ate_T4                  0.4215       0.4332      +0.0117 ±0.0027  
+  *commander_cast_turn__ate_T5                  0.7659       0.7712      +0.0053 ±0.0022  
+  *len_smart_removal_log                        0.6488       0.6583      +0.0095 ±0.0048  
+  *smart_removals_total                         0.6488       0.6583      +0.0095 ±0.0048  
+  *itlimoc_transform_turn__ate_T5               0.0470       0.0483      +0.0013 ±0.0009  
+  *graveyard_wipe_used                          0.3899       0.3938      +0.0039 ±0.0030  
+  *len_smart_graveyard_wipe_log                 0.3899       0.3938      +0.0039 ±0.0030  
+  *smart_graveyard_wipes_total                  0.3899       0.3938      +0.0039 ±0.0030  
+  *len_exile_maralen                            3.0189       2.9856      -0.0333 ±0.0259  
+  *bounce_untap_activations_total               0.5179       0.5252      +0.0073 ±0.0064  
+  *cast_from_top_total                          0.1665       0.1710      +0.0045 ±0.0039  
+  *landfall_counters_total                      0.1265       0.1300      +0.0035 ±0.0034  
+   maralen_free_cast_used_this_turn             0.5116       0.5081      -0.0035 ±0.0037  
+   len_smart_attack_log                         1.2419       1.2475      +0.0056 ±0.0065  
+   smart_attacks_taken_total                    1.2419       1.2475      +0.0056 ±0.0065  
+   len_creature_cast_turn                       8.2881       8.3099      +0.0218 ±0.0264  
+
+[so_land_entry_conditions - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8044 (80.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8189       5.8151      -0.0038 ±0.0084  
+   commander_cast_turn__nunca                   0.0469       0.0473      +0.0004 ±0.0012  
+  *commander_cast_turn__ate_T3                  0.1475       0.1307      -0.0168 ±0.0025  
+  *commander_cast_turn__ate_T4                  0.4215       0.4019      -0.0196 ±0.0030  
+  *commander_cast_turn__ate_T5                  0.7659       0.7518      -0.0141 ±0.0029  
+  *len_tapped_lands_this_turn                   0.0932       0.1183      +0.0251 ±0.0039  
+  *maralen_free_casts_total                     2.4845       2.4548      -0.0297 ±0.0098  
+  *len_creature_cast_turn                       8.2881       8.2067      -0.0814 ±0.0277  
+  *cards_exiled_total                          14.8227      14.6360      -0.1867 ±0.0700  
+  *len_library                                 66.0182      66.2945      +0.2763 ±0.1077  
+  *commander_cast_count                         1.5034       1.4908      -0.0126 ±0.0052  
+  *len_smart_removal_log                        0.6488       0.6350      -0.0138 ±0.0058  
+  *smart_removals_total                         0.6488       0.6350      -0.0138 ±0.0058  
+  *ramp_pieces_cast_total                       3.7351       3.6991      -0.0360 ±0.0154  
+  *landfall_elf_tokens_total                    0.0935       0.0855      -0.0080 ±0.0034  
+  *life                                        35.4820      35.5584      +0.0764 ±0.0337  
+  *maralen_triggers_total                       7.6740       7.5825      -0.0915 ±0.0411  
+  *len_graveyard                                6.1006       6.0163      -0.0843 ±0.0388  
+  *itlimoc_transform_turn__ate_T4               0.0162       0.0141      -0.0021 ±0.0010  

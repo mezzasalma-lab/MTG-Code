@@ -1,0 +1,22 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1815 (90.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.2585       0.2540      -0.0045 ±0.0045  
+   commander_cast_turn__ate_T4                  0.0135       0.0145      +0.0010 ±0.0014  
+   commander_cast_turn__ate_T5                  0.1105       0.1120      +0.0015 ±0.0035  
+  *commander_cast_turn__ate_T6                  0.2935       0.2985      +0.0050 ±0.0042  
+  *first_color_screw_turn__ate_T6               0.2405       0.2115      -0.0290 ±0.0074  
+  *first_color_screw_turn__nunca                0.7505       0.7795      +0.0290 ±0.0074  
+  *first_color_screw_turn__ate_T5               0.2325       0.2060      -0.0265 ±0.0070  
+  *color_screw_turns                            0.9150       0.7950      -0.1200 ±0.0351  
+  *first_color_screw_turn__ate_T4               0.2080       0.1860      -0.0220 ±0.0064  
+  *first_color_screw_turn__ate_T3               0.1775       0.1590      -0.0185 ±0.0059  
+  *commander_damage_dealt                      15.5125      15.7720      +0.2595 ±0.1646  
+  *len_graveyard                               11.9130      12.1515      +0.2385 ±0.1606  
+  *own_interaction_used                         0.7880       0.7930      +0.0050 ±0.0034  
+  *wiped_this_round                             0.1375       0.1415      +0.0040 ±0.0031  
+  *urdragon_attack_draws_total                  8.7310       8.8385      +0.1075 ±0.0862  
+  *len_library                                 59.1490      58.8195      -0.3295 ±0.2677  
+  *cards_drawn_extra                           20.6770      20.9810      +0.3040 ±0.2511  
+  *triome_cycles_total                          0.1050       0.1090      +0.0040 ±0.0037  

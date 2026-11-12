@@ -1,0 +1,8 @@
+(1) SWAPS=() == ANTES: 10000 identicas, 0 divergencias | (2) nenhuma das 6 vista (n=995): 995 identicas, 0 divergencias | partidas com alguma das seis vista (fora de (2)): 9005
+rc=0
+(1) SWAPS=() == ANTES: 10000 identicas, 0 divergencias | (2) nenhuma das 6 vista (n=928): 928 identicas, 0 divergencias | partidas com alguma das seis vista (fora de (2)): 9072
+rc=0
+(1) SWAPS=() == ANTES: 10000 identicas, 0 divergencias | (2) nenhuma das 6 vista (n=1001): 1001 identicas, 0 divergencias | partidas com alguma das seis vista (fora de (2)): 8999
+rc=0
+(1) SWAPS=() == ANTES: 10000 identicas, 0 divergencias | (2) nenhuma das 6 vista (n=970): 970 identicas, 0 divergencias | partidas com alguma das seis vista (fora de (2)): 9030
+rc=0

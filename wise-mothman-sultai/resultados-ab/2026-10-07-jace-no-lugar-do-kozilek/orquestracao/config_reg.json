@@ -1,0 +1,81 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "jace_wins",
+  "jace_win_T8",
+  "jace_win_T10",
+  "jace_plus_uses",
+  "jace_plus_self",
+  "jace_minus8_uses",
+  "jace_draws",
+  "jace_removed",
+  "self_lost",
+  "decked",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "opps_eliminated_total",
+  "opps_decked_total",
+  "cards_milled_self_total",
+  "cards_milled_opp_total",
+  "library_min",
+  "mothman_counters_placed_total",
+  "kozilek_shuffles_total",
+  "draws_total"
+ ],
+ "compacto": [
+  "jace_wins",
+  "jace_win_T8",
+  "self_lost",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "opps_decked_total",
+  "cards_milled_self_total",
+  "cards_milled_opp_total",
+  "mothman_counters_placed_total",
+  "kozilek_shuffles_total"
+ ],
+ "variantes": {
+  "base": {},
+  "kozilek_por_jace_no_lugar": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "negate_por_jace_todas_as_chaves": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "JACE_REMOVAL_PROB": 0.33,
+   "JACE_WIN_LINE": true
+  },
+  "yavimaya_por_jace_remove_append_sem_linha": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": false,
+   "JACE_WIN_LINE": false
+  }
+ },
+ "regressao": [
+  "base",
+  "kozilek_por_jace_no_lugar",
+  "negate_por_jace_todas_as_chaves",
+  "yavimaya_por_jace_remove_append_sem_linha"
+ ]
+}

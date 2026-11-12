@@ -1,0 +1,64 @@
+Bruto: modo=padrao N=10000 sementes 3000000..3009999; 119958 estados. Cenarios de oponente: cada um dos 3 oponentes com c criaturas (c = 2, 4, 6, 10).
+Colunas (por estado onde a variante e' conjuravel por mana E cor): minhas = minhas criaturas/fichas/animados perdidas (MEDIDO); opp = criaturas que os 3 oponentes sacrificam = 3 x min(N, c) (📊);
+opp/minhas = razao. Com Mayhem Devil em campo cada criatura sacrificada por um oponente vale +1 de dano (simultaneo: dispara mesmo se ele morrer no evento); com Revel in Riches, +1 Treasure.
+
+### cada oponente com 2 criaturas
+variante (so' as que tem N por oponente)         N medio   minhas      opp   opp/minhas
+Blasphemous Edict                                  13.00     4.73     6.00         1.27
+By Invitation Only [N=13]                          13.00     4.76     6.00         1.26
+By Invitation Only [N=motores]                      3.55     3.84     4.79         1.25
+By Invitation Only [N=fodder]                       1.10     1.38     1.52         1.10
+Barter in Blood                                     2.00     2.01     6.00         2.98
+Tergrid's Shadow                                    2.00     2.13     6.00         2.82
+Rankle's Prank [2 criaturas + 4 de vida]            2.00     2.01     6.00         2.98
+Taste of Death                                      3.00     2.98     6.00         2.01
+Necrotic Hex                                        6.00    -2.14     6.00            -
+Liliana, Dreadhorde General [-4]                    2.00     2.20     6.00         2.73
+Zodiark, Umbral God                                 2.57     3.04     4.86         1.60
+Meathook Massacre II [X max]                        2.05     2.96     4.57         1.54
+
+### cada oponente com 4 criaturas
+variante (so' as que tem N por oponente)         N medio   minhas      opp   opp/minhas
+Blasphemous Edict                                  13.00     4.73    12.00         2.54
+By Invitation Only [N=13]                          13.00     4.76    12.00         2.52
+By Invitation Only [N=motores]                      3.55     3.84     7.42         1.93
+By Invitation Only [N=fodder]                       1.10     1.38     2.22         1.60
+Barter in Blood                                     2.00     2.01     6.00         2.98
+Tergrid's Shadow                                    2.00     2.13     6.00         2.82
+Rankle's Prank [2 criaturas + 4 de vida]            2.00     2.01     6.00         2.98
+Taste of Death                                      3.00     2.98     9.00         3.02
+Necrotic Hex                                        6.00    -2.14    12.00            -
+Liliana, Dreadhorde General [-4]                    2.00     2.20     6.00         2.73
+Zodiark, Umbral God                                 2.57     3.04     6.59         2.16
+Meathook Massacre II [X max]                        2.05     2.96     5.62         1.90
+
+### cada oponente com 6 criaturas
+variante (so' as que tem N por oponente)         N medio   minhas      opp   opp/minhas
+Blasphemous Edict                                  13.00     4.73    18.00         3.80
+By Invitation Only [N=13]                          13.00     4.76    18.00         3.78
+By Invitation Only [N=motores]                      3.55     3.84     8.71         2.27
+By Invitation Only [N=fodder]                       1.10     1.38     2.56         1.85
+Barter in Blood                                     2.00     2.01     6.00         2.98
+Tergrid's Shadow                                    2.00     2.13     6.00         2.82
+Rankle's Prank [2 criaturas + 4 de vida]            2.00     2.01     6.00         2.98
+Taste of Death                                      3.00     2.98     9.00         3.02
+Necrotic Hex                                        6.00    -2.14    18.00            -
+Liliana, Dreadhorde General [-4]                    2.00     2.20     6.00         2.73
+Zodiark, Umbral God                                 2.57     3.04     7.14         2.35
+Meathook Massacre II [X max]                        2.05     2.96     5.88         1.99
+
+### cada oponente com 10 criaturas
+variante (so' as que tem N por oponente)         N medio   minhas      opp   opp/minhas
+Blasphemous Edict                                  13.00     4.73    30.00         6.34
+By Invitation Only [N=13]                          13.00     4.76    30.00         6.30
+By Invitation Only [N=motores]                      3.55     3.84     9.78         2.55
+By Invitation Only [N=fodder]                       1.10     1.38     2.88         2.08
+Barter in Blood                                     2.00     2.01     6.00         2.98
+Tergrid's Shadow                                    2.00     2.13     6.00         2.82
+Rankle's Prank [2 criaturas + 4 de vida]            2.00     2.01     6.00         2.98
+Taste of Death                                      3.00     2.98     9.00         3.02
+Necrotic Hex                                        6.00    -2.14    18.00            -
+Liliana, Dreadhorde General [-4]                    2.00     2.20     6.00         2.73
+Zodiark, Umbral God                                 2.57     3.04     7.47         2.46
+Meathook Massacre II [X max]                        2.05     2.96     6.04         2.04
+

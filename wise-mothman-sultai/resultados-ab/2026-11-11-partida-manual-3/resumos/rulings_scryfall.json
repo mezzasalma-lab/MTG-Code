@@ -1,0 +1,244 @@
+{
+ "Altar of the Brood": {
+  "oracle_id": "c3aafcdd-c890-4971-b8a9-5bfcad794c0b",
+  "rulings": [
+   [
+    "2014-09-20",
+    "If Altar of the Brood enters the battlefield under your control at the same time as other permanents, its ability will trigger for each of those permanents."
+   ]
+  ]
+ },
+ "An Offer You Can't Refuse": {
+  "oracle_id": "234a734b-ba28-4f1b-9d01-3c3e7d516590",
+  "rulings": [
+   [
+    "2022-04-29",
+    "If the target is no longer legal as An Offer You Can't Refuse resolves, no Treasure tokens are created."
+   ],
+   [
+    "2022-04-29",
+    "If the target is still legal as it resolves but the spell can't be countered for some reason, its controller will still create two Treasure tokens."
+   ]
+  ]
+ },
+ "Breeding Pool": {
+  "oracle_id": "20283c4a-f1f0-42f0-bc08-6da87474426b",
+  "rulings": [
+   [
+    "2018-10-05",
+    "Unlike most dual lands, this land has two basic land types. It's not basic, so cards such as District Guide can't find it, but it does have the appropriate land types for effects such as that of Drowned Catacomb (from the Ixalan set)."
+   ],
+   [
+    "2018-10-05",
+    "If an effect puts this land onto the battlefield tapped, you may pay 2 life, but it still enters tapped."
+   ]
+  ]
+ },
+ "Dark Deal": {
+  "oracle_id": "c527eb80-ccac-40b8-8377-c31121613128",
+  "rulings": [
+   [
+    "2014-11-24",
+    "If a player had one card or no cards in their hand, that player won't draw any cards."
+   ]
+  ]
+ },
+ "Didn't Say Please": {
+  "oracle_id": "b90bc464-a95a-42e4-9d9a-4b0882eb57ba",
+  "rulings": [
+   [
+    "2019-10-04",
+    "A spell that can't be countered is a legal target for Didn't Say Please. The spell won't be countered when Didn't Say Please resolves, but its controller still puts the top three cards of their library into their graveyard."
+   ]
+  ]
+ },
+ "Evolution Witness": {
+  "oracle_id": "0e07f1af-5ff6-4da5-8683-aea4cc390975",
+  "rulings": [
+   [
+    "2024-06-07",
+    "You can always activate an ability that will cause a creature to adapt. As that ability resolves, if the creature has a +1/+1 counter on it for any reason, you simply won't put any +1/+1 counters on it."
+   ],
+   [
+    "2024-06-07",
+    "If a creature somehow loses all of its +1/+1 counters, it can adapt again and get more +1/+1 counters."
+   ]
+  ]
+ },
+ "Gyre Sage": {
+  "oracle_id": "e3aa16cf-079b-4737-9ffd-7bfdffef0cb2",
+  "rulings": [
+   [
+    "2013-04-15",
+    "Whenever a creature enters the battlefield under your control, check its power and toughness against the power and toughness of the creature with evolve. If neither stat of the new creature is greater, evolve won't trigger at all."
+   ],
+   [
+    "2013-04-15",
+    "When comparing the stats as the evolve ability resolves, it's possible that the stat that's greater changes from power to toughness or vice versa. If this happens, the ability will still resolve and you'll put a +1/+1 counter on the creature with evolve. For example, if you control a 2/2 creature with evolve and a 1/3 creature enters the battlefield under your control, it toughness is greater so evolve will trigger. In response, the 1/3 creature gets +2/-2. When the evolve trigger tries to resolve, its power is greater. You'll put a +1/+1 counter on the creature with evolve."
+   ],
+   [
+    "2013-04-15",
+    "If evolve triggers, the stat comparison will happen again when the ability tries to resolve. If neither stat of the new creature is greater, the ability will do nothing. If the creature that entered the battlefield leaves the battlefield before evolve tries to resolve, use its last known power and toughness to compare the stats."
+   ],
+   [
+    "2013-04-15",
+    "When comparing the stats of the two creatures for evolve, you always compare power to power and toughness to toughness."
+   ],
+   [
+    "2013-04-15",
+    "If a creature enters the battlefield with +1/+1 counters on it, consider those counters when determining if evolve will trigger. For example, a 1/1 creature that enters the battlefield with two +1/+1 counters on it will cause the evolve ability of a 2/2 creature to trigger."
+   ],
+   [
+    "2013-04-15",
+    "If multiple creatures enter the battlefield at the same time, evolve may trigger multiple times, although the stat comparison will take place each time one of those abilities tries to resolve. For example, if you control a 2/2 creature with evolve and two 3/3 creatures enter the battlefield, evolve will trigger twice. The first ability will resolve and put a +1/+1 counter on the creature with evolve. When the second ability tries to resolve, neither the power nor the toughness of the new creature is greater than that of the creature with evolve, so that ability does nothing."
+   ],
+   [
+    "2013-01-24",
+    "Gyre Sage's last ability is a mana ability. It doesn't use the stack and can't be responded to."
+   ]
+  ]
+ },
+ "Memory Erosion": {
+  "oracle_id": "f4a96881-586d-44ad-b427-5cdf8988f9a1",
+  "rulings": []
+ },
+ "Nature's Lore": {
+  "oracle_id": "78826359-fe63-44ad-adc4-a17ffcd710e4",
+  "rulings": [
+   [
+    "2022-12-08",
+    "You may find a basic Forest or any land card with the land type Forest."
+   ]
+  ]
+ },
+ "Overgrown Tomb": {
+  "oracle_id": "975ec9a3-6f20-4177-8211-82526e092538",
+  "rulings": [
+   [
+    "2025-11-17",
+    "This land has two basic land types. It's not basic, so cards such as Tend the Sprigs can't find it, but it does have the appropriate land types for effects such as that of Kishla Village (from the Tarkir: Dragonstorm release)."
+   ],
+   [
+    "2025-11-17",
+    "If an effect puts this land onto the battlefield tapped, you may pay 2 life, but it still enters tapped."
+   ],
+   [
+    "2018-10-05",
+    "Unlike most dual lands, this land has two basic land types. It's not basic, so cards such as District Guide can't find it, but it does have the appropriate land types for effects such as that of Drowned Catacomb (from the Ixalan set)."
+   ],
+   [
+    "2018-10-05",
+    "If an effect puts this land onto the battlefield tapped, you may pay 2 life, but it still enters tapped."
+   ]
+  ]
+ },
+ "Plaza of Heroes": {
+  "oracle_id": "9c58d241-4d9f-4b46-b8ee-f4587f9acfd6",
+  "rulings": []
+ },
+ "Rejuvenating Springs": {
+  "oracle_id": "d1620449-930a-4895-a143-fd2a0a3c8b17",
+  "rulings": [
+   [
+    "2020-11-10",
+    "Count the number of opponents you currently have, not how many you started with. If your four-player game is down to you and a single opponent, the land enters the battlefield tapped."
+   ],
+   [
+    "2020-11-10",
+    "If an effect puts the land onto the battlefield tapped, having two or more opponents won't untap it."
+   ]
+  ]
+ },
+ "Six": {
+  "oracle_id": "dbcbdf37-c40f-4068-b4a7-a849cab1056c",
+  "rulings": [
+   [
+    "2024-06-07",
+    "If a spell you cast with retrace is countered, it's put back into your graveyard. You may use the retrace ability to cast it again."
+   ]
+  ]
+ },
+ "The Wise Mothman": {
+  "oracle_id": "7656f93b-336f-49cb-b8fe-c2b5c014258f",
+  "rulings": [
+   [
+    "2024-03-08",
+    "If more than one player is instructed to mill at the same time (by the activated ability of Raul, Trouble Shooter, for example), as long as at least one nonland card is milled, The Wise Mothman’s last ability will trigger just once."
+   ],
+   [
+    "2024-03-08",
+    "Rad counters are a kind of counter that a player may have. They’re not associated with any specific permanents."
+   ],
+   [
+    "2024-03-08",
+    "Keep track of how many rad counters each player has. Potential ways to track this include writing them down on paper or using dice, but any method that is clear and mutually agreeable is fine."
+   ],
+   [
+    "2024-03-08",
+    "Rad counters don’t go away as steps, phases, or turns end. They only go away when an effect instructs a player to remove rad counters from themselves."
+   ],
+   [
+    "2024-03-08",
+    "There is an inherent triggered ability associated with having rad counters. This triggered ability has no source and is controlled by the active player. The full text of this ability is “At the beginning of the precombat main phase of a player with rad counters, that player mills cards equal to the number of rad counters they have. For each nonland card milled this way, that player loses 1 life and removes one rad counter from themselves.”"
+   ],
+   [
+    "2024-03-08",
+    "In a game using the shared team turns option, such as an Archenemy or Two-Headed Giant game, the inherent triggered ability associated with rad counters triggers once for each player on the active team that has rad counters. Each instance of that ability is controlled by one of those players."
+   ],
+   [
+    "2024-03-08",
+    "Any effects (such as proliferate) that interact with counters a player gets, has, or loses can interact with rad counters."
+   ],
+   [
+    "2024-03-08",
+    "The cards are milled all at once, which means abilities that trigger “whenever one or more nonland cards are milled” will trigger exactly once as long as at least one nonland card was milled."
+   ],
+   [
+    "2024-03-08",
+    "If a player has fewer cards remaining in their library than the number of rad counters they have when the triggered ability resolves, they’ll mill as many cards as they can."
+   ]
+  ]
+ },
+ "Tropical Island": {
+  "oracle_id": "74b7fe23-5d3a-4092-8d78-7c0eba8f6f73",
+  "rulings": [
+   [
+    "2008-10-01",
+    "This has the mana abilities associated with both of its basic land types."
+   ],
+   [
+    "2008-10-01",
+    "This has basic land types, but it isn't a basic land. Things that affect basic lands don't affect it. Things that affect basic land types do."
+   ]
+  ]
+ },
+ "Urza's Saga": {
+  "oracle_id": "4c6a0c30-b547-4eff-8ff4-0ca25803c076",
+  "rulings": [
+   [
+    "2021-06-18",
+    "Urza's Saga is a land, so it can only be played as a land. It cannot be cast as a spell."
+   ],
+   [
+    "2021-06-18",
+    "Urza's Saga gains an ability from its first and second chapters. It keeps those abilities for as long as it's on the battlefield."
+   ],
+   [
+    "2021-06-18",
+    "While resolving the chapter III ability, you can find only a card with actual mana cost {0} or {1}, not mana value 0 or 1. For example, you couldn't find a card with mana cost {U} or one with mana cost {X}."
+   ],
+   [
+    "2021-06-18",
+    "Even though Urza's Saga is a land, it is also still a Saga, and it will be sacrificed after its last chapter ability resolves."
+   ],
+   [
+    "2021-06-18",
+    "Although Urza's Saga has the Urza's land type, it doesn't interact with Urza's Tower, Urza's Mine, or Urza's Power Plant."
+   ]
+  ]
+ },
+ "Zagoth Triome": {
+  "oracle_id": "fdd46004-eaba-4024-8687-39b23dc6a58c",
+  "rulings": []
+ }
+}

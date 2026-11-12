@@ -1,0 +1,12 @@
+21:44:00 inicio
+21:44:15 smoke fim
+21:48:34 ab fim
+21:54:57 regressao fim
+22:05:00 bitident fim
+22:06:05 determinismo fim
+22:06:05 tudo fim
+23:22:37 rodada2 inicio
+23:41:14 rodada2 bitident fim
+23:42:51 rodada2 determinismo fim
+23:44:16 rodada2 determinismo controle fim
+23:44:16 rodada2 tudo fim

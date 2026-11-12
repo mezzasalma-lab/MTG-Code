@@ -1,0 +1,102 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "jace_wins",
+  "jace_win_T8",
+  "jace_win_T10",
+  "jace_plus_uses",
+  "jace_plus_self",
+  "jace_minus8_uses",
+  "jace_draws",
+  "jace_removed",
+  "self_lost",
+  "decked",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "opps_eliminated_total",
+  "opps_decked_total",
+  "cards_milled_self_total",
+  "cards_milled_opp_total",
+  "library_min",
+  "mothman_counters_placed_total",
+  "kozilek_shuffles_total",
+  "draws_total"
+ ],
+ "compacto": [
+  "jace_wins",
+  "jace_win_T8",
+  "self_lost",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "opps_decked_total",
+  "cards_milled_self_total",
+  "cards_milled_opp_total",
+  "mothman_counters_placed_total",
+  "kozilek_shuffles_total"
+ ],
+ "variantes": {
+  "base": {},
+  "kozilek_por_jace": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "kozilek_por_jace_so_motor": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "JACE_WIN_LINE": false
+  },
+  "kozilek_por_jace_remocao_20": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "JACE_REMOVAL_PROB": 0.2
+  },
+  "kozilek_por_jace_remocao_50": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "JACE_REMOVAL_PROB": 0.5
+  },
+  "kozilek_por_forest": {
+   "SWAPS": [
+    [
+     "Kozilek, Butcher of Truth",
+     "Forest"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "kozilek_por_jace",
+  "kozilek_por_jace_so_motor",
+  "kozilek_por_jace_remocao_20",
+  "kozilek_por_jace_remocao_50",
+  "kozilek_por_forest"
+ ],
+ "regressao": []
+}

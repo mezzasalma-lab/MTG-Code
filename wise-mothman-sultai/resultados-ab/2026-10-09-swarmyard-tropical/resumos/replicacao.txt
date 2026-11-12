@@ -1,0 +1,4 @@
+(1) padrao       base[swtrop] == d1[terrenos4]      : 10000/10000 partidas identicas
+(1) resiliencia  base[swtrop] == d1[terrenos4]      : 10000/10000 partidas identicas
+(2) resiliencia   base[swtrop50] == d1[z50] (0,5)    : 10000/10000 partidas identicas
+3/3 series bit-identicas

@@ -1,0 +1,6 @@
+Bit-identidade da lista atual: vivo (SWAPS=()) == ANTES congelado + u3 'no lugar' (1 Swamp -> Underground Sea); 4 fatias x 2.500 sementes (9.500.000..9.509.999) x 2 modos
+vivo (SWAPS=()) == ANTES + u3 no lugar: 5000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + u3 no lugar: 5000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + u3 no lugar: 5000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + u3 no lugar: 5000 identicas, 0 divergencias
+total: 20000 identicas, 0 divergencias

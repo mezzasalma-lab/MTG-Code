@@ -1,0 +1,15 @@
+nomes verificados: 114 | NAO reconhecidos: []
+antes: 2 combos, 92 quase
+Domri, Chaos Bringer -> Doubling Season                        | combos 2 | novos [] | sumiram [] | quase +11 -0
+Leyline Immersion -> Swords to Plowshares                      | combos 2 | novos [] | sumiram [] | quase +1 -0
+Staff of Compleation -> Oath of Ajani                          | combos 2 | novos [] | sumiram [] | quase +0 -0
+Teferi's Talent -> Commodore Guff                              | combos 2 | novos [] | sumiram [] | quase +0 -0
+Liliana's Talent -> Mutational Advantage                       | combos 2 | novos [] | sumiram [] | quase +0 -0
+Baxter Building -> Karn's Bastion                              | combos 2 | novos [] | sumiram [] | quase +0 -0
+PACOTE (as 6 trocas)                                           | combos 2 | novos [] | sumiram [] | quase +12 -0
+[opcao] Teferi's Talent -> Carth the Lion                      | combos 3 | novos [('Carth the Lion + Teferi, Temporal Archmage + The Chain Veil', 'E')] | sumiram [] | quase +2 -1
+[opcao] Teferi's Talent -> Nicol Bolas, Dragon-God             | combos 4 | novos [('Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + Oath of Teferi', 'R'), ('Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + The Chain Veil', 'R')] | sumiram [] | quase +3 -2
+[opcao] Dack Fayden -> Countersculpt                           | combos 2 | novos [] | sumiram [] | quase +0 -0
+[opcao] Dack Fayden -> Jace's Machinations                     | combos 2 | novos [] | sumiram [] | quase +0 -0
+[opcao] Dack Fayden -> Loyal Tutor                             | combos 2 | novos [] | sumiram [] | quase +0 -0
+controle positivo: True | controle de corte: True

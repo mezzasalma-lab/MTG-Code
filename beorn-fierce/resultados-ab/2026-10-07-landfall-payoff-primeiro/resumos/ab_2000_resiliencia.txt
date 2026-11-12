@@ -1,0 +1,32 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1099 (55.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.6480       6.6675      +0.0195 ±0.0097  
+  *spells_cast                                 11.0430      11.1560      +0.1130 ±0.0364  
+  *counters_on_board                            7.4385       8.2215      +0.7830 ±0.2073  
+  *extra_draws                                 10.7910      11.0855      +0.2945 ±0.1440  
+  *ramp_pieces_in_play                          2.6190       2.6445      +0.0255 ±0.0143  
+   commander_cast_turn__nunca                   0.0330       0.0320      -0.0010 ±0.0014  
+   commander_cast_turn__ate_T3                  0.0795       0.0780      -0.0015 ±0.0029  
+   commander_cast_turn__ate_T4                  0.3375       0.3350      -0.0025 ±0.0049  
+   commander_cast_turn__ate_T5                  0.5585       0.5590      +0.0005 ±0.0060  
+   commander_cast_turn__ate_T6                  0.6595       0.6590      -0.0005 ±0.0060  
+   finisher_turn__nunca                         0.6770       0.6765      -0.0005 ±0.0078  
+   finisher_turn__ate_T4                        0.0150       0.0160      +0.0010 ±0.0014  
+  *finisher_turn__ate_T5                        0.0620       0.0670      +0.0050 ±0.0031  
+  *finisher_turn__ate_T6                        0.1250       0.1295      +0.0045 ±0.0040  
+  *len_dork_entered_turn                        1.5585       1.5995      +0.0410 ±0.0122  
+  *clues                                        0.1015       0.1460      +0.0445 ±0.0135  
+  *len_creature_entered_turn                    6.1525       6.2410      +0.0885 ±0.0275  
+  *beorn_bear_draws                             2.2120       2.2545      +0.0425 ±0.0164  
+  *len_library                                 71.6710      71.3420      -0.3290 ±0.1487  
+  *len_graveyard                                4.6110       4.7580      +0.1470 ±0.0729  
+  *len_battlefield                             14.1120      14.2495      +0.1375 ±0.0713  
+  *len_smart_counter_log                        0.1205       0.1100      -0.0105 ±0.0056  
+  *smart_counters_total                         0.1205       0.1100      -0.0105 ±0.0056  
+  *lightning_greaves_equip_count                0.4465       0.4615      +0.0150 ±0.0087  
+  *len_smart_discard_log                        1.1950       1.2170      +0.0220 ±0.0140  
+  *smart_discards_total                         1.1950       1.2170      +0.0220 ±0.0140  
+  *len_hand                                     5.7845       5.8935      +0.1090 ±0.0730  
+  *mana_spent_this_turn                         8.6685       8.7900      +0.1215 ±0.0833  

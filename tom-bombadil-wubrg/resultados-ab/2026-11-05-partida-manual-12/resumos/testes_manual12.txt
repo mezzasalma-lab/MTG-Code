@@ -1,0 +1,21 @@
+PASSA | T7: Plains jogada 2× é o mesmo objeto; 1 terreno por turno em T1–T10 | controle de corte falha como deve
+PASSA | compras library→mão por turno = [8,1,1,2,2,3,1,1,2,4] (25 = 25) | controle de corte falha como deve
+PASSA | Tom lançado do comando no T5 e no T8; commandTax = 0 no log inteiro | controle de corte falha como deve
+PASSA | T8: Nesting Grounds → ITDBT 4→3 → Lore no Soldier → Anel 4 → Tom volta → Austere → ITDBT ao cemitério | controle de corte falha como deve
+PASSA | T9: Kiora (mesmo id) 1ª vez < Resurgent Time=0 < Presence volta < 2ª Kiora < compra da Song | controle de corte falha como deve
+PASSA | T9: 2 Krakens com ids distintos no log (1 real, segundo o usuário) e só 2 compras | controle de corte falha como deve
+PASSA | T10: nenhum marcador de saber novo; efeitos do cap. II aplicados (Tom +4, Kraken +1, 1 Wraith) | controle de corte falha como deve
+PASSA | T7: Soldier criado depois do Lore=2 da Iroan e virado no mesmo turno; nenhum Soldier no T6 | controle de corte falha como deve
+PASSA | T6: Jugan → cemitério antes da compra da Plains (Presence vê a conjuração anulada); Fold into Aether no T5; Monk só no T9 | controle de corte falha como deve
+PASSA | T8: Austere leva 4 encantamentos; Fertile Ground só no T9, antes da Karn's Bastion | controle de corte falha como deve
+PASSA | Anel: Generic 1,2,3 no T7 (de uma vez), 4 no T8, nunca 5 | controle de corte falha como deve
+PASSA | Simulador de interação: Walker T4, Fold T5, Snuff Out T6, Soul Shatter T7, Austere T8, Plant Warrior T9 | controle de corte falha como deve
+PASSA | T7: Iroan Lore=3 só depois de o Tom sair; sem marcador da Iroan no T8 | controle de corte falha como deve
+PASSA | oráculo (cache): Resurgent Belief Suspend 2; Nesting Grounds só como feitiço; ITDBT sacrifica após IV; Tom 4/4 | controle de corte falha como deve
+PASSA | rulings arquivadas: Saga sacrificada ao sair a habilidade da pilha; ordem livre; Presence compra com a magia anulada; suspend | controle de corte falha como deve
+PASSA | CR 2026-09-25: 714.4, 714.3c, 602.5d/307.5, 603.3b, 702.62a, 701.54c, 302.6 (texto arquivado) | controle de corte falha como deve
+PASSA | analisa_partida.py: 0 violações provadas, 1 anomalia, Catacombs parada não é violação | controle de corte falha como deve
+PASSA | opponentsCards: 1 registro de Walker (T4) e 1 de Plant Warrior (T9; o usuário diz que eram 2 fichas) | controle de corte falha como deve
+PASSA | T9: 1 Wraith novo, criado depois da volta da ITDBT (cap. I) | controle de corte falha como deve
+
+19/19 testes passam

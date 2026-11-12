@@ -1,0 +1,13 @@
+== beorn-fierce (on_land_enters) padrao N=300: entradas de terreno=2521 | chamadas da funcao de landfall=2521
+   chamador=play_land                        entradas= 2096 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)
+   chamador=cast_spell                       entradas=  425 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)
+== prismatic-bridge-wurbg (on_land_enters) padrao N=300: entradas de terreno=2375 | chamadas da funcao de landfall=2368
+   chamador=play_land                        entradas= 1949 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)
+   chamador=_eff_ugin_ult                    entradas=  211 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)
+   chamador=do_land_fetch_spell              entradas=  151 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)
+   chamador=try_fabled_passage               entradas=   57 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)
+   chamador=_return_to_battlefield           entradas=    7 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)
+== maralen-sultai (landfall_trigger) padrao N=300: entradas de terreno=2457 | chamadas da funcao de landfall=2457
+   chamador=play_land                        entradas= 2457 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)
+== toph-naya (landfall) padrao N=300: entradas de terreno=3234 | chamadas da funcao de landfall=5044
+   chamador=enter_battlefield                entradas= 3234 (a 1a chamada de landfall depois da entrada cobre so' 1: em laco 'entra tudo, depois dispara' o numero 'cobertas' subestima; compare o TOTAL)

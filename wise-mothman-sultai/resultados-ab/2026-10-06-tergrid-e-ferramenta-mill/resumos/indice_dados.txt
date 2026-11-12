@@ -1,0 +1,7 @@
+| arquivo | modo | N | sementes | variantes (flags; partidas) |
+|---|---|---|---|---|
+| mill_oponentes_padrao_5000.json.xz | padrao | 5000 | 3000000..3004999 | `base` {} (5000); `pacote5` {"SWAPS": [["Cold-Eyed Selkie", "Evolution Sage"], ["Swarmyard", "Karn's Bastion"], ["Soul-Guide Lantern", "Bruvac the Grandiloquent"], ["An Offer You Can't Refuse", "Garruk's Uprising"], ["Bojuka Bog", "Opulent Palace"]]} (5000
+| mill_oponentes_resiliencia_5000.json.xz | resiliencia | 5000 | 3000000..3004999 | `base` {} (5000); `pacote5+master` {"SWAPS": [["Cold-Eyed Selkie", "Evolution Sage"], ["Swarmyard", "Karn's Bastion"], ["Soul-Guide Lantern", "Bruvac the Grandiloquent"], ["An Offer You Can't Refuse", "Garruk's Uprising"], ["Bojuka Bog", "Opulent
+| spellbook_tergrid.json | (JSON simples: Scryfall/Spellbook) | - | - | chaves: nomes_resolvidos, cenarios |
+| tergrid_carta.json | (JSON simples: Scryfall/Spellbook) | - | - | chaves: object, id, oracle_id, multiverse_ids, mtgo_id, arena_id |
+| tergrid_rulings.json | (JSON simples: Scryfall/Spellbook) | - | - | chaves: object, has_more, data |

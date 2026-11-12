@@ -1,0 +1,1 @@
+padrao 3000 {'constructs_sick_gt0': 12, 'constructs_afeta_prontos': 7, 'constructs_prontos_perdidos': 7} jogos com algum evento: 12

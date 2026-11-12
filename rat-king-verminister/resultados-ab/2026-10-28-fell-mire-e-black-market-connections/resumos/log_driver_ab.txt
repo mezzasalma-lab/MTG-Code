@@ -1,0 +1,1201 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1442 (72.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9760      +0.1005 ±0.0134  
+   commander_cast_turn__ate_T3                  0.9935       0.9940      +0.0005 ±0.0017  
+   len_battlefield                             16.6500      16.7400      +0.0900 ±0.1146  
+   rat_tokens                                   4.6355       4.9670      +0.3315 ±0.3492  
+   tokens_created_total                         8.0595       8.3045      +0.2450 ±0.3804  
+   proxy_damage_total                          11.9700      12.3555      +0.3855 ±0.4815  
+  *life                                        46.4675      47.6330      +1.1655 ±0.4424  
+  *cards_drawn_extra                            3.5370       3.3140      -0.2230 ±0.1049  
+  *treasure_tokens                              0.3925       0.4385      +0.0460 ±0.0322  
+  *mercenary_tokens                             0.1780       0.0660      -0.1120 ±0.0246  
+  *interaction_spells_cast_total                0.8250       0.7785      -0.0465 ±0.0159  
+  *lands_played_total                           5.9240       5.9845      +0.0605 ±0.0219  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0245       0.0095      -0.0150 ±0.0063  
+  *staff_attach_turn__ate_T2                    0.9625       0.9715      +0.0090 ±0.0055  
+  *staff_attach_turn__ate_T3                    0.9625       0.9715      +0.0090 ±0.0055  
+  *staff_attach_turn__ate_T4                    0.9625       0.9715      +0.0090 ±0.0055  
+  *staff_attach_turn__ate_T6                    0.9680       0.9750      +0.0070 ±0.0052  
+  *len_hand                                     3.5120       3.3880      -0.1240 ±0.0919  
+  *staff_attach_turn__ate_T5                    0.9650       0.9720      +0.0070 ±0.0055  
+  *len_tapped_lands_this_turn                   0.1910       0.2010      +0.0100 ±0.0093  
+  *tutors_used_total                            1.3060       1.3870      +0.0810 ±0.0794  
+   marrow_staff_loop_iters_total                0.0370       0.0485      +0.0115 ±0.0118  
+   combo_any_turn__nunca                        0.9770       0.9730      -0.0040 ±0.0042  
+   recursion_events_total                       3.0290       3.0900      +0.0610 ±0.0671  
+
+[so_fell_terreno - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1827 (91.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__ate_T2                  0.8755       0.8760      +0.0005 ±0.0010  
+  *len_battlefield                             16.6500      16.8705      +0.2205 ±0.0516  
+   rat_tokens                                   4.6355       4.7115      +0.0760 ±0.0930  
+  *tokens_created_total                         8.0595       8.1925      +0.1330 ±0.1004  
+  *proxy_damage_total                          11.9700      12.2470      +0.2770 ±0.1301  
+  *life                                        46.4675      46.7000      +0.2325 ±0.1861  
+  *cards_drawn_extra                            3.5370       3.5880      +0.0510 ±0.0276  
+  *treasure_tokens                              0.3925       0.4100      +0.0175 ±0.0142  
+   mercenary_tokens                             0.1780       0.1805      +0.0025 ±0.0026  
+  *interaction_spells_cast_total                0.8250       0.7840      -0.0410 ±0.0102  
+  *lands_played_total                           5.9240       6.0090      +0.0850 ±0.0136  
+  *len_creature_cast_turn                       4.6245       4.6740      +0.0495 ±0.0140  
+  *len_library                                 75.0590      74.8525      -0.2065 ±0.0715  
+  *recursion_events_total                       3.0290       3.1040      +0.0750 ±0.0335  
+  *creatures_died_this_turn                     2.0715       2.1130      +0.0415 ±0.0195  
+  *len_tapped_creatures_this_turn               0.8215       0.8390      +0.0175 ±0.0086  
+  *rat_king_reanimations_total                  2.4530       2.5010      +0.0480 ±0.0262  
+  *mana_spent_this_turn                         8.5670       8.6535      +0.0865 ±0.0477  
+  *rat_king_counters                            1.7970       1.8135      +0.0165 ±0.0093  
+  *rotcaller_x_total                            2.7350       2.7645      +0.0295 ±0.0193  
+  *squirrel_tokens                              0.1545       0.1630      +0.0085 ±0.0058  
+  *permanent_left_battlefield_this_turn         0.5670       0.5750      +0.0080 ±0.0055  
+  *ramp_pieces_cast_total                       0.8330       0.8410      +0.0080 ±0.0057  
+  *ninja_teen_level                             0.3695       0.3780      +0.0085 ±0.0063  
+  *extort_paid_total                            0.6005       0.6270      +0.0265 ±0.0197  
+
+[so_fell_terreno_e_keep - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1783 (89.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__ate_T2                  0.8755       0.8785      +0.0030 ±0.0039  
+   commander_cast_turn__ate_T3                  0.9935       0.9940      +0.0005 ±0.0017  
+  *len_battlefield                             16.6500      16.8755      +0.2255 ±0.0724  
+   rat_tokens                                   4.6355       4.9050      +0.2695 ±0.3054  
+   tokens_created_total                         8.0595       8.3835      +0.3240 ±0.3258  
+  *proxy_damage_total                          11.9700      12.5040      +0.5340 ±0.4438  
+  *life                                        46.4675      46.9150      +0.4475 ±0.3657  
+   cards_drawn_extra                            3.5370       3.5680      +0.0310 ±0.0497  
+   treasure_tokens                              0.3925       0.4040      +0.0115 ±0.0213  
+   mercenary_tokens                             0.1780       0.1825      +0.0045 ±0.0060  
+  *interaction_spells_cast_total                0.8250       0.7860      -0.0390 ±0.0133  
+  *lands_played_total                           5.9240       6.0050      +0.0810 ±0.0190  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *len_creature_cast_turn                       4.6245       4.6660      +0.0415 ±0.0204  
+  *len_library                                 75.0590      74.8545      -0.2045 ±0.1284  
+  *tapped_land_first_plays_total                0.3205       0.3135      -0.0070 ±0.0050  
+  *squirrel_tokens                              0.1545       0.1635      +0.0090 ±0.0065  
+  *gray_merchant_drain_total                    1.1930       1.2625      +0.0695 ±0.0601  
+  *ninja_teen_level                             0.3695       0.3820      +0.0125 ±0.0115  
+  *rotcaller_x_total                            2.7350       2.8270      +0.0920 ±0.0846  
+  *tapped_land_skipped_for_play_total           0.1170       0.1140      -0.0030 ±0.0028  
+  *staff_attach_turn__ate_T2                    0.9625       0.9605      -0.0020 ±0.0020  
+  *staff_attach_turn__ate_T3                    0.9625       0.9605      -0.0020 ±0.0020  
+  *staff_attach_turn__ate_T4                    0.9625       0.9605      -0.0020 ±0.0020  
+  *staff_attach_turn__ate_T5                    0.9650       0.9630      -0.0020 ±0.0020  
+  *staff_equips_total                           0.0205       0.0225      +0.0020 ±0.0020  
+  *thrumming_stone_free_casts_total             0.5370       0.5685      +0.0315 ±0.0314  
+
+[so_bmc - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1819 (91.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             16.6500      16.4325      -0.2175 ±0.0700  
+   rat_tokens                                   4.6355       4.5760      -0.0595 ±0.1297  
+  *tokens_created_total                         8.0595       7.8130      -0.2465 ±0.1516  
+  *proxy_damage_total                          11.9700      11.7045      -0.2655 ±0.1314  
+  *life                                        46.4675      47.1455      +0.6780 ±0.2161  
+  *cards_drawn_extra                            3.5370       3.2265      -0.3105 ±0.0787  
+  *treasure_tokens                              0.3925       0.4140      +0.0215 ±0.0200  
+  *mercenary_tokens                             0.1780       0.0620      -0.1160 ±0.0245  
+  *interaction_spells_cast_total                0.8250       0.8140      -0.0110 ±0.0073  
+  *lands_played_total                           5.9240       5.8970      -0.0270 ±0.0081  
+  *len_library                                 75.0590      75.4100      +0.3510 ±0.1219  
+  *len_creature_cast_turn                       4.6245       4.5795      -0.0450 ±0.0163  
+  *mana_spent_this_turn                         8.5670       8.3280      -0.2390 ±0.0925  
+  *staff_auto_attach_total                      0.0245       0.0095      -0.0150 ±0.0063  
+  *staff_attach_turn__ate_T2                    0.9625       0.9740      +0.0115 ±0.0049  
+  *staff_attach_turn__ate_T3                    0.9625       0.9740      +0.0115 ±0.0049  
+  *staff_attach_turn__ate_T4                    0.9625       0.9740      +0.0115 ±0.0049  
+  *ramp_pieces_cast_total                       0.8330       0.8170      -0.0160 ±0.0072  
+  *staff_attach_turn__ate_T6                    0.9680       0.9770      +0.0090 ±0.0046  
+  *lands_played_this_turn                       0.5630       0.5500      -0.0130 ±0.0066  
+  *rat_king_counters                            1.7970       1.7775      -0.0195 ±0.0100  
+  *staff_attach_turn__ate_T5                    0.9650       0.9745      +0.0095 ±0.0049  
+  *extort_paid_total                            0.6005       0.5755      -0.0250 ±0.0165  
+  *len_hand                                     3.5120       3.4185      -0.0935 ±0.0619  
+
+[so_tapped_first_mana - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1788 (89.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9765      +0.1010 ±0.0132  
+   commander_cast_turn__ate_T3                  0.9935       0.9940      +0.0005 ±0.0010  
+  *len_battlefield                             16.6500      16.7420      +0.0920 ±0.0558  
+  *rat_tokens                                   4.6355       4.7655      +0.1300 ±0.1090  
+  *tokens_created_total                         8.0595       8.2535      +0.1940 ±0.1236  
+  *proxy_damage_total                          11.9700      12.1540      +0.1840 ±0.1456  
+   life                                        46.4675      46.5665      +0.0990 ±0.1517  
+  *cards_drawn_extra                            3.5370       3.6025      +0.0655 ±0.0489  
+   treasure_tokens                              0.3925       0.4005      +0.0080 ±0.0133  
+   mercenary_tokens                             0.1780       0.1810      +0.0030 ±0.0046  
+   interaction_spells_cast_total                0.8250       0.8305      +0.0055 ±0.0056  
+  *lands_played_total                           5.9240       5.9340      +0.0100 ±0.0073  
+  *tapped_land_first_plays_total                0.3205       0.2385      -0.0820 ±0.0132  
+  *tapped_land_skipped_for_play_total           0.1170       0.1915      +0.0745 ±0.0139  
+  *rat_king_counters                            1.7970       1.8170      +0.0200 ±0.0092  
+  *len_library                                 75.0590      74.9170      -0.1420 ±0.0892  
+  *len_creature_cast_turn                       4.6245       4.6420      +0.0175 ±0.0119  
+  *treasure_mana_used_total                     0.8875       0.9150      +0.0275 ±0.0209  
+  *skullclamp_draws_total                       1.5510       1.5900      +0.0390 ±0.0315  
+  *mana_spent_this_turn                         8.5670       8.6735      +0.1065 ±0.0884  
+  *rat_tokens_created_this_turn                 3.5645       3.6925      +0.1280 ±0.1069  
+  *recursion_events_total                       3.0290       3.0605      +0.0315 ±0.0266  
+  *lands_played_this_turn                       0.5630       0.5675      +0.0045 ±0.0043  
+  *combo_any_turn__nunca                        0.9770       0.9750      -0.0020 ±0.0020  
+   permanent_left_battlefield_this_turn         0.5670       0.5705      +0.0035 ±0.0038  
+   ayara_token_triggers_total                   1.6520       1.7260      +0.0740 ±0.0813  
+
+[fell_max_terrenos_4 - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1505 (75.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9760      +0.1005 ±0.0134  
+   commander_cast_turn__ate_T3                  0.9935       0.9940      +0.0005 ±0.0017  
+   len_battlefield                             16.6500      16.6355      -0.0145 ±0.1097  
+   rat_tokens                                   4.6355       4.9490      +0.3135 ±0.3438  
+   tokens_created_total                         8.0595       8.2670      +0.2075 ±0.3751  
+   proxy_damage_total                          11.9700      12.2160      +0.2460 ±0.4675  
+  *life                                        46.4675      47.4875      +1.0200 ±0.4204  
+  *cards_drawn_extra                            3.5370       3.2960      -0.2410 ±0.1027  
+  *treasure_tokens                              0.3925       0.4375      +0.0450 ±0.0321  
+  *mercenary_tokens                             0.1780       0.0655      -0.1125 ±0.0246  
+  *interaction_spells_cast_total                0.8250       0.8095      -0.0155 ±0.0141  
+  *lands_played_total                           5.9240       5.9440      +0.0200 ±0.0198  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0245       0.0095      -0.0150 ±0.0063  
+  *staff_attach_turn__ate_T2                    0.9625       0.9720      +0.0095 ±0.0054  
+  *staff_attach_turn__ate_T3                    0.9625       0.9720      +0.0095 ±0.0054  
+  *staff_attach_turn__ate_T4                    0.9625       0.9720      +0.0095 ±0.0054  
+  *staff_attach_turn__ate_T6                    0.9680       0.9755      +0.0075 ±0.0051  
+  *len_hand                                     3.5120       3.3835      -0.1285 ±0.0874  
+  *emeritus_prepared                            0.0815       0.0735      -0.0080 ±0.0055  
+  *staff_attach_turn__ate_T5                    0.9650       0.9725      +0.0075 ±0.0054  
+  *ramp_pieces_cast_total                       0.8330       0.8190      -0.0140 ±0.0121  
+  *mana_spent_this_turn                         8.5670       8.4175      -0.1495 ±0.1397  
+  *combo_any_turn__nunca                        0.9770       0.9730      -0.0040 ±0.0039  
+   marrow_staff_loop_iters_total                0.0370       0.0485      +0.0115 ±0.0118  
+
+[fell_max_terrenos_99 - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1430 (71.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9760      +0.1005 ±0.0134  
+   commander_cast_turn__ate_T3                  0.9935       0.9940      +0.0005 ±0.0017  
+   len_battlefield                             16.6500      16.7535      +0.1035 ±0.1147  
+  *rat_tokens                                   4.6355       5.0115      +0.3760 ±0.3549  
+   tokens_created_total                         8.0595       8.3535      +0.2940 ±0.3864  
+   proxy_damage_total                          11.9700      12.3915      +0.4215 ±0.4849  
+  *life                                        46.4675      47.6325      +1.1650 ±0.4429  
+  *cards_drawn_extra                            3.5370       3.3150      -0.2220 ±0.1049  
+  *treasure_tokens                              0.3925       0.4385      +0.0460 ±0.0326  
+  *mercenary_tokens                             0.1780       0.0660      -0.1120 ±0.0246  
+  *interaction_spells_cast_total                0.8250       0.7725      -0.0525 ±0.0162  
+  *lands_played_total                           5.9240       5.9925      +0.0685 ±0.0221  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0245       0.0090      -0.0155 ±0.0064  
+  *staff_attach_turn__ate_T2                    0.9625       0.9715      +0.0090 ±0.0055  
+  *staff_attach_turn__ate_T3                    0.9625       0.9715      +0.0090 ±0.0055  
+  *staff_attach_turn__ate_T4                    0.9625       0.9715      +0.0090 ±0.0055  
+  *len_hand                                     3.5120       3.3810      -0.1310 ±0.0920  
+  *staff_attach_turn__ate_T6                    0.9680       0.9750      +0.0070 ±0.0052  
+  *len_tapped_lands_this_turn                   0.1910       0.2035      +0.0125 ±0.0095  
+  *staff_attach_turn__ate_T5                    0.9650       0.9720      +0.0070 ±0.0055  
+  *combo_any_turn__nunca                        0.9770       0.9720      -0.0050 ±0.0044  
+  *marrow_staff_loop_iters_total                0.0370       0.0500      +0.0130 ±0.0122  
+  *tutors_used_total                            1.3060       1.3870      +0.0810 ±0.0794  
+   recursion_events_total                       3.0290       3.0895      +0.0605 ±0.0671  
+
+[fell_nunca_paga_vida - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1442 (72.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9665      +0.0910 ±0.0139  
+   commander_cast_turn__ate_T3                  0.9935       0.9940      +0.0005 ±0.0017  
+   len_battlefield                             16.6500      16.6940      +0.0440 ±0.1070  
+   rat_tokens                                   4.6355       4.7630      +0.1275 ±0.2042  
+   tokens_created_total                         8.0595       8.0835      +0.0240 ±0.2343  
+   proxy_damage_total                          11.9700      12.1025      +0.1325 ±0.2690  
+  *life                                        46.4675      47.5875      +1.1200 ±0.3353  
+  *cards_drawn_extra                            3.5370       3.3180      -0.2190 ±0.1068  
+  *treasure_tokens                              0.3925       0.4305      +0.0380 ±0.0304  
+  *mercenary_tokens                             0.1780       0.0655      -0.1125 ±0.0246  
+  *interaction_spells_cast_total                0.8250       0.7770      -0.0480 ±0.0157  
+  *lands_played_total                           5.9240       5.9880      +0.0640 ±0.0218  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0245       0.0095      -0.0150 ±0.0063  
+  *staff_attach_turn__ate_T2                    0.9625       0.9725      +0.0100 ±0.0054  
+  *staff_attach_turn__ate_T3                    0.9625       0.9725      +0.0100 ±0.0054  
+  *staff_attach_turn__ate_T4                    0.9625       0.9725      +0.0100 ±0.0054  
+  *staff_attach_turn__ate_T5                    0.9650       0.9730      +0.0080 ±0.0054  
+  *staff_attach_turn__ate_T6                    0.9680       0.9755      +0.0075 ±0.0051  
+  *len_tapped_lands_this_turn                   0.1910       0.2030      +0.0120 ±0.0095  
+  *len_hand                                     3.5120       3.4055      -0.1065 ±0.0938  
+   squirrel_tokens                              0.1545       0.1625      +0.0080 ±0.0084  
+   tutors_used_total                            1.3060       1.3750      +0.0690 ±0.0770  
+   recursion_events_total                       3.0290       3.0770      +0.0480 ±0.0618  
+   marrow_staff_loop_iters_total                0.0370       0.0445      +0.0075 ±0.0103  
+
+[fell_piso_vida_4 - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1442 (72.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9760      +0.1005 ±0.0134  
+   commander_cast_turn__ate_T3                  0.9935       0.9940      +0.0005 ±0.0017  
+   len_battlefield                             16.6500      16.7400      +0.0900 ±0.1146  
+   rat_tokens                                   4.6355       4.9670      +0.3315 ±0.3492  
+   tokens_created_total                         8.0595       8.3045      +0.2450 ±0.3804  
+   proxy_damage_total                          11.9700      12.3555      +0.3855 ±0.4815  
+  *life                                        46.4675      47.6330      +1.1655 ±0.4424  
+  *cards_drawn_extra                            3.5370       3.3140      -0.2230 ±0.1049  
+  *treasure_tokens                              0.3925       0.4385      +0.0460 ±0.0322  
+  *mercenary_tokens                             0.1780       0.0660      -0.1120 ±0.0246  
+  *interaction_spells_cast_total                0.8250       0.7785      -0.0465 ±0.0159  
+  *lands_played_total                           5.9240       5.9845      +0.0605 ±0.0219  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0245       0.0095      -0.0150 ±0.0063  
+  *staff_attach_turn__ate_T2                    0.9625       0.9715      +0.0090 ±0.0055  
+  *staff_attach_turn__ate_T3                    0.9625       0.9715      +0.0090 ±0.0055  
+  *staff_attach_turn__ate_T4                    0.9625       0.9715      +0.0090 ±0.0055  
+  *staff_attach_turn__ate_T6                    0.9680       0.9750      +0.0070 ±0.0052  
+  *len_hand                                     3.5120       3.3880      -0.1240 ±0.0919  
+  *staff_attach_turn__ate_T5                    0.9650       0.9720      +0.0070 ±0.0055  
+  *len_tapped_lands_this_turn                   0.1910       0.2010      +0.0100 ±0.0093  
+  *tutors_used_total                            1.3060       1.3870      +0.0810 ±0.0794  
+   marrow_staff_loop_iters_total                0.0370       0.0485      +0.0115 ±0.0118  
+   combo_any_turn__nunca                        0.9770       0.9730      -0.0040 ±0.0042  
+   recursion_events_total                       3.0290       3.0900      +0.0610 ±0.0671  
+
+[ref_sem_terreno_virado_primeiro - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1308 (65.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9405      +0.0650 ±0.0154  
+   commander_cast_turn__ate_T3                  0.9935       0.9930      -0.0005 ±0.0010  
+   len_battlefield                             16.6500      16.6520      +0.0020 ±0.0830  
+   rat_tokens                                   4.6355       4.5690      -0.0665 ±0.1527  
+   tokens_created_total                         8.0595       8.0290      -0.0305 ±0.2135  
+   proxy_damage_total                          11.9700      12.0345      +0.0645 ±0.4379  
+   life                                        46.4675      46.4945      +0.0270 ±0.2251  
+   cards_drawn_extra                            3.5370       3.5625      +0.0255 ±0.0739  
+   treasure_tokens                              0.3925       0.3875      -0.0050 ±0.0180  
+   mercenary_tokens                             0.1780       0.1730      -0.0050 ±0.0052  
+   interaction_spells_cast_total                0.8250       0.8210      -0.0040 ±0.0088  
+   lands_played_total                           5.9240       5.9255      +0.0015 ±0.0085  
+  *tapped_land_first_plays_total                0.3205       0.0000      -0.3205 ±0.0227  
+  *tapped_land_skipped_for_play_total           0.1170       0.0000      -0.1170 ±0.0153  
+  *big_apple_activations_total                  0.0935       0.0790      -0.0145 ±0.0098  
+  *marrow_staff_loop_iters_total                0.0370       0.0430      +0.0060 ±0.0057  
+   staff_pings_total                            0.0170       0.0195      +0.0025 ±0.0026  
+   len_tapped_creatures_this_turn               0.8215       0.8115      -0.0100 ±0.0108  
+   combo_marrow_staff_turn__nunca               0.9900       0.9885      -0.0015 ±0.0017  
+   permanent_left_battlefield_this_turn         0.5670       0.5625      -0.0045 ±0.0058  
+   rat_king_counters                            1.7970       1.7880      -0.0090 ±0.0125  
+   combo_any_turn__nunca                        0.9770       0.9755      -0.0015 ±0.0022  
+   treasure_mana_used_total                     0.8875       0.9465      +0.0590 ±0.0956  
+   mana_spent_this_turn                         8.5670       8.6705      +0.1035 ±0.1707  
+   skullclamp_draws_total                       1.5510       1.6780      +0.1270 ±0.2202  
+   treasures_spent_this_turn                    0.5285       0.5815      +0.0530 ±0.0937  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1457 (72.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9760      +0.1005 ±0.0134  
+  *commander_cast_turn__ate_T3                  0.9855       0.9925      +0.0070 ±0.0041  
+   commander_cast_turn__ate_T4                  0.9950       0.9955      +0.0005 ±0.0017  
+   len_battlefield                             10.7000      10.7900      +0.0900 ±0.1037  
+   rat_tokens                                   1.2075       1.2840      +0.0765 ±0.1224  
+   tokens_created_total                         4.6810       4.6255      -0.0555 ±0.2246  
+   proxy_damage_total                           6.6875       6.8030      +0.1155 ±0.2875  
+  *life                                        40.7505      41.3985      +0.6480 ±0.3008  
+  *cards_drawn_extra                            2.1715       1.9500      -0.2215 ±0.1112  
+  *treasure_tokens                              0.3250       0.3665      +0.0415 ±0.0391  
+  *mercenary_tokens                             0.0725       0.0205      -0.0520 ±0.0164  
+  *interaction_spells_cast_total                0.6440       0.5975      -0.0465 ±0.0156  
+  *lands_played_total                           5.7055       5.7685      +0.0630 ±0.0223  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0145       0.0035      -0.0110 ±0.0057  
+  *staff_attach_turn__ate_T2                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T3                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T4                    0.9820       0.9890      +0.0070 ±0.0041  
+  *len_tapped_lands_this_turn                   0.1465       0.1620      +0.0155 ±0.0095  
+  *staff_attach_turn__ate_T5                    0.9835       0.9890      +0.0055 ±0.0038  
+  *len_smart_counter_log                        0.0530       0.0435      -0.0095 ±0.0068  
+  *smart_counters_total                         0.0530       0.0435      -0.0095 ±0.0068  
+  *len_hand                                     2.8375       2.7130      -0.1245 ±0.1042  
+  *staff_attach_turn__ate_T6                    0.9855       0.9900      +0.0045 ±0.0038  
+  *permanent_left_battlefield_this_turn         0.5760       0.5625      -0.0135 ±0.0123  
+  *ramp_pieces_cast_total                       0.7230       0.7085      -0.0145 ±0.0139  
+
+[so_fell_terreno - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1822 (91.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__ate_T2                  0.8755       0.8760      +0.0005 ±0.0010  
+  *len_battlefield                             10.7000      10.8665      +0.1665 ±0.0465  
+   rat_tokens                                   1.2075       1.2655      +0.0580 ±0.0614  
+  *tokens_created_total                         4.6810       4.7950      +0.1140 ±0.0714  
+  *proxy_damage_total                           6.6875       6.8605      +0.1730 ±0.0737  
+   life                                        40.7505      40.7995      +0.0490 ±0.1195  
+   cards_drawn_extra                            2.1715       2.2000      +0.0285 ±0.0295  
+   treasure_tokens                              0.3250       0.3360      +0.0110 ±0.0167  
+   mercenary_tokens                             0.0725       0.0680      -0.0045 ±0.0053  
+  *interaction_spells_cast_total                0.6440       0.6105      -0.0335 ±0.0090  
+  *lands_played_total                           5.7055       5.7935      +0.0880 ±0.0132  
+  *len_creature_cast_turn                       4.1100       4.1495      +0.0395 ±0.0122  
+  *rat_king_counters                            1.4720       1.4915      +0.0195 ±0.0090  
+  *recursion_events_total                       2.7470       2.8015      +0.0545 ±0.0278  
+  *rat_king_reanimations_total                  2.2680       2.3165      +0.0485 ±0.0269  
+  *len_library                                 78.0415      77.9215      -0.1200 ±0.0667  
+  *len_hand                                     2.8375       2.7650      -0.0725 ±0.0411  
+  *len_tapped_creatures_this_turn               0.4985       0.5125      +0.0140 ±0.0082  
+  *ramp_pieces_cast_total                       0.7230       0.7320      +0.0090 ±0.0055  
+  *len_tapped_lands_this_turn                   0.1465       0.1535      +0.0070 ±0.0044  
+  *ninja_teen_drain_total                       0.5725       0.6080      +0.0355 ±0.0248  
+  *skullclamp_draws_total                       0.3990       0.4140      +0.0150 ±0.0109  
+  *mana_spent_this_turn                         6.2940       6.3550      +0.0610 ±0.0446  
+  *squirrel_tokens                              0.0895       0.0955      +0.0060 ±0.0046  
+  *tutors_used_total                            1.2345       1.2780      +0.0435 ±0.0357  
+
+[so_fell_terreno_e_keep - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1779 (89.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__ate_T2                  0.8755       0.8785      +0.0030 ±0.0039  
+   commander_cast_turn__ate_T3                  0.9855       0.9860      +0.0005 ±0.0022  
+   commander_cast_turn__ate_T4                  0.9950       0.9945      -0.0005 ±0.0010  
+  *len_battlefield                             10.7000      10.8790      +0.1790 ±0.0586  
+  *rat_tokens                                   1.2075       1.2710      +0.0635 ±0.0625  
+  *tokens_created_total                         4.6810       4.7955      +0.1145 ±0.0986  
+  *proxy_damage_total                           6.6875       6.9280      +0.2405 ±0.1931  
+   life                                        40.7505      40.7975      +0.0470 ±0.1600  
+   cards_drawn_extra                            2.1715       2.1750      +0.0035 ±0.0431  
+   treasure_tokens                              0.3250       0.3305      +0.0055 ±0.0216  
+  *mercenary_tokens                             0.0725       0.0670      -0.0055 ±0.0055  
+  *interaction_spells_cast_total                0.6440       0.6125      -0.0315 ±0.0116  
+  *lands_played_total                           5.7055       5.7905      +0.0850 ±0.0184  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *len_creature_cast_turn                       4.1100       4.1370      +0.0270 ±0.0186  
+  *tapped_land_first_plays_total                0.3205       0.3135      -0.0070 ±0.0050  
+  *len_tapped_lands_this_turn                   0.1465       0.1530      +0.0065 ±0.0051  
+  *ninja_teen_drain_total                       0.5725       0.6015      +0.0290 ±0.0261  
+  *lands_played_this_turn                       0.4760       0.4840      +0.0080 ±0.0072  
+  *len_tapped_creatures_this_turn               0.4985       0.5105      +0.0120 ±0.0108  
+  *len_hand                                     2.8375       2.7785      -0.0590 ±0.0536  
+  *tapped_land_skipped_for_play_total           0.1170       0.1140      -0.0030 ±0.0028  
+  *tutors_used_total                            1.2345       1.2970      +0.0625 ±0.0596  
+  *rat_king_counters                            1.4720       1.4900      +0.0180 ±0.0174  
+  *len_library                                 78.0415      77.9335      -0.1080 ±0.1059  
+  *squirrel_tokens                              0.0895       0.0945      +0.0050 ±0.0050  
+  *mana_spent_this_turn                         6.2940       6.3850      +0.0910 ±0.0910  
+   rotcaller_x_total                            1.3495       1.4105      +0.0610 ±0.0635  
+
+[so_bmc - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1838 (91.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7000      10.5345      -0.1655 ±0.0580  
+   rat_tokens                                   1.2075       1.1580      -0.0495 ±0.0813  
+  *tokens_created_total                         4.6810       4.3865      -0.2945 ±0.1708  
+  *proxy_damage_total                           6.6875       6.4595      -0.2280 ±0.1065  
+  *life                                        40.7505      41.3045      +0.5540 ±0.2246  
+  *cards_drawn_extra                            2.1715       1.9085      -0.2630 ±0.0901  
+  *treasure_tokens                              0.3250       0.3545      +0.0295 ±0.0255  
+  *mercenary_tokens                             0.0725       0.0185      -0.0540 ±0.0164  
+  *interaction_spells_cast_total                0.6440       0.6260      -0.0180 ±0.0082  
+  *lands_played_total                           5.7055       5.6835      -0.0220 ±0.0085  
+  *len_library                                 78.0415      78.3690      +0.3275 ±0.1067  
+  *mana_spent_this_turn                         6.2940       6.0255      -0.2685 ±0.1007  
+  *len_creature_cast_turn                       4.1100       4.0660      -0.0440 ±0.0172  
+  *rat_king_counters                            1.4720       1.4415      -0.0305 ±0.0127  
+  *ramp_pieces_cast_total                       0.7230       0.7050      -0.0180 ±0.0082  
+  *staff_attach_turn__ate_T2                    0.9820       0.9900      +0.0080 ±0.0039  
+  *staff_attach_turn__ate_T3                    0.9820       0.9900      +0.0080 ±0.0039  
+  *staff_attach_turn__ate_T4                    0.9820       0.9900      +0.0080 ±0.0039  
+  *staff_auto_attach_total                      0.0145       0.0035      -0.0110 ±0.0057  
+  *staff_attach_turn__ate_T5                    0.9835       0.9900      +0.0065 ±0.0035  
+  *len_smart_discard_log                        1.0970       1.0800      -0.0170 ±0.0093  
+  *smart_discards_total                         1.0970       1.0800      -0.0170 ±0.0093  
+  *len_graveyard                                6.2205       6.1345      -0.0860 ±0.0534  
+  *staff_attach_turn__ate_T6                    0.9855       0.9910      +0.0055 ±0.0035  
+
+[so_tapped_first_mana - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1788 (89.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9765      +0.1010 ±0.0132  
+  *commander_cast_turn__ate_T3                  0.9855       0.9930      +0.0075 ±0.0038  
+   commander_cast_turn__ate_T4                  0.9950       0.9960      +0.0010 ±0.0014  
+  *len_battlefield                             10.7000      10.7655      +0.0655 ±0.0612  
+  *rat_tokens                                   1.2075       1.2755      +0.0680 ±0.0679  
+  *tokens_created_total                         4.6810       4.8425      +0.1615 ±0.1134  
+   proxy_damage_total                           6.6875       6.8260      +0.1385 ±0.1943  
+   life                                        40.7505      40.7785      +0.0280 ±0.1368  
+  *cards_drawn_extra                            2.1715       2.2280      +0.0565 ±0.0534  
+   treasure_tokens                              0.3250       0.3480      +0.0230 ±0.0297  
+   mercenary_tokens                             0.0725       0.0750      +0.0025 ±0.0038  
+   interaction_spells_cast_total                0.6440       0.6435      -0.0005 ±0.0078  
+   lands_played_total                           5.7055       5.7085      +0.0030 ±0.0101  
+  *tapped_land_first_plays_total                0.3205       0.2385      -0.0820 ±0.0132  
+  *tapped_land_skipped_for_play_total           0.1170       0.1915      +0.0745 ±0.0139  
+  *len_smart_counter_log                        0.0530       0.0430      -0.0100 ±0.0054  
+  *smart_counters_total                         0.0530       0.0430      -0.0100 ±0.0054  
+  *len_smart_wipe_log                           0.8165       0.8325      +0.0160 ±0.0116  
+  *smart_wipes_total                            0.8165       0.8325      +0.0160 ±0.0116  
+  *treasure_mana_used_total                     0.5030       0.5280      +0.0250 ±0.0203  
+  *len_tapped_lands_this_turn                   0.1465       0.1540      +0.0075 ±0.0066  
+  *treasures_spent_this_turn                    0.2135       0.2315      +0.0180 ±0.0162  
+  *len_smart_enchantment_wipe_log               0.1065       0.1025      -0.0040 ±0.0037  
+  *smart_enchantment_wipes_total                0.1065       0.1025      -0.0040 ±0.0037  
+  *commander_cast_count                         1.6885       1.7000      +0.0115 ±0.0113  
+   emeritus_prepared                            0.0555       0.0590      +0.0035 ±0.0035  
+   len_smart_attack_log                         1.1840       1.1680      -0.0160 ±0.0162  
+
+[fell_max_terrenos_4 - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1516 (75.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9760      +0.1005 ±0.0134  
+  *commander_cast_turn__ate_T3                  0.9855       0.9925      +0.0070 ±0.0041  
+   commander_cast_turn__ate_T4                  0.9950       0.9955      +0.0005 ±0.0017  
+   len_battlefield                             10.7000      10.7130      +0.0130 ±0.0965  
+   rat_tokens                                   1.2075       1.2830      +0.0755 ±0.1215  
+   tokens_created_total                         4.6810       4.6025      -0.0785 ±0.2238  
+   proxy_damage_total                           6.6875       6.7450      +0.0575 ±0.2844  
+  *life                                        40.7505      41.4090      +0.6585 ±0.2988  
+  *cards_drawn_extra                            2.1715       1.9415      -0.2300 ±0.1080  
+   treasure_tokens                              0.3250       0.3580      +0.0330 ±0.0379  
+  *mercenary_tokens                             0.0725       0.0205      -0.0520 ±0.0164  
+  *interaction_spells_cast_total                0.6440       0.6185      -0.0255 ±0.0142  
+  *lands_played_total                           5.7055       5.7275      +0.0220 ±0.0203  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0145       0.0035      -0.0110 ±0.0057  
+  *staff_attach_turn__ate_T2                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T3                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T4                    0.9820       0.9890      +0.0070 ±0.0041  
+  *len_smart_counter_log                        0.0530       0.0430      -0.0100 ±0.0063  
+  *smart_counters_total                         0.0530       0.0430      -0.0100 ±0.0063  
+  *staff_attach_turn__ate_T5                    0.9835       0.9890      +0.0055 ±0.0038  
+  *ramp_pieces_cast_total                       0.7230       0.7050      -0.0180 ±0.0136  
+  *len_tapped_lands_this_turn                   0.1465       0.1580      +0.0115 ±0.0090  
+  *staff_attach_turn__ate_T6                    0.9855       0.9900      +0.0045 ±0.0038  
+  *permanent_left_battlefield_this_turn         0.5760       0.5630      -0.0130 ±0.0117  
+  *gray_merchant_drain_total                    0.7400       0.6635      -0.0765 ±0.0747  
+
+[fell_max_terrenos_99 - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1446 (72.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9760      +0.1005 ±0.0134  
+  *commander_cast_turn__ate_T3                  0.9855       0.9925      +0.0070 ±0.0041  
+   commander_cast_turn__ate_T4                  0.9950       0.9955      +0.0005 ±0.0017  
+   len_battlefield                             10.7000      10.8025      +0.1025 ±0.1040  
+   rat_tokens                                   1.2075       1.2875      +0.0800 ±0.1226  
+   tokens_created_total                         4.6810       4.6325      -0.0485 ±0.2249  
+   proxy_damage_total                           6.6875       6.8030      +0.1155 ±0.2875  
+  *life                                        40.7505      41.3800      +0.6295 ±0.3012  
+  *cards_drawn_extra                            2.1715       1.9530      -0.2185 ±0.1113  
+  *treasure_tokens                              0.3250       0.3665      +0.0415 ±0.0391  
+  *mercenary_tokens                             0.0725       0.0205      -0.0520 ±0.0164  
+  *interaction_spells_cast_total                0.6440       0.5915      -0.0525 ±0.0160  
+  *lands_played_total                           5.7055       5.7765      +0.0710 ±0.0224  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0145       0.0035      -0.0110 ±0.0057  
+  *len_tapped_lands_this_turn                   0.1465       0.1630      +0.0165 ±0.0096  
+  *staff_attach_turn__ate_T2                    0.9820       0.9885      +0.0065 ±0.0040  
+  *staff_attach_turn__ate_T3                    0.9820       0.9885      +0.0065 ±0.0040  
+  *staff_attach_turn__ate_T4                    0.9820       0.9885      +0.0065 ±0.0040  
+  *len_smart_counter_log                        0.0530       0.0435      -0.0095 ±0.0068  
+  *smart_counters_total                         0.0530       0.0435      -0.0095 ±0.0068  
+  *staff_attach_turn__ate_T5                    0.9835       0.9885      +0.0050 ±0.0039  
+  *len_hand                                     2.8375       2.7115      -0.1260 ±0.1043  
+  *permanent_left_battlefield_this_turn         0.5760       0.5625      -0.0135 ±0.0124  
+  *ramp_pieces_cast_total                       0.7230       0.7085      -0.0145 ±0.0139  
+  *staff_attach_turn__ate_T6                    0.9855       0.9895      +0.0040 ±0.0039  
+
+[fell_nunca_paga_vida - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1457 (72.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9665      +0.0910 ±0.0139  
+  *commander_cast_turn__ate_T3                  0.9855       0.9905      +0.0050 ±0.0044  
+   commander_cast_turn__ate_T4                  0.9950       0.9955      +0.0005 ±0.0017  
+   len_battlefield                             10.7000      10.7465      +0.0465 ±0.0950  
+   rat_tokens                                   1.2075       1.2760      +0.0685 ±0.1219  
+   tokens_created_total                         4.6810       4.5955      -0.0855 ±0.2185  
+   proxy_damage_total                           6.6875       6.7230      +0.0355 ±0.2491  
+  *life                                        40.7505      41.5600      +0.8095 ±0.2969  
+  *cards_drawn_extra                            2.1715       1.9555      -0.2160 ±0.1098  
+  *treasure_tokens                              0.3250       0.3650      +0.0400 ±0.0366  
+  *mercenary_tokens                             0.0725       0.0205      -0.0520 ±0.0164  
+  *interaction_spells_cast_total                0.6440       0.5955      -0.0485 ±0.0154  
+  *lands_played_total                           5.7055       5.7695      +0.0640 ±0.0223  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0145       0.0035      -0.0110 ±0.0057  
+  *len_tapped_lands_this_turn                   0.1465       0.1630      +0.0165 ±0.0097  
+  *staff_attach_turn__ate_T2                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T3                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T4                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T5                    0.9835       0.9890      +0.0055 ±0.0038  
+  *len_smart_counter_log                        0.0530       0.0440      -0.0090 ±0.0066  
+  *smart_counters_total                         0.0530       0.0440      -0.0090 ±0.0066  
+  *ramp_pieces_cast_total                       0.7230       0.7055      -0.0175 ±0.0139  
+  *staff_attach_turn__ate_T6                    0.9855       0.9900      +0.0045 ±0.0038  
+  *len_smart_enchantment_wipe_log               0.1065       0.0995      -0.0070 ±0.0060  
+  *smart_enchantment_wipes_total                0.1065       0.0995      -0.0070 ±0.0060  
+
+[fell_piso_vida_4 - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1457 (72.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9760      +0.1005 ±0.0134  
+  *commander_cast_turn__ate_T3                  0.9855       0.9925      +0.0070 ±0.0041  
+   commander_cast_turn__ate_T4                  0.9950       0.9955      +0.0005 ±0.0017  
+   len_battlefield                             10.7000      10.7900      +0.0900 ±0.1037  
+   rat_tokens                                   1.2075       1.2840      +0.0765 ±0.1224  
+   tokens_created_total                         4.6810       4.6255      -0.0555 ±0.2246  
+   proxy_damage_total                           6.6875       6.8030      +0.1155 ±0.2875  
+  *life                                        40.7505      41.3985      +0.6480 ±0.3008  
+  *cards_drawn_extra                            2.1715       1.9500      -0.2215 ±0.1112  
+  *treasure_tokens                              0.3250       0.3665      +0.0415 ±0.0391  
+  *mercenary_tokens                             0.0725       0.0205      -0.0520 ±0.0164  
+  *interaction_spells_cast_total                0.6440       0.5975      -0.0465 ±0.0156  
+  *lands_played_total                           5.7055       5.7685      +0.0630 ±0.0223  
+  *mulligans                                    0.3145       0.2855      -0.0290 ±0.0083  
+  *tapped_land_first_plays_total                0.3205       0.2330      -0.0875 ±0.0137  
+  *tapped_land_skipped_for_play_total           0.1170       0.1875      +0.0705 ±0.0140  
+  *staff_auto_attach_total                      0.0145       0.0035      -0.0110 ±0.0057  
+  *staff_attach_turn__ate_T2                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T3                    0.9820       0.9890      +0.0070 ±0.0041  
+  *staff_attach_turn__ate_T4                    0.9820       0.9890      +0.0070 ±0.0041  
+  *len_tapped_lands_this_turn                   0.1465       0.1620      +0.0155 ±0.0095  
+  *staff_attach_turn__ate_T5                    0.9835       0.9890      +0.0055 ±0.0038  
+  *len_smart_counter_log                        0.0530       0.0435      -0.0095 ±0.0068  
+  *smart_counters_total                         0.0530       0.0435      -0.0095 ±0.0068  
+  *len_hand                                     2.8375       2.7130      -0.1245 ±0.1042  
+  *staff_attach_turn__ate_T6                    0.9855       0.9900      +0.0045 ±0.0038  
+  *permanent_left_battlefield_this_turn         0.5760       0.5625      -0.0135 ±0.0123  
+  *ramp_pieces_cast_total                       0.7230       0.7085      -0.0145 ±0.0139  
+
+[ref_sem_terreno_virado_primeiro - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1308 (65.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8755       0.9405      +0.0650 ±0.0154  
+   commander_cast_turn__ate_T3                  0.9855       0.9895      +0.0040 ±0.0044  
+   commander_cast_turn__ate_T4                  0.9950       0.9960      +0.0010 ±0.0014  
+   len_battlefield                             10.7000      10.7485      +0.0485 ±0.0754  
+   rat_tokens                                   1.2075       1.2930      +0.0855 ±0.0972  
+   tokens_created_total                         4.6810       4.7575      +0.0765 ±0.1277  
+   proxy_damage_total                           6.6875       6.6450      -0.0425 ±0.1680  
+   life                                        40.7505      40.7775      +0.0270 ±0.1728  
+   cards_drawn_extra                            2.1715       2.1760      +0.0045 ±0.0619  
+   treasure_tokens                              0.3250       0.3475      +0.0225 ±0.0346  
+   mercenary_tokens                             0.0725       0.0725      +0.0000 ±0.0046  
+  *interaction_spells_cast_total                0.6440       0.6280      -0.0160 ±0.0097  
+   lands_played_total                           5.7055       5.7085      +0.0030 ±0.0122  
+  *tapped_land_first_plays_total                0.3205       0.0000      -0.3205 ±0.0227  
+  *tapped_land_skipped_for_play_total           0.1170       0.0000      -0.1170 ±0.0153  
+  *len_smart_wipe_log                           0.8165       0.8345      +0.0180 ±0.0144  
+  *smart_wipes_total                            0.8165       0.8345      +0.0180 ±0.0144  
+  *commander_cast_count                         1.6885       1.7045      +0.0160 ±0.0140  
+  *len_smart_counter_log                        0.0530       0.0455      -0.0075 ±0.0066  
+  *smart_counters_total                         0.0530       0.0455      -0.0075 ±0.0066  
+  *tutors_used_total                            1.2345       1.1570      -0.0775 ±0.0692  
+  *len_tapped_lands_this_turn                   0.1465       0.1560      +0.0095 ±0.0087  
+  *len_smart_artifact_wipe_log                  0.1965       0.1890      -0.0075 ±0.0071  
+  *smart_artifact_wipes_total                   0.1965       0.1890      -0.0075 ±0.0071  
+   lands_played_this_turn                       0.4760       0.4835      +0.0075 ±0.0081  
+   emeritus_prepared                            0.0555       0.0595      +0.0040 ±0.0044  
+   permanent_left_battlefield_this_turn         0.5760       0.5665      -0.0095 ±0.0104  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7132 (71.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9789      +0.1066 ±0.0061  
+  *commander_cast_turn__ate_T3                  0.9947       0.9960      +0.0013 ±0.0008  
+  *commander_cast_turn__ate_T4                  0.9971       0.9979      +0.0008 ±0.0006  
+  *len_battlefield                             16.6925      16.7517      +0.0592 ±0.0520  
+   rat_tokens                                   4.7651       4.8380      +0.0729 ±0.1082  
+   tokens_created_total                         8.3111       8.3257      +0.0146 ±0.1309  
+   proxy_damage_total                          12.9698      13.1308      +0.1610 ±0.2100  
+  *life                                        47.8034      48.6823      +0.8789 ±0.2057  
+  *cards_drawn_extra                            3.6275       3.4452      -0.1823 ±0.0627  
+  *treasure_tokens                              0.3939       0.4253      +0.0314 ±0.0114  
+  *mercenary_tokens                             0.1815       0.0738      -0.1077 ±0.0106  
+  *interaction_spells_cast_total                0.7958       0.7450      -0.0508 ±0.0071  
+  *lands_played_total                           5.8789       5.9437      +0.0648 ±0.0108  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0257       0.0104      -0.0153 ±0.0033  
+  *staff_attach_turn__ate_T2                    0.9574       0.9659      +0.0085 ±0.0024  
+  *staff_attach_turn__ate_T3                    0.9574       0.9659      +0.0085 ±0.0024  
+  *staff_attach_turn__ate_T4                    0.9575       0.9659      +0.0084 ±0.0024  
+  *staff_attach_turn__ate_T5                    0.9582       0.9663      +0.0081 ±0.0024  
+  *staff_attach_turn__ate_T6                    0.9626       0.9699      +0.0073 ±0.0024  
+  *len_hand                                     3.5789       3.4283      -0.1506 ±0.0543  
+  *recursion_events_total                       3.1293       3.2108      +0.0815 ±0.0294  
+  *rat_king_reanimations_total                  2.4832       2.5542      +0.0710 ±0.0260  
+  *rat_king_counters                            1.7919       1.8191      +0.0272 ±0.0104  
+  *len_tapped_creatures_this_turn               0.8093       0.8266      +0.0173 ±0.0071  
+  *len_tapped_lands_this_turn                   0.1985       0.2074      +0.0089 ±0.0040  
+
+[so_fell_terreno - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9070 (90.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.8728      +0.0005 ±0.0004  
+  *commander_cast_turn__ate_T3                  0.9947       0.9951      +0.0004 ±0.0004  
+   commander_cast_turn__ate_T4                  0.9971       0.9973      +0.0002 ±0.0003  
+  *len_battlefield                             16.6925      16.9390      +0.2465 ±0.0263  
+  *rat_tokens                                   4.7651       4.8741      +0.1090 ±0.0419  
+  *tokens_created_total                         8.3111       8.5024      +0.1913 ±0.0469  
+  *proxy_damage_total                          12.9698      13.2977      +0.3279 ±0.0896  
+  *life                                        47.8034      47.9604      +0.1570 ±0.0799  
+  *cards_drawn_extra                            3.6275       3.7120      +0.0845 ±0.0194  
+  *treasure_tokens                              0.3939       0.4042      +0.0103 ±0.0047  
+  *mercenary_tokens                             0.1815       0.1836      +0.0021 ±0.0020  
+  *interaction_spells_cast_total                0.7958       0.7515      -0.0443 ±0.0046  
+  *lands_played_total                           5.8789       5.9801      +0.1012 ±0.0068  
+  *len_creature_cast_turn                       4.6535       4.7103      +0.0568 ±0.0068  
+  *len_library                                 74.9024      74.6750      -0.2274 ±0.0402  
+  *rat_king_counters                            1.7919       1.8137      +0.0218 ±0.0043  
+  *len_tapped_creatures_this_turn               0.8093       0.8264      +0.0171 ±0.0038  
+  *recursion_events_total                       3.1293       3.1933      +0.0640 ±0.0144  
+  *lands_played_this_turn                       0.5428       0.5530      +0.0102 ±0.0027  
+  *rat_king_reanimations_total                  2.4832       2.5275      +0.0443 ±0.0125  
+  *mana_spent_this_turn                         8.6262       8.7624      +0.1362 ±0.0395  
+  *ramp_pieces_cast_total                       0.8428       0.8506      +0.0078 ±0.0024  
+  *permanent_left_battlefield_this_turn         0.5603       0.5679      +0.0076 ±0.0024  
+  *extort_paid_total                            0.6423       0.6593      +0.0170 ±0.0059  
+  *squirrel_tokens                              0.1580       0.1655      +0.0075 ±0.0027  
+  *len_tapped_lands_this_turn                   0.1985       0.2038      +0.0053 ±0.0020  
+  *gray_merchant_drain_total                    1.3893       1.4419      +0.0526 ±0.0200  
+
+[so_fell_terreno_e_keep - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8858 (88.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.8753      +0.0030 ±0.0015  
+  *commander_cast_turn__ate_T3                  0.9947       0.9959      +0.0012 ±0.0007  
+  *commander_cast_turn__ate_T4                  0.9971       0.9979      +0.0008 ±0.0006  
+  *len_battlefield                             16.6925      16.9235      +0.2310 ±0.0388  
+  *rat_tokens                                   4.7651       4.8582      +0.0931 ±0.0712  
+  *tokens_created_total                         8.3111       8.4977      +0.1866 ±0.0877  
+  *proxy_damage_total                          12.9698      13.3032      +0.3334 ±0.1541  
+   life                                        47.8034      47.8916      +0.0882 ±0.1305  
+  *cards_drawn_extra                            3.6275       3.7081      +0.0806 ±0.0326  
+  *treasure_tokens                              0.3939       0.4040      +0.0101 ±0.0065  
+   mercenary_tokens                             0.1815       0.1836      +0.0021 ±0.0034  
+  *interaction_spells_cast_total                0.7958       0.7533      -0.0425 ±0.0059  
+  *lands_played_total                           5.8789       5.9686      +0.0897 ±0.0097  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *len_creature_cast_turn                       4.6535       4.7101      +0.0566 ±0.0113  
+  *len_tapped_creatures_this_turn               0.8093       0.8269      +0.0176 ±0.0052  
+  *len_library                                 74.9024      74.6888      -0.2136 ±0.0653  
+  *rat_king_counters                            1.7919       1.8183      +0.0264 ±0.0083  
+  *lands_played_this_turn                       0.5428       0.5539      +0.0111 ±0.0035  
+  *tapped_land_first_plays_total                0.3377       0.3317      -0.0060 ±0.0020  
+  *recursion_events_total                       3.1293       3.1947      +0.0654 ±0.0219  
+  *rat_king_reanimations_total                  2.4832       2.5347      +0.0515 ±0.0194  
+  *permanent_left_battlefield_this_turn         0.5603       0.5687      +0.0084 ±0.0032  
+  *squirrel_tokens                              0.1580       0.1664      +0.0084 ±0.0035  
+  *mana_spent_this_turn                         8.6262       8.7744      +0.1482 ±0.0684  
+  *ramp_pieces_cast_total                       0.8428       0.8516      +0.0088 ±0.0044  
+  *len_tapped_lands_this_turn                   0.1985       0.2035      +0.0050 ±0.0026  
+  *tapped_land_skipped_for_play_total           0.1247       0.1227      -0.0020 ±0.0011  
+
+[so_bmc - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9084 (90.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             16.6925      16.4613      -0.2312 ±0.0307  
+  *rat_tokens                                   4.7651       4.6778      -0.0873 ±0.0626  
+  *tokens_created_total                         8.3111       8.0183      -0.2928 ±0.0737  
+  *proxy_damage_total                          12.9698      12.6656      -0.3042 ±0.1170  
+  *life                                        47.8034      48.5014      +0.6980 ±0.1383  
+  *cards_drawn_extra                            3.6275       3.3086      -0.3189 ±0.0484  
+  *treasure_tokens                              0.3939       0.4103      +0.0164 ±0.0087  
+  *mercenary_tokens                             0.1815       0.0712      -0.1103 ±0.0104  
+  *interaction_spells_cast_total                0.7958       0.7841      -0.0117 ±0.0035  
+  *lands_played_total                           5.8789       5.8507      -0.0282 ±0.0040  
+  *len_library                                 74.9024      75.3036      +0.4012 ±0.0641  
+  *len_creature_cast_turn                       4.6535       4.6096      -0.0439 ±0.0081  
+  *lands_played_this_turn                       0.5428       0.5274      -0.0154 ±0.0030  
+  *staff_auto_attach_total                      0.0257       0.0100      -0.0157 ±0.0033  
+  *staff_attach_turn__ate_T2                    0.9574       0.9668      +0.0094 ±0.0020  
+  *staff_attach_turn__ate_T3                    0.9574       0.9668      +0.0094 ±0.0020  
+  *staff_attach_turn__ate_T4                    0.9575       0.9668      +0.0093 ±0.0020  
+  *staff_attach_turn__ate_T5                    0.9582       0.9672      +0.0090 ±0.0020  
+  *rat_king_counters                            1.7919       1.7713      -0.0206 ±0.0049  
+  *ramp_pieces_cast_total                       0.8428       0.8296      -0.0132 ±0.0034  
+  *staff_attach_turn__ate_T6                    0.9626       0.9703      +0.0077 ±0.0020  
+  *mana_spent_this_turn                         8.6262       8.4119      -0.2143 ±0.0629  
+  *len_hand                                     3.5789       3.4534      -0.1255 ±0.0397  
+  *len_graveyard                                4.6696       4.6282      -0.0414 ±0.0182  
+
+[so_tapped_first_mana - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8886 (88.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9781      +0.1058 ±0.0060  
+   commander_cast_turn__ate_T3                  0.9947       0.9948      +0.0001 ±0.0002  
+  *len_battlefield                             16.6925      16.7633      +0.0708 ±0.0223  
+  *rat_tokens                                   4.7651       4.8452      +0.0801 ±0.0568  
+  *tokens_created_total                         8.3111       8.4516      +0.1405 ±0.0680  
+  *proxy_damage_total                          12.9698      13.1734      +0.2036 ±0.0960  
+  *life                                        47.8034      47.9607      +0.1573 ±0.0994  
+  *cards_drawn_extra                            3.6275       3.6989      +0.0714 ±0.0297  
+  *treasure_tokens                              0.3939       0.4016      +0.0077 ±0.0062  
+  *mercenary_tokens                             0.1815       0.1846      +0.0031 ±0.0022  
+   interaction_spells_cast_total                0.7958       0.7981      +0.0023 ±0.0026  
+  *lands_played_total                           5.8789       5.8839      +0.0050 ±0.0030  
+  *tapped_land_first_plays_total                0.3377       0.2516      -0.0861 ±0.0060  
+  *tapped_land_skipped_for_play_total           0.1247       0.2016      +0.0769 ±0.0064  
+  *rat_king_counters                            1.7919       1.8109      +0.0190 ±0.0042  
+  *len_creature_cast_turn                       4.6535       4.6737      +0.0202 ±0.0060  
+  *len_library                                 74.9024      74.7634      -0.1390 ±0.0448  
+  *len_graveyard                                4.6696       4.7054      +0.0358 ±0.0140  
+  *recursion_events_total                       3.1293       3.1618      +0.0325 ±0.0143  
+  *extort_paid_total                            0.6423       0.6588      +0.0165 ±0.0075  
+  *rat_king_reanimations_total                  2.4832       2.5080      +0.0248 ±0.0126  
+  *len_tapped_lands_this_turn                   0.1985       0.2024      +0.0039 ±0.0024  
+  *soul_stone_harnessed                         0.0525       0.0538      +0.0013 ±0.0009  
+  *gray_merchant_drain_total                    1.3893       1.4250      +0.0357 ±0.0240  
+  *emeritus_prepared                            0.0926       0.0943      +0.0017 ±0.0012  
+  *ninja_teen_level                             0.3971       0.4011      +0.0040 ±0.0028  
+
+[fell_max_terrenos_4 - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7492 (74.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9789      +0.1066 ±0.0061  
+  *commander_cast_turn__ate_T3                  0.9947       0.9960      +0.0013 ±0.0008  
+  *commander_cast_turn__ate_T4                  0.9971       0.9979      +0.0008 ±0.0006  
+  *len_battlefield                             16.6925      16.6416      -0.0509 ±0.0489  
+   rat_tokens                                   4.7651       4.7842      +0.0191 ±0.1089  
+   tokens_created_total                         8.3111       8.2290      -0.0821 ±0.1262  
+   proxy_damage_total                          12.9698      12.9570      -0.0128 ±0.1823  
+  *life                                        47.8034      48.5810      +0.7776 ±0.1935  
+  *cards_drawn_extra                            3.6275       3.4087      -0.2188 ±0.0617  
+  *treasure_tokens                              0.3939       0.4220      +0.0281 ±0.0120  
+  *mercenary_tokens                             0.1815       0.0734      -0.1081 ±0.0106  
+  *interaction_spells_cast_total                0.7958       0.7767      -0.0191 ±0.0062  
+  *lands_played_total                           5.8789       5.8904      +0.0115 ±0.0098  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0257       0.0104      -0.0153 ±0.0033  
+  *staff_attach_turn__ate_T2                    0.9574       0.9662      +0.0088 ±0.0023  
+  *staff_attach_turn__ate_T3                    0.9574       0.9662      +0.0088 ±0.0023  
+  *staff_attach_turn__ate_T4                    0.9575       0.9662      +0.0087 ±0.0023  
+  *staff_attach_turn__ate_T5                    0.9582       0.9666      +0.0084 ±0.0023  
+  *staff_attach_turn__ate_T6                    0.9626       0.9700      +0.0074 ±0.0023  
+  *len_hand                                     3.5789       3.4473      -0.1316 ±0.0530  
+  *rat_king_reanimations_total                  2.4832       2.5418      +0.0586 ±0.0249  
+  *recursion_events_total                       3.1293       3.1900      +0.0607 ±0.0282  
+  *staff_tapped                                 0.0027       0.0009      -0.0018 ±0.0009  
+  *lands_played_this_turn                       0.5428       0.5339      -0.0089 ±0.0045  
+  *rat_king_counters                            1.7919       1.8110      +0.0191 ±0.0101  
+
+[fell_max_terrenos_99 - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7063 (70.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9789      +0.1066 ±0.0061  
+  *commander_cast_turn__ate_T3                  0.9947       0.9960      +0.0013 ±0.0008  
+  *commander_cast_turn__ate_T4                  0.9971       0.9979      +0.0008 ±0.0006  
+  *len_battlefield                             16.6925      16.7699      +0.0774 ±0.0525  
+   rat_tokens                                   4.7651       4.8412      +0.0761 ±0.1084  
+   tokens_created_total                         8.3111       8.3318      +0.0207 ±0.1310  
+   proxy_damage_total                          12.9698      13.1414      +0.1716 ±0.2101  
+  *life                                        47.8034      48.6805      +0.8771 ±0.2063  
+  *cards_drawn_extra                            3.6275       3.4465      -0.1810 ±0.0627  
+  *treasure_tokens                              0.3939       0.4266      +0.0327 ±0.0115  
+  *mercenary_tokens                             0.1815       0.0738      -0.1077 ±0.0106  
+  *interaction_spells_cast_total                0.7958       0.7376      -0.0582 ±0.0073  
+  *lands_played_total                           5.8789       5.9532      +0.0743 ±0.0109  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0257       0.0104      -0.0153 ±0.0033  
+  *staff_attach_turn__ate_T2                    0.9574       0.9660      +0.0086 ±0.0024  
+  *staff_attach_turn__ate_T3                    0.9574       0.9660      +0.0086 ±0.0024  
+  *staff_attach_turn__ate_T4                    0.9575       0.9660      +0.0085 ±0.0024  
+  *staff_attach_turn__ate_T5                    0.9582       0.9664      +0.0082 ±0.0024  
+  *staff_attach_turn__ate_T6                    0.9626       0.9700      +0.0074 ±0.0024  
+  *len_tapped_lands_this_turn                   0.1985       0.2112      +0.0127 ±0.0042  
+  *recursion_events_total                       3.1293       3.2121      +0.0828 ±0.0295  
+  *len_hand                                     3.5789       3.4268      -0.1521 ±0.0545  
+  *rat_king_reanimations_total                  2.4832       2.5549      +0.0717 ±0.0261  
+  *rat_king_counters                            1.7919       1.8197      +0.0278 ±0.0104  
+  *len_tapped_creatures_this_turn               0.8093       0.8271      +0.0178 ±0.0072  
+
+[fell_nunca_paga_vida - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7132 (71.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9710      +0.0987 ±0.0063  
+  *commander_cast_turn__ate_T3                  0.9947       0.9959      +0.0012 ±0.0008  
+  *commander_cast_turn__ate_T4                  0.9971       0.9979      +0.0008 ±0.0006  
+   len_battlefield                             16.6925      16.7192      +0.0267 ±0.0506  
+   rat_tokens                                   4.7651       4.7830      +0.0179 ±0.1014  
+   tokens_created_total                         8.3111       8.2347      -0.0764 ±0.1205  
+   proxy_damage_total                          12.9698      13.0081      +0.0383 ±0.1860  
+  *life                                        47.8034      48.7563      +0.9529 ±0.1970  
+  *cards_drawn_extra                            3.6275       3.4201      -0.2074 ±0.0618  
+  *treasure_tokens                              0.3939       0.4253      +0.0314 ±0.0124  
+  *mercenary_tokens                             0.1815       0.0730      -0.1085 ±0.0106  
+  *interaction_spells_cast_total                0.7958       0.7418      -0.0540 ±0.0070  
+  *lands_played_total                           5.8789       5.9414      +0.0625 ±0.0106  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0257       0.0104      -0.0153 ±0.0033  
+  *staff_attach_turn__ate_T2                    0.9574       0.9661      +0.0087 ±0.0024  
+  *staff_attach_turn__ate_T3                    0.9574       0.9661      +0.0087 ±0.0024  
+  *staff_attach_turn__ate_T4                    0.9575       0.9661      +0.0086 ±0.0024  
+  *staff_attach_turn__ate_T5                    0.9582       0.9665      +0.0083 ±0.0024  
+  *staff_attach_turn__ate_T6                    0.9626       0.9699      +0.0073 ±0.0023  
+  *len_hand                                     3.5789       3.4268      -0.1521 ±0.0538  
+  *len_tapped_lands_this_turn                   0.1985       0.2098      +0.0113 ±0.0041  
+  *recursion_events_total                       3.1293       3.1889      +0.0596 ±0.0282  
+  *rat_king_reanimations_total                  2.4832       2.5355      +0.0523 ±0.0248  
+  *staff_tapped                                 0.0027       0.0009      -0.0018 ±0.0009  
+  *squirrel_tokens                              0.1580       0.1664      +0.0084 ±0.0043  
+
+[fell_piso_vida_4 - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7132 (71.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9789      +0.1066 ±0.0061  
+  *commander_cast_turn__ate_T3                  0.9947       0.9960      +0.0013 ±0.0008  
+  *commander_cast_turn__ate_T4                  0.9971       0.9979      +0.0008 ±0.0006  
+  *len_battlefield                             16.6925      16.7517      +0.0592 ±0.0520  
+   rat_tokens                                   4.7651       4.8380      +0.0729 ±0.1082  
+   tokens_created_total                         8.3111       8.3257      +0.0146 ±0.1309  
+   proxy_damage_total                          12.9698      13.1308      +0.1610 ±0.2100  
+  *life                                        47.8034      48.6823      +0.8789 ±0.2057  
+  *cards_drawn_extra                            3.6275       3.4452      -0.1823 ±0.0627  
+  *treasure_tokens                              0.3939       0.4253      +0.0314 ±0.0114  
+  *mercenary_tokens                             0.1815       0.0738      -0.1077 ±0.0106  
+  *interaction_spells_cast_total                0.7958       0.7450      -0.0508 ±0.0071  
+  *lands_played_total                           5.8789       5.9437      +0.0648 ±0.0108  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0257       0.0104      -0.0153 ±0.0033  
+  *staff_attach_turn__ate_T2                    0.9574       0.9659      +0.0085 ±0.0024  
+  *staff_attach_turn__ate_T3                    0.9574       0.9659      +0.0085 ±0.0024  
+  *staff_attach_turn__ate_T4                    0.9575       0.9659      +0.0084 ±0.0024  
+  *staff_attach_turn__ate_T5                    0.9582       0.9663      +0.0081 ±0.0024  
+  *staff_attach_turn__ate_T6                    0.9626       0.9699      +0.0073 ±0.0024  
+  *len_hand                                     3.5789       3.4283      -0.1506 ±0.0543  
+  *recursion_events_total                       3.1293       3.2108      +0.0815 ±0.0294  
+  *rat_king_reanimations_total                  2.4832       2.5542      +0.0710 ±0.0260  
+  *rat_king_counters                            1.7919       1.8191      +0.0272 ±0.0104  
+  *len_tapped_creatures_this_turn               0.8093       0.8266      +0.0173 ±0.0071  
+  *len_tapped_lands_this_turn                   0.1985       0.2074      +0.0089 ±0.0040  
+
+[ref_sem_terreno_virado_primeiro - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6437 (64.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9390      +0.0667 ±0.0067  
+  *len_battlefield                             16.6925      16.6494      -0.0431 ±0.0267  
+  *rat_tokens                                   4.7651       4.6258      -0.1393 ±0.0737  
+  *tokens_created_total                         8.3111       8.1450      -0.1661 ±0.0851  
+  *proxy_damage_total                          12.9698      12.7593      -0.2105 ±0.1220  
+   life                                        47.8034      47.7286      -0.0748 ±0.1288  
+  *cards_drawn_extra                            3.6275       3.5882      -0.0393 ±0.0386  
+   treasure_tokens                              0.3939       0.3903      -0.0036 ±0.0055  
+   mercenary_tokens                             0.1815       0.1791      -0.0024 ±0.0030  
+  *interaction_spells_cast_total                0.7958       0.7917      -0.0041 ±0.0032  
+  *lands_played_total                           5.8789       5.8748      -0.0041 ±0.0038  
+  *tapped_land_first_plays_total                0.3377       0.0000      -0.3377 ±0.0105  
+  *tapped_land_skipped_for_play_total           0.1247       0.0000      -0.1247 ±0.0073  
+  *big_apple_activations_total                  0.1109       0.0888      -0.0221 ±0.0048  
+  *len_tapped_lands_this_turn                   0.1985       0.2040      +0.0055 ±0.0033  
+  *rotcaller_x_total                            3.2624       3.1876      -0.0748 ±0.0543  
+  *len_graveyard                                4.6696       4.6383      -0.0313 ±0.0236  
+  *mana_spent_this_turn                         8.6262       8.5488      -0.0774 ±0.0583  
+  *ninja_teen_drain_total                       0.7599       0.7297      -0.0302 ±0.0238  
+  *len_library                                 74.9024      74.9726      +0.0702 ±0.0586  
+  *rat_king_counters                            1.7919       1.7851      -0.0068 ±0.0057  
+  *permanent_left_battlefield_this_turn         0.5603       0.5575      -0.0028 ±0.0025  
+  *rat_tokens_created_this_turn                 3.7357       3.6540      -0.0817 ±0.0749  
+  *len_tapped_creatures_this_turn               0.8093       0.8048      -0.0045 ±0.0043  
+  *combo_any_turn__nunca                        0.9728       0.9738      +0.0010 ±0.0010  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7144 (71.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9789      +0.1066 ±0.0061  
+  *commander_cast_turn__ate_T3                  0.9874       0.9948      +0.0074 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.9962       0.9976      +0.0014 ±0.0007  
+   len_battlefield                             10.8739      10.8924      +0.0185 ±0.0485  
+   rat_tokens                                   1.3600       1.3692      +0.0092 ±0.0562  
+   tokens_created_total                         4.9214       4.8729      -0.0485 ±0.1011  
+   proxy_damage_total                           7.3157       7.3760      +0.0603 ±0.1848  
+  *life                                        41.0522      41.7748      +0.7226 ±0.1668  
+  *cards_drawn_extra                            2.1924       2.0281      -0.1643 ±0.0514  
+  *treasure_tokens                              0.4334       0.4680      +0.0346 ±0.0268  
+  *mercenary_tokens                             0.0736       0.0169      -0.0567 ±0.0067  
+  *interaction_spells_cast_total                0.6103       0.5670      -0.0433 ±0.0066  
+  *lands_played_total                           5.6679       5.7298      +0.0619 ±0.0110  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0150       0.0039      -0.0111 ±0.0026  
+  *staff_attach_turn__ate_T2                    0.9784       0.9851      +0.0067 ±0.0020  
+  *staff_attach_turn__ate_T3                    0.9784       0.9851      +0.0067 ±0.0020  
+  *staff_attach_turn__ate_T4                    0.9786       0.9851      +0.0065 ±0.0019  
+  *staff_attach_turn__ate_T5                    0.9791       0.9853      +0.0062 ±0.0019  
+  *staff_attach_turn__ate_T6                    0.9816       0.9873      +0.0057 ±0.0018  
+  *len_hand                                     2.7769       2.6262      -0.1507 ±0.0502  
+  *len_smart_counter_log                        0.0511       0.0423      -0.0088 ±0.0033  
+  *smart_counters_total                         0.0511       0.0423      -0.0088 ±0.0033  
+  *len_tapped_lands_this_turn                   0.1669       0.1774      +0.0105 ±0.0044  
+  *len_creature_cast_turn                       4.1187       4.1462      +0.0275 ±0.0126  
+  *len_smart_removal_log                        0.5405       0.5540      +0.0135 ±0.0071  
+
+[so_fell_terreno - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9059 (90.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.8728      +0.0005 ±0.0004  
+  *commander_cast_turn__ate_T3                  0.9874       0.9878      +0.0004 ±0.0004  
+   commander_cast_turn__ate_T4                  0.9962       0.9964      +0.0002 ±0.0003  
+  *len_battlefield                             10.8739      11.0117      +0.1378 ±0.0228  
+  *rat_tokens                                   1.3600       1.3914      +0.0314 ±0.0248  
+  *tokens_created_total                         4.9214       5.0542      +0.1328 ±0.0371  
+  *proxy_damage_total                           7.3157       7.5198      +0.2041 ±0.0595  
+   life                                        41.0522      41.0979      +0.0457 ±0.0617  
+  *cards_drawn_extra                            2.1924       2.2557      +0.0633 ±0.0230  
+  *treasure_tokens                              0.4334       0.4477      +0.0143 ±0.0103  
+   mercenary_tokens                             0.0736       0.0739      +0.0003 ±0.0018  
+  *interaction_spells_cast_total                0.6103       0.5735      -0.0368 ±0.0043  
+  *lands_played_total                           5.6679       5.7662      +0.0983 ±0.0066  
+  *len_creature_cast_turn                       4.1187       4.1584      +0.0397 ±0.0057  
+  *len_library                                 78.0099      77.8597      -0.1502 ±0.0367  
+  *rat_king_counters                            1.5062       1.5247      +0.0185 ±0.0049  
+  *recursion_events_total                       2.8391       2.8927      +0.0536 ±0.0153  
+  *len_tapped_lands_this_turn                   0.1669       0.1744      +0.0075 ±0.0023  
+  *len_tapped_creatures_this_turn               0.5070       0.5192      +0.0122 ±0.0037  
+  *lands_played_this_turn                       0.4626       0.4714      +0.0088 ±0.0027  
+  *rat_king_reanimations_total                  2.3316       2.3737      +0.0421 ±0.0134  
+  *len_smart_removal_log                        0.5405       0.5497      +0.0092 ±0.0031  
+  *smart_removals_total                         0.5405       0.5497      +0.0092 ±0.0031  
+  *ramp_pieces_cast_total                       0.7308       0.7379      +0.0071 ±0.0024  
+  *creatures_died_this_turn                     2.9773       3.0648      +0.0875 ±0.0310  
+  *mana_spent_this_turn                         6.3589       6.4308      +0.0719 ±0.0328  
+  *gray_merchant_drain_total                    0.7942       0.8246      +0.0304 ±0.0139  
+
+[so_fell_terreno_e_keep - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8847 (88.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.8753      +0.0030 ±0.0015  
+  *commander_cast_turn__ate_T3                  0.9874       0.9888      +0.0014 ±0.0008  
+  *commander_cast_turn__ate_T4                  0.9962       0.9971      +0.0009 ±0.0006  
+  *len_battlefield                             10.8739      11.0013      +0.1274 ±0.0315  
+   rat_tokens                                   1.3600       1.3802      +0.0202 ±0.0386  
+  *tokens_created_total                         4.9214       5.0472      +0.1258 ±0.0566  
+  *proxy_damage_total                           7.3157       7.4627      +0.1470 ±0.0828  
+   life                                        41.0522      40.9907      -0.0615 ±0.0851  
+  *cards_drawn_extra                            2.1924       2.2601      +0.0677 ±0.0318  
+  *treasure_tokens                              0.4334       0.4523      +0.0189 ±0.0145  
+   mercenary_tokens                             0.0736       0.0743      +0.0007 ±0.0020  
+  *interaction_spells_cast_total                0.6103       0.5756      -0.0347 ±0.0052  
+  *lands_played_total                           5.6679       5.7544      +0.0865 ±0.0095  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *len_creature_cast_turn                       4.1187       4.1584      +0.0397 ±0.0089  
+  *tapped_land_first_plays_total                0.3377       0.3317      -0.0060 ±0.0020  
+  *len_smart_removal_log                        0.5405       0.5523      +0.0118 ±0.0043  
+  *smart_removals_total                         0.5405       0.5523      +0.0118 ±0.0043  
+  *rat_king_counters                            1.5062       1.5268      +0.0206 ±0.0076  
+  *len_library                                 78.0099      77.8606      -0.1493 ±0.0553  
+  *len_tapped_creatures_this_turn               0.5070       0.5193      +0.0123 ±0.0046  
+  *len_tapped_lands_this_turn                   0.1669       0.1741      +0.0072 ±0.0027  
+  *lands_played_this_turn                       0.4626       0.4715      +0.0089 ±0.0035  
+  *recursion_events_total                       2.8391       2.8914      +0.0523 ±0.0210  
+  *rat_king_reanimations_total                  2.3316       2.3755      +0.0439 ±0.0186  
+  *creatures_died_this_turn                     2.9773       3.0730      +0.0957 ±0.0406  
+  *permanent_left_battlefield_this_turn         0.5741       0.5807      +0.0066 ±0.0034  
+  *graveyard_wipe_used                          0.3652       0.3703      +0.0051 ±0.0027  
+
+[so_bmc - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9132 (91.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.8739      10.7512      -0.1227 ±0.0265  
+  *rat_tokens                                   1.3600       1.3190      -0.0410 ±0.0294  
+  *tokens_created_total                         4.9214       4.6299      -0.2915 ±0.0618  
+  *proxy_damage_total                           7.3157       7.0505      -0.2652 ±0.1447  
+  *life                                        41.0522      41.7559      +0.7037 ±0.1207  
+  *cards_drawn_extra                            2.1924       1.9115      -0.2809 ±0.0361  
+   treasure_tokens                              0.4334       0.4383      +0.0049 ±0.0174  
+  *mercenary_tokens                             0.0736       0.0166      -0.0570 ±0.0066  
+  *interaction_spells_cast_total                0.6103       0.6012      -0.0091 ±0.0031  
+  *lands_played_total                           5.6679       5.6417      -0.0262 ±0.0041  
+  *len_library                                 78.0099      78.3553      +0.3454 ±0.0516  
+  *rat_king_counters                            1.5062       1.4796      -0.0266 ±0.0051  
+  *len_creature_cast_turn                       4.1187       4.0879      -0.0308 ±0.0065  
+  *lands_played_this_turn                       0.4626       0.4492      -0.0134 ±0.0030  
+  *staff_attach_turn__ate_T2                    0.9784       0.9861      +0.0077 ±0.0018  
+  *staff_attach_turn__ate_T3                    0.9784       0.9861      +0.0077 ±0.0018  
+  *staff_auto_attach_total                      0.0150       0.0037      -0.0113 ±0.0026  
+  *staff_attach_turn__ate_T4                    0.9786       0.9861      +0.0075 ±0.0017  
+  *staff_attach_turn__ate_T5                    0.9791       0.9863      +0.0072 ±0.0017  
+  *len_hand                                     2.7769       2.6464      -0.1305 ±0.0310  
+  *ramp_pieces_cast_total                       0.7308       0.7190      -0.0118 ±0.0030  
+  *staff_attach_turn__ate_T6                    0.9816       0.9878      +0.0062 ±0.0017  
+  *mana_spent_this_turn                         6.3589       6.1904      -0.1685 ±0.0464  
+  *len_smart_discard_log                        1.1346       1.1189      -0.0157 ±0.0044  
+
+[so_tapped_first_mana - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8886 (88.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9781      +0.1058 ±0.0060  
+  *commander_cast_turn__ate_T3                  0.9874       0.9935      +0.0061 ±0.0015  
+  *commander_cast_turn__ate_T4                  0.9962       0.9967      +0.0005 ±0.0004  
+   len_battlefield                             10.8739      10.8892      +0.0153 ±0.0299  
+   rat_tokens                                   1.3600       1.3845      +0.0245 ±0.0267  
+  *tokens_created_total                         4.9214       5.0383      +0.1169 ±0.0602  
+  *proxy_damage_total                           7.3157       7.4950      +0.1793 ±0.0892  
+   life                                        41.0522      41.1006      +0.0484 ±0.0894  
+  *cards_drawn_extra                            2.1924       2.2473      +0.0549 ±0.0210  
+   treasure_tokens                              0.4334       0.4472      +0.0138 ±0.0153  
+   mercenary_tokens                             0.0736       0.0732      -0.0004 ±0.0023  
+   interaction_spells_cast_total                0.6103       0.6110      +0.0007 ±0.0032  
+   lands_played_total                           5.6679       5.6702      +0.0023 ±0.0043  
+  *tapped_land_first_plays_total                0.3377       0.2516      -0.0861 ±0.0060  
+  *tapped_land_skipped_for_play_total           0.1247       0.2016      +0.0769 ±0.0064  
+  *len_creature_cast_turn                       4.1187       4.1387      +0.0200 ±0.0068  
+  *rat_king_counters                            1.5062       1.5268      +0.0206 ±0.0070  
+  *len_library                                 78.0099      77.8741      -0.1358 ±0.0483  
+  *len_smart_counter_log                        0.0511       0.0440      -0.0071 ±0.0026  
+  *smart_counters_total                         0.0511       0.0440      -0.0071 ±0.0026  
+  *len_smart_removal_log                        0.5405       0.5504      +0.0099 ±0.0046  
+  *smart_removals_total                         0.5405       0.5504      +0.0099 ±0.0046  
+  *recursion_events_total                       2.8391       2.8814      +0.0423 ±0.0199  
+  *len_graveyard                                6.1983       6.2724      +0.0741 ±0.0379  
+  *rat_king_reanimations_total                  2.3316       2.3631      +0.0315 ±0.0177  
+  *skullclamp_draws_total                       0.4888       0.5204      +0.0316 ±0.0202  
+  *rotcaller_x_total                            1.4929       1.5354      +0.0425 ±0.0276  
+
+[fell_max_terrenos_4 - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7518 (75.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9789      +0.1066 ±0.0061  
+  *commander_cast_turn__ate_T3                  0.9874       0.9948      +0.0074 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.9962       0.9976      +0.0014 ±0.0007  
+   len_battlefield                             10.8739      10.8367      -0.0372 ±0.0467  
+   rat_tokens                                   1.3600       1.3645      +0.0045 ±0.0545  
+   tokens_created_total                         4.9214       4.8259      -0.0955 ±0.0996  
+   proxy_damage_total                           7.3157       7.2998      -0.0159 ±0.1832  
+  *life                                        41.0522      41.7634      +0.7112 ±0.1638  
+  *cards_drawn_extra                            2.1924       2.0028      -0.1896 ±0.0500  
+  *treasure_tokens                              0.4334       0.4651      +0.0317 ±0.0261  
+  *mercenary_tokens                             0.0736       0.0169      -0.0567 ±0.0067  
+  *interaction_spells_cast_total                0.6103       0.5944      -0.0159 ±0.0058  
+   lands_played_total                           5.6679       5.6778      +0.0099 ±0.0101  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0150       0.0039      -0.0111 ±0.0026  
+  *staff_attach_turn__ate_T2                    0.9784       0.9850      +0.0066 ±0.0020  
+  *staff_attach_turn__ate_T3                    0.9784       0.9850      +0.0066 ±0.0020  
+  *staff_attach_turn__ate_T4                    0.9786       0.9850      +0.0064 ±0.0019  
+  *staff_attach_turn__ate_T5                    0.9791       0.9852      +0.0061 ±0.0019  
+  *staff_attach_turn__ate_T6                    0.9816       0.9872      +0.0056 ±0.0018  
+  *len_smart_counter_log                        0.0511       0.0420      -0.0091 ±0.0032  
+  *smart_counters_total                         0.0511       0.0420      -0.0091 ±0.0032  
+  *len_hand                                     2.7769       2.6399      -0.1370 ±0.0490  
+  *lands_played_this_turn                       0.4626       0.4532      -0.0094 ±0.0049  
+  *commander_cast_count                         1.7082       1.6978      -0.0104 ±0.0060  
+  *commander_cast_turn__ate_T5                  0.9978       0.9987      +0.0009 ±0.0006  
+
+[fell_max_terrenos_99 - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7069 (70.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9789      +0.1066 ±0.0061  
+  *commander_cast_turn__ate_T3                  0.9874       0.9948      +0.0074 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.9962       0.9976      +0.0014 ±0.0007  
+   len_battlefield                             10.8739      10.9072      +0.0333 ±0.0486  
+   rat_tokens                                   1.3600       1.3726      +0.0126 ±0.0567  
+   tokens_created_total                         4.9214       4.8798      -0.0416 ±0.1015  
+   proxy_damage_total                           7.3157       7.3881      +0.0724 ±0.1852  
+  *life                                        41.0522      41.7718      +0.7196 ±0.1670  
+  *cards_drawn_extra                            2.1924       2.0309      -0.1615 ±0.0514  
+  *treasure_tokens                              0.4334       0.4687      +0.0353 ±0.0269  
+  *mercenary_tokens                             0.0736       0.0169      -0.0567 ±0.0067  
+  *interaction_spells_cast_total                0.6103       0.5595      -0.0508 ±0.0068  
+  *lands_played_total                           5.6679       5.7399      +0.0720 ±0.0112  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0150       0.0039      -0.0111 ±0.0026  
+  *staff_attach_turn__ate_T2                    0.9784       0.9851      +0.0067 ±0.0020  
+  *staff_attach_turn__ate_T3                    0.9784       0.9851      +0.0067 ±0.0020  
+  *staff_attach_turn__ate_T4                    0.9786       0.9851      +0.0065 ±0.0019  
+  *staff_attach_turn__ate_T5                    0.9791       0.9853      +0.0062 ±0.0019  
+  *len_tapped_lands_this_turn                   0.1669       0.1812      +0.0143 ±0.0046  
+  *staff_attach_turn__ate_T6                    0.9816       0.9873      +0.0057 ±0.0018  
+  *len_hand                                     2.7769       2.6235      -0.1534 ±0.0504  
+  *len_smart_counter_log                        0.0511       0.0423      -0.0088 ±0.0033  
+  *smart_counters_total                         0.0511       0.0423      -0.0088 ±0.0033  
+  *len_creature_cast_turn                       4.1187       4.1484      +0.0297 ±0.0127  
+  *len_smart_removal_log                        0.5405       0.5540      +0.0135 ±0.0071  
+
+[fell_nunca_paga_vida - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7144 (71.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9710      +0.0987 ±0.0063  
+  *commander_cast_turn__ate_T3                  0.9874       0.9944      +0.0070 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.9962       0.9976      +0.0014 ±0.0007  
+   len_battlefield                             10.8739      10.8906      +0.0167 ±0.0477  
+   rat_tokens                                   1.3600       1.3669      +0.0069 ±0.0565  
+   tokens_created_total                         4.9214       4.8275      -0.0939 ±0.0988  
+   proxy_damage_total                           7.3157       7.3215      +0.0058 ±0.1819  
+  *life                                        41.0522      41.8615      +0.8093 ±0.1656  
+  *cards_drawn_extra                            2.1924       2.0063      -0.1861 ±0.0486  
+  *treasure_tokens                              0.4334       0.4636      +0.0302 ±0.0263  
+  *mercenary_tokens                             0.0736       0.0171      -0.0565 ±0.0067  
+  *interaction_spells_cast_total                0.6103       0.5650      -0.0453 ±0.0066  
+  *lands_played_total                           5.6679       5.7284      +0.0605 ±0.0109  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0150       0.0039      -0.0111 ±0.0026  
+  *staff_attach_turn__ate_T2                    0.9784       0.9852      +0.0068 ±0.0020  
+  *staff_attach_turn__ate_T3                    0.9784       0.9852      +0.0068 ±0.0020  
+  *staff_attach_turn__ate_T4                    0.9786       0.9852      +0.0066 ±0.0019  
+  *staff_attach_turn__ate_T5                    0.9791       0.9854      +0.0063 ±0.0019  
+  *staff_attach_turn__ate_T6                    0.9816       0.9874      +0.0058 ±0.0018  
+  *len_hand                                     2.7769       2.6256      -0.1513 ±0.0487  
+  *len_tapped_lands_this_turn                   0.1669       0.1791      +0.0122 ±0.0044  
+  *len_smart_counter_log                        0.0511       0.0425      -0.0086 ±0.0032  
+  *smart_counters_total                         0.0511       0.0425      -0.0086 ±0.0032  
+  *len_smart_removal_log                        0.5405       0.5536      +0.0131 ±0.0070  
+  *smart_removals_total                         0.5405       0.5536      +0.0131 ±0.0070  
+
+[fell_piso_vida_4 - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7144 (71.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9789      +0.1066 ±0.0061  
+  *commander_cast_turn__ate_T3                  0.9874       0.9948      +0.0074 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.9962       0.9976      +0.0014 ±0.0007  
+   len_battlefield                             10.8739      10.8924      +0.0185 ±0.0485  
+   rat_tokens                                   1.3600       1.3692      +0.0092 ±0.0562  
+   tokens_created_total                         4.9214       4.8729      -0.0485 ±0.1011  
+   proxy_damage_total                           7.3157       7.3760      +0.0603 ±0.1848  
+  *life                                        41.0522      41.7748      +0.7226 ±0.1668  
+  *cards_drawn_extra                            2.1924       2.0281      -0.1643 ±0.0514  
+  *treasure_tokens                              0.4334       0.4680      +0.0346 ±0.0268  
+  *mercenary_tokens                             0.0736       0.0169      -0.0567 ±0.0067  
+  *interaction_spells_cast_total                0.6103       0.5670      -0.0433 ±0.0066  
+  *lands_played_total                           5.6679       5.7298      +0.0619 ±0.0110  
+  *mulligans                                    0.3295       0.3001      -0.0294 ±0.0039  
+  *tapped_land_first_plays_total                0.3377       0.2477      -0.0900 ±0.0062  
+  *tapped_land_skipped_for_play_total           0.1247       0.1976      +0.0729 ±0.0064  
+  *staff_auto_attach_total                      0.0150       0.0039      -0.0111 ±0.0026  
+  *staff_attach_turn__ate_T2                    0.9784       0.9851      +0.0067 ±0.0020  
+  *staff_attach_turn__ate_T3                    0.9784       0.9851      +0.0067 ±0.0020  
+  *staff_attach_turn__ate_T4                    0.9786       0.9851      +0.0065 ±0.0019  
+  *staff_attach_turn__ate_T5                    0.9791       0.9853      +0.0062 ±0.0019  
+  *staff_attach_turn__ate_T6                    0.9816       0.9873      +0.0057 ±0.0018  
+  *len_hand                                     2.7769       2.6262      -0.1507 ±0.0502  
+  *len_smart_counter_log                        0.0511       0.0423      -0.0088 ±0.0033  
+  *smart_counters_total                         0.0511       0.0423      -0.0088 ±0.0033  
+  *len_tapped_lands_this_turn                   0.1669       0.1774      +0.0105 ±0.0044  
+  *len_creature_cast_turn                       4.1187       4.1462      +0.0275 ±0.0126  
+  *len_smart_removal_log                        0.5405       0.5540      +0.0135 ±0.0071  
+
+[ref_sem_terreno_virado_primeiro - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6437 (64.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T2                  0.8723       0.9390      +0.0667 ±0.0067  
+  *commander_cast_turn__ate_T3                  0.9874       0.9922      +0.0048 ±0.0015  
+   commander_cast_turn__ate_T4                  0.9962       0.9966      +0.0004 ±0.0005  
+   len_battlefield                             10.8739      10.8722      -0.0017 ±0.0385  
+   rat_tokens                                   1.3600       1.3278      -0.0322 ±0.0466  
+   tokens_created_total                         4.9214       4.8465      -0.0749 ±0.0780  
+   proxy_damage_total                           7.3157       7.2863      -0.0294 ±0.0951  
+   life                                        41.0522      40.9997      -0.0525 ±0.1047  
+   cards_drawn_extra                            2.1924       2.1803      -0.0121 ±0.0345  
+   treasure_tokens                              0.4334       0.4244      -0.0090 ±0.0195  
+   mercenary_tokens                             0.0736       0.0712      -0.0024 ±0.0029  
+  *interaction_spells_cast_total                0.6103       0.6060      -0.0043 ±0.0041  
+   lands_played_total                           5.6679       5.6673      -0.0006 ±0.0056  
+  *tapped_land_first_plays_total                0.3377       0.0000      -0.3377 ±0.0105  
+  *tapped_land_skipped_for_play_total           0.1247       0.0000      -0.1247 ±0.0073  
+  *big_apple_activations_total                  0.0819       0.0657      -0.0162 ±0.0046  
+  *len_smart_counter_log                        0.0511       0.0449      -0.0062 ±0.0029  
+  *smart_counters_total                         0.0511       0.0449      -0.0062 ±0.0029  
+  *commander_cast_count                         1.7082       1.6977      -0.0105 ±0.0057  
+  *len_tapped_lands_this_turn                   0.1669       0.1713      +0.0044 ±0.0038  
+   len_smart_wipe_log                           0.8331       0.8281      -0.0050 ±0.0057  
+   smart_wipes_total                            0.8331       0.8281      -0.0050 ±0.0057  
+   combo_marrow_staff_turn__nunca               0.9937       0.9942      +0.0005 ±0.0006  
+   gray_merchant_drain_total                    0.7942       0.7756      -0.0186 ±0.0233  
+   soul_stone_harnessed                         0.0271       0.0281      +0.0010 ±0.0013  
+   marrow_staff_loop_iters_total                0.0239       0.0219      -0.0020 ±0.0027  
+   thrumming_stone_free_casts_total             0.1724       0.1633      -0.0091 ±0.0126  

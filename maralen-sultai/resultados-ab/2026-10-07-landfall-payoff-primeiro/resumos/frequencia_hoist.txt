@@ -1,0 +1,2 @@
+padrao: payoff_first_casts por partida = 0.172 | partidas com >= 1 = 16.1% (N=10000)
+resiliencia: payoff_first_casts por partida = 0.122 | partidas com >= 1 = 11.7% (N=10000)

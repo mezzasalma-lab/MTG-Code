@@ -1,0 +1,6 @@
+20000 partidas, politica 'conjura sempre' (limite None), 8 turnos, sementes 5_000_000+i:
+  wipes_meus_resolvidos: 6332
+  com_Staff_em_campo: 839
+  com_holder_equipado: 89
+  holder_VIRADO_no_wipe: 0
+  holder_virado_e_algo_morre: 0

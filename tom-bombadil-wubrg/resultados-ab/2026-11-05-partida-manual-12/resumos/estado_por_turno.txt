@@ -1,0 +1,70 @@
+
+=== FIM T1
+battlefield (1) : Ketria Triome(T)
+hand : Fertile Ground, Jugan Defends the Temple // Remnant of the Rising Star, The First Iroan Games, Prismatic Omen, Enchantress's Presence, Forest, In the Darkness Bind Them
+graveyard (0) : 
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T2
+battlefield (3) : Fertile Ground, Forest(T), Ketria Triome(T)
+hand : Jugan Defends the Temple // Remnant of the Rising Star, The First Iroan Games, Prismatic Omen, Enchantress's Presence, In the Darkness Bind Them, Bloom Tender
+graveyard (0) : 
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T3
+battlefield (5) : Fertile Ground, Enchantress's Presence, Forest(T), Ketria Triome(T), Temple Garden
+hand : Jugan Defends the Temple // Remnant of the Rising Star, The First Iroan Games, Prismatic Omen, In the Darkness Bind Them, Bloom Tender
+graveyard (0) : 
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T4
+battlefield (8) : Fertile Ground, Prismatic Omen, Enchantress's Presence, Forest(T), Ketria Triome(T), Bloom Tender, Temple Garden, Nesting Grounds(T)
+hand : Jugan Defends the Temple // Remnant of the Rising Star, The First Iroan Games, In the Darkness Bind Them, Ripples of Potential
+graveyard (0) : 
+commandZone (0) : 
+opponentsCards : Walker
+
+=== FIM T5
+battlefield (12) : Fertile Ground(T), Prismatic Omen, Enchantress's Presence, Forest(T), Ketria Triome(T), In the Darkness Bind Them{Lore=1}, Bloom Tender(T), Temple Garden(T), Nesting Grounds(T), Godless Shrine(T), Tom Bombadil, [Wraith]
+hand : Jugan Defends the Temple // Remnant of the Rising Star, The First Iroan Games, Ripples of Potential, Stomping Ground
+graveyard (0) : 
+commandZone (0) : 
+opponentsCards : Walker, Fold into Aether
+
+=== FIM T6
+battlefield (14) : Fertile Ground, The First Iroan Games{Lore=1}, Prismatic Omen, Enchantress's Presence, Forest(T), Ketria Triome(T), In the Darkness Bind Them{Lore=2}, Temple Garden(T), Nesting Grounds(T), Godless Shrine(T), Tom Bombadil(T), [Wraith], Stomping Ground(T), [Wraith]
+hand : Ripples of Potential, Kiora Bests the Sea God, Plains, The Coming of Galactus
+graveyard (2) : Jugan Defends the Temple, Bloom Tender
+commandZone (0) : 
+opponentsCards : Walker, Fold into Aether, Snuff Out
+
+=== FIM T7
+battlefield (18) : Fertile Ground, The First Iroan Games{Lore=3}, Prismatic Omen, Enchantress's Presence, Forest(T), Ketria Triome(T), In the Darkness Bind Them{Lore=3}, Temple Garden(T), Nesting Grounds(T), Godless Shrine(T), [Wraith], Stomping Ground(T), [Wraith], Plains(T), Resurgent Belief{Time=2}, [Human Soldier](T){Ring Bearer=1}, [The Ring]{Generic=3}, [Wraith]
+hand : Ripples of Potential, Kiora Bests the Sea God, The Coming of Galactus
+graveyard (2) : Jugan Defends the Temple, Bloom Tender
+commandZone (1) : Tom Bombadil
+opponentsCards : Walker, Fold into Aether, Snuff Out, Soul Shatter
+
+=== FIM T8
+battlefield (16) : Fertile Ground(T), Forest(T), Ketria Triome(T), Temple Garden(T), Nesting Grounds(T), Godless Shrine(T), Tom Bombadil, [Wraith], Stomping Ground(T), [Wraith], Plains(T), Resurgent Belief{Time=1}, [Human Soldier]{Ring Bearer=1,Lore=1}, [The Ring]{Generic=4}, [Wraith], Raugrin Triome(T)
+hand : Ripples of Potential, Kiora Bests the Sea God, The Coming of Galactus
+graveyard (6) : Jugan Defends the Temple, The First Iroan Games, Prismatic Omen, Enchantress's Presence, In the Darkness Bind Them, Bloom Tender
+commandZone (0) : 
+opponentsCards : Walker, Fold into Aether, Snuff Out, Soul Shatter, Austere Command
+
+=== FIM T9
+battlefield (27) : Fertile Ground, Jugan Defends the Temple{Lore=1}, The First Iroan Games{Lore=1}, Prismatic Omen, Enchantress's Presence, Forest(T), Ketria Triome(T), In the Darkness Bind Them{Lore=1}, Temple Garden(T), Nesting Grounds(T), Godless Shrine, Tom Bombadil(T), [Wraith], Stomping Ground(T), Kiora Bests the Sea God{Lore=1}, [Wraith], Plains(T), [Human Soldier]{Ring Bearer=1,Lore=1}, [The Ring]{Generic=4}, [Wraith], Raugrin Triome(T), Karn's Bastion(T), [Kraken], [Human Monk], [Wraith], [Human Soldier]{RING BEARER=1}, [Kraken]
+hand : Ripples of Potential, The Coming of Galactus, Song of Eärendil
+graveyard (2) : Bloom Tender, Resurgent Belief
+commandZone (0) : 
+opponentsCards : Walker, Fold into Aether, Snuff Out, Soul Shatter, Austere Command, Plant Warrior
+
+=== FIM T10
+battlefield (31) : Fertile Ground, Jugan Defends the Temple{Lore=1}, The First Iroan Games{Lore=1}, Prismatic Omen, Enchantress's Presence, Forest(T), Ketria Triome(T), In the Darkness Bind Them{Lore=1}, Temple Garden(T), Nesting Grounds(T), Godless Shrine(T), Tom Bombadil(T){+1 / +1=4}, [Wraith], Stomping Ground(T), Kiora Bests the Sea God{Lore=1}, [Wraith], Plains(T), [Human Soldier]{Ring Bearer=1,Lore=1}, [The Ring]{Generic=4}, [Wraith], Raugrin Triome(T), Karn's Bastion, [Kraken], [Human Monk], [Wraith], [Human Soldier]{RING BEARER=1}, [Kraken](T){+1 / +1=1}, Song of Eärendil{Lore=1}, O'aka, Traveling Merchant, [Wraith], Verdant Catacombs
+hand : Ripples of Potential, The Coming of Galactus, Estrid's Invocation, Elspeth Conquers Death
+graveyard (2) : Bloom Tender, Resurgent Belief
+commandZone (0) : 
+opponentsCards : Walker, Fold into Aether, Snuff Out, Soul Shatter, Austere Command, Plant Warrior

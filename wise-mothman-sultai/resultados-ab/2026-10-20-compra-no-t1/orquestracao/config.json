@@ -1,0 +1,16 @@
+{
+ "flags_off": {"FIRST_TURN_SKIPS_DRAW": true},
+ "ignora_campos": [],
+ "sensibilidade": {},
+ "turns": 12,
+ "extra": null,
+ "destaque": [
+  "cleared_T8", "cleared_T10", "first_elim_T6",
+  "opps_eliminated_total", "cards_milled_opp_total", "nonland_milled_opp_total",
+  "mothman_counters_placed_total", "ruin_crab_mills", "lands_entered_total",
+  "cards_milled_self_total", "library_min", "life_min", "self_lost"
+ ],
+ "deck": "wise-mothman-sultai",
+ "sim": "mothman_goldfish_v1.py",
+ "snapshot": "codigo/mothman_goldfish_v1_ANTES_4d85fbc.py"
+}

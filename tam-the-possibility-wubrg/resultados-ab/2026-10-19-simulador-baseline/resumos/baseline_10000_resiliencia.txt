@@ -1,0 +1,1 @@
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia

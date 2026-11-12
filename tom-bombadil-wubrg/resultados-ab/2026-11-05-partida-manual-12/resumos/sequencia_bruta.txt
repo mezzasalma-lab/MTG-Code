@@ -1,0 +1,241 @@
+
+--- T1
+ 0 Fertile Ground                   hand        library->hand              -   
+ 1 Jugan Defends the Temple         hand        library->hand              -   
+ 2 The First Iroan Games            hand        library->hand              -   
+ 3 Prismatic Omen                   hand        library->hand              -   
+ 4 Enchantress's Presence           hand        library->hand              -   
+ 5 Forest                           hand        library->hand              -   
+ 6 Ketria Triome                    hand        library->hand              -   
+ 7 In the Darkness Bind Them        hand        library->hand              -   
+ 8 Ketria Triome                    battlefield hand->battlefield          T   
+
+--- T2
+ 0 Ketria Triome                    battlefield                            -   
+ 1 Bloom Tender                     hand        library->hand              -   
+ 2 Forest                           battlefield hand->battlefield          -   
+ 3 Forest                           battlefield                            T   
+ 4 Ketria Triome                    battlefield                            T   
+ 5 Fertile Ground                   battlefield hand->battlefield          -   
+
+--- T3
+ 0 Forest                           battlefield                            -   
+ 1 Ketria Triome                    battlefield                            -   
+ 2 Temple Garden                    hand        library->hand              -   
+ 3 Temple Garden                    battlefield hand->battlefield          -   
+ 4 Forest                           battlefield                            T   
+ 5 Ketria Triome                    battlefield                            T   
+ 6 Enchantress's Presence           battlefield hand->battlefield          -   
+
+--- T4
+ 0 Forest                           battlefield                            -   
+ 1 Ketria Triome                    battlefield                            -   
+ 2 Nesting Grounds                  hand        library->hand              -   
+ 3 Nesting Grounds                  battlefield hand->battlefield          -   
+ 4 Forest                           battlefield                            T   
+ 5 Ketria Triome                    battlefield                            T   
+ 6 Nesting Grounds                  battlefield                            T   
+ 7 Bloom Tender                     battlefield hand->battlefield          -   
+ 8 Prismatic Omen                   battlefield hand->battlefield          -   
+ 9 Ripples of Potential             hand        library->hand              -   
+10 Walker                           opponentsCards None->opponentsCards       -   
+
+--- T5
+ 0 Nesting Grounds                  battlefield                            -   
+ 1 Forest                           battlefield                            -   
+ 2 Ketria Triome                    battlefield                            -   
+ 3 Godless Shrine                   hand        library->hand              -   
+ 4 Godless Shrine                   battlefield hand->battlefield          T   
+ 5 Fertile Ground                   battlefield                            T   
+ 6 Nesting Grounds                  battlefield                            T   
+ 7 Forest                           battlefield                            T   
+ 8 Temple Garden                    battlefield                            T   
+ 9 Ketria Triome                    battlefield                            T   
+10 Tom Bombadil                     battlefield commandZone->battlefield   -   
+11 Bloom Tender                     battlefield                            T   
+12 In the Darkness Bind Them        battlefield hand->battlefield          -  Lore=1 
+13 [Wraith]                         battlefield None->battlefield          -   
+14 Stomping Ground                  hand        library->hand              -   
+15 Fold into Aether                 opponentsCards None->opponentsCards       -   
+
+--- T6
+ 0 Godless Shrine                   battlefield                            -   
+ 1 Fertile Ground                   battlefield                            -   
+ 2 Bloom Tender                     battlefield                            -   
+ 3 Nesting Grounds                  battlefield                            -   
+ 4 Forest                           battlefield                            -   
+ 5 Temple Garden                    battlefield                            -   
+ 6 Ketria Triome                    battlefield                            -   
+ 7 Kiora Bests the Sea God          hand        library->hand              -   
+ 8 Stomping Ground                  battlefield hand->battlefield          T   
+ 9 Forest                           battlefield                            T   
+10 Godless Shrine                   battlefield                            T   
+11 In the Darkness Bind Them        battlefield                            -  Lore=2 
+12 [Wraith]                         battlefield None->battlefield          -   
+13 Forest                           battlefield                            T   
+14 Godless Shrine                   battlefield                            T   
+15 Jugan Defends the Temple         battlefield hand->battlefield          -  Lore=1 
+16 Jugan Defends the Temple         graveyard   battlefield->graveyard     -   
+17 Plains                           hand        library->hand              -   
+18 Temple Garden                    battlefield                            T   
+19 Nesting Grounds                  battlefield                            T   
+20 Ketria Triome                    battlefield                            T   
+21 The First Iroan Games            battlefield hand->battlefield          -  Lore=1 
+22 The Coming of Galactus           hand        library->hand              -   
+23 Tom Bombadil                     battlefield                            T   
+24 Snuff Out                        opponentsCards None->opponentsCards       -   
+25 Bloom Tender                     graveyard   battlefield->graveyard     -   
+
+--- T7
+ 0 Ketria Triome                    battlefield                            -   
+ 1 Stomping Ground                  battlefield                            -   
+ 2 Tom Bombadil                     battlefield                            -   
+ 3 Temple Garden                    battlefield                            -   
+ 4 Godless Shrine                   battlefield                            -   
+ 5 Forest                           battlefield                            -   
+ 6 Nesting Grounds                  battlefield                            -   
+ 7 Resurgent Belief                 hand        library->hand              -   
+ 8 Plains                           battlefield hand->battlefield          -   
+ 9 Plains                           battlefield                            T   
+10 Nesting Grounds                  battlefield                            T   
+11 The First Iroan Games            battlefield                            -  Lore=2 
+12 [Human Soldier]                  battlefield None->battlefield          -   
+13 Tom Bombadil                     battlefield                            -  +1 / +1=1 
+14 Tom Bombadil                     battlefield                            -  +1 / +1=2 
+15 Tom Bombadil                     battlefield                            -  +1 / +1=3 
+16 In the Darkness Bind Them        battlefield                            -  Lore=3 
+17 [The Ring]                       battlefield None->battlefield          -   
+18 [The Ring]                       battlefield                            -  Generic=1 
+19 [The Ring]                       battlefield                            -  Generic=2 
+20 [The Ring]                       battlefield                            -  Generic=3 
+21 [Human Soldier]                  battlefield                            -  Ring Bearer=1 
+22 Plains                           battlefield hand->battlefield          -   
+23 Nesting Grounds                  battlefield                            T   
+24 Plains                           battlefield                            T   
+25 Forest                           battlefield                            T   
+26 Ketria Triome                    battlefield                            T   
+27 Stomping Ground                  battlefield                            T   
+28 Temple Garden                    battlefield                            T   
+29 Godless Shrine                   battlefield                            T   
+30 Plains                           battlefield                            T   
+31 Godless Shrine                   battlefield                            T   
+32 Resurgent Belief                 battlefield hand->battlefield          -   
+33 Resurgent Belief                 battlefield                            -  Time=1 
+34 Resurgent Belief                 battlefield                            -  Time=2 
+35 Tom Bombadil                     battlefield                            T  +1 / +1=3 
+36 [Human Soldier]                  battlefield                            T  Ring Bearer=1 
+37 [Wraith]                         battlefield None->battlefield          -   
+38 Soul Shatter                     opponentsCards None->opponentsCards       -   
+39 Tom Bombadil                     commandZone battlefield->commandZone   -   
+40 The First Iroan Games            battlefield                            -  Lore=3 
+
+--- T8
+ 0 Plains                           battlefield                            -   
+ 1 [Human Soldier]                  battlefield                            -  Ring Bearer=1 
+ 2 Godless Shrine                   battlefield                            -   
+ 3 Raugrin Triome                   hand        library->hand              -   
+ 4 Nesting Grounds                  battlefield                            T   
+ 5 Plains                           battlefield                            T   
+ 6 In the Darkness Bind Them        battlefield                            -  Lore=4 
+ 7 In the Darkness Bind Them        battlefield                            -  Lore=3 
+ 8 [Human Soldier]                  battlefield                            -  Ring Bearer=1,Lore=1 
+ 9 [The Ring]                       battlefield                            -  Generic=4 
+10 Raugrin Triome                   battlefield hand->battlefield          -   
+11 Raugrin Triome                   battlefield                            T   
+12 Fertile Ground                   battlefield                            T   
+13 Ketria Triome                    battlefield                            T   
+14 Temple Garden                    battlefield                            T   
+15 Stomping Ground                  battlefield                            T   
+16 Godless Shrine                   battlefield                            T   
+17 Forest                           battlefield                            T   
+18 Resurgent Belief                 battlefield                            -  Time=1 
+19 Tom Bombadil                     battlefield commandZone->battlefield   -   
+20 Austere Command                  opponentsCards None->opponentsCards       -   
+21 Enchantress's Presence           graveyard   battlefield->graveyard     -   
+22 Prismatic Omen                   graveyard   battlefield->graveyard     -   
+23 In the Darkness Bind Them        graveyard   battlefield->graveyard     -   
+24 The First Iroan Games            graveyard   battlefield->graveyard     -   
+
+--- T9
+ 0 Raugrin Triome                   battlefield                            -   
+ 1 Fertile Ground                   battlefield                            -   
+ 2 Plains                           battlefield                            -   
+ 3 Nesting Grounds                  battlefield                            -   
+ 4 Temple Garden                    battlefield                            -   
+ 5 Stomping Ground                  battlefield                            -   
+ 6 Godless Shrine                   battlefield                            -   
+ 7 Forest                           battlefield                            -   
+ 8 Ketria Triome                    battlefield                            -   
+ 9 Karn's Bastion                   hand        library->hand              -   
+10 Fertile Ground                   graveyard   battlefield->graveyard     -   
+11 Karn's Bastion                   battlefield hand->battlefield          -   
+12 Ketria Triome                    battlefield                            T   
+13 Raugrin Triome                   battlefield                            T   
+14 Karn's Bastion                   battlefield                            T   
+15 Forest                           battlefield                            T   
+16 Plains                           battlefield                            T   
+17 Nesting Grounds                  battlefield                            T   
+18 [The Ring]                       battlefield                            T  Generic=4 
+19 [The Ring]                       battlefield                            -  Generic=4 
+20 Stomping Ground                  battlefield                            T   
+21 Kiora Bests the Sea God          battlefield hand->battlefield          -  Lore=1 
+22 [Kraken]                         battlefield None->battlefield          -   
+23 Resurgent Belief                 battlefield                            -  Time=0 
+24 Resurgent Belief                 graveyard   battlefield->graveyard     -   
+25 Fertile Ground                   battlefield graveyard->battlefield     -   
+26 Fertile Ground                   battlefield graveyard->battlefield     -   
+27 Enchantress's Presence           battlefield graveyard->battlefield     -   
+28 Prismatic Omen                   battlefield graveyard->battlefield     -   
+29 In the Darkness Bind Them        battlefield graveyard->battlefield     -  Lore=1 
+30 The First Iroan Games            battlefield graveyard->battlefield     -  Lore=1 
+31 Jugan Defends the Temple         battlefield graveyard->battlefield     -  Lore=1 
+32 [Human Monk]                     battlefield None->battlefield          -   
+33 [Wraith]                         battlefield None->battlefield          -   
+34 [Human Soldier]                  battlefield None->battlefield          -   
+35 Raugrin Triome                   battlefield                            T   
+36 Karn's Bastion                   battlefield                            T   
+37 Ketria Triome                    battlefield                            T   
+38 Plains                           battlefield                            T   
+39 Forest                           battlefield                            T   
+40 Temple Garden                    battlefield                            T   
+41 Stomping Ground                  battlefield                            T   
+42 Kiora Bests the Sea God          battlefield hand->battlefield          -  Lore=1 
+43 [Kraken]                         battlefield None->battlefield          -   
+44 [Human Soldier]                  battlefield                            -  RING BEARER=1 
+45 Tom Bombadil                     battlefield                            T   
+46 Song of Eärendil                 hand        library->hand              -   
+47 Plant Warrior                    opponentsCards None->opponentsCards       -   
+
+--- T10
+ 0 Plains                           battlefield                            -   
+ 1 Tom Bombadil                     battlefield                            -   
+ 2 Raugrin Triome                   battlefield                            -   
+ 3 Forest                           battlefield                            -   
+ 4 Karn's Bastion                   battlefield                            -   
+ 5 Temple Garden                    battlefield                            -   
+ 6 Stomping Ground                  battlefield                            -   
+ 7 Ketria Triome                    battlefield                            -   
+ 8 O'aka, Traveling Merchant        hand        library->hand              -   
+ 9 [Wraith]                         battlefield None->battlefield          -   
+10 [Kraken]                         battlefield                            -  +1 / +1=1 
+11 Tom Bombadil                     battlefield                            -  +1 / +1=1 
+12 Tom Bombadil                     battlefield                            -  +1 / +1=2 
+13 Tom Bombadil                     battlefield                            -  +1 / +1=3 
+14 Tom Bombadil                     battlefield                            -  +1 / +1=4 
+15 Tom Bombadil                     battlefield                            -  +1 / +1=5 
+16 Tom Bombadil                     battlefield                            -  +1 / +1=4 
+17 Ketria Triome                    battlefield                            T   
+18 Plains                           battlefield                            T   
+19 O'aka, Traveling Merchant        battlefield hand->battlefield          -   
+20 Raugrin Triome                   battlefield                            T   
+21 Forest                           battlefield                            T   
+22 Godless Shrine                   battlefield                            T   
+23 Temple Garden                    battlefield                            T   
+24 Stomping Ground                  battlefield                            T   
+25 Song of Eärendil                 battlefield hand->battlefield          -  Lore=1 
+26 Estrid's Invocation              hand        library->hand              -   
+27 Elspeth Conquers Death           hand        library->hand              -   
+28 Verdant Catacombs                hand        library->hand              -   
+29 Verdant Catacombs                battlefield hand->battlefield          -   
+30 Tom Bombadil                     battlefield                            T  +1 / +1=4 
+31 [Kraken]                         battlefield                            T  +1 / +1=1 

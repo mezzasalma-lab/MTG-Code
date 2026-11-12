@@ -1,0 +1,22 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 303 (15.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1055       0.1105      +0.0050 ±0.0048  
+   commander_cast_turn__ate_T3                  0.0990       0.0995      +0.0005 ±0.0022  
+   commander_cast_turn__ate_T4                  0.2710       0.2695      -0.0015 ±0.0040  
+   commander_cast_turn__ate_T5                  0.6440       0.6395      -0.0045 ±0.0066  
+  *len_library                                 67.7335      65.9985      -1.7350 ±0.2438  
+  *len_graveyard                               11.5540      12.6685      +1.1145 ±0.2176  
+  *breach_recasts_total                         0.8405       0.9515      +0.1110 ±0.0436  
+  *breach_loops_total                           0.3280       0.3620      +0.0340 ±0.0145  
+  *rituals_cast_total                           0.6935       0.7255      +0.0320 ±0.0165  
+  *tapped_land_skipped_for_play_total           0.2465       0.2395      -0.0070 ±0.0037  
+  *lands_played_this_turn                       0.7210       0.6985      -0.0225 ±0.0127  
+  *cephalid_coliseum_used                       0.0795       0.0930      +0.0135 ±0.0078  
+  *commander_cast_turn__ate_T6                  0.7795       0.7710      -0.0085 ±0.0054  
+  *interaction_spells_cast_total                2.6280       2.6955      +0.0675 ±0.0455  
+  *storm_count_max                              4.6795       4.9110      +0.2315 ±0.1568  
+  *flashback_card_recasts_total                 0.1495       0.1675      +0.0180 ±0.0124  
+  *proxy_lifegain_total                         9.0150       9.4980      +0.4830 ±0.4439  
+  *wheel_events_total                           2.3350       2.4080      +0.0730 ±0.0671  

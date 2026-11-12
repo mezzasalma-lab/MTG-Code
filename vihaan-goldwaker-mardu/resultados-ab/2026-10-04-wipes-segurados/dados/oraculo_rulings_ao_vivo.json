@@ -1,0 +1,206 @@
+{
+ "Blood Money": {
+  "oracle": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.",
+  "type_line": "Sorcery",
+  "mana_cost": "{5}{B}{B}",
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   [
+    "2022-06-10",
+    "If a creature isn't destroyed this way for some reason, such as having indestructible or being regenerated, Blood Money's controller will not create a Treasure token for it."
+   ]
+  ]
+ },
+ "Sevinne's Reclamation": {
+  "oracle": "Return target permanent card with mana value 3 or less from your graveyard to the battlefield. If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.\nFlashback {4}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{W}",
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   [
+    "2025-06-06",
+    "A spell cast using flashback will always be exiled afterward, whether it resolves, is countered, or leaves the stack in some other way."
+   ],
+   [
+    "2025-06-06",
+    "You can cast a spell using flashback even if it was somehow put into your graveyard without having been cast."
+   ],
+   [
+    "2025-06-06",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost (such as a flashback cost) you're paying, add any cost increases, then apply any cost reductions. The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was."
+   ],
+   [
+    "2025-06-06",
+    "You must still follow any timing restrictions and permissions, including those based on the card's type. For instance, you can cast a sorcery using flashback only when you could normally cast a sorcery."
+   ],
+   [
+    "2025-06-06",
+    "\"Flashback [cost]\" means \"You may cast this card from your graveyard if the resulting spell is an instant or sorcery spell by paying [cost] rather than paying its mana cost\" and \"If the flashback cost was paid, exile this card instead of putting it anywhere else any time it would leave the stack.\""
+   ],
+   [
+    "2025-06-06",
+    "If a card with flashback is put into your graveyard during your turn, you can cast it if it's legal to do so before any other player can take any actions."
+   ],
+   [
+    "2024-06-07",
+    "A permanent card is an artifact, battle, creature, enchantment, land, or planeswalker card."
+   ],
+   [
+    "2019-08-23",
+    "The copy that Sevinne's Reclamation creates is created on the stack, so it's not \"cast.\" Abilities that trigger when a player casts a spell won't trigger. The copy wasn't cast from a graveyard, so it won't make another copy of itself."
+   ],
+   [
+    "2019-08-23",
+    "If you cast Sevinne's Reclamation from your graveyard, any abilities that trigger as the permanent card returns to the battlefield will resolve before the copy of Sevinne's Reclamation resolves but after new targets for the copy have been chosen."
+   ],
+   [
+    "2019-08-23",
+    "If a card in a graveyard has {X} in its mana cost, X is considered to be 0."
+   ],
+   [
+    "2019-08-23",
+    "If the target card is an illegal target by the time Sevinne's Reclamation tries to resolve, the spell doesn't resolve. You won't copy it if you cast it from a graveyard."
+   ]
+  ]
+ },
+ "Lotho, Corrupt Shirriff": {
+  "oracle": "Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "type_line": "Legendary Creature — Halfling Rogue",
+  "mana_cost": "{W}{B}",
+  "power": "2",
+  "toughness": "1",
+  "rulings": [
+   [
+    "2023-06-16",
+    "Spells that were cast before Lotho, Corrupt Shirriff count. If Lotho, Corrupt Shirriff was the first spell you cast this turn, the next spell you cast this turn is your second spell."
+   ]
+  ]
+ },
+ "Monologue Tax": {
+  "oracle": "Whenever an opponent casts their second spell each turn, you create a Treasure token.",
+  "type_line": "Enchantment",
+  "mana_cost": "{2}{W}",
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   [
+    "2021-04-16",
+    "Nothing special happens on the third spell, fourth spell, and so on."
+   ],
+   [
+    "2021-04-16",
+    "It doesn't matter if Monologue Tax was on the battlefield for the first spell. It also doesn't matter if that first spell resolved or not."
+   ],
+   [
+    "2021-04-16",
+    "The ability can trigger once each turn for each opponent."
+   ]
+  ]
+ },
+ "Mayhem Devil": {
+  "oracle": "Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.",
+  "type_line": "Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "power": "3",
+  "toughness": "3",
+  "rulings": [
+   [
+    "2019-05-03",
+    "A legendary permanent that is put into a graveyard because of the \"legend rule\" isn't sacrificed."
+   ],
+   [
+    "2019-05-03",
+    "You control Mayhem Devil's triggered ability and choose the target, no matter who sacrificed the permanent."
+   ],
+   [
+    "2019-05-03",
+    "If a permanent is sacrificed to pay a cost of a spell or ability, Mayhem Devil's ability will resolve before that spell or ability. Conversely, if a permanent is sacrificed during the resolution of a spell or ability, that spell or ability will finish resolving before Mayhem Devil's ability is put onto the stack."
+   ],
+   [
+    "2019-05-03",
+    "Mayhem Devil itself doesn't allow any player to sacrifice any permanents. Its ability triggers whenever a player sacrifices a permanent because some other spell, ability, or cost instructed the player to do so."
+   ],
+   [
+    "2019-05-03",
+    "If you sacrifice Mayhem Devil, its ability triggers."
+   ]
+  ]
+ },
+ "Blasphemous Act": {
+  "oracle": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature.",
+  "type_line": "Sorcery",
+  "mana_cost": "{8}{R}",
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   [
+    "2020-11-10",
+    "Although players may respond to Blasphemous Act once it's been cast, once it's announced, they can't respond before the cost is calculated and paid."
+   ],
+   [
+    "2020-11-10",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases, then apply any cost reductions (such as that of Blasphemous Act). The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was."
+   ],
+   [
+    "2020-11-10",
+    "Blasphemous Act's ability can't reduce the total cost to cast the spell below {R}."
+   ],
+   [
+    "2020-11-10",
+    "The total cost to cast Blasphemous Act is locked in before you pay that cost. For example, if there are three creatures on the battlefield, including one you can sacrifice to add {C}, the total cost of Blasphemous Act is {5}{R}. Then you can sacrifice the creature when you activate mana abilities just before paying the cost."
+   ]
+  ]
+ },
+ "Vihaan, Goldwaker": {
+  "oracle": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+  "type_line": "Legendary Creature — Dwarf Warlock",
+  "mana_cost": "{R}{W}{B}",
+  "power": "3",
+  "toughness": "3",
+  "rulings": [
+   [
+    "2024-04-12",
+    "If a Treasure you control is already a creature when Vihaan’s second ability resolves and you choose to apply its effect to all Treasures you control, that effect will overwrite any previous effects that set that creature’s power and toughness to specific numbers. Effects that otherwise modify its power and toughness will still apply no matter when they took effect. The same is true for +1/+1 counters."
+   ],
+   [
+    "2024-04-12",
+    "Treasures you control will keep any abilities they previously had while they’re creatures."
+   ],
+   [
+    "2024-04-12",
+    "A card, spell, or permanent is an outlaw if it has the Assassin, Mercenary, Pirate, Rogue, or Warlock creature type. It doesn’t matter if it has more than one of those creature types; as long as it has at least one, it’s an outlaw."
+   ],
+   [
+    "2024-04-12",
+    "Outlaw is not a creature type. If an effect asks you to choose a creature type, you can’t choose outlaw."
+   ],
+   [
+    "2024-04-12",
+    "If an ability refers to an outlaw or whether a player controls an outlaw, it’s referring only to permanents with one or more of the creature types specified above. Notably, it’s not referring to any spell or card not on the battlefield. However, other abilities may refer to an “outlaw spell” or “outlaw card” in a zone other than the battlefield. Those abilities refer to spells and cards with one or more of the specified creature types."
+   ]
+  ]
+ },
+ "Mahadi, Emporium Master": {
+  "oracle": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "type_line": "Legendary Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "power": "3",
+  "toughness": "3",
+  "rulings": []
+ },
+ "Pitiless Plunderer": {
+  "oracle": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "type_line": "Creature — Human Pirate",
+  "mana_cost": "{3}{B}",
+  "power": "1",
+  "toughness": "4",
+  "rulings": [
+   [
+    "2018-01-19",
+    "If Pitiless Plunderer dies at the same time as one or more other creatures you control, its ability will still trigger for each of those other creatures."
+   ]
+  ]
+ }
+}

@@ -1,0 +1,7 @@
+(1) mana disponivel: Island + Gyre Sage sem contador = 1; com 1 contador = 2
+(2) Henge com o Mothman 3/3 + 1 contador (poder 4): generico 3 + 2 coloridos = 5
+(3) 1 contador em criatura com Kami + Constrictor em campo -> 3
+(4) rad recebido com o Constrictor em campo (ETB/ataque do Mothman = 1) -> 2
+(5) gatilho de combate do Ouroboroid (poder 5): contadores por criatura {'Ouroboroid': 7, 'The Wise Mothman': 7, 'Gyre Sage': 7, 'Basking Broodscale': 7, 'Winding Constrictor': 7, 'Kami of Whispered Hopes': 7}; ficha Spawn +7
+
+5/5 conferencias do simulador batem com as regras (o log da partida #2 errou o que o simulador acerta).

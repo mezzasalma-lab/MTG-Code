@@ -1,0 +1,15 @@
+PASSA | T1: as 7 primeiras compras = mao da foto (ordem), a 8a = Altar of the Brood | controle de corte falha como deve
+PASSA | T4: Mothman ({1}{B}{G}{U}) com 4 terrenos virados que so' dao G e U; Plaza na mao | controle de corte falha como deve
+PASSA | T4: Dark Deal: 6 cartas descartadas e 4 compradas (o texto manda 6 - 1 = 5) | controle de corte falha como deve
+PASSA | mill proprio por turno: so' a Gyre Sage no T5; nenhum no T6 | controle de corte falha como deve
+PASSA | T5: depois da Six, +1 no Mothman 2..8 (7 cliques) e nenhum contador na Six | controle de corte falha como deve
+PASSA | T6: Springs vai do cemiterio ao campo e termina em campo; Gyre Sage campo -> mao | controle de corte falha como deve
+PASSA | T6: a Witness devolve 'permanent card' e o log leva 2 Instants a mao | controle de corte falha como deve
+PASSA | T6: 6 cartas saem do cemiterio; a Witness chega a 5 contadores (registros 2, 4, 5) | controle de corte falha como deve
+PASSA | terrenos: 1 por turno de T1 a T5; T6 tem Tomb (mao) + Springs (cemiterio) | controle de corte falha como deve
+PASSA | simulador de interacao: so' a Dark Deal (T4) | controle de corte falha como deve
+PASSA | mana: T5 3 terrenos virados (Six {2}{G}); T6 5 (Witness 3 + Nature's Lore 2) | controle de corte falha como deve
+PASSA | todas as cartas do log estao na lista.md (a Dark Deal e' do oponente simulado) | controle de corte falha como deve
+PASSA | rulings do Mothman (gatilho 1x por mill simultaneo) e CR 728.1, 702.81a, 305.2 arquivadas | controle de corte falha como deve
+
+13/13 testes passam

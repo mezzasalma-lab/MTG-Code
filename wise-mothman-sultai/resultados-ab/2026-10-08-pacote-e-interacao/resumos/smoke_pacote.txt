@@ -1,0 +1,9 @@
+base                               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+h__offer                           cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+b__negate                          cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+p1_offer_negate                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+p2_offer_dsp                       cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+p3_offer_wave                      cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+p4_offer_deluge                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+p5_offer_tear                      cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+p6_offer_arcane                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}

@@ -1,0 +1,36 @@
+Fração de partidas com resultado IDÊNTICO entre pares de variantes (N=10.000, sementes 3.000.000+i), só dos brutos arquivados.
+Serve de controle (Regra #10 item 4): variante que não difere da outra é vácua; aqui se vê quais diferem.
+
+[padrao] N=10000
+  antes                      x depois                       idênticas=  7526 ( 75.26%)
+  depois                     x limite_0_bruto               idênticas=  9310 ( 93.10%)
+  depois                     x limite_1                     idênticas=  9676 ( 96.76%)
+  limite_1                   x limite_2                     idênticas=  9711 ( 97.11%)
+  limite_2                   x limite_5                     idênticas=  9210 ( 92.10%)
+  limite_5                   x sempre_conjura_com_efeito    idênticas=  9289 ( 92.89%)
+  depois                     x sempre_conjura_com_efeito    idênticas=  8063 ( 80.63%)
+  depois                     x so_kindred                   idênticas=  7952 ( 79.52%)
+  depois                     x so_swarmyard                 idênticas=  8156 ( 81.56%)
+  depois                     x so_damnation                 idênticas=  8650 ( 86.50%)
+  so_kindred                 x so_swarmyard                 idênticas=  8674 ( 86.74%)
+  so_swarmyard               x so_damnation                 idênticas=  7954 ( 79.54%)
+  antes                      x so_kindred                   idênticas=  9408 ( 94.08%)
+  antes                      x so_swarmyard                 idênticas=  9184 ( 91.84%)
+  antes                      x so_damnation                 idênticas=  8632 ( 86.32%)
+
+[resiliencia] N=10000
+  antes                      x depois                       idênticas=  8426 ( 84.26%)
+  depois                     x limite_0_bruto               idênticas=  9611 ( 96.11%)
+  depois                     x limite_1                     idênticas=  9710 ( 97.10%)
+  limite_1                   x limite_2                     idênticas=  9756 ( 97.56%)
+  limite_2                   x limite_5                     idênticas=  9423 ( 94.23%)
+  limite_5                   x sempre_conjura_com_efeito    idênticas=  9700 ( 97.00%)
+  depois                     x sempre_conjura_com_efeito    idênticas=  8758 ( 87.58%)
+  depois                     x so_kindred                   idênticas=  8624 ( 86.24%)
+  depois                     x so_swarmyard                 idênticas=  8783 ( 87.83%)
+  depois                     x so_damnation                 idênticas=  9323 ( 93.23%)
+  so_kindred                 x so_swarmyard                 idênticas=  9352 ( 93.52%)
+  so_swarmyard               x so_damnation                 idênticas=  8629 ( 86.29%)
+  antes                      x so_kindred                   idênticas=  9748 ( 97.48%)
+  antes                      x so_swarmyard                 idênticas=  9580 ( 95.80%)
+  antes                      x so_damnation                 idênticas=  8997 ( 89.97%)

@@ -1,0 +1,12 @@
+# Trechos das Comprehensive Rules citados na partida manual #3 do Wise Mothman (extraidos de rules-cache/comprehensive-rules.txt)
+# Magic: The Gathering Comprehensive Rules | These rules are effective as of September 25, 2026. | Introduction
+
+728.1. Rad counters are a kind of counter a player can have (see rule 122, “Counters”). There is an inherent triggered ability associated with rad counters. This ability has no source and is controlled by the active player. This is an exception to rule 113.8. The full text of this ability is “At the beginning of each player’s precombat main phase, if that player has one or more rad counters, that player mills a number of cards equal to the number of rad counters they have. For each nonland card milled this way, that player loses 1 life and removes one rad counter from themselves.”
+
+702.81a Retrace is a static ability that functions while the card with retrace is in a player’s graveyard. “Retrace” means “You may cast this card from your graveyard by discarding a land card as an additional cost to cast it.” Casting a spell using its retrace ability follows the rules for paying additional costs in rules 601.2b and 601.2f–h.
+
+701.17a For a player to mill a number of cards, that player puts that many cards from the top of their library into their graveyard.
+
+305.2. A player can normally play one land during their turn; however, continuous effects may increase this number.
+
+122.1i One or more rad counters on a player cause a triggered ability to trigger at the beginning of that player’s precombat main phase. See rule 728, “Rad Counters.”

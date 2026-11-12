@@ -1,0 +1,7 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=53 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=['Rat Colony']
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=53 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=['Rat Colony']
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: WIPE_UNTAPS_STAFF=True, FELL_MIRE_PROTECTED_IN_BOTTOM=True, TAPPED_FIRST_TIEBREAK_DEV=False

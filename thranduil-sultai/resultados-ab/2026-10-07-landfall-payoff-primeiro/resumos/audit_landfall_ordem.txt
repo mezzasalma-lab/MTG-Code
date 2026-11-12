@@ -1,0 +1,42 @@
+cartas com gatilho de landfall no cache (permanentes nao-terreno): 49 (> 0)
+
+azula_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: nenhuma funcao de turno/fase com as duas chamadas
+beorn_goldfish_v1.py: payoffs de landfall no arquivo = Beorn's Hospitality, Dancing from Dark to Dawn, Lotus Cobra, Necklace of Girion, Tireless Provisioner, Tireless Tracker | politica payoff-primeiro: sim
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+captainstorm_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: run_turn: TERRENO(play_land) ANTES de CONJURAR(try_cast_loop)
+edgar_markov_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+heibai_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+kutzil_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+maralen_goldfish_v1.py: payoffs de landfall no arquivo = Thranduil's Company, Thranduil, Sindarin Liege // Silvan Rally | politica payoff-primeiro: sim
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+megatron_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+bumbleflower_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: run_turn: TERRENO(play_land) ANTES de CONJURAR(try_cast_loop)
+nekusar_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+prismatic_bridge_goldfish_v1.py: payoffs de landfall no arquivo = Evolution Sage | politica payoff-primeiro: sim
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+ratking_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+thranduil_goldfish_v1.py: payoffs de landfall no arquivo = Thranduil's Company, Thranduil, Sindarin Liege // Silvan Rally | politica payoff-primeiro: sim
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+tom_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: run_turn: TERRENO(play_land) ANTES de CONJURAR(try_cast_loop)
+toph_goldfish_v1.py: payoffs de landfall no arquivo = Bristly Bill, Spine Sower, Earthbender Ascension, Felidar Retreat, Lotus Cobra, Mossborn Hydra, Nissa, Resurgent Animist, Sapling Nursery, Scute Swarm, Springheart Nantuko, Tannuk, Memorial Ensign, Tireless Provisioner, Toph, Earthbending Master | politica payoff-primeiro: sim
+    ordem: main_phase: conjurar antes do terreno
+ulalek_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+urdragon_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: TERRENO(play_land) ANTES de CONJURAR(main_phase)
+vihaan_goldfish_v1.py: payoffs de landfall no arquivo = - | politica payoff-primeiro: nao
+    ordem: play_turn: conjurar antes do terreno
+mothman_goldfish_v1.py: payoffs de landfall no arquivo = Evolution Sage, Icetill Explorer, Ruin Crab | politica payoff-primeiro: sim
+    ordem: main_phase: conjurar antes do terreno
+
+19 simuladores varridos; 0 candidatos (landfall no arquivo + terreno antes de conjurar + sem politica). Falsos positivos possiveis: carta no arquivo mas fora da lista; payoff que nao importa a ordem.

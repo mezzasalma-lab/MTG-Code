@@ -1,0 +1,9 @@
+nomes resolvidos no Spellbook: {"Tergrid, God of Fright // Tergrid's Lantern": "Tergrid, God of Fright // Tergrid's Lantern", "Thassa's Oracle": "Thassa's Oracle", 'Demonic Consultation': 'Demonic Consultation', 'Mindcrank': 'Mindcrank', 'Glen Elendra Archmage': 'Glen Elendra Archmage'}
+base                                     incluidos=2 novos=[] sumiram=[] quase_novos_com_Tergrid=0
+tergrid_por_negate                       incluidos=2 novos=[] sumiram=[] quase_novos_com_Tergrid=0
+tergrid_por_strip_mine                   incluidos=2 novos=[] sumiram=[] quase_novos_com_Tergrid=0
+tergrid_por_yavimaya_hollow              incluidos=2 novos=[] sumiram=[] quase_novos_com_Tergrid=0
+tergrid_por_cold_eyed_selkie             incluidos=2 novos=[] sumiram=[] quase_novos_com_Tergrid=0
+controle_positivo_Thassa+Consultation    incluidos=3 novos=["Demonic Consultation + Thassa's Oracle"] sumiram=[] quase_novos_com_Tergrid=0
+controle_corte_sem_Mindcrank             incluidos=1 novos=[] sumiram=['Bloodchief Ascension + Mindcrank'] quase_novos_com_Tergrid=0
+controle_corte_sem_Glen_Elendra          incluidos=1 novos=[] sumiram=['Altar of Dementia + The Great Henge'] quase_novos_com_Tergrid=0

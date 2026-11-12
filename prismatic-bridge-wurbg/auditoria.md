@@ -101,7 +101,7 @@ Vraska, Betrayal's Sting merece nota: ultimate `-9` transforma um permanente em 
 
 ## 8. Sinergia com o comandante (Esika / Prismatic Bridge)
 
-- **Esika, God of the Tree** (frente, `{1}{G}{G}`): dá vigilance + `{T}: Add one mana of any color` a TODAS as lendárias que você controla. O deck tem uma densidade alta de lendárias (praticamente todos os planeswalkers contam, mais Aminatou, Arena Rector, Carth the Lion, Tamiyo x2, Vorinclex, Atraxa, Nicol Bolas, Vraska x1) — cada uma vira uma fonte extra de fixação de mana quando Esika está em campo, o que ajuda a compensar a contagem baixa de ramp dedicado (seção 3).
+- **Esika, God of the Tree** (frente, `{1}{G}{G}`): "Other legendary **creatures** you control have vigilance and '{T}: Add one mana of any color.'" **Correção 2026-09-29 (oráculo ao vivo):** a versão anterior desta seção dizia "TODAS as lendárias" e contava os planeswalkers como fontes de mana. Isso estava errado: planeswalker não é criatura, então **nenhum dos 17 PWs ganha mana nem vigilância da Esika**. As lendárias que recebem são só as criaturas: **Atraxa, Carth the Lion, Vorinclex e The Peregrine Dynamo** (4; a Arena Rector não é lendária). Só um efeito que transforma PW em criatura muda isso (Sarkhan the Masterless, candidata): aí o PW-Dragão vira lendário criatura e a Esika daria vigilância e mana, mas exige a Esika em campo, que exclui a Bridge (são as duas faces da mesma carta). O simulador nunca modelou a frente da Esika.
 - **The Prismatic Bridge** (verso, `{W}{U}{B}{R}{G}`): a cada upkeep, revela do topo até achar criatura ou planeswalker, põe em campo de graça. Motor de vantagem de material puro, sem seletividade — favorece mainboard com densidade alta de criaturas/planeswalkers.
 
 **Achado real (contagem exata via `type_line` das 99 cartas, não a média do EDHREC):** este deck tem **11 criaturas e 17 planeswalkers** — o INVERSO da distribuição média de decks de Esika no EDHREC (24 criaturas / 6 planeswalkers, seção "Average Type Distribution" do `container.json_dict`). **Confirmado pelo usuário como intencional (2026-08-21):** o plano do deck é jogar planeswalkers de graça pela Bridge, proteger a Bridge, e tentar conjurá-la no end step do oponente logo antes do próprio turno pra já garantir 1 gatilho de upkeep. A proporção alta de planeswalkers não é um desvio a corrigir — é o motor central do deck.
@@ -166,7 +166,34 @@ Varredura de `oracle_text` de todas as 100 cartas procurando por combo de 2 peç
 
 - **Negação de terras em massa:** não encontrado nenhum efeito do tipo "destroy all lands"/"sacrifice all lands" no texto de nenhuma carta.
 - **Turnos extras:** encontrado em **Ichormoon Gauntlet** — texto (Scryfall): *"Planeswalkers you control have '[0]: Proliferate' and '[−12]: Take an extra turn after this one.'"* — habilidade de turno extra condicionada a um planeswalker equipado chegar a -12 de lealdade. Não é um efeito "livre"/repetível de turno extra por si só, mas é uma fonte real de turno extra presente na lista. Com o pacote de proliferate do deck (Inexorable Tide, Deepglow Skate, Evolution Sage — todos conferidos por `oracle_text`), a lealdade pode subir mais rápido que o normal.
-- **Combo de 2 peças:** não identifiquei nenhum via varredura de texto (procurei por padrões de untap/copy livre e "infinite"-adjacentes nas 100 cartas). Isso não é uma prova formal de ausência de combo — só que não achei um usando os padrões de busca que apliquei.
+- **Combo de 2 peças: há 5, achados pelo Commander Spellbook (2026-09-29). A afirmação anterior ("não identifiquei nenhum via varredura de texto") estava errada: a varredura de texto não acha combo, o Spellbook acha.** 12 combos no total (`find-my-combos`, comandante + 99 cartas):
+
+| Combo | Peças | Resultado |
+|---|---|---|
+| 2 peças | Vraska + Vorinclex | oponente perde o jogo (veneno dobrado) |
+| 2 peças | Vraska + Innkeeper's Talent | oponente perde o jogo |
+| 2 peças | Teferi, Temporal Archmage + The Chain Veil | infinitas ativações de PW, compra, mana |
+| 2 peças | Teferi, Who Slows the Sunset + The Chain Veil | infinitas ativações, vida, mana |
+| 2 peças | Teferi, Who Slows the Sunset + The Peregrine Dynamo | infinita vida/mana |
+| 3 peças | TTA + Chain Veil + Carth | idem TTA + Chain Veil |
+| 3 peças | Aminatou + Nicol Bolas + Oath of Teferi | infinito, exila tudo do oponente |
+| 3 peças | Aminatou + Nicol Bolas + The Chain Veil | infinito, exila tudo do oponente |
+| 4 peças | Aminatou + Ichormoon Gauntlet + {Doubling Season ou Vorinclex} + {Ugin ou Liliana} (4 combos) | infinitos turnos |
+
+**Probabilidade real (Regra 7 de `user-standing-rules.md`; script `combos_probabilidade.py`, Spellbook por `spellbook_antes_depois.py`), 3.000 partidas do goldfish padrão, 10 turnos:** turno em que as DUAS peças já estão juntas em campo (não mede se o loop executa):
+
+| Par | T6 | T8 | T10 | só por compra (hipergeométrica, 7+T cartas) |
+|---|---|---|---|---|
+| Vraska + Vorinclex | 0,6% | 5,7% | 22,6% | 1,6% / 2,2% / 2,8% |
+| Vraska + Innkeeper's Talent | 0,5% | 4,6% | 20,8% | idem |
+| TTA + Chain Veil | 0,6% | 4,2% | 19,3% | idem |
+| TWSS + Chain Veil | 0,3% | 3,6% | 18,5% | idem |
+| TWSS + Peregrine Dynamo | 1,2% | 7,5% | 24,5% | idem |
+| **União dos 5 pares** (1.500 partidas) | **2,3%** | **14,5%** | **37,3%** | — |
+
+A Bridge põe as peças em campo sem comprá-las, por isso a probabilidade real é maior que a hipergeométrica por compra. A cauda pesa: em 7,8% das partidas a Bridge dispara mais de 10 vezes (máximo 187, com Paradox Haze/Sphinx/turnos extras); nessas o par Vraska + Vorinclex aparece em 88,9% das vezes, contra 7,6% nas partidas com até 5 gatilhos. Ou seja, muito do "par junto até o T10" é consequência do motor já ter disparado, não causa.
+
+**O simulador executa só um dos loops:** Vraska −9 com Vorinclex/Innkeeper dobrando o veneno (métrica `opp_eliminated_total`: 33,5% das partidas eliminam algum oponente por veneno até o T10, com ou sem os 2 pares). Os loops da Chain Veil (TTA/TWSS/Dynamo) e o infinito Aminatou + Bolas NÃO são executados como loop: o simulador dá só as ativações extras de um turno, então o valor das peças no A/B é piso.
 
 ---
 
@@ -174,7 +201,7 @@ Varredura de `oracle_text` de todas as 100 cartas procurando por combo de 2 peç
 
 **Bracket 3 (Upgraded), no teto de Game Changers (3 de 3), com ressalva.**
 
-Base formal: 3 Game Changers (seção 9), sem negação de terras em massa, sem combo de 2 peças identificado. O Ichormoon Gauntlet dá acesso a turno extra, mas não da forma "encadiada" que o texto oficial da Wizards usa como critério de exclusão de Bracket 3 (fonte: `references/commander-rules.md#brackets`, que reproduz o texto oficial "turnos extras... não encadeado" pra Bracket 3) — é uma ultimate de planeswalker específico, não um motor repetível independente.
+Base formal: 3 Game Changers (seção 9), sem negação de terras em massa. **Correção 2026-09-29:** havia "sem combo de 2 peças identificado", mas o Spellbook acha 5 (seção 10). Pelo critério da Regra 7 (rápido E provável), nenhum deles é um combo de turno inicial: as duas peças juntas em campo ocorrem em 2,3% das partidas até o T6 (união dos 5 pares), 14,5% até o T8 e 37,3% até o T10, e a maior parte da cauda é consequência do motor já ter disparado. A classificação formal continua **Bracket 3**, mas é um Bracket 3 no limite do 4: os 5 combos de 2 peças aparecem em ~15% das partidas a partir do T8. O Ichormoon Gauntlet dá acesso a turno extra, mas não da forma "encadiada" que o texto oficial da Wizards usa como critério de exclusão de Bracket 3 (fonte: `references/commander-rules.md#brackets`, que reproduz o texto oficial "turnos extras... não encadeado" pra Bracket 3) — é uma ultimate de planeswalker específico, não um motor repetível independente.
 
 **Ressalva pós-varredura completa (seções 3-8):** 21 efeitos de interação (seção 5) e um pacote de contadores/proliferate com synergy score real confirmado no EDHREC (seção 6, até +0,241) empurram o deck bem além do "goodstuff Upgraded" comum de Bracket 3 em termos de qualidade de carta individual — mesmo sem violar nenhum critério estrutural formal dos Brackets. O teto de 3 Game Changers é o critério oficial decisivo, então a classificação formal continua Bracket 3, mas é um Bracket 3 forte, próximo do 4 em qualidade de peça (mesma leitura já registrada informalmente pra outros decks desse usuário — ver `references/user-standing-rules.md`).
 

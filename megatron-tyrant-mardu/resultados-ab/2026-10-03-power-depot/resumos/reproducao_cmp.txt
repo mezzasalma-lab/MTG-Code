@@ -1,0 +1,9 @@
+IGUAL  ab_powerdepot_10000_core.txt
+IGUAL  ab_powerdepot_10000_early.txt
+IGUAL  ab_powerdepot_10000_early_all.txt
+IGUAL  ab_powerdepot_10000_fodder7.txt
+IGUAL  ab_powerdepot_10000_early_all_fodder7.txt
+IGUAL  ab_powerdepot_10000_core_strict.txt
+IGUAL  ab_powerdepot_10000_early_all_strict.txt
+IGUAL  enumeracao.txt
+8/8 tabelas byte a byte iguais

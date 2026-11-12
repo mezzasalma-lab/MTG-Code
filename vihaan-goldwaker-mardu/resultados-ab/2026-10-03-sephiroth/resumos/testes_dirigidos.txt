@@ -1,0 +1,31 @@
+PASS - B1 3 mortes: 3 drains, nao vira 
+PASS - B2 4 mortes juntas: vira, 1 emblema, 4 drains 
+PASS - B3 4 mortes uma a uma: o mesmo 
+PASS - B4 6 mortes juntas: 6 drains, 1 emblema (a 5a e a 6a ja' estavam na pilha) 
+PASS - B5 emblema sem Sephiroth em campo: 1 drain por morte (permanente) 
+PASS - E1 emblema + Sephiroth de frente: DOIS gatilhos por morte (3 mortes = 6 drains) 
+PASS - E2 a 4a resolucao da frente vira de novo: 2o emblema (acumula) 
+PASS - E2 depois da 2a virada, cada morte dispara os 2 emblemas 
+PASS - E3 2 emblemas e Sephiroth fora: 3 mortes = 6 drains 
+PASS - E4 chaves desligadas (codigo antigo): emblema + frente = 1 gatilho por morte (o erro documentado) 
+PASS - E5 gain_life acompanha o drain (1 por gatilho) 
+PASS - W1 Blasphemous Act, Sephiroth de frente listado PRIMEIRO, 4 outras morrem junto: 4 gatilhos, nao vira (ruling 2025-06-06) 
+PASS - W2 idem com o Sephiroth listado ULTIMO: o mesmo resultado (a ordem de remocao nao importa) 
+PASS - W3 codigo antigo (chave desligada): Sephiroth primeiro = 0 gatilhos; ultimo = 5 (4 da frente + o emblema recem-criado na propria morte) E vira (apesar de morrer junto): o erro documentado 
+PASS - W4 5 fichas morrem juntas, Sephiroth sobrevive: 5 gatilhos, vira na 4a, 1 emblema 
+PASS - W5 Sephiroth virado + emblema morre com 3 outras: 4 gatilhos do emblema (a propria morte conta) 
+PASS - W8 emblema + Sephiroth de frente morrem com 3 outras: emblema 4 (inclui a morte dele) + frente 3 (so' as outras) = 7, nao vira 
+PASS - W9 Sephiroth sacrificado sozinho: 0 gatilhos (a frente diz 'another') 
+PASS - W6 begin/end_mass_death: o lote termina inativo 
+PASS - W7 wipe de OPONENTE (try_smart_opponent_wipe): Sephiroth de frente + 4 outras criaturas morrem junto: 4 gatilhos, nao vira 
+PASS - W7 (codigo antigo) o mesmo wipe: 0 gatilhos, porque o Sephiroth saia do campo primeiro (e e' o 1o da lista) 
+PASS - T1 cada turno de oponente zera o contador do Sephiroth 
+PASS - T1 (codigo antigo) o contador vazava do meu turno pro do oponente 
+PASS - T2 3 mortes no meu turno + 1 no turno do oponente: NAO vira (eram 2 turnos) 
+PASS - T3 Sephiroth volta ao campo no mesmo turno: objeto novo, contador recomeca em 0 
+PASS - T3 (codigo antigo) o contador era herdado do objeto anterior 
+PASS - I1 (2.000 jogos, resiliencia) has_super_nova_emblem == (emblemas > 0), sempre 
+PASS - I1 (2.000 jogos, resiliencia) nenhum lote de mortes ficou ativo ao fim do turno 
+   info I1: gatilhos extras que o codigo antigo perdia em 2.000 jogos de resiliencia: 0
+
+28/28 testes passaram

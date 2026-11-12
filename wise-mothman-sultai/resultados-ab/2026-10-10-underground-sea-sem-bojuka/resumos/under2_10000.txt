@@ -1,0 +1,38 @@
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
+
+[u11_urzas_saga - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T7                                   0.1915       0.1913      -0.0002 ±0.0032  
+   cleared_T8                                   0.5957       0.5995      +0.0038 ±0.0039  
+   cleared_T10                                  0.8887       0.8916      +0.0029 ±0.0029  
+  *first_elim_T6                                0.4531       0.4642      +0.0111 ±0.0030  
+   self_lost                                    0.0266       0.0263      -0.0003 ±0.0022  
+   decked                                       0.0266       0.0263      -0.0003 ±0.0022  
+  *commander_cast_turn__ate_T3                  0.1556       0.1605      +0.0049 ±0.0018  
+  *commander_cast_turn__ate_T4                  0.6544       0.6734      +0.0190 ±0.0029  
+  *commander_cast_turn__ate_T5                  0.7833       0.7990      +0.0157 ±0.0028  
+  *commander_cast_turn__ate_T6                  0.8608       0.8709      +0.0101 ±0.0024  
+  *commander_cast_turn__nunca                   0.0109       0.0095      -0.0014 ±0.0010  
+   commander_cast_count                         0.9963       0.9972      +0.0009 ±0.0018  
+   interaction_plays                            0.5850       0.5811      -0.0039 ±0.0082  
+  *lands_entered_total                         11.5259      11.4656      -0.0603 ±0.0377  
+  *mana_spent_total                             3.9070       3.8289      -0.0781 ±0.0713  
+  *life_min                                    32.4052      32.6366      +0.2314 ±0.0318  
+  *mothman_counters_placed_total               82.2662      80.9329      -1.3333 ±0.8845  
+  *cards_milled_opp_total                      81.3795      80.2213      -1.1582 ±0.5302  
+  *rad_counters_given_opp_total                13.6751      13.8077      +0.1326 ±0.0362  
+  *fetches_cracked_total                        1.2684       1.2292      -0.0392 ±0.0120  
+  *saga_chapters                                0.5742       0.0000      -0.5742 ±0.0237  
+  *construct_tokens                             0.0269       0.0000      -0.0269 ±0.0032  
+  *rad_triggers_self                            3.6956       3.7523      +0.0567 ±0.0092  
+  *mothman_attacks_total                        3.6053       3.6593      +0.0540 ±0.0092  
+  *rad_counters_got_self_total                  5.4794       5.5469      +0.0675 ±0.0150  
+  *rad_life_lost_opp_total                      8.3579       8.4728      +0.1149 ±0.0258  
+  *rad_life_lost_self_total                     3.6824       3.7396      +0.0572 ±0.0137  
+  *altar_brood_mills                            5.5085       4.9394      -0.5691 ±0.1465  
+  *len_pool                                     0.5194       0.4883      -0.0311 ±0.0082  
+  *first_opp_elim_turn__ate_T6                  0.4531       0.4642      +0.0111 ±0.0030  
+  *commander_uid                                8.0395       7.8573      -0.1822 ±0.0539  
+  *next_uid                                    32.7061      32.1726      -0.5335 ±0.1621  
+  *opp_turns_total                             20.4525      20.3855      -0.0670 ±0.0219  
+  *opp_spells_total                            18.1664      18.1025      -0.0639 ±0.0223  

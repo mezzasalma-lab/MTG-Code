@@ -1,0 +1,290 @@
+=== T1 (9 eventos)
+   0 Ajani Unrelenting                  vpk16n  library→hand              
+   1 Teferi, Temporal Archmage          v6rwOt  library→hand              
+   2 Nissa, Ascended Animist            A6B-W_  library→hand              
+   3 Indatha Triome                     erzHFw  library→hand              
+   4 Ichormoon Gauntlet                 lqREkT  library→hand              
+   5 Starting Town                      poBDVG  library→hand              
+   6 Ketria Triome                      OdYQZG  library→hand              
+   7 Flooded Grove                      J1BkyU  library→hand              
+   8 Indatha Triome                     erzHFw  hand→battlefield          TAP
+=== T2 (3 eventos)
+   0 Indatha Triome                     erzHFw  ·                         
+   1 Overflowing Basin                  KzGzW8  library→hand              
+   2 Starting Town                      poBDVG  hand→battlefield          
+=== T3 (6 eventos)
+   0 Twilight Mire                      jgVaRg  library→hand              
+   1 Overflowing Basin                  KzGzW8  hand→battlefield          
+   2 Overflowing Basin                  KzGzW8  ·                         TAP
+   3 Starting Town                      poBDVG  ·                         TAP
+   4 Indatha Triome                     erzHFw  ·                         TAP
+   5 Tam, the Possibility               2k7jEQ  commandZone→battlefield   
+=== T4 (11 eventos)
+   0 Overflowing Basin                  KzGzW8  ·                         
+   1 Starting Town                      poBDVG  ·                         
+   2 Indatha Triome                     erzHFw  ·                         
+   3 Exotic Orchard                     tEXP9d  library→hand              
+   4 Exotic Orchard                     tEXP9d  hand→battlefield          
+   5 Indatha Triome                     erzHFw  ·                         TAP
+   6 Overflowing Basin                  KzGzW8  ·                         TAP
+   7 Starting Town                      poBDVG  ·                         TAP
+   8 Ichormoon Gauntlet                 lqREkT  hand→battlefield          
+   9 Tam, the Possibility               2k7jEQ  ·                         TAP
+  10 Tam, the Possibility               2k7jEQ  ·                         
+=== T5 (18 eventos)
+   0 Overflowing Basin                  KzGzW8  ·                         
+   1 Starting Town                      poBDVG  ·                         
+   2 Indatha Triome                     erzHFw  ·                         
+   3 Yavimaya, Cradle of Growth         nSxMq-  library→hand              
+   4 Yavimaya, Cradle of Growth         nSxMq-  hand→battlefield          
+   5 Yavimaya, Cradle of Growth         nSxMq-  ·                         TAP
+   6 Exotic Orchard                     tEXP9d  ·                         TAP
+   7 Overflowing Basin                  KzGzW8  ·                         TAP
+   8 Starting Town                      poBDVG  ·                         TAP
+   9 Indatha Triome                     erzHFw  ·                         TAP
+  10 Nissa, Ascended Animist            A6B-W_  hand→battlefield         Loyalty=7 
+  11 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=6 
+  12 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=5 
+  13 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=6 
+  14 Phyrexian Horror                   Q-xQWx  None→battlefield          ficha
+  15 Phyrexian Horror                   Q-xQWx  ·                         ficha P/T+5/5
+  16 Graveborn                          5KGe_U  None→opponentsCards       
+  17 Vex                                iGKAXW  None→opponentsCards       
+=== T6 (20 eventos)
+   0 Yavimaya, Cradle of Growth         nSxMq-  ·                         
+   1 Exotic Orchard                     tEXP9d  ·                         
+   2 Overflowing Basin                  KzGzW8  ·                         
+   3 Starting Town                      poBDVG  ·                         
+   4 Indatha Triome                     erzHFw  ·                         
+   5 Elspeth, Sun's Champion            SqKm8P  library→hand              
+   6 Flooded Grove                      J1BkyU  hand→battlefield          
+   7 Indatha Triome                     erzHFw  ·                         TAP
+   8 Starting Town                      poBDVG  ·                         TAP
+   9 Exotic Orchard                     tEXP9d  ·                         TAP
+  10 Flooded Grove                      J1BkyU  ·                         TAP
+  11 Elspeth, Sun's Champion            SqKm8P  hand→battlefield         Loyalty=4 
+  12 Elspeth, Sun's Champion            SqKm8P  battlefield→graveyard     
+  13 Garruk, Veiled Butcher             C-Pk-g  library→hand              
+  14 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=7 
+  15 Phyrexian Horror                   U4sNrx  None→battlefield          ficha
+  16 Phyrexian Horror                   U4sNrx  ·                         ficha P/T+6/6
+  17 Junji, the Midnight Sky            YsjqE0  None→opponentsCards       
+  18 Twilight Mire                      jgVaRg  hand→graveyard            
+  19 Ketria Triome                      OdYQZG  hand→graveyard            
+=== T7 (34 eventos)
+   0 Flooded Grove                      J1BkyU  ·                         
+   1 Exotic Orchard                     tEXP9d  ·                         
+   2 Starting Town                      poBDVG  ·                         
+   3 Indatha Triome                     erzHFw  ·                         
+   4 Onakke Oathkeeper                  tSRQbP  library→hand              
+   5 Starting Town                      poBDVG  ·                         TAP
+   6 Flooded Grove                      J1BkyU  ·                         TAP
+   7 Indatha Triome                     erzHFw  ·                         TAP
+   8 Overflowing Basin                  KzGzW8  ·                         TAP
+   9 Teferi, Temporal Archmage          v6rwOt  hand→battlefield         Loyalty=5 
+  10 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=8 
+  11 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=4 
+  12 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=3 
+  13 Overflowing Basin                  KzGzW8  ·                         
+  14 Indatha Triome                     erzHFw  ·                         
+  15 Starting Town                      poBDVG  ·                         
+  16 Flooded Grove                      J1BkyU  ·                         
+  17 Indatha Triome                     erzHFw  ·                         TAP
+  18 Starting Town                      poBDVG  ·                         TAP
+  19 Exotic Orchard                     tEXP9d  ·                         TAP
+  20 Flooded Grove                      J1BkyU  ·                         TAP
+  21 Garruk, Veiled Butcher             C-Pk-g  hand→battlefield         Loyalty=5 
+  22 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=4 
+  23 Garruk, Veiled Butcher             C-Pk-g  ·                        Loyalty=6 
+  24 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=5 
+  25 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=9 
+  26 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=10 
+  27 Phyrexian Horror                   y-ZHAI  None→battlefield          ficha
+  28 Phyrexian Horror                   y-ZHAI  ·                         ficha P/T+9/9
+  29 Phyrexian Horror                   Q-xQWx  ·                         TAP ficha P/T+5/5
+  30 Phyrexian Horror                   U4sNrx  ·                         TAP ficha P/T+6/6
+  31 Split Up                           FNp8xr  None→opponentsCards       
+  32 Tam, the Possibility               2k7jEQ  battlefield→commandZone   
+  33 Tam, the Possibility               2k7jEQ  ·                         tax1
+=== T8 (31 eventos)
+   0 Phyrexian Horror                   U4sNrx  ·                         ficha P/T+6/6
+   1 Flooded Grove                      J1BkyU  ·                         
+   2 Phyrexian Horror                   Q-xQWx  ·                         ficha P/T+5/5
+   3 Exotic Orchard                     tEXP9d  ·                         
+   4 Starting Town                      poBDVG  ·                         
+   5 Indatha Triome                     erzHFw  ·                         
+   6 Wooded Bastion                     0u8OiH  library→hand              
+   7 Wooded Bastion                     0u8OiH  hand→battlefield          
+   8 Starting Town                      poBDVG  ·                         TAP
+   9 Flooded Grove                      J1BkyU  ·                         TAP
+  10 Exotic Orchard                     tEXP9d  ·                         TAP
+  11 Wooded Bastion                     0u8OiH  ·                         TAP
+  12 Yavimaya, Cradle of Growth         nSxMq-  ·                         TAP
+  13 Tam, the Possibility               2k7jEQ  commandZone→battlefield   tax1
+  14 Indatha Triome                     erzHFw  ·                         TAP
+  15 Overflowing Basin                  KzGzW8  ·                         TAP
+  16 Onakke Oathkeeper                  tSRQbP  hand→battlefield          
+  17 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=11 
+  18 Phyrexian Horror                   ffY2mC  None→battlefield          ficha
+  19 Phyrexian Horror                   ffY2mC  ·                         ficha P/T+10/10
+  20 Garruk, Veiled Butcher             C-Pk-g  ·                        Loyalty=7 
+  21 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=6 
+  22 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=12 
+  23 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=7 
+  24 Mossfire Valley                    0DKC0J  library→hand              
+  25 Mossfire Valley                    0DKC0J  hand→library              
+  26 Mossfire Valley                    0DKC0J  library→hand              
+  27 Mossfire Valley                    0DKC0J  hand→library              
+  28 Phyrexian Horror                   Q-xQWx  ·                         TAP ficha P/T+5/5
+  29 Phyrexian Horror                   U4sNrx  ·                         TAP ficha P/T+6/6
+  30 Spider                             dDKAO6  None→opponentsCards       
+=== T9 (45 eventos)
+   0 Starting Town                      poBDVG  ·                         
+   1 Wooded Bastion                     0u8OiH  ·                         
+   2 Phyrexian Horror                   U4sNrx  ·                         ficha P/T+6/6
+   3 Flooded Grove                      J1BkyU  ·                         
+   4 Phyrexian Horror                   Q-xQWx  ·                         ficha P/T+5/5
+   5 Yavimaya, Cradle of Growth         nSxMq-  ·                         
+   6 Exotic Orchard                     tEXP9d  ·                         
+   7 Overflowing Basin                  KzGzW8  ·                         
+   8 Indatha Triome                     erzHFw  ·                         
+   9 Garruk, Curse Breaker              2-dPXK  library→hand              
+  10 Garruk, Curse Breaker              2-dPXK  hand→battlefield         Loyalty=5 
+  11 Starting Town                      poBDVG  ·                         TAP
+  12 Wooded Bastion                     0u8OiH  ·                         TAP
+  13 Exotic Orchard                     tEXP9d  ·                         TAP
+  14 Flooded Grove                      J1BkyU  ·                         TAP
+  15 Garruk, Curse Breaker              2-dPXK  hand→battlefield         Loyalty=5 
+  16 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=13 
+  17 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=4 
+  18 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=3 
+  19 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=2 
+  20 Beast                              HONnLW  None→battlefield          ficha
+  21 Bloom Tender                       4EC0LN  library→hand              
+  22 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=3 
+  23 Garruk, Veiled Butcher             C-Pk-g  ·                        Loyalty=8 
+  24 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=8 
+  25 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=14 
+  26 Yavimaya, Cradle of Growth         nSxMq-  ·                         TAP
+  27 Overflowing Basin                  KzGzW8  ·                         TAP
+  28 Bloom Tender                       4EC0LN  hand→battlefield          
+  29 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=13 
+  30 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=12 
+  31 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=11 
+  32 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=10 
+  33 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=9 
+  34 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=8 
+  35 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=7 
+  36 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=6 
+  37 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=5 
+  38 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=4 
+  39 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=3 
+  40 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=2 
+  41 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=9 
+  42 Staff of Compleation               E7YFQM  library→hand              
+  43 Staff of Compleation               E7YFQM  hand→library              
+  44 Cleansing Nova                     WsphGz  None→opponentsCards       
+=== T10 (103 eventos)
+   0 Overflowing Basin                  KzGzW8  ·                         
+   1 Starting Town                      poBDVG  ·                         
+   2 Wooded Bastion                     0u8OiH  ·                         
+   3 Flooded Grove                      J1BkyU  ·                         
+   4 Yavimaya, Cradle of Growth         nSxMq-  ·                         
+   5 Exotic Orchard                     tEXP9d  ·                         
+   6 Arcane Signet                      ade7Rn  library→hand              
+   7 Exotic Orchard                     tEXP9d  ·                         TAP
+   8 Arcane Signet                      ade7Rn  hand→battlefield          
+   9 Arcane Signet                      ade7Rn  ·                         TAP
+  10 Starting Town                      poBDVG  ·                         TAP
+  11 Yavimaya, Cradle of Growth         nSxMq-  ·                         TAP
+  12 Overflowing Basin                  KzGzW8  ·                         TAP
+  13 Ajani Unrelenting                  vpk16n  hand→battlefield         Loyalty=5 
+  14 Ajani Unrelenting                  vpk16n  ·                        Loyalty=4 
+  15 Ajani Unrelenting                  vpk16n  ·                        Loyalty=3 
+  16 Garruk Wildspeaker                 Tve4Zf  library→hand              
+  17 All Will Be One                    YjSeQl  library→hand              
+  18 Bountiful Promenade                ZrtJxr  library→hand              
+  19 The Eternal Wanderer               EpYLYb  library→hand              
+  20 Dack Fayden                        ArHeKF  library→hand              
+  21 Rejuvenating Springs               25uskD  library→hand              
+  22 Birds of Paradise                  JfttUF  library→hand              
+  23 Ajani Unrelenting                  vpk16n  ·                        Loyalty=4 
+  24 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=4 
+  25 Garruk, Veiled Butcher             C-Pk-g  ·                        Loyalty=9 
+  26 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=10 
+  27 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=3 
+  28 Wooded Bastion                     0u8OiH  ·                         TAP
+  29 Flooded Grove                      J1BkyU  ·                         TAP
+  30 Indatha Triome                     erzHFw  ·                         TAP
+  31 Dack Fayden                        ArHeKF  hand→battlefield         Loyalty=3 
+  32 Dack Fayden                        ArHeKF  ·                        Loyalty=4 
+  33 Ajani Unrelenting                  vpk16n  ·                        Loyalty=5 
+  34 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=5 
+  35 Garruk, Veiled Butcher             C-Pk-g  ·                        Loyalty=10 
+  36 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=11 
+  37 Nissa, Ascended Animist            A6B-W_  ·                        Loyalty=4 
+  38 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=12 
+  39 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=11 
+  40 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=10 
+  41 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=9 
+  42 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=8 
+  43 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=7 
+  44 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=6 
+  45 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=5 
+  46 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=4 
+  47 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=3 
+  48 Teferi, Temporal Archmage          v6rwOt  ·                        Loyalty=2 
+  49 Teferi, Temporal Archmage Emblem   VWV2VW  None→battlefield          ficha
+  50 Cadet                              RK981j  None→battlefield          ficha
+  51 Cadet                              y_ii9G  None→battlefield          ficha
+  52 Cadet                              kwacxD  None→battlefield          ficha
+  53 Cadet                              QRAeI1  None→battlefield          ficha
+  54 Cadet                              Exa8Qx  None→battlefield          ficha
+  55 Ajani Unrelenting                  vpk16n  ·                        Loyalty=5 TAP
+  56 Ajani Unrelenting                  vpk16n  ·                        Loyalty=5 
+  57 Ajani Unrelenting                  vpk16n  ·                        Loyalty=6 
+  58 Cadet                              ME1tYu  None→battlefield          ficha
+  59 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=4 
+  60 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=3 
+  61 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=2 
+  62 Garruk, Curse Breaker              2-dPXK  ·                        Loyalty=1 
+  63 Cadet                              ME1tYu  ·                         TAP ficha
+  64 Cadet                              y_ii9G  ·                         TAP ficha
+  65 Cadet                              kwacxD  ·                         TAP ficha
+  66 Cadet                              QRAeI1  ·                         TAP ficha
+  67 Cadet                              Exa8Qx  ·                         TAP ficha
+  68 Cadet                              RK981j  ·                         TAP ficha
+  69 Beast                              HONnLW  ·                         TAP ficha
+  70 Phyrexian Horror                   ffY2mC  ·                         TAP ficha P/T+10/10
+  71 Onakke Oathkeeper                  tSRQbP  ·                         TAP
+  72 Tam, the Possibility               2k7jEQ  ·                         TAP tax1
+  73 Phyrexian Horror                   U4sNrx  ·                         TAP ficha P/T+6/6
+  74 Phyrexian Horror                   Q-xQWx  ·                         TAP ficha P/T+5/5
+  75 Bloom Tender                       4EC0LN  ·                         TAP
+  76 Cadet                              ME1tYu  ·                         ficha
+  77 Cadet                              y_ii9G  ·                         ficha
+  78 Cadet                              kwacxD  ·                         ficha
+  79 Cadet                              QRAeI1  ·                         ficha
+  80 Cadet                              Exa8Qx  ·                         ficha
+  81 Cadet                              RK981j  ·                         ficha
+  82 Beast                              HONnLW  ·                         ficha
+  83 Phyrexian Horror                   ffY2mC  ·                         ficha P/T+10/10
+  84 Onakke Oathkeeper                  tSRQbP  ·                         
+  85 Tam, the Possibility               2k7jEQ  ·                         tax1
+  86 Phyrexian Horror                   U4sNrx  ·                         ficha P/T+6/6
+  87 Phyrexian Horror                   Q-xQWx  ·                         ficha P/T+5/5
+  88 Bloom Tender                       4EC0LN  ·                         
+  89 Teferi, Temporal Archmage Emblem   VWV2VW  ·                         TAP ficha
+  90 Cadet                              ME1tYu  ·                         TAP ficha
+  91 Cadet                              y_ii9G  ·                         TAP ficha
+  92 Cadet                              kwacxD  ·                         TAP ficha
+  93 Cadet                              QRAeI1  ·                         TAP ficha
+  94 Cadet                              Exa8Qx  ·                         TAP ficha
+  95 Cadet                              RK981j  ·                         TAP ficha
+  96 Beast                              HONnLW  ·                         TAP ficha
+  97 Phyrexian Horror                   ffY2mC  ·                         TAP ficha P/T+10/10
+  98 Onakke Oathkeeper                  tSRQbP  ·                         TAP
+  99 Tam, the Possibility               2k7jEQ  ·                         TAP tax1
+ 100 Phyrexian Horror                   U4sNrx  ·                         TAP ficha P/T+6/6
+ 101 Phyrexian Horror                   Q-xQWx  ·                         TAP ficha P/T+5/5
+ 102 Teferi, Temporal Archmage Emblem   VWV2VW  ·                         ficha

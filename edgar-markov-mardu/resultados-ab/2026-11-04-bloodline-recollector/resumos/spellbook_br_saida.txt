@@ -1,0 +1,10 @@
+nomes: 98 | NAO reconhecidos: [] | BR reconhecida como: Bloodline Recollector // Ancestral Craving
+controle positivo: True | controle de corte (combo some sem Rings): True
+ANTES: 4 combos, 183 quase, bracket {'bracketTag': 'S', 'game_changers': ['Smothering Tithe', "Teferi's Protection", 'Vampiric Tutor']} | +BR: 4 combos, 183 quase, bracket {'bracketTag': 'S', 'game_changers': ['Smothering Tithe', "Teferi's Protection", 'Vampiric Tutor']}
+combos NOVOS com a BR: [] | 'quase' que citam a BR: 0
+trocas testadas (sai X, entra BR): 93 | trocas que PERDEM combo: {'Bloodthirsty Conqueror': 2, 'Enduring Tenacity': 2, 'Vito, Thorn of the Dusk Rose': 2, 'Exquisite Blood': 2} | que GANHAM combo: {}
+FIM
+
+real	1m34.770s
+user	0m32.976s
+sys	0m5.376s

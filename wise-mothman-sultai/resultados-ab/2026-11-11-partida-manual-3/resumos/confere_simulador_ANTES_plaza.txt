@@ -1,0 +1,9 @@
+simulador: mothman_goldfish_v1_ANTES_plaza_c59226f.py
+PASSA | (1) Altar: um terreno entra com 3 oponentes | gatilhos do Mothman +1, contadores no Mothman +1 (regra: 1 e 1)
+PASSA | (2) gatilho X=3 com Mothman, Six e Witness | contadores (1, 1, 1) (regra: 1 em cada alvo)
+PASSA | (3) Witness com 2 Instants e 1 criatura no cemiterio, 2 gatilhos | mao ['Gyre Sage'], cemiterio ["Didn't Say Please", "An Offer You Can't Refuse"]
+PASSA | (4) retrace da Six | sem terreno na mao []; com Forest na mao [('Gyre Sage', 'six', None)]
+PASSA | (5) rad 1 no inicio da fase principal 1 | biblioteca 9, rad 0 (1 carta nao-terreno milada remove 1 rad)
+FALHA | (6) T4 do log: Plaza + Springs + Forest na mao, Mothman no comando | Plaza em campo: False; cast_commander: False; Mothman em campo: False; terreno jogado: Rejuvenating Springs
+
+5/6 conferencias passam

@@ -1,0 +1,9 @@
+vihaan_goldfish_v1_ANTES_bf8a6f6.py | modo padrao | N=10000 sementes 3000000..3009999 | jogos com pelo menos 1 exilio do Prosper: 1617 (16.2%) | exilios do Prosper: 4633 (0.46 por jogo)
+  terreno  jogada                   1109  (67.8% dos terreno exilados)
+  terreno  EXPIROU sem uso            28  (1.7% dos terreno exilados)
+  terreno  ainda valida no fim       498  (30.5% dos terreno exilados)
+  magia    jogada                   1954  (65.2% dos magia exilados)
+  magia    EXPIROU sem uso            54  (1.8% dos magia exilados)
+  magia    ainda valida no fim       990  (33.0% dos magia exilados)
+  wipes proprios (Blood Money / Blasphemous Act) exilados pelo Prosper: puxados 88, jogados 27, expiraram sem uso 22
+  cartas (terreno ou magia) que mais expiraram sem uso (top 6): Blasphemous Act 12, Blood Money 10, Marionette Master 9, Swamp 5, Witch of the Moors 4, Mountain 4

@@ -1,0 +1,5 @@
+padrao       base       (aqui) == base               (candidatas-stefano-2): 10000/10000 partidas identicas (fingerprint + todos os campos)
+padrao       b__negate  (aqui) == branching__negate  (candidatas-stefano-2): 10000/10000 partidas identicas (fingerprint + todos os campos)
+resiliencia  base       (aqui) == base               (candidatas-stefano-2): 10000/10000 partidas identicas (fingerprint + todos os campos)
+resiliencia  b__negate  (aqui) == branching__negate  (candidatas-stefano-2): 10000/10000 partidas identicas (fingerprint + todos os campos)
+4/4 series bit-identicas

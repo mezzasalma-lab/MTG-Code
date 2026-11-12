@@ -1,0 +1,15 @@
+IGUAL  tabela_terrenos.md (refeita so' dos brutos)
+IGUAL  tabela_terrenos2.md (refeita so' dos brutos)
+IGUAL  terrenos_entre_si.md (refeito so' dos brutos)
+IGUAL  comandante_e_cores.md (refeito so' dos brutos)
+IGUAL  tipos_de_terreno.md (refeito so' dos brutos)
+IGUAL  replicacao.txt (refeito so' dos brutos)
+IGUAL  analise_terrenos.md (refeita do simulador vivo)
+IGUAL  indice_dados.md (refeito so' dos brutos)
+re-simulando base e t3 (1.000 sementes x 2 modos) com o simulador congelado...
+padrao       base                    : 1000/1000 identicas
+padrao       t3_ambos_swamp_forest   : 1000/1000 identicas
+resiliencia  base                    : 1000/1000 identicas
+resiliencia  t3_ambos_swamp_forest   : 1000/1000 identicas
+IGUAL  amostra re-simulada == bruto (4/4 series)
+9/9 saidas iguais

@@ -1,0 +1,186 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_Shifting Woodland": {
+   "SWAPS": [
+    [
+     "Shifting Woodland",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Six": {
+   "SWAPS": [
+    [
+     "Six",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Smuggler's Surprise": {
+   "SWAPS": [
+    [
+     "Smuggler's Surprise",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Sol Ring": {
+   "SWAPS": [
+    [
+     "Sol Ring",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Soul-Guide Lantern": {
+   "SWAPS": [
+    [
+     "Soul-Guide Lantern",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Strip Mine": {
+   "SWAPS": [
+    [
+     "Strip Mine",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Swamp": {
+   "SWAPS": [
+    [
+     "Swamp",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Swarmyard": {
+   "SWAPS": [
+    [
+     "Swarmyard",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Swiftfoot Boots": {
+   "SWAPS": [
+    [
+     "Swiftfoot Boots",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Syr Konrad, the Grim": {
+   "SWAPS": [
+    [
+     "Syr Konrad, the Grim",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Takenuma, Abandoned Mire": {
+   "SWAPS": [
+    [
+     "Takenuma, Abandoned Mire",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Tear Asunder": {
+   "SWAPS": [
+    [
+     "Tear Asunder",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_The Gitrog Monster": {
+   "SWAPS": [
+    [
+     "The Gitrog Monster",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Three Visits": {
+   "SWAPS": [
+    [
+     "Three Visits",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_Shifting Woodland",
+  "cut_Six",
+  "cut_Smuggler's Surprise",
+  "cut_Sol Ring",
+  "cut_Soul-Guide Lantern",
+  "cut_Strip Mine",
+  "cut_Swamp",
+  "cut_Swarmyard",
+  "cut_Swiftfoot Boots",
+  "cut_Syr Konrad, the Grim",
+  "cut_Takenuma, Abandoned Mire",
+  "cut_Tear Asunder",
+  "cut_The Gitrog Monster",
+  "cut_Three Visits"
+ ],
+ "regressao": []
+}

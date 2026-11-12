@@ -1,6 +1,285 @@
 # Goldfish Log — Maralen, Fae Ascendant
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + condições de entrada de terreno (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O payoff entra antes do terreno em **16,1%** das partidas (11,7% na resiliência). Efeito pequeno: **+0,11 tokens de Elfo por partida (+42%)** e **+0,12 contadores de landfall**; neutro em comandante, combo infinito e compras do Staff.
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `lands_played_total` | 6.154 -> 6.169 (+0.016 ± 0.007) * | 5.822 -> 5.834 (+0.012 ± 0.005) * |
+| `landfall_elf_tokens_total` | 0.250 -> 0.356 (+0.106 ± 0.009) * | 0.090 -> 0.166 (+0.076 ± 0.007) * |
+| `landfall_counters_total` | 0.329 -> 0.450 (+0.121 ± 0.010) * | 0.126 -> 0.212 (+0.086 ± 0.008) * |
+| `tokens_created_total` | 1002.887 -> 1030.995 (+28.108 ± 42.218) | 254.725 -> 258.801 (+4.076 ± 17.087) |
+| `ramp_pieces_cast_total` | 5.005 -> 5.010 (+0.005 ± 0.017) | 3.725 -> 3.730 (+0.005 ± 0.011) |
+| `commander_cast_turn__ate_T3` | - | 0.140 -> 0.140 (-0.000 ± 0.000) |
+| `commander_cast_turn__ate_T4` | 0.494 -> 0.494 (+0.000 ± 0.000) | 0.418 -> 0.418 (+0.000 ± 0.001) |
+| `commander_cast_turn__ate_T5` | - | 0.758 -> 0.758 (-0.000 ± 0.001) |
+| `infinite_combo_turn__nunca` | 0.840 -> 0.840 (+0.000 ± 0.002) | 0.943 -> 0.943 (-0.000 ± 0.002) |
+| `infinite_combo_turn__ate_T6` | 0.049 -> 0.049 (+0.000 ± 0.001) | 0.023 -> 0.024 (+0.001 ± 0.001) * |
+| `staff_infinite_draws` | 2.112 -> 2.123 (+0.011 ± 0.070) | 0.575 -> 0.596 (+0.022 ± 0.045) |
+| partidas com resultado idêntico ao da base | 83.8% | 88.3% |
+
+**Validação:** testes dirigidos 6/6; bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
+
+---
+
+## Terreno virado primeiro em T1/T2 + condições de entrada de terreno (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 15,9% → 15,2% (-0,76 ± 0,28 pp), até T4 -0,39 ± 0,34 pp, até T5 -0,63 ± 0,26 pp, comandante que nunca entra +0,02 ± 0,04 pp. Modo resiliência: comandante em campo até T3 14,8% → 14,0% (-0,75 ± 0,27 pp), até T4 -0,39 ± 0,34 pp, até T5 -0,75 ± 0,31 pp, comandante que nunca entra +0,07 ± 0,11 pp. A correção joga o terreno virado primeiro em média 0,36 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,52 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,003 ± 0,009 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+- **Cinco terrenos entravam DESVIRADOS contra o oráculo** (varredura mecânica de entrada, `varredura-2026-10-05/resumos/audit_entrada_ANTES.txt` e `audit_entrada2_ANTES.txt`): só Bojuka Bog/Path of Ancestry/Zagoth Triome (tag `etb_tapped`) entravam virados. Faltavam: **Drowned Catacomb** ("tapped unless you control an Island or a Swamp"), **Hinterland Harbor** (Forest or Island), **Woodland Cemetery** (Swamp or Forest), **Sunken Hollow** ("unless you control two or more basic lands") e **Gilt-Leaf Palace** ("you may reveal an Elf card from your hand. If you don't, this land enters tapped"). "Island/Swamp/Forest" aqui é SUBTIPO de terreno (Bayou, Tropical Island, Underground Sea, Breeding Pool, Watery Grave, Overgrown Tomb, Sunken Hollow e Zagoth Triome contam; Sunken Hollow, uma dual tipada, NÃO conta como básico). Os choques (Breeding Pool/Watery Grave/Overgrown Tomb) seguem a convenção do repositório (pagam 2 de vida, entram desvirados) e Morphic Pool/Undergrowth Stadium ("unless you have two or more opponents") entram desvirados em mesa de 4. Mana fantasma: esses 5 produziam mana no próprio turno.
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `LAND_ENTRY_CONDITIONS_ENABLED` (padrão `True`) + `land_enters_tapped(state, name)` (fonte única, avaliada ANTES de o terreno entrar): checklands por subtipo (`CHECKLAND_SUBTYPES`/`LAND_BASIC_SUBTYPES`, tabela derivada do `type_line` do oráculo), Sunken Hollow (≥2 básicos Forest/Island/Swamp), Gilt-Leaf Palace (algum card de Elfo na mão, fora ela mesma). Com a chave em `False` só a tag `etb_tapped` manda (antigo).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5793 (57.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1506       6.1536      +0.0030 ±0.0088  
+   commander_cast_turn__nunca                   0.0191       0.0193      +0.0002 ±0.0004  
+  *commander_cast_turn__ate_T3                  0.1592       0.1516      -0.0076 ±0.0028  
+  *commander_cast_turn__ate_T4                  0.4976       0.4937      -0.0039 ±0.0034  
+  *commander_cast_turn__ate_T5                  0.8520       0.8457      -0.0063 ±0.0026  
+  *len_tapped_lands_this_turn                   0.1735       0.2047      +0.0312 ±0.0043  
+  *interaction_spells_cast_total                2.5118       2.4983      -0.0135 ±0.0129  
+   len_graveyard                                3.0796       3.0668      -0.0128 ±0.0143  
+   lands_played_this_turn                       0.6518       0.6562      +0.0044 ±0.0050  
+   itlimoc_transform_turn__ate_T4               0.0207       0.0199      -0.0008 ±0.0010  
+   tokens_created_total                       960.8860    1002.8867     +42.0007 ±54.5951 
+   elf_tokens                                 959.4792    1001.4788     +41.9996 ±54.5944 
+   maralen_triggers_total                      12.9223      12.8792      -0.0431 ±0.0590  
+   maralen_free_casts_total                     3.2235       3.2175      -0.0060 ±0.0083  
+   itlimoc_transform_turn__ate_T3               0.0014       0.0012      -0.0002 ±0.0003  
+   itlimoc_transform_turn__ate_T6               0.1322       0.1310      -0.0012 ±0.0019  
+   cards_exiled_total                          23.2569      23.2003      -0.0566 ±0.0911  
+   len_mistbind_exiled                          0.2355       0.2335      -0.0020 ±0.0033  
+   staff_finite_draws_total                     0.8676       0.8475      -0.0201 ±0.0345
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5828 (58.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8189       5.8224      +0.0035 ±0.0087  
+   commander_cast_turn__nunca                   0.0469       0.0476      +0.0007 ±0.0011  
+  *commander_cast_turn__ate_T3                  0.1475       0.1400      -0.0075 ±0.0027  
+  *commander_cast_turn__ate_T4                  0.4215       0.4176      -0.0039 ±0.0034  
+  *commander_cast_turn__ate_T5                  0.7659       0.7584      -0.0075 ±0.0031  
+  *len_tapped_lands_this_turn                   0.0932       0.1170      +0.0238 ±0.0039  
+  *cards_exiled_total                          14.8227      14.6914      -0.1313 ±0.0717  
+  *itlimoc_transform_turn__ate_T4               0.0162       0.0147      -0.0015 ±0.0009  
+  *maralen_free_casts_total                     2.4845       2.4705      -0.0140 ±0.0100  
+  *faerie_tokens                                0.4786       0.4650      -0.0136 ±0.0102  
+  *maralen_triggers_total                       7.6740       7.6161      -0.0579 ±0.0448  
+  *len_library                                 66.0182      66.1662      +0.1480 ±0.1187  
+  *tokens_created_total                       214.7286     254.7245     +39.9959 ±33.3693 
+  *len_smart_removal_log                        0.6488       0.6558      +0.0070 ±0.0060  
+  *smart_removals_total                         0.6488       0.6558      +0.0070 ±0.0060  
+  *len_smart_graveyard_snipe_log                0.2934       0.2881      -0.0053 ±0.0047  
+  *smart_graveyard_snipes_total                 0.2934       0.2881      -0.0053 ±0.0047  
+  *commander_cast_count                         1.5034       1.4974      -0.0060 ±0.0054  
+  *landfall_elf_tokens_total                    0.0935       0.0898      -0.0037 ±0.0033
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `maralen_goldfish_v1_ANTES_7918e0b.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 13/13 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Entrada de terrenos:** testes dirigidos TL12–TL16 (checklands com basico e com dual tipado, Sunken Hollow com duais que não contam como básico, Gilt-Leaf Palace com/sem Elfo, chave desligada = antigo, integração: mana do turno); varredura mecânica de entrada antes/depois.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** dois erros reais, dois consertos, bit-idênticos com a chave desligada. Comandante em campo até T5: 84,1% → 85,2% (+1,11 ± 0,27 pp); nunca em 8 turnos: −0,37 ± 0,14 pp (N=10.000, padrão). O ganho vem do **mulligan** (isolado dá o mesmo número). A ordem upkeep × draw muda 32% das partidas mas **não move o comandante**; dos ~100 campos medidos só uns poucos passam do IC95% (`marwyn_power` +0,047 ± 0,028, `ramp_pieces_cast_total` +0,041 ± 0,026: ~1,5 IC95%), o que cabe no acaso de olhar ~100 campos. Não afirmo efeito da ordem.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+- **Upkeep depois do draw.** `play_turn` comprava e só então rodava `upkeep_step` (Bitterblossom, Bitterbloom Bearer). CR 502–504: upkeep vem ANTES do draw step. Regra #6: o código da carta estava certo, a posição da chamada não.
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+- `UPKEEP_BEFORE_DRAW_ENABLED` (padrão `True`): em `play_turn`, `upkeep_step` roda antes da compra; desligada, roda depois (caminho antigo).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5642 (56.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0228       0.0191      -0.0037 ±0.0014  
+  *commander_cast_turn__ate_T3                  0.1556       0.1592      +0.0036 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.4892       0.4976      +0.0084 ±0.0027  
+  *commander_cast_turn__ate_T5                  0.8409       0.8520      +0.0111 ±0.0027  
+  *commander_cast_turn__ate_T6                  0.9253       0.9338      +0.0085 ±0.0023  
+  *lands_played_total                           6.0999       6.1506      +0.0507 ±0.0145  
+  *commander_cast_count                         0.9772       0.9809      +0.0037 ±0.0014  
+  *commander_in_play                            0.9772       0.9809      +0.0037 ±0.0014  
+  *ramp_pieces_cast_total                       4.9592       5.0141      +0.0549 ±0.0320  
+  *maralen_free_casts_total                     3.2059       3.2235      +0.0176 ±0.0113  
+  *len_battlefield                             21.2289      21.3403      +0.1114 ±0.0833  
+  *faerie_tokens                                1.3126       1.3280      +0.0154 ±0.0122  
+  *len_bounce_untap_used                        0.4937       0.5022      +0.0085 ±0.0075  
+  *cards_exiled_total                          23.1117      23.2569      +0.1452 ±0.1308  
+  *interaction_spells_cast_total                2.4905       2.5118      +0.0213 ±0.0199  
+  *len_library                                 52.2232      51.9964      -0.2268 ±0.2197  
+  *marwyn_power                                 2.5557       2.5921      +0.0364 ±0.0358  
+   len_creature_cast_turn                      11.3890      11.4493      +0.0603 ±0.0610
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6482 (64.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0531       0.0469      -0.0062 ±0.0022  
+  *commander_cast_turn__ate_T3                  0.1444       0.1475      +0.0031 ±0.0016  
+  *commander_cast_turn__ate_T4                  0.4142       0.4215      +0.0073 ±0.0027  
+  *commander_cast_turn__ate_T5                  0.7557       0.7659      +0.0102 ±0.0030  
+  *lands_played_total                           5.7678       5.8189      +0.0511 ±0.0124  
+  *commander_cast_turn__ate_T6                  0.8674       0.8768      +0.0094 ±0.0028  
+  *commander_cast_count                         1.4861       1.5034      +0.0173 ±0.0060  
+  *maralen_free_casts_total                     2.4604       2.4845      +0.0241 ±0.0114  
+  *interaction_spells_cast_total                1.9174       1.9439      +0.0265 ±0.0132  
+  *len_hand                                     1.7681       1.6949      -0.0732 ±0.0435  
+  *landfall_elf_tokens_total                    0.0996       0.0935      -0.0061 ±0.0044  
+  *maralen_triggers_total                       7.6042       7.6740      +0.0698 ±0.0510  
+  *ramp_pieces_cast_total                       3.7072       3.7351      +0.0279 ±0.0207  
+  *len_smart_counter_log                        0.1283       0.1318      +0.0035 ±0.0032  
+  *smart_counters_total                         0.1283       0.1318      +0.0035 ±0.0032  
+  *len_creature_cast_turn                       8.2479       8.2881      +0.0402 ±0.0376  
+  *cards_exiled_total                          14.7392      14.8227      +0.0835 ±0.0805  
+  *len_battlefield                             11.7069      11.7650      +0.0581 ±0.0567
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** com o upkeep antes da compra, o token de Faerie do Bitterblossom/Bearer já existe quando a mão é comprada, mas nada na compra depende dele; o efeito esperado é nulo, e a medição não contradiz (nada de relevante além do IC95% no comandante). Por que 32% das partidas divergem, se o efeito esperado é nulo: **hipótese não testada** — a troca de ordem das chamadas pode mudar a sequência de sorteios do `rng` (`create_token` e a compra usam o mesmo gerador) e com isso o desenrolar de partidas que seguem equivalentes em distribuição.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `maralen_goldfish_v1_ANTES_c7cf734.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 9/9 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Ordem das fases:** teste dirigido O1 e leitura de `play_turn` inteiro (Regra #6).
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+- **Condições de entrada dos terrenos da Maralen** (checkland/slow/reveal): levantadas na triagem, não corrigidas nesta seção.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## CR 903.9a: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** igual ao Toph nesta sessão — chokepoint central real já
+existia (`leave_battlefield`), só o comandante pulava ele. Maralen é
+Fada de verdade — Tegwyll (draw+lose 1 life) e o clear de Umbral Mantle
+deveriam disparar com a morte dela e estavam sendo silenciados.
+
+**Resultado:** modo padrão idêntico (0/20000 mismatches, comparado
+contra uma baseline com o guard do bug de loop infinito abaixo já
+aplicado, pra isolar só o efeito deste fix).
+
+**Validação:** regressão de 20.000 partidas nos 2 modos, 0 exceções, 0
+comandantes presos no cemitério + 4 testes dirigidos.
+
+---
+
+## Achado adicional: loop infinito real, bug pré-existente não relacionado ao comandante — 2026-09-21
+
+**Gatilho:** a própria regressão de 20k acima travou indefinidamente
+(não erro, hang de verdade). Rastreado até `use_staff_of_domination_v2`:
+`remaining_mana()` pode mutar `state.infinite_mana_this_turn=True`
+como efeito colateral (combo Umbral Mantle), e o loop finito do Staff
+reavaliava essa mesma função a cada iteração sem guard — uma vez que o
+flag vira True no meio do loop, a condição nunca mais fica falsa. Bug
+pré-existente (mesmo hang no commit anterior), só descoberto agora
+porque a validação de CR 903.9a rodou 20k partidas reais pela 1ª vez
+nesse espaço de seeds.
+
+**Corrigido:** replicado o guard que o loop irmão (Faerie Mastermind)
+já tinha (`and not state.infinite_mana_this_turn`).
+
+**Validação:** 20.000 seeds (mesmo espaço) sem nenhum travamento, 30s
+total (antes: hang permanente a partir do seed 8010333).
+
+---
+
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "Agora vamos atualizar o simulador da Maralen, mantendo
+todos os cuidados que já estamos usando" — mesmo modo já validado em
+Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic Bridge,
+este deck nunca tinha nenhuma extensão de resiliência antes. Detalhes
+técnicos completos em `checklist-oraculo.md`.
+
+**Particularidade real deste deck**: tokens de Elfo/Fada são contadores
+agregados, não entradas nomeadas em `state.battlefield` — o wipe de
+criatura precisou de tratamento especial pra zerar esses contadores
+também (são criaturas reais na mesa). 2 bugs reais corrigidos durante o
+porte: `leave_battlefield()` não tratava token corretamente (CR 111.7,
+nunca exercitado antes por falta de call site real) e a taxa de recast
+do comandante não incrementava num cast counterado (CR 903.10a).
+
+**Resultado (A/B 2000 jogos mesma seed_base, modo padrão vs.
+resiliência):** Maralen nunca resolvida em 8 turnos sobe de 1,8% pra
+4,4%. Avg counterspells sofridos: 0,14. Avg board wipes: 0,83, artifact:
+0,16, enchantment: 0,17. Avg remoções inteligentes: 0,65 (Priest of
+Titania o alvo mais removido, 11,7%). Vida final média: 35,63 (de 40).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `13178fc` (3.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+7 testes dirigidos.
 
 ---
 

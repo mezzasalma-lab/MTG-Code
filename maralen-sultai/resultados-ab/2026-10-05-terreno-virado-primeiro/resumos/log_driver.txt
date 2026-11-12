@@ -1,0 +1,286 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: TAPPED_LAND_FIRST_ENABLED=True, LAND_ENTRY_CONDITIONS_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False, 'LAND_ENTRY_CONDITIONS_ENABLED': False} == snapshot codigo/maralen_goldfish_v1_ANTES_7918e0b.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+Ghost: arquivo vivo com {'TAPPED_LAND_FIRST_ENABLED': True, 'TAPPED_LAND_FIRST_GHOST': True} (o ensaio roda, o resultado e' ignorado) == arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False, 'LAND_ENTRY_CONDITIONS_ENABLED': False}; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+resiliencia: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1145 (57.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1960       6.1910      -0.0050 ±0.0197  
+   commander_cast_turn__nunca                   0.0205       0.0215      +0.0010 ±0.0024  
+  *commander_cast_turn__ate_T3                  0.1505       0.1410      -0.0095 ±0.0063  
+   commander_cast_turn__ate_T4                  0.4775       0.4800      +0.0025 ±0.0071  
+   commander_cast_turn__ate_T5                  0.8440       0.8405      -0.0035 ±0.0053  
+  *len_tapped_lands_this_turn                   0.1715       0.1945      +0.0230 ±0.0090  
+  *landfall_elf_tokens_total                    0.2670       0.2820      +0.0150 ±0.0117  
+  *radagast_discount_used_this_turn             0.1710       0.1795      +0.0085 ±0.0075  
+   len_exile_maralen                            6.0770       6.1590      +0.0820 ±0.1067  
+   cast_from_top_total                          0.3630       0.3785      +0.0155 ±0.0211  
+   itlimoc_transform_turn__ate_T6               0.1395       0.1425      +0.0030 ±0.0042  
+   maralen_free_cast_used_this_turn             0.6950       0.7010      +0.0060 ±0.0093  
+   len_creature_cast_turn                      11.3275      11.3830      +0.0555 ±0.0873  
+   lands_played_this_turn                       0.6555       0.6490      -0.0065 ±0.0110  
+   infinite_combo_turn__ate_T6                  0.0430       0.0450      +0.0020 ±0.0034  
+   faerie_tokens                                1.3730       1.3840      +0.0110 ±0.0188  
+   cards_exiled_total                          22.8175      22.9250      +0.1075 ±0.1902  
+   life                                        35.7600      35.7240      -0.0360 ±0.0665  
+   tutors_used_total                            1.0275       1.0355      +0.0080 ±0.0152  
+
+[so_tapped_land_first - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1614 (80.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1960       6.2005      +0.0045 ±0.0158  
+   commander_cast_turn__nunca                   0.0205       0.0200      -0.0005 ±0.0010  
+   commander_cast_turn__ate_T3                  0.1505       0.1535      +0.0030 ±0.0044  
+  *commander_cast_turn__ate_T4                  0.4775       0.4925      +0.0150 ±0.0058  
+  *commander_cast_turn__ate_T5                  0.8440       0.8495      +0.0055 ±0.0032  
+  *len_graveyard                                2.9890       3.0365      +0.0475 ±0.0240  
+  *interaction_spells_cast_total                2.4410       2.4820      +0.0410 ±0.0214  
+  *cast_from_top_total                          0.3630       0.3930      +0.0300 ±0.0166  
+  *len_creature_cast_turn                      11.3275      11.4510      +0.1235 ±0.0704  
+  *len_battlefield                             21.2760      21.4405      +0.1645 ±0.0988  
+  *ramp_pieces_cast_total                       4.9000       4.9615      +0.0615 ±0.0379  
+  *len_library                                 52.8105      52.4020      -0.4085 ±0.2521  
+  *maralen_free_casts_total                     3.2115       3.2325      +0.0210 ±0.0130  
+  *itlimoc_transform_turn__ate_T6               0.1395       0.1450      +0.0055 ±0.0038  
+  *maralen_triggers_total                      12.5715      12.7260      +0.1545 ±0.1086  
+  *landfall_elf_tokens_total                    0.2670       0.2780      +0.0110 ±0.0081  
+  *infinite_combo_turn__ate_T6                  0.0430       0.0465      +0.0035 ±0.0026  
+  *faerie_tokens                                1.3730       1.3920      +0.0190 ±0.0142  
+  *marwyn_power                                 2.5020       2.5480      +0.0460 ±0.0356  
+
+[so_land_entry_conditions - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1597 (79.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.1960       6.1740      -0.0220 ±0.0190  
+   commander_cast_turn__nunca                   0.0205       0.0225      +0.0020 ±0.0024  
+  *commander_cast_turn__ate_T3                  0.1505       0.1330      -0.0175 ±0.0057  
+  *commander_cast_turn__ate_T4                  0.4775       0.4580      -0.0195 ±0.0062  
+  *commander_cast_turn__ate_T5                  0.8440       0.8305      -0.0135 ±0.0054  
+  *len_tapped_lands_this_turn                   0.1715       0.1940      +0.0225 ±0.0094  
+  *staff_finite_draws_total                     0.7870       0.7100      -0.0770 ±0.0437  
+  *bounce_untap_activations_total               1.1465       1.1075      -0.0390 ±0.0231  
+  *life                                        35.7600      35.8725      +0.1125 ±0.0690  
+  *itlimoc_transform_turn__ate_T6               0.1395       0.1325      -0.0070 ±0.0044  
+  *landfall_counters_total                      0.3300       0.3080      -0.0220 ±0.0152  
+  *lands_played_this_turn                       0.6555       0.6390      -0.0165 ±0.0115  
+  *faerie_tokens                                1.3730       1.3485      -0.0245 ±0.0175  
+  *itlimoc_transform_turn__ate_T4               0.0240       0.0205      -0.0035 ±0.0026  
+  *black_market_mercenaries_total               0.4650       0.4505      -0.0145 ±0.0111  
+  *black_market_treasures_total                 0.4650       0.4505      -0.0145 ±0.0111  
+  *maralen_free_cast_used_this_turn             0.6950       0.7065      +0.0115 ±0.0091  
+  *landfall_elf_tokens_total                    0.2670       0.2525      -0.0145 ±0.0119  
+  *maralen_free_casts_total                     3.2115       3.1905      -0.0210 ±0.0179  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1154 (57.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8965       5.8820      -0.0145 ±0.0193  
+   commander_cast_turn__nunca                   0.0450       0.0465      +0.0015 ±0.0035  
+  *commander_cast_turn__ate_T3                  0.1390       0.1300      -0.0090 ±0.0059  
+   commander_cast_turn__ate_T4                  0.4080       0.4035      -0.0045 ±0.0070  
+   commander_cast_turn__ate_T5                  0.7730       0.7680      -0.0050 ±0.0068  
+  *len_tapped_lands_this_turn                   0.0875       0.1075      +0.0200 ±0.0077  
+  *infinite_combo_assembled                     0.0585       0.0635      +0.0050 ±0.0037  
+  *infinite_combo_turn__nunca                   0.9415       0.9365      -0.0050 ±0.0037  
+   infinite_combo_turn__ate_T6                  0.0205       0.0230      +0.0025 ±0.0029  
+   len_flash_universal_by_turn                  7.9960       7.9935      -0.0025 ±0.0029  
+   len_flash_with_radagast_by_turn              7.9960       7.9935      -0.0025 ±0.0029  
+   turn                                         7.9960       7.9935      -0.0025 ±0.0029  
+   lands_played_this_turn                       0.4955       0.4870      -0.0085 ±0.0102  
+   staff_infinite_draws                         0.4050       0.4825      +0.0775 ±0.1001  
+   tutors_used_total                            0.7115       0.7215      +0.0100 ±0.0136  
+   tokens_created_total                       216.7925     236.7930     +20.0005 ±27.7089 
+   warmaster_used_this_turn                     0.0700       0.0740      +0.0040 ±0.0055  
+   radagast_discount_used_this_turn             0.0620       0.0660      +0.0040 ±0.0059  
+   len_smart_removal_log                        0.6420       0.6500      +0.0080 ±0.0134  
+
+[so_tapped_land_first - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1614 (80.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8965       5.8880      -0.0085 ±0.0140  
+   commander_cast_turn__nunca                   0.0450       0.0445      -0.0005 ±0.0010  
+   commander_cast_turn__ate_T3                  0.1390       0.1410      +0.0020 ±0.0039  
+  *commander_cast_turn__ate_T4                  0.4080       0.4150      +0.0070 ±0.0050  
+   commander_cast_turn__ate_T5                  0.7730       0.7775      +0.0045 ±0.0051  
+  *infinite_combo_assembled                     0.0585       0.0630      +0.0045 ±0.0029  
+  *infinite_combo_turn__nunca                   0.9415       0.9370      -0.0045 ±0.0029  
+  *tutors_used_total                            0.7115       0.7280      +0.0165 ±0.0112  
+  *interaction_spells_cast_total                1.8830       1.9085      +0.0255 ±0.0207  
+  *len_graveyard                                5.8065       5.9175      +0.1110 ±0.0928  
+  *life                                        35.4765      35.4015      -0.0750 ±0.0707  
+  *len_creature_cast_turn                       8.2695       8.3405      +0.0710 ±0.0684  
+  *landfall_counters_total                      0.1235       0.1315      +0.0080 ±0.0077  
+  *staff_infinite_draws                         0.4050       0.5455      +0.1405 ±0.1358  
+  *fauna_shaman_used_this_turn                  0.0075       0.0055      -0.0020 ±0.0020  
+  *infinite_combo_turn__ate_T6                  0.0205       0.0225      +0.0020 ±0.0020  
+  *len_smart_removal_log                        0.6420       0.6525      +0.0105 ±0.0104  
+  *smart_removals_total                         0.6420       0.6525      +0.0105 ±0.0104  
+   cards_drawn_extra                            2.5050       2.6560      +0.1510 ±0.1536  
+
+[so_land_entry_conditions - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1616 (80.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8965       5.8900      -0.0065 ±0.0186  
+   commander_cast_turn__nunca                   0.0450       0.0470      +0.0020 ±0.0034  
+  *commander_cast_turn__ate_T3                  0.1390       0.1230      -0.0160 ±0.0057  
+  *commander_cast_turn__ate_T4                  0.4080       0.3925      -0.0155 ±0.0058  
+  *commander_cast_turn__ate_T5                  0.7730       0.7590      -0.0140 ±0.0063  
+  *len_tapped_lands_this_turn                   0.0875       0.1075      +0.0200 ±0.0079  
+  *commander_cast_count                         1.4950       1.4755      -0.0195 ±0.0125  
+  *warmaster_used_this_turn                     0.0700       0.0765      +0.0065 ±0.0043  
+  *life                                        35.4765      35.5740      +0.0975 ±0.0791  
+  *itlimoc_transform_turn__ate_T4               0.0195       0.0170      -0.0025 ±0.0022  
+  *maralen_free_cast_used_this_turn             0.5145       0.5260      +0.0115 ±0.0102  
+  *landfall_counters_total                      0.1235       0.1135      -0.0100 ±0.0090  
+  *len_exile_maralen                            3.0055       3.0840      +0.0785 ±0.0713  
+  *itlimoc_transform_turn__ate_T6               0.0930       0.0890      -0.0040 ±0.0037  
+  *itlimoc_transform_turn__ate_T5               0.0515       0.0480      -0.0035 ±0.0032  
+  *joraga_level                                 0.6445       0.6205      -0.0240 ±0.0227  
+  *len_smart_attack_log                         1.2455       1.2285      -0.0170 ±0.0162  
+  *smart_attacks_taken_total                    1.2455       1.2285      -0.0170 ±0.0162  
+  *len_mistbind_exiled                          0.1150       0.1200      +0.0050 ±0.0048  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5793 (57.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1506       6.1536      +0.0030 ±0.0088  
+   commander_cast_turn__nunca                   0.0191       0.0193      +0.0002 ±0.0004  
+  *commander_cast_turn__ate_T3                  0.1592       0.1516      -0.0076 ±0.0028  
+  *commander_cast_turn__ate_T4                  0.4976       0.4937      -0.0039 ±0.0034  
+  *commander_cast_turn__ate_T5                  0.8520       0.8457      -0.0063 ±0.0026  
+  *len_tapped_lands_this_turn                   0.1735       0.2047      +0.0312 ±0.0043  
+  *interaction_spells_cast_total                2.5118       2.4983      -0.0135 ±0.0129  
+   len_graveyard                                3.0796       3.0668      -0.0128 ±0.0143  
+   lands_played_this_turn                       0.6518       0.6562      +0.0044 ±0.0050  
+   itlimoc_transform_turn__ate_T4               0.0207       0.0199      -0.0008 ±0.0010  
+   tokens_created_total                       960.8860    1002.8867     +42.0007 ±54.5951 
+   elf_tokens                                 959.4792    1001.4788     +41.9996 ±54.5944 
+   maralen_triggers_total                      12.9223      12.8792      -0.0431 ±0.0590  
+   maralen_free_casts_total                     3.2235       3.2175      -0.0060 ±0.0083  
+   itlimoc_transform_turn__ate_T3               0.0014       0.0012      -0.0002 ±0.0003  
+   itlimoc_transform_turn__ate_T6               0.1322       0.1310      -0.0012 ±0.0019  
+   cards_exiled_total                          23.2569      23.2003      -0.0566 ±0.0911  
+   len_mistbind_exiled                          0.2355       0.2335      -0.0020 ±0.0033  
+   staff_finite_draws_total                     0.8676       0.8475      -0.0201 ±0.0345  
+
+[so_tapped_land_first - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8109 (81.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.1506       6.1624      +0.0118 ±0.0069  
+   commander_cast_turn__nunca                   0.0191       0.0189      -0.0002 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.1592       0.1635      +0.0043 ±0.0022  
+  *commander_cast_turn__ate_T4                  0.4976       0.5110      +0.0134 ±0.0026  
+  *commander_cast_turn__ate_T5                  0.8520       0.8578      +0.0058 ±0.0017  
+  *maralen_free_casts_total                     3.2235       3.2424      +0.0189 ±0.0065  
+  *cards_exiled_total                          23.2569      23.4513      +0.1944 ±0.0710  
+  *life                                        35.7918      35.7211      -0.0707 ±0.0259  
+  *faerie_tokens                                1.3280       1.3440      +0.0160 ±0.0063  
+  *len_library                                 51.9964      51.7281      -0.2683 ±0.1164  
+  *bounce_untap_activations_total               1.1708       1.1892      +0.0184 ±0.0081  
+  *black_market_mercenaries_total               0.4669       0.4759      +0.0090 ±0.0041  
+  *black_market_treasures_total                 0.4669       0.4759      +0.0090 ±0.0041  
+  *maralen_triggers_total                      12.9223      13.0232      +0.1009 ±0.0483  
+  *landfall_counters_total                      0.3281       0.3385      +0.0104 ±0.0051  
+  *len_battlefield                             21.3403      21.4255      +0.0852 ±0.0448  
+  *lands_played_this_turn                       0.6518       0.6584      +0.0066 ±0.0038  
+  *len_creature_cast_turn                      11.4493      11.5034      +0.0541 ±0.0316  
+  *landfall_elf_tokens_total                    0.2531       0.2608      +0.0077 ±0.0046  
+
+[so_land_entry_conditions - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7991 (79.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.1506       6.1384      -0.0122 ±0.0087  
+  *commander_cast_turn__nunca                   0.0191       0.0198      +0.0007 ±0.0006  
+  *commander_cast_turn__ate_T3                  0.1592       0.1417      -0.0175 ±0.0026  
+  *commander_cast_turn__ate_T4                  0.4976       0.4757      -0.0219 ±0.0030  
+  *commander_cast_turn__ate_T5                  0.8520       0.8377      -0.0143 ±0.0024  
+  *len_tapped_lands_this_turn                   0.1735       0.2019      +0.0284 ±0.0042  
+  *maralen_free_casts_total                     3.2235       3.1874      -0.0361 ±0.0081  
+  *faerie_tokens                                1.3280       1.2931      -0.0349 ±0.0079  
+  *life                                        35.7918      35.9171      +0.1253 ±0.0304  
+  *cards_exiled_total                          23.2569      22.8912      -0.3657 ±0.0900  
+  *bounce_untap_activations_total               1.1708       1.1314      -0.0394 ±0.0100  
+  *len_library                                 51.9964      52.5707      +0.5743 ±0.1502  
+  *maralen_triggers_total                      12.9223      12.7043      -0.2180 ±0.0609  
+  *len_battlefield                             21.3403      21.1679      -0.1724 ±0.0559  
+  *black_market_mercenaries_total               0.4669       0.4522      -0.0147 ±0.0048  
+  *black_market_treasures_total                 0.4669       0.4522      -0.0147 ±0.0048  
+  *len_creature_cast_turn                      11.4493      11.3408      -0.1085 ±0.0404  
+  *itlimoc_transform_turn__ate_T5               0.0689       0.0647      -0.0042 ±0.0016  
+  *landfall_counters_total                      0.3281       0.3107      -0.0174 ±0.0067  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5828 (58.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8189       5.8224      +0.0035 ±0.0087  
+   commander_cast_turn__nunca                   0.0469       0.0476      +0.0007 ±0.0011  
+  *commander_cast_turn__ate_T3                  0.1475       0.1400      -0.0075 ±0.0027  
+  *commander_cast_turn__ate_T4                  0.4215       0.4176      -0.0039 ±0.0034  
+  *commander_cast_turn__ate_T5                  0.7659       0.7584      -0.0075 ±0.0031  
+  *len_tapped_lands_this_turn                   0.0932       0.1170      +0.0238 ±0.0039  
+  *cards_exiled_total                          14.8227      14.6914      -0.1313 ±0.0717  
+  *itlimoc_transform_turn__ate_T4               0.0162       0.0147      -0.0015 ±0.0009  
+  *maralen_free_casts_total                     2.4845       2.4705      -0.0140 ±0.0100  
+  *faerie_tokens                                0.4786       0.4650      -0.0136 ±0.0102  
+  *maralen_triggers_total                       7.6740       7.6161      -0.0579 ±0.0448  
+  *len_library                                 66.0182      66.1662      +0.1480 ±0.1187  
+  *tokens_created_total                       214.7286     254.7245     +39.9959 ±33.3693 
+  *len_smart_removal_log                        0.6488       0.6558      +0.0070 ±0.0060  
+  *smart_removals_total                         0.6488       0.6558      +0.0070 ±0.0060  
+  *len_smart_graveyard_snipe_log                0.2934       0.2881      -0.0053 ±0.0047  
+  *smart_graveyard_snipes_total                 0.2934       0.2881      -0.0053 ±0.0047  
+  *commander_cast_count                         1.5034       1.4974      -0.0060 ±0.0054  
+  *landfall_elf_tokens_total                    0.0935       0.0898      -0.0037 ±0.0033  
+
+[so_tapped_land_first - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8108 (81.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8189       5.8232      +0.0043 ±0.0068  
+   commander_cast_turn__nunca                   0.0469       0.0470      +0.0001 ±0.0008  
+  *commander_cast_turn__ate_T3                  0.1475       0.1515      +0.0040 ±0.0020  
+  *commander_cast_turn__ate_T4                  0.4215       0.4332      +0.0117 ±0.0027  
+  *commander_cast_turn__ate_T5                  0.7659       0.7712      +0.0053 ±0.0022  
+  *len_smart_removal_log                        0.6488       0.6583      +0.0095 ±0.0048  
+  *smart_removals_total                         0.6488       0.6583      +0.0095 ±0.0048  
+  *itlimoc_transform_turn__ate_T5               0.0470       0.0483      +0.0013 ±0.0009  
+  *graveyard_wipe_used                          0.3899       0.3938      +0.0039 ±0.0030  
+  *len_smart_graveyard_wipe_log                 0.3899       0.3938      +0.0039 ±0.0030  
+  *smart_graveyard_wipes_total                  0.3899       0.3938      +0.0039 ±0.0030  
+  *len_exile_maralen                            3.0189       2.9856      -0.0333 ±0.0259  
+  *bounce_untap_activations_total               0.5179       0.5252      +0.0073 ±0.0064  
+  *cast_from_top_total                          0.1665       0.1710      +0.0045 ±0.0039  
+  *landfall_counters_total                      0.1265       0.1300      +0.0035 ±0.0034  
+   maralen_free_cast_used_this_turn             0.5116       0.5081      -0.0035 ±0.0037  
+   len_smart_attack_log                         1.2419       1.2475      +0.0056 ±0.0065  
+   smart_attacks_taken_total                    1.2419       1.2475      +0.0056 ±0.0065  
+   len_creature_cast_turn                       8.2881       8.3099      +0.0218 ±0.0264  
+
+[so_land_entry_conditions - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8044 (80.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8189       5.8151      -0.0038 ±0.0084  
+   commander_cast_turn__nunca                   0.0469       0.0473      +0.0004 ±0.0012  
+  *commander_cast_turn__ate_T3                  0.1475       0.1307      -0.0168 ±0.0025  
+  *commander_cast_turn__ate_T4                  0.4215       0.4019      -0.0196 ±0.0030  
+  *commander_cast_turn__ate_T5                  0.7659       0.7518      -0.0141 ±0.0029  
+  *len_tapped_lands_this_turn                   0.0932       0.1183      +0.0251 ±0.0039  
+  *maralen_free_casts_total                     2.4845       2.4548      -0.0297 ±0.0098  
+  *len_creature_cast_turn                       8.2881       8.2067      -0.0814 ±0.0277  
+  *cards_exiled_total                          14.8227      14.6360      -0.1867 ±0.0700  
+  *len_library                                 66.0182      66.2945      +0.2763 ±0.1077  
+  *commander_cast_count                         1.5034       1.4908      -0.0126 ±0.0052  
+  *len_smart_removal_log                        0.6488       0.6350      -0.0138 ±0.0058  
+  *smart_removals_total                         0.6488       0.6350      -0.0138 ±0.0058  
+  *ramp_pieces_cast_total                       3.7351       3.6991      -0.0360 ±0.0154  
+  *landfall_elf_tokens_total                    0.0935       0.0855      -0.0080 ±0.0034  
+  *life                                        35.4820      35.5584      +0.0764 ±0.0337  
+  *maralen_triggers_total                       7.6740       7.5825      -0.0915 ±0.0411  
+  *len_graveyard                                6.1006       6.0163      -0.0843 ±0.0388  
+  *itlimoc_transform_turn__ate_T4               0.0162       0.0141      -0.0021 ±0.0010  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

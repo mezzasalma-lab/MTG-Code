@@ -1,0 +1,16 @@
+cenario (virado, desvirado, magica): ('Bojuka Bog', "Alchemist's Refuge", 'Allosaurus Shepherd')
+PASS TL1 com uma magica que so' o desvirado paga, T1 joga o desvirado e conta o skip
+PASS TL2 sem nada pra conjurar, T1 joga o virado e conta o first-play
+PASS TL3 chave desligada: primeiro da ordem propria do deck, sem contar nada
+PASS TL4 em T3 a correcao nao se aplica (ordem propria do deck)
+PASS TL5 so' viradas ou so' desviradas na mao: ordem propria do deck
+PASS TL6 o ensaio nao muta estado/RNG/random global e solta a trava
+PASS TL8 modo GHOST: roda o ensaio mas joga o padrao e nao conta nada
+PASS TL7 play_land joga so' o terreno escolhido (1 por turno) e o virado nao da mana no turno
+PASS TL12 checklands (Drowned Catacomb/Hinterland Harbor/Woodland Cemetery): virado sem o subtipo, desvirado com o subtipo (basico OU dual tipado)
+PASS TL13 Sunken Hollow: virado com menos de 2 terrenos BASICOS (duais tipados nao contam como basicos)
+PASS TL14 Gilt-Leaf Palace: desvirado so' se ha um card de Elfo na mao (alem dela mesma)
+PASS TL15 chave LAND_ENTRY_CONDITIONS_ENABLED desligada: so' a tag etb_tapped manda (comportamento antigo)
+PASS TL16 integracao: play_land com Drowned Catacomb em campo vazio nao produz mana no turno; com uma Island em campo produz
+
+13/13 testes passaram

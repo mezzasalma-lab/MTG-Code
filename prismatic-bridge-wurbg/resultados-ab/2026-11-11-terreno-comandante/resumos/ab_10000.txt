@@ -1,0 +1,35 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9796 (98.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *bridge_first_cast_turn__ate_T3               0.0603       0.0659      +0.0056 ±0.0015  
+  *bridge_first_cast_turn__ate_T4               0.3511       0.3539      +0.0028 ±0.0010  
+  *bridge_first_cast_turn__ate_T5               0.6900       0.6946      +0.0046 ±0.0013  
+  *bridge_first_cast_turn__ate_T6               0.7933       0.7946      +0.0013 ±0.0008  
+   bridge_first_cast_turn__nunca                0.1096       0.1095      -0.0001 ±0.0002  
+  *first_pw_hit_turn__ate_T4                    0.0269       0.0296      +0.0027 ±0.0010  
+  *first_pw_hit_turn__ate_T5                    0.1668       0.1696      +0.0028 ±0.0011  
+  *first_pw_hit_turn__ate_T6                    0.3693       0.3725      +0.0032 ±0.0012  
+  *first_pw_hit_turn__nunca                     0.3907       0.3889      -0.0018 ±0.0011  
+  *first_ult_turn__ate_T5                       0.0102       0.0110      +0.0008 ±0.0006  
+  *first_ult_turn__ate_T6                       0.0603       0.0619      +0.0016 ±0.0010  
+  *first_ult_turn__nunca                        0.6289       0.6277      -0.0012 ±0.0011  
+   lands_played_total                           6.2403       6.2410      +0.0007 ±0.0020  
+  *pw_activations_total                        10.8773      10.9422      +0.0649 ±0.0490  
+  *pw_draws_total                               7.3727       7.4380      +0.0653 ±0.0553  
+  *pw_ultimates_used_total                      2.4028       2.4269      +0.0241 ±0.0219  
+  *evolution_sage_proliferates                  1.2452       1.2589      +0.0137 ±0.0123  
+  *bridge_hits_planeswalker                     1.2201       1.2285      +0.0084 ±0.0032  
+  *turns_with_ult                               0.5470       0.5522      +0.0052 ±0.0024  
+  *bridge_cast_count                            1.4431       1.4466      +0.0035 ±0.0017  
+  *bridge_removed_count                         0.7293       0.7328      +0.0035 ±0.0017  
+  *removal_attempts_total                       0.8801       0.8843      +0.0042 ±0.0021  
+  *planeswalkers_in_play_end                    2.9869       3.0006      +0.0137 ±0.0082  
+  *bridge_cast_turn__ate_T3                     0.0108       0.0120      +0.0012 ±0.0007  
+  *interaction_spells_cast_total                2.6384       2.6507      +0.0123 ±0.0077  
+  *opp_eliminated_total                         0.2217       0.2252      +0.0035 ±0.0023  
+  *sphinx_extra_beginning_phases_total          0.2418       0.2442      +0.0024 ±0.0016  
+  *first_pw_hit_turn__ate_T3                    0.0032       0.0039      +0.0007 ±0.0005  
+  *pw_deaths_total                              0.6441       0.6483      +0.0042 ±0.0033  
+  *bridge_hits_creature                         0.7830       0.7861      +0.0031 ±0.0025  
+  *bridge_cast_turn__ate_T5                     0.2961       0.2976      +0.0015 ±0.0013  

@@ -1,0 +1,100 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: EXOTIC_ORCHARD_PROXY=True
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1816 (90.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.1295       0.1275      -0.0020 ±0.0031  
+  *commander_cast_turn__ate_T4                  0.0160       0.0180      +0.0020 ±0.0020  
+  *commander_cast_turn__ate_T5                  0.1430       0.1470      +0.0040 ±0.0034  
+  *commander_cast_turn__ate_T6                  0.3835       0.3885      +0.0050 ±0.0044  
+  *first_color_screw_turn__ate_T6               0.2305       0.2035      -0.0270 ±0.0071  
+  *first_color_screw_turn__nunca                0.7640       0.7910      +0.0270 ±0.0071  
+  *first_color_screw_turn__ate_T5               0.2250       0.1995      -0.0255 ±0.0069  
+  *first_color_screw_turn__ate_T4               0.2055       0.1840      -0.0215 ±0.0064  
+  *color_screw_turns                            0.8445       0.7400      -0.1045 ±0.0320  
+  *first_color_screw_turn__ate_T3               0.1775       0.1590      -0.0185 ±0.0059  
+  *len_graveyard                               18.6965      18.9520      +0.2555 ±0.1362  
+  *lethal_proxy_turn__nunca                     0.4525       0.4450      -0.0075 ±0.0043  
+  *own_interaction_used                         0.8200       0.8250      +0.0050 ±0.0031  
+  *len_library                                 43.7820      43.4335      -0.3485 ±0.2373  
+  *firdoch_entered_turn__ate_T3                 0.5870       0.5815      -0.0055 ±0.0038  
+  *cards_drawn_extra                           34.9875      35.3020      +0.3145 ±0.2202  
+  *sarkhan_copies_chosen_total                  0.3305       0.3390      +0.0085 ±0.0061  
+  *firdoch_entered_turn__ate_T4                 0.6065       0.6015      -0.0050 ±0.0037  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1815 (90.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.2585       0.2540      -0.0045 ±0.0045  
+   commander_cast_turn__ate_T4                  0.0135       0.0145      +0.0010 ±0.0014  
+   commander_cast_turn__ate_T5                  0.1105       0.1120      +0.0015 ±0.0035  
+  *commander_cast_turn__ate_T6                  0.2935       0.2985      +0.0050 ±0.0042  
+  *first_color_screw_turn__ate_T6               0.2405       0.2115      -0.0290 ±0.0074  
+  *first_color_screw_turn__nunca                0.7505       0.7795      +0.0290 ±0.0074  
+  *first_color_screw_turn__ate_T5               0.2325       0.2060      -0.0265 ±0.0070  
+  *color_screw_turns                            0.9150       0.7950      -0.1200 ±0.0351  
+  *first_color_screw_turn__ate_T4               0.2080       0.1860      -0.0220 ±0.0064  
+  *first_color_screw_turn__ate_T3               0.1775       0.1590      -0.0185 ±0.0059  
+  *commander_damage_dealt                      15.5125      15.7720      +0.2595 ±0.1646  
+  *len_graveyard                               11.9130      12.1515      +0.2385 ±0.1606  
+  *own_interaction_used                         0.7880       0.7930      +0.0050 ±0.0034  
+  *wiped_this_round                             0.1375       0.1415      +0.0040 ±0.0031  
+  *urdragon_attack_draws_total                  8.7310       8.8385      +0.1075 ±0.0862  
+  *len_library                                 59.1490      58.8195      -0.3295 ±0.2677  
+  *cards_drawn_extra                           20.6770      20.9810      +0.3040 ±0.2511  
+  *triome_cycles_total                          0.1050       0.1090      +0.0040 ±0.0037  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8961 (89.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1376       0.1352      -0.0024 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.0234       0.0242      +0.0008 ±0.0008  
+  *commander_cast_turn__ate_T5                  0.1636       0.1656      +0.0020 ±0.0015  
+  *commander_cast_turn__ate_T6                  0.4027       0.4064      +0.0037 ±0.0019  
+  *first_color_screw_turn__nunca                0.7471       0.7799      +0.0328 ±0.0035  
+  *first_color_screw_turn__ate_T6               0.2463       0.2145      -0.0318 ±0.0035  
+  *first_color_screw_turn__ate_T5               0.2376       0.2073      -0.0303 ±0.0034  
+  *first_color_screw_turn__ate_T4               0.2214       0.1948      -0.0266 ±0.0032  
+  *color_screw_turns                            0.9342       0.7857      -0.1485 ±0.0179  
+  *first_color_screw_turn__ate_T3               0.1917       0.1699      -0.0218 ±0.0029  
+  *own_interaction_used                         0.8310       0.8407      +0.0097 ±0.0023  
+  *len_library                                 42.0164      41.6472      -0.3692 ±0.1307  
+  *cards_drawn_extra                           36.6378      36.9746      +0.3368 ±0.1224  
+  *len_graveyard                               19.9034      20.1158      +0.2124 ±0.0774  
+  *len_battlefield                             29.1655      29.3390      +0.1735 ±0.0650  
+  *lethal_proxy_turn__nunca                     0.4290       0.4231      -0.0059 ±0.0023  
+  *len_creature_cast_turn                      12.3966      12.4886      +0.0920 ±0.0365  
+  *sarkhan_loyalty                              1.8563       1.8781      +0.0218 ±0.0092  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8948 (89.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.2642       0.2596      -0.0046 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.0182       0.0190      +0.0008 ±0.0007  
+   commander_cast_turn__ate_T5                  0.1211       0.1224      +0.0013 ±0.0014  
+  *commander_cast_turn__ate_T6                  0.3118       0.3157      +0.0039 ±0.0021  
+  *first_color_screw_turn__nunca                0.7294       0.7634      +0.0340 ±0.0036  
+  *first_color_screw_turn__ate_T6               0.2575       0.2257      -0.0318 ±0.0035  
+  *first_color_screw_turn__ate_T5               0.2465       0.2161      -0.0304 ±0.0034  
+  *color_screw_turns                            1.0217       0.8600      -0.1617 ±0.0187  
+  *first_color_screw_turn__ate_T4               0.2259       0.1992      -0.0267 ±0.0032  
+  *first_color_screw_turn__ate_T3               0.1917       0.1699      -0.0218 ±0.0029  
+  *own_interaction_used                         0.7903       0.8013      +0.0110 ±0.0024  
+  *urdragon_free_permanents_total               1.7518       1.7732      +0.0214 ±0.0076  
+  *len_creature_cast_turn                       8.4748       8.5702      +0.0954 ±0.0352  
+  *sarkhan_loyalty                              1.0742       1.0955      +0.0213 ±0.0081  
+  *len_library                                 58.9272      58.5896      -0.3376 ±0.1320  
+  *cards_drawn_extra                           20.7700      21.0785      +0.3085 ±0.1227  
+  *arcane_denial_draws_total                    0.1128       0.1152      +0.0024 ±0.0010  
+  *lethal_proxy_turn__nunca                     0.6741       0.6687      -0.0054 ±0.0023  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

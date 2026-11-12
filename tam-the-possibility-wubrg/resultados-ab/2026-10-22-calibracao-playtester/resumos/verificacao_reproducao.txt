@@ -1,0 +1,16 @@
+IGUAL  taxas_observadas.md
+IGUAL  ajuste_perfil_default.txt
+IGUAL  ajuste_perfil_playtester.txt
+IGUAL  replay_jogo3_padrao.txt
+IGUAL  replay_jogo3_resiliencia_default.txt
+IGUAL  replay_jogo3_resiliencia_playtester.txt
+IGUAL  replay_jogo3_padrao_playtester.txt
+IGUAL  replay_jogo4_padrao.txt
+IGUAL  replay_jogo4_resiliencia_default.txt
+IGUAL  replay_jogo4_resiliencia_playtester.txt
+IGUAL  replay_jogo4_padrao_playtester.txt
+IGUAL  replay_jogo5_padrao.txt
+IGUAL  replay_jogo5_resiliencia_default.txt
+IGUAL  replay_jogo5_resiliencia_playtester.txt
+IGUAL  replay_jogo5_padrao_playtester.txt
+15/15 saidas byte a byte iguais

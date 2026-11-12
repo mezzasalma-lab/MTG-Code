@@ -1,6 +1,391 @@
 # Goldfish Log — Hei-Bai, Forest Guardian
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
+> **Rodada 2026-10-05 (Fetchlands reais (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`](resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md)
+
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo + imposto de comandante + ordem de set determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-fetchlands-reais/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. Modo padrão, N=10.000: comandante em campo até T3 51,6% → 51,5% (-0,08 ± 0,09 pp), até T4 -0,26 ± 0,10 pp, até T5 -0,26 ± 0,10 pp, comandante que nunca entra +0,15 ± 0,08 pp. Modo resiliência: comandante em campo até T3 48,9% → 48,9% (-0,08 ± 0,09 pp), até T4 -0,29 ± 0,24 pp, até T5 -0,38 ± 0,24 pp, comandante que nunca entra +0,12 ± 0,13 pp. Fetches de fato quebradas por partida: 1,50 (N=10.000, padrão); sem alvo na biblioteca: 0,01 por partida. Biblioteca no fim da partida: -1,680 ± 0,124 cartas (o thinning). Vida no fim (resiliência): -1,416 ± 0,029 (1 de vida por fetch).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Fetchland ficava em campo como terreno dual estático.** O oráculo da fetch é "{T}, Pay 1 life, Sacrifice this land: Search your library for a [tipo] or [tipo] card, put it onto the battlefield, then shuffle". O simulador deixava a fetch em campo produzindo mana das duas cores, sem sacrifício, sem busca (a biblioteca nunca afinava), sem ir pro cemitério e sem a vida do custo. Mesma classe do Megatron (Evolving Wilds / Terramorphic Expanse / Rocky Tar Pit, corrigido em 2026-10-03). Achado pela varredura mecânica de fetches (`varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`).
+
+**O que mudou:**
+- `FETCH_LANDS_ENABLED` (padrão `True`): ao jogar a fetch, `crack_fetch` a manda pro cemitério, paga 1 de vida e busca na biblioteca um terreno com subtipo compatível com o texto da fetch (básico OU dual tipada, por SUBTIPO do `type_line` do oráculo, não por nome); o terreno buscado entra em campo pelas regras de entrada do deck. Escolha: não-básico antes de básico (preserva os básicos pro Cultivate/Aang's Journey/Kodama's Reach, que só buscam básico) e, por último, o que entra virado (Triomes). Sem alvo na biblioteca a fetch fica em campo como antes (contado em `fetch_no_target_total`). Contadores novos: `fetches_cracked_total`, `fetch_no_target_total`. Com a chave em `False` o caminho antigo volta bit a bit.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 1793 (17.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0052       0.0067      +0.0015 ±0.0008  
+   commander_cast_turn__ate_T3                  0.5162       0.5154      -0.0008 ±0.0009  
+  *commander_cast_turn__ate_T4                  0.9328       0.9302      -0.0026 ±0.0010  
+  *commander_cast_turn__ate_T5                  0.9672       0.9646      -0.0026 ±0.0010  
+  *life                                        40.0000      38.4974      -1.5026 ±0.0209  
+  *len_graveyard                                9.6663      11.2228      +1.5565 ±0.0839  
+  *len_library                                 65.2421      63.5622      -1.6799 ±0.1237  
+  *lands_played_this_turn                       0.6018       0.5541      -0.0477 ±0.0069  
+  *ramp_pieces_cast                             1.5742       1.6129      +0.0387 ±0.0093  
+  *len_creature_cast_turn                       5.9118       6.0221      +0.1103 ±0.0274  
+  *len_hand                                     3.9796       4.0148      +0.0352 ±0.0140  
+  *mana_spent_this_turn                        14.9843      15.3690      +0.3847 ±0.1696  
+  *commander_cast_turn__ate_T6                  0.9830       0.9811      -0.0019 ±0.0009  
+  *library_emptied                              0.0855       0.0909      +0.0054 ±0.0025  
+  *commander_cast_count                         0.9948       0.9933      -0.0015 ±0.0008  
+  *commander_in_play                            0.9948       0.9933      -0.0015 ±0.0008  
+  *replenish_returns_total                      0.2593       0.2908      +0.0315 ±0.0167  
+  *mind_stone_harnessed                         0.1797       0.1834      +0.0037 ±0.0023
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 1918 (19.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0143       0.0155      +0.0012 ±0.0013  
+   commander_cast_turn__ate_T3                  0.4894       0.4886      -0.0008 ±0.0009  
+  *commander_cast_turn__ate_T4                  0.8780       0.8751      -0.0029 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.9309       0.9271      -0.0038 ±0.0024  
+  *life                                        37.9841      36.5680      -1.4161 ±0.0285  
+  *len_library                                 73.7965      72.3287      -1.4678 ±0.1284  
+  *lands_played_this_turn                       0.4873       0.4493      -0.0380 ±0.0074  
+  *graveyard_wipe_used                          0.4114       0.4317      +0.0203 ±0.0059  
+  *len_smart_graveyard_wipe_log                 0.4114       0.4317      +0.0203 ±0.0059  
+  *smart_graveyard_wipes_total                  0.4114       0.4317      +0.0203 ±0.0059  
+  *len_graveyard                               10.6069      11.9986      +1.3917 ±0.4468  
+  *len_hand                                     2.8375       2.8948      +0.0573 ±0.0223  
+  *ramp_pieces_cast                             1.1876       1.2063      +0.0187 ±0.0085  
+  *commander_cast_count                         1.5261       1.5133      -0.0128 ±0.0066  
+  *commander_cast_turn__ate_T6                  0.9638       0.9609      -0.0029 ±0.0019  
+  *len_creature_cast_turn                       4.6228       4.6529      +0.0301 ±0.0220  
+  *commander_in_play                            0.7134       0.7064      -0.0070 ±0.0059  
+   len_smart_artifact_wipe_log                  0.1298       0.1332      +0.0034 ±0.0037
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** a biblioteca afina (−1 terreno por fetch, ligeiramente mais cartas úteis nos próximos draws), o terreno buscado entra pelas regras de entrada do deck (virado quando o oráculo manda) e cada fetch custa 1 de vida e põe uma carta no cemitério; o efeito no comandante em T3–T5 é de segunda ordem.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `heibai_goldfish_v1_ANTES_0126a36.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Fetch real:** leitura de `play_land` (e do caminho de entrada de terreno) + testes dirigidos FT1–FT8 (a fetch vai pro cemitério, a biblioteca perde exatamente 1 carta, o buscado tem subtipo compatível — varre TODAS as fetches do deck —, custo de 1 de vida, sem alvo → fica em campo, escolhe o que entra desvirado, thinning, chave desligada = caminho antigo, 300 partidas completas por modo); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com a chave desligada × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro (contadores novos ignorados).
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **O "then shuffle" do oráculo NÃO é modelado:** o estado deste simulador não tem RNG próprio na biblioteca (a biblioteca já é uma permutação aleatória). Embaralhar de novo só mudaria algo se um tutor ou scry tivesse posto uma carta específica no topo entre a compra e a jogada de terreno; a ordem do turno impede isso nas linhas modeladas.
+- **Landfall:** varri o `oracle_text` das cartas da lista procurando gatilhos de "whenever a land enters"/Landfall: neste deck nenhuma carta além dos terrenos tem esse gatilho, então o terreno buscado não deixa gatilho sem disparar.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão, sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada.
+- **Oponente real:** o goldfish não modela (convenção do repositório).
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 47,9% → 51,6% (+3,77 ± 0,40 pp), até T4 +1,29 ± 0,23 pp, até T5 +0,02 ± 0,04 pp, comandante que nunca entra: sem diferença pareada. Modo resiliência: comandante em campo até T3 45,5% → 48,9% (+3,45 ± 0,38 pp), até T4 +1,09 ± 0,28 pp, até T5 +0,14 ± 0,15 pp, comandante que nunca entra +0,01 ± 0,06 pp. A correção joga o terreno virado primeiro em média 0,24 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,13 vez(es) por partida (teria custado uma jogada).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- Terrenos que entram virados neste deck: Indatha Triome e Ketria Triome (sempre) e Abandoned Air Temple ("unless you control a basic land"). Os 8 fetchlands ficam na ordem do deck aqui; o conserto da fetch (busca de verdade) é a seção "Fetchlands reais" desta mesma data, acima.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8049 (80.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T3                  0.4785       0.5162      +0.0377 ±0.0040  
+  *commander_cast_turn__ate_T4                  0.9199       0.9328      +0.0129 ±0.0023  
+   commander_cast_turn__ate_T5                  0.9670       0.9672      +0.0002 ±0.0004  
+  *len_library                                 65.4931      65.2421      -0.2510 ±0.1002  
+  *cards_drawn_extra                           14.1694      14.3950      +0.2256 ±0.0926  
+  *len_creature_cast_turn                       5.8626       5.9118      +0.0492 ±0.0207  
+  *tutors_used_total                            0.9253       0.9363      +0.0110 ±0.0046  
+  *len_graveyard                                9.5405       9.6663      +0.1258 ±0.0613  
+  *library_emptied                              0.0832       0.0855      +0.0023 ±0.0016  
+  *ramp_pieces_cast                             1.5650       1.5742      +0.0092 ±0.0065  
+  *proxy_life_gained_total                     36.5358      37.6841      +1.1483 ±0.8959  
+  *len_battlefield                             71.2140      72.8166      +1.6026 ±1.2920  
+  *proxy_drain_total                           32.1491      33.1944      +1.0453 ±0.8631  
+  *tokens_created_total                        50.4238      51.8994      +1.4756 ±1.2640  
+  *life_origin_reanimates_total                 0.0249       0.0262      +0.0013 ±0.0011  
+  *mind_stone_harnessed                         0.1780       0.1797      +0.0017 ±0.0015  
+  *doubles_sanctum_of_all_total                22.1990      23.0158      +0.8168 ±0.7367
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8049 (80.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0142       0.0143      +0.0001 ±0.0006  
+  *commander_cast_turn__ate_T3                  0.4549       0.4894      +0.0345 ±0.0038  
+  *commander_cast_turn__ate_T4                  0.8671       0.8780      +0.0109 ±0.0028  
+   commander_cast_turn__ate_T5                  0.9295       0.9309      +0.0014 ±0.0015  
+  *commander_cast_count                         1.5170       1.5261      +0.0091 ±0.0045  
+  *len_creature_cast_turn                       4.6015       4.6228      +0.0213 ±0.0118  
+  *len_library                                 73.9128      73.7965      -0.1163 ±0.0672  
+  *cards_drawn_extra                            6.3413       6.4290      +0.0877 ±0.0613  
+  *len_graveyard                               10.4512      10.6069      +0.1557 ±0.1135  
+  *len_smart_graveyard_snipe_log                0.3649       0.3701      +0.0052 ±0.0041  
+  *smart_graveyard_snipes_total                 0.3649       0.3701      +0.0052 ±0.0041  
+  *len_smart_wipe_log                           0.7626       0.7689      +0.0063 ±0.0050  
+  *smart_wipes_total                            0.7626       0.7689      +0.0063 ±0.0050  
+  *tokens_created_total                        10.8979      11.1470      +0.2491 ±0.2073  
+  *mana_spent_this_turn                         8.7793       8.8421      +0.0628 ±0.0542  
+  *shrine_reblinks_total                        0.6126       0.6339      +0.0213 ±0.0188  
+  *life_origin_reanimates_total                 0.0190       0.0204      +0.0014 ±0.0012  
+  *blinks_total                                 1.2282       1.2542      +0.0260 ±0.0246
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `heibai_goldfish_v1_ANTES_0c10005.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## Mulligan com escolha do fundo + imposto de comandante + ordem de set determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** três erros reais, três consertos, todos atrás de chave e bit-idênticos com a chave desligada. O mulligan escolhido **melhora** a abertura (comandante em campo até T4: +1,16 ± 0,24 pp; nunca em 8 turnos: −0,39 ± 0,13 pp, modo padrão, N=10.000). O imposto só aparece no modo de resiliência (único em que o comandante morre ou é anulado) e **piora** o que antes era otimista demais: comandante em campo no fim: −6,4 ± 0,7 pp (−6,8 ± 0,6 pp isolando só o imposto). No modo padrão o imposto não muda nenhuma partida (100,0% idênticas). A ordem de set só muda a ORDEM da lista `battlefield` (nenhum número do jogo) e existe pra a mesma semente dar o mesmo resultado em processos diferentes.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+- **Imposto de comandante ausente.** O próprio arquivo dizia "sem taxa de comandante neste deck", mas a Hei-Bai é criatura e, no modo de resiliência, morre (CR 903.9a, modelado desde 2026-09-21) ou é anulada e volta a ser conjurada da zona de comando pelo mesmo custo. CR 903.8: "costs an additional {2} for each previous time the player casting it has cast it from the command zone" — conta o CAST, resolvendo ou não. O comentário "sem taxa" valia só para quando o comandante nunca saía de campo, o que no goldfish padrão é verdade; no modo de resiliência não.
+- **Ordem de iteração de `set` dependia de `PYTHONHASHSEED`.** `for reactor in set(state.battlefield)` (reações de Shrines quando uma Shrine entra) iterava em ordem de hash: a mesma semente dava ordens diferentes de entrada em campo em processos diferentes. Medido (3 `PYTHONHASHSEED`, 1.500 sementes × 2 modos, estado final campo a campo, `resumos/determinismo.txt`): controle 4 sementes divergentes (padrão) e 1 (resiliência), **só** no campo `battlefield` (ordem; o conjunto de permanentes é o mesmo); com a correção, 0. Efeito prático: o `cmp` dos brutos re-simulados em outro processo falhava (9/15 saídas iguais na 1ª verificação, antes da correção).
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+- `COMMANDER_TAX_ENABLED` (padrão `True`) + `GameState.commander_cast_count`: `effective_cost` soma `2 × commander_cast_count` quando a carta é o comandante; `cast_card` incrementa o contador logo após pagar (antes de `try_smart_opponent_counter`, então um cast anulado também conta). O contador é um campo novo do estado (ignorado na comparação de bit-identidade, o snapshot não o tem).
+- `DETERMINISTIC_SET_ORDER_ENABLED` (padrão `True`): o laço sobre `set(state.battlefield)` passa a iterar `dict.fromkeys(state.battlefield)` (deduplicado na ordem do campo). Com a chave em `False` o laço antigo volta.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8330 (83.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0091       0.0052      -0.0039 ±0.0013  
+  *commander_cast_turn__ate_T3                  0.4696       0.4785      +0.0089 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.9083       0.9199      +0.0116 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.9591       0.9670      +0.0079 ±0.0019  
+  *commander_cast_turn__ate_T6                  0.9759       0.9830      +0.0071 ±0.0017  
+  *commander_in_play                            0.9909       0.9948      +0.0039 ±0.0013  
+  *len_hand                                     4.0244       3.9828      -0.0416 ±0.0136  
+  *ramp_pieces_cast                             1.5448       1.5650      +0.0202 ±0.0076  
+  *mind_stone_harnessed                         0.1748       0.1780      +0.0032 ±0.0019  
+  *tutors_used_total                            0.9162       0.9253      +0.0091 ±0.0059  
+  *len_creature_cast_turn                       5.8278       5.8626      +0.0348 ±0.0226  
+  *cards_drawn_extra                           14.0437      14.1694      +0.1257 ±0.1083  
+  *len_library                                 65.6313      65.4931      -0.1382 ±0.1191  
+  *tapped_lands_this_turn                       0.5760       0.5652      -0.0108 ±0.0101  
+   len_graveyard                                9.4703       9.5405      +0.0702 ±0.0703  
+   life_origin_reanimates_total                 0.0241       0.0249      +0.0008 ±0.0010  
+   ephemerate_rebound_pending                   0.0681       0.0692      +0.0011 ±0.0018  
+   blinks_total                                 5.2574       5.3139      +0.0565 ±0.0980
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 4561 (45.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0110       0.0142      +0.0032 ±0.0021  
+  *commander_cast_turn__ate_T3                  0.4458       0.4549      +0.0091 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.8736       0.8671      -0.0065 ±0.0036  
+  *commander_cast_turn__ate_T5                  0.9486       0.9295      -0.0191 ±0.0037  
+  *commander_in_play                            0.7763       0.7121      -0.0642 ±0.0069  
+  *len_library                                 73.4051      73.9128      +0.5077 ±0.1111  
+  *cards_drawn_extra                            6.6634       6.3413      -0.3221 ±0.0978  
+  *len_smart_wipe_log                           0.7855       0.7626      -0.0229 ±0.0077  
+  *smart_wipes_total                            0.7855       0.7626      -0.0229 ±0.0077  
+  *commander_cast_turn__ate_T6                  0.9716       0.9632      -0.0084 ±0.0029  
+  *len_creature_cast_turn                       4.6573       4.6015      -0.0558 ±0.0199  
+  *len_hand                                     2.9082       2.8506      -0.0576 ±0.0239  
+  *len_smart_removal_log                        0.7690       0.7495      -0.0195 ±0.0087  
+  *smart_removals_total                         0.7690       0.7495      -0.0195 ±0.0087  
+  *len_smart_counter_log                        0.1169       0.1074      -0.0095 ±0.0044  
+  *smart_counters_total                         0.1169       0.1074      -0.0095 ±0.0044  
+  *len_smart_discard_log                        1.3947       1.3694      -0.0253 ±0.0117  
+  *smart_discards_total                         1.3947       1.3694      -0.0253 ±0.0117
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o efeito do imposto no modo de resiliência era previsível: cada recast depois de uma morte/anulação custa {2} a mais, e o goldfish reconquista o comandante mais tarde ou nunca. No modo padrão o comandante só é conjurado uma vez por partida (nunca morre, nunca é anulado), por isso 0 partidas mudam.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `heibai_goldfish_v1_ANTES_67ac5f4.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 13/13 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Imposto:** testes dirigidos T1–T5 (1º cast sem taxa; 2º cast com +{2}; cast anulado conta; ordem de contagem; chave desligada = custo antigo).
+- **Determinismo:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, controle (chave desligada) × correção (`resumos/determinismo.txt`); varredura estática (AST) de laços/compreensões sobre `set` nos 18 simuladores (`varredura-2026-10-05/`).
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** `remove_permanent()` desviava o comandante direto pra zona
+de comando sem passar pelo cemitério. Este deck tem 0 cartas
+"whenever ~ dies" compartilhadas (só Enduring Vitality, que reage a si
+mesma) — correção puramente estrutural, sem impacto de métrica.
+
+**Resultado:** modo padrão idêntico, 0/3000 mismatches de
+bit-identidade.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 3 testes dirigidos
+(incluindo confirmar que a excecão do Enduring Vitality continua
+intacta).
+
+---
+
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Correção de design no mesmo dia:** 1ª versão rolava os 3 tipos
+independentemente; usuário apontou o problema ("alternância de
+remoções, aleatória, até pq wipes de criaturas são muito mais comuns")
+— redesenhado pra 1 rolagem "algum wipe acontece" + escolha ponderada
+de UM tipo só (pesos 0.4/0.2/0.15). Detalhes completos em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Resultado (A/B 2000 jogos mesma seed_base, design unificado final):**
+% de jogos com pelo menos 1 wipe de qualquer tipo sobe de 53,8% pra
+75,2% (antes = commit `8b84daf`, só wipe de criatura). Avg wipes totais
+por jogo: 0,687 → 1,238. 13,1% dos jogos "depois" sofrem pelo menos 1
+artifact wipe, 29,5% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (2.000
+seeds) + regressão de 20.000 partidas, 0 exceções + testes dirigidos
+(no máximo 1 tipo por chamada; distribuição ponderada correta;
+exceção do Enduring Vitality preservada).
+
+---
+
+## Bug de design: modelo assumia 100% da mesa mirando em mim, sempre — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron — "se sempre
+for 3 contra 1, aí não consigo fazer nada, nunca!". Detalhes em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS`, mesmo
+padrão do Megatron/Ur-Dragon.
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques sofridos 4,01→1,47,
+vida final média 33,69→37,67, rodadas com zero interação 11,6%→50,1%.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds) + regressão
+de 20.000 partidas, 0 exceções.
+
+---
+
+## Bug de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron — um wipe
+simétrico suprime ataque de TODOS os oponentes na mesma rodada, não só
+do próprio wiper. Detalhes em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `state.wiped_this_round`, `POST_WIPE_ATTACK_HASTE_
+FACTOR = 0.15`, mesmo padrão do Megatron/Ur-Dragon.
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques de oponente sofridos
+4,01→3,75, vida final média 33,69→34,11.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds) + regressão
+de 20.000 partidas, 0 exceções.
+
+---
+
+## Bug de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron (board wipe é
+sorcery, ataque vem de criatura — se simétrico, o mesmo oponente não
+ataca no turno em que wipou). Detalhes em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `try_smart_opponent_turn()` simula 3 turnos de oponente
+de verdade por rodada, wipe e ataque mutuamente exclusivos no mesmo
+turno.
+
+**Resultado (A/B mesma seed):** dano proxy no modo resiliência
+37,72→3,14 (~8% do valor anterior) — a queda mais acentuada dos 3
+decks, porque Elesh Norn/Sanctum of All multiplicam quase todo o
+board, e o board wipe agora dispara em quase 80% das partidas.
+
+**Validação:** teste dirigido (exclusão mútua 100%) + regressão de
+20.000 partidas, 0 exceções + modo padrão intocado.
+
+---
+
+## Modo de resiliência portado do Megatron/Ur-Dragon — 2026-09-20
+
+**Gatilho:** usuário pediu pra implementar mesmo depois da avaliação
+de esforço (Hei Bai serviu de piloto e mostrou 2 lacunas estruturais).
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado real mais importante:** o próprio arquivo já documentava
+Enduring Vitality (death trigger real, "return it to the battlefield
+as an enchantment") como fora de escopo porque nenhum permanente
+próprio nunca morria aqui. Implementar wipe/remoção pela 1ª vez abriu
+essa janela de verdade — tratado corretamente (`remove_permanent()`),
+com teste dirigido confirmando que ela volta como enchantment e fica
+imune a wipes de criatura depois disso.
+
+**Validação:** 5.000 seeds de equivalência bit-a-bit do modo padrão (0
+diferenças) + 6 testes unitários dirigidos + regressão de 20.000
+partidas em cada modo, 0 exceções.
+
+**Resultado (A/B 2000 jogos mesma seed):** dano proxy cai de 231,65
+pra 37,72 (16% do original) — queda proporcional maior que o Ur-Dragon
+(31%), porque Elesh Norn/Sanctum of All multiplicam quase todo o board,
+e o board wipe médio leva 11,43 Shrines de uma vez. Tabela completa em
+`checklist-oraculo.md`.
 
 ---
 

@@ -1,0 +1,2 @@
+fim resiliencia rc=$?
+fim padrao rc=$?

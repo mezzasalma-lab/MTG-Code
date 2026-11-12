@@ -1,0 +1,21 @@
+PASS - H1 so' o Dictate, 10 Treasures todos animados: sacrifica no maximo METADE (5): 5 mortes, 5 gatilhos do Dictate (= 15 criaturas de oponente no proxy x3), 5 Treasures de reserva 
+PASS - H2 estoque impar (7): 'ate' metade' = 3 (arredonda pra baixo, nunca mais que a metade) 
+PASS - H3 poucos animados (3 de 10): o limite e' o numero de animados, nao a metade (so' criatura conta como morte) 
+PASS - H4 estoque 1: metade = 0, nao sacrifica o unico Treasure 
+PASS - H5 estoque 12 com 7 animados: metade = 6 < 7: sacrifica 6 (a metade conta o estoque todo, nao so' os animados) 
+PASS - H6 escala do T8 da partida (12 Treasures animados): sacrifica 6 (o usuario fez 7) 
+PASS - H7 chave desligada = comportamento da rodada anterior: so' o Dictate sacrifica TODOS os animados 
+PASS - H8 Dictate + Mahadi: o sacrificio e' de graca (o Mahadi repoe) e continua sendo de TODOS os animados (a metade so' vale quando so' o Dictate justifica); contador 'so' Dictate' = 0 
+PASS - H9 Dictate + Pitiless Plunderer: idem, todos 
+PASS - H10 so' Mahadi (sem Dictate): todos, como na 5a rodada 
+PASS - H11 farm com Dictate desligado: nada (regra anterior a 6a rodada) 
+PASS - H12 sem Dictate, Mahadi nem Plunderer: nao sacrifica 
+PASS - H13 ordem: Dictate pago pelos 5 terrenos (os 8 Treasures intactos) e depois 4 animados (metade de 8) morrem com ele em campo = 4 gatilhos 
+PASS - H14 sequencia real combat_step -> main_phase -> farm -> end_step: 8 animados, Dictate conjurado, 4 sacrificados (metade) e 0 animados vivos no fim 
+PASS - H15 integracao: Dictate + Zulaport + Sephiroth, 12 Treasures: 6 sacrificados = 6 gatilhos do Dictate, 6 drains do Zulaport, o Sephiroth vira na 4a morte 
+PASS - I1 (padrao, 1.500 jogos) nenhuma carta duplicada, 0 'animados vivos' no fim do turno, o farm nunca acima dos animados nem (so' Dictate) acima da metade do estoque 
+   info I1 padrao: Treasures-criatura sacrificados pelo farm em 1.500 jogos: 1037 (so' por causa do Dictate: 97)
+PASS - I1 (resiliencia, 1.500 jogos) nenhuma carta duplicada, 0 'animados vivos' no fim do turno, o farm nunca acima dos animados nem (so' Dictate) acima da metade do estoque 
+   info I1 resiliencia: Treasures-criatura sacrificados pelo farm em 1.500 jogos: 395 (so' por causa do Dictate: 48)
+
+17/17 testes passaram

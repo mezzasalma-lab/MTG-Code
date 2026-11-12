@@ -1,0 +1,110 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "jace_wins",
+  "jace_win_T8",
+  "jace_win_T10",
+  "jace_plus_uses",
+  "jace_plus_self",
+  "jace_minus8_uses",
+  "jace_draws",
+  "jace_removed",
+  "self_lost",
+  "decked",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "opps_eliminated_total",
+  "opps_decked_total",
+  "cards_milled_self_total",
+  "cards_milled_opp_total",
+  "library_min",
+  "mothman_counters_placed_total",
+  "kozilek_shuffles_total",
+  "draws_total"
+ ],
+ "compacto": [
+  "jace_wins",
+  "jace_win_T8",
+  "self_lost",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "opps_decked_total",
+  "cards_milled_self_total",
+  "cards_milled_opp_total",
+  "mothman_counters_placed_total",
+  "kozilek_shuffles_total"
+ ],
+ "variantes": {
+  "base": {},
+  "offer_por_jace": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "negate_por_jace": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "selkie_por_jace": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "deluge_por_jace": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "arcane_denial_por_jace": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "negate_por_jace_remocao_33": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Jace, Wielder of Mysteries"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "JACE_REMOVAL_PROB": 0.33
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "offer_por_jace",
+  "negate_por_jace",
+  "selkie_por_jace",
+  "deluge_por_jace",
+  "arcane_denial_por_jace",
+  "negate_por_jace_remocao_33"
+ ],
+ "regressao": []
+}

@@ -1,0 +1,43 @@
+# Tom Bombadil — partida manual #6 (2026-09-30): dados brutos, script e verificações
+
+Arquivo da Regra #8 (`CLAUDE.md`). A análise em prosa está em
+`tom-bombadil-wubrg/goldfish-log.md`, seção "Partida manual #6 (2026-09-30)".
+
+## Como os dados foram obtidos
+- `dados/partida.json.xz`: o JSON do Archidekt playtester que o usuário colou na conversa (13 elementos = 13 turnos; cada
+  registro = estado de um objeto quando ele mudou; zona `opponentsCards` = interação que o usuário põe contra si).
+  O original só existia no texto da sessão; foi extraído do registro da conversa por script (sem redigitar).
+- Oráculo: `scryfall-cache/oracle-cache.json` (ao vivo). Nesta rodada foram adicionados Wan Shi Tong, Librarian; Jin-Gitaxias,
+  Core Augur; e as fichas Snail, Goblin Shaman, Wraith, Treasure e o emblema The Ring.
+
+## Mapa arquivo → o que é → status
+| arquivo | o que é | status |
+|---|---|---|
+| `dados/partida.json.xz` | log bruto da partida #6 | usado |
+| `analisa_partida.py` | trace por turno + verificações automáticas (mesmo script da #7; 1ª versão só checava terrenos/fetch/saber/Tom, a versão final acrescentou chave por id de objeto, cópias-ficha, fontes viradas × magias e a separação "violação provada" × "anomalia sem fonte") | usado |
+| `resumos/trace.md` | saída do script (regerada com a versão final) | usado |
+| `descomprimir.sh` | descomprime `dados/*.xz` | — |
+| `SHA256SUMS` | hashes | `sha256sum -c SHA256SUMS` |
+
+Código do simulador: **não foi alterado**.
+
+## Comando que reproduz a tabela
+```
+bash descomprimir.sh
+python3 analisa_partida.py dados/partida.json.xz > /tmp/trace6.md      # = resumos/trace.md
+```
+
+## Reprodutibilidade
+- `cmp` do trace refeito a partir de `dados/partida.json.xz` contra `resumos/trace.md`: **idêntico byte a byte**.
+- Resultado automático: 0 violações provadas; 3 anomalias sem fonte, todas na mesma Saga (In the Darkness Bind Them, T12).
+
+## Confirmações do usuário (2026-09-30 e 2026-10-01, depois do arquivamento)
+As 3 anomalias automáticas (ITDBT no T12: exílio, volta com Lore 1 e marcadores extras) foram erro de operação dele: o correto era só somar o marcador de saber. O alvo da Anguished Unmaking
+(oponente simulado) foi o token Galactus 16/16; ficha que sai de jogo não é registrada pelo playtester. Também confirmou: fichas do Culling Ritual que deveriam ter sido removidas, Fertile Ground
+anexada no Serra's Sanctum, Enduring Vitality virada como ataque simulado (ela tem vigilance), 2ª compra da Femeref feita antes da hora, erro de mana no T6 (sem detalhar), Fable com 2 entradas
+= misclick, Bloom Tender desvirado nos T6–T7 de propósito (blefe). O log mostra o Bloom Tender virado uma vez, no T8, antes de morrer no Ritual. Nenhum resíduo. O script ganhou só a tabela de compras
+(a #6 foi regenerada com a versão final).
+
+## O que as verificações automáticas NÃO provam
+Custo/cor de mana, ordem da pilha, escolhas e compras por habilidade foram conferidos à mão no `goldfish-log.md`; o log do
+playtester não registra o que o jogador não executou, e mistura desfazer/refazer (ex.: Fable com duas entradas idênticas no T6).

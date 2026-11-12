@@ -1,0 +1,23 @@
+LOTE N=10000 sementes 3000000..3009999, 10 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8306 (83.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0670       0.0561      -0.0109 ±0.0023  
+  *commander_cast_turn__ate_T3                  0.0129       0.0138      +0.0009 ±0.0009  
+  *commander_cast_turn__ate_T4                  0.2316       0.2487      +0.0171 ±0.0028  
+  *commander_cast_turn__ate_T5                  0.4815       0.5136      +0.0321 ±0.0038  
+  *commander_cast_turn__ate_T6                  0.6603       0.6910      +0.0307 ±0.0037  
+  *commander_damage_dealt                      15.4447      15.9776      +0.5329 ±0.0801  
+  *tom_sagas_put                                1.8513       1.9169      +0.0656 ±0.0127  
+  *tom_triggers                                 1.8585       1.9243      +0.0658 ±0.0127  
+  *tom_sagas_mv                                 8.8982       9.2089      +0.3107 ±0.0644  
+  *commander_damage_win                         0.2666       0.2829      +0.0163 ±0.0036  
+  *len_usage                                   30.7441      31.3075      +0.5634 ±0.1339  
+  *chapters_resolved                           18.8476      19.2890      +0.4414 ±0.1216  
+  *interaction_plays                            5.8351       5.9771      +0.1420 ±0.0391  
+  *tom_protected_turns                          1.3339       1.3747      +0.0408 ±0.0114  
+  *lethal_turn__nunca                           0.7452       0.7338      -0.0114 ±0.0036  
+  *len_library                                 67.6632      67.3258      -0.3374 ±0.1122  
+  *next_uid                                    35.4078      35.8913      +0.4835 ±0.1622  
+  *final_chapters_resolved                      4.7526       4.8872      +0.1346 ±0.0457  
+  *commander_cast_count                         1.3586       1.3743      +0.0157 ±0.0057  

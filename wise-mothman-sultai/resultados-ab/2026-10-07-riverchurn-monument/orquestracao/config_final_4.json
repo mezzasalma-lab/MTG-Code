@@ -1,0 +1,129 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min",
+  "riverchurn_tap_cards_opp",
+  "riverchurn_exhaust_ascension",
+  "riverchurn_enter_turn__ate_T4",
+  "riverchurn_enter_turn__ate_T6"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "sens_exhaust_so_letal__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_EXHAUST_MIN": 1000000000
+  },
+  "sens_exhaust_12__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_EXHAUST_MIN": 12
+  },
+  "sens_exhaust_48__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_EXHAUST_MIN": 48
+  },
+  "sens_eu_tambem__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_SELF": true
+  },
+  "sens_tap_primeiro__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_TAP_FIRST": true
+  },
+  "sens_fim_do_oponente__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_OPP_END_STEP": true
+  },
+  "sens_otimista__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_TAP_FIRST": true,
+   "RIVERCHURN_OPP_END_STEP": true,
+   "RIVERCHURN_EXHAUST_MIN": 12
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "sens_exhaust_so_letal__Negate",
+  "sens_exhaust_12__Negate",
+  "sens_exhaust_48__Negate",
+  "sens_eu_tambem__Negate",
+  "sens_tap_primeiro__Negate",
+  "sens_fim_do_oponente__Negate",
+  "sens_otimista__Negate"
+ ],
+ "regressao": []
+}

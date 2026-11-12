@@ -1,0 +1,5 @@
+cartas lidas: 91 (distintas, comandante incluido); todas com oraculo no cache: True
+'exhaust': []
+'activate(s)? an? (exhaust|ability)': []
+'whenever you activate': []
+'whenever .* abilit(y|ies) (is|are) activated': []

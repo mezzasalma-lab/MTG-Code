@@ -1,0 +1,644 @@
+{
+ "Make an Example": {
+  "name": "Make an Example",
+  "oracle_id": "591edddc-3736-44cf-9719-117c24ff3980",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile. (Piles can be empty.)",
+  "faces": [
+   {
+    "name": "Make an Example",
+    "mana_cost": "{3}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile. (Piles can be empty.)"
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "ncc",
+  "released_at": "2022-04-29",
+  "prices_usd": "10.36",
+  "rulings": [
+   [
+    "2022-04-29",
+    "“Their chosen pile” means the pile of their permanents that you chose; it doesn't mean that they get to choose a pile."
+   ]
+  ]
+ },
+ "Slaughter the Strong": {
+  "name": "Slaughter the Strong",
+  "oracle_id": "7a3569a0-a55f-40c9-9588-92db35e26567",
+  "type_line": "Sorcery",
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "oracle_text": "Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.",
+  "faces": [
+   {
+    "name": "Slaughter the Strong",
+    "mana_cost": "{1}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "tdc",
+  "released_at": "2025-04-11",
+  "prices_usd": "0.27",
+  "rulings": [
+   [
+    "2020-11-10",
+    "Slaughter the Strong has each player choose any number of creatures and then checks that the total power of creatures each player chose this way is 4 or less. For example, you could save two 2/2 creatures, or a 1/1 and a 3/3 creature, but not all four of those creatures."
+   ],
+   [
+    "2020-11-10",
+    "As Slaughter the Strong resolves, first the player whose turn it is chooses which creatures will be spared, then each other player in turn order does the same knowing the choices made before them. Then all the creatures not chosen are sacrificed simultaneously."
+   ],
+   [
+    "2020-11-10",
+    "If a creature's power is somehow less than 0, it subtracts from the total power of the other creatures its controller chooses. This can cause creatures with power 5 or greater to survive."
+   ]
+  ]
+ },
+ "Mythos of Snapdax": {
+  "name": "Mythos of Snapdax",
+  "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "oracle_text": "Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.",
+  "faces": [
+   {
+    "name": "Mythos of Snapdax",
+    "mana_cost": "{2}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "iko",
+  "released_at": "2020-04-24",
+  "prices_usd": "0.37",
+  "rulings": [
+   [
+    "2020-04-17",
+    "If you control a permanent with more than one type, you may choose it for each of those types. For example, you could choose an artifact creature as the artifact you keep and also as the creature you keep."
+   ],
+   [
+    "2020-04-17",
+    "If you’re choosing the permanents for each player, your choices must still be legal. For example, you can’t decline to choose a creature a player will keep if that player controls a creature."
+   ],
+   [
+    "2020-04-17",
+    "As Mythos of Snapdax resolves, first you choose which permanents you control won’t be sacrificed, then each other player in turn order does the same, knowing the choices made before them. Then each nonland permanent not chosen is sacrificed at the same time."
+   ],
+   [
+    "2020-04-17",
+    "Lands with another permanent type can’t be chosen and won’t be sacrificed."
+   ],
+   [
+    "2020-04-17",
+    "The abilities of the Mythos check what colors of mana were spent to cast the spell. It’s not an alternative cost to cast the spell."
+   ],
+   [
+    "2020-04-17",
+    "If an effect copies the Mythos spell, no mana was spent to cast the copy, so the copy won’t receive the bonus."
+   ],
+   [
+    "2020-04-17",
+    "The ability checks what mana was actually spent to cast a spell. If an effect allows you to spend mana “as though it were mana” of any color or type, that allows you to spend mana you couldn’t otherwise spend, but it doesn’t change what mana you spent to cast the spell."
+   ],
+   [
+    "2020-04-17",
+    "If an effect allows you to cast a spell without paying its mana cost, you can’t choose to cast it and pay unless another rule or effect allows you to cast that spell for a cost. Similarly, you can’t waive a cost reduction unless that effect says you may."
+   ]
+  ]
+ },
+ "Winnowing": {
+  "name": "Winnowing",
+  "oracle_id": "8b834f83-951b-4b5c-b9f1-3d860baa3c0e",
+  "type_line": "Sorcery",
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nFor each player, you choose a creature that player controls. Then each player sacrifices all other creatures they control that don't share a creature type with the chosen creature they control.",
+  "faces": [
+   {
+    "name": "Winnowing",
+    "mana_cost": "{4}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nFor each player, you choose a creature that player controls. Then each player sacrifices all other creatures they control that don't share a creature type with the chosen creature they control."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "ecl",
+  "released_at": "2026-01-23",
+  "prices_usd": "0.37",
+  "rulings": [
+   [
+    "2025-11-17",
+    "When calculating a spell's total cost, include any alternative costs, additional costs, or anything else that increases or reduces the cost to cast the spell. Convoke applies after the total cost is calculated. Convoke doesn't change a spell's mana cost or mana value."
+   ],
+   [
+    "2025-11-17",
+    "Tapping an untapped creature that's attacking or blocking to convoke a spell won't cause that creature to stop attacking or blocking."
+   ],
+   [
+    "2025-11-17",
+    "If a creature you control has a mana ability with {T} in the cost, activating that ability while casting a spell with convoke will result in the creature being tapped before you pay the spell's costs. You won't be able to tap it again for convoke. Similarly, if you sacrifice a creature to activate a mana ability while casting a spell with convoke, that creature won't be on the battlefield when you pay the spell's costs, so you won't be able to tap it for convoke."
+   ],
+   [
+    "2025-11-17",
+    "You can tap any untapped creature you control to convoke a spell, even one you haven't controlled continuously since the beginning of your most recent turn."
+   ]
+  ]
+ },
+ "Teferi's Protection": {
+  "name": "Teferi's Protection",
+  "oracle_id": "0d4ecdb1-ec90-497f-a7a4-1c68092b8757",
+  "type_line": "Instant",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "oracle_text": "Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.)\nExile Teferi's Protection.",
+  "faces": [
+   {
+    "name": "Teferi's Protection",
+    "mana_cost": "{2}{W}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.)\nExile Teferi's Protection."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": true,
+  "set": "2x2",
+  "released_at": "2022-07-08",
+  "prices_usd": "46.73",
+  "rulings": [
+   [
+    "2017-08-25",
+    "Gaining protection from everything causes a spell or ability on the stack to have an illegal target if it targets you. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+   ],
+   [
+    "2017-08-25",
+    "Effects that replace an event with having you gain life (like Words of Worship's effect does) or having you lose life will apply and end up replacing the event with nothing."
+   ],
+   [
+    "2017-08-25",
+    "Permanents that phase out with counters phase in with those counters."
+   ],
+   [
+    "2017-08-25",
+    "If you gain control of another player's permanent and it phases out, if the duration of the control-change effect expires before it phases in, that permanent phases in under that other player's control as your next untap step begins. If you leave the game before your next untap step, it phases in as the next untap step begins after your turn would have begun."
+   ],
+   [
+    "2017-08-25",
+    "Protection from everything will usually prevent damage if it would be dealt to you, but some damage can't be prevented. In this case, because your life total also can't change, that damage has any other effects that it may have aside from causing you to lose that much life (such as effects from lifelink or infect) and triggers and effects can see that damage was dealt even though your life total didn't change."
+   ],
+   [
+    "2017-08-25",
+    "While a permanent is phased out, it's treated as though it doesn't exist. It can't be the target of spells or abilities, its static abilities have no effect on the game, its triggered abilities can't trigger, it can't attack or block, and so on."
+   ],
+   [
+    "2017-08-25",
+    "If your untap step is somehow skipped as your next turn begins, your phased-out permanents won't phase in until the next untap step you actually have, but you'll no longer have protection from everything and your life total can change again."
+   ],
+   [
+    "2017-08-25",
+    "If an effect would set your life total to a certain number that's different than your current life total, that part of the effect won't do anything."
+   ],
+   [
+    "2017-08-25",
+    "Choices made for permanents as they entered the battlefield are remembered when they phase in."
+   ],
+   [
+    "2017-08-25",
+    "Spells and abilities that would normally cause you to gain or lose life still resolve while your life total can't change, but the life-gain or life-loss part simply has no effect."
+   ],
+   [
+    "2017-08-25",
+    "---------- The following rulings focus on the phasing keyword ----------"
+   ],
+   [
+    "2017-08-25",
+    "A permanent phasing out causes a spell or ability on the stack to have an illegal target if it targets that permanent. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+   ],
+   [
+    "2017-08-25",
+    "Any continuous effects with a \"for as long as\" duration such as that of Mathas, Fiend Seeker ignore phased-out objects. Any such effects will expire if their conditions are no longer met after ignoring the phased-out objects."
+   ],
+   [
+    "2017-08-25",
+    "Each Aura and Equipment that phases out attached to a permanent that's phasing out phases in with that permanent and still attached to it."
+   ],
+   [
+    "2017-08-25",
+    "If a player has protection from everything, it means three things: 1) All damage that would be dealt to that player is prevented. 2) Auras can't be attached to that player. 3) That player can't be the target of spells or abilities."
+   ],
+   [
+    "2017-08-25",
+    "If a cost includes causing you to gain life (like the alternative cost of an opponent's Invigorate does), that cost can't be paid."
+   ],
+   [
+    "2017-08-25",
+    "Any one-shot effects that are waiting \"until [this] leaves the battlefield,\" such as that of Banishing Light, won't happen when a permanent phases out."
+   ],
+   [
+    "2017-08-25",
+    "---------- The following rulings focus on the \"protection from\" keyword ----------"
+   ],
+   [
+    "2017-08-25",
+    "Nothing other than the specified events are prevented or illegal. An effect that doesn't target you could still cause you to discard cards, for example. Creatures can still attack you while you have protection from everything, although combat damage that they would deal to you will be prevented."
+   ],
+   [
+    "2017-08-25",
+    "---------- The following rulings focus on what it means if your life total can't change ----------"
+   ],
+   [
+    "2017-08-25",
+    "You can't pay a cost that includes the payment of any amount of life other than 0 life."
+   ],
+   [
+    "2017-08-25",
+    "Effects that would replace having you gain life with some other event won't be able to be applied because it's impossible for you to gain life. The same is true for effects that would replace having you lose life with some other event."
+   ],
+   [
+    "2017-08-25",
+    "If an effect would cause you to exchange life totals with another player, the exchange won't happen. Neither player's life total changes."
+   ],
+   [
+    "2017-08-25",
+    "Phasing out doesn't cause any \"leaves the battlefield\" abilities to trigger. Similarly, phasing in won't cause any \"enters\" abilities to trigger."
+   ],
+   [
+    "2017-08-25",
+    "Each Aura and Equipment you control attached to a permanent that isn't phasing out phases in attached to that permanent if it can still be attached to that permanent. If not, it phases in unattached. An Aura that phases in unattached will be put into its owner's graveyard as a state-based action. The same is true with Auras attached to players."
+   ],
+   [
+    "2017-08-25",
+    "If a token is phased out, it will phase in as your next untap step begins. This is a change from previous rules."
+   ],
+   [
+    "2017-08-25",
+    "Any creatures that phase in under your control as your next untap step begins will be able to attack and pay a cost of {T} during that turn."
+   ]
+  ]
+ },
+ "Boros Charm": {
+  "name": "Boros Charm",
+  "oracle_id": "2679d0dd-ba30-4a1c-b6a0-b3ac6c790496",
+  "type_line": "Instant",
+  "mana_cost": "{R}{W}",
+  "cmc": 2.0,
+  "oracle_text": "Choose one —\n• Boros Charm deals 4 damage to target player or planeswalker.\n• Permanents you control gain indestructible until end of turn.\n• Target creature gains double strike until end of turn.",
+  "faces": [
+   {
+    "name": "Boros Charm",
+    "mana_cost": "{R}{W}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Choose one —\n• Boros Charm deals 4 damage to target player or planeswalker.\n• Permanents you control gain indestructible until end of turn.\n• Target creature gains double strike until end of turn."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "fdn",
+  "released_at": "2024-11-15",
+  "prices_usd": null,
+  "rulings": [
+   [
+    "2024-11-08",
+    "Boros Charm's second mode affects only permanents you control at the time it resolves. It won't affect permanents that come under your control later in the turn."
+   ],
+   [
+    "2024-11-08",
+    "Planeswalkers with indestructible will still have loyalty counters removed from them as they are dealt damage. If a planeswalker with indestructible has no loyalty counters, it will still be put into its owner's graveyard, as the rule that does this doesn't destroy the planeswalker."
+   ]
+  ]
+ },
+ "Mayhem Devil": {
+  "name": "Mayhem Devil",
+  "oracle_id": "4709f11c-aef8-45ac-b2bf-e640c568dfac",
+  "type_line": "Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "oracle_text": "Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.",
+  "faces": [
+   {
+    "name": "Mayhem Devil",
+    "mana_cost": "{1}{B}{R}",
+    "type_line": "Creature — Devil",
+    "power": "3",
+    "toughness": "3",
+    "oracle_text": "Whenever a player sacrifices a permanent, this creature deals 1 damage to any target."
+   }
+  ],
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "eoc",
+  "released_at": "2025-08-01",
+  "prices_usd": "0.35",
+  "rulings": [
+   [
+    "2019-05-03",
+    "A legendary permanent that is put into a graveyard because of the \"legend rule\" isn't sacrificed."
+   ],
+   [
+    "2019-05-03",
+    "You control Mayhem Devil's triggered ability and choose the target, no matter who sacrificed the permanent."
+   ],
+   [
+    "2019-05-03",
+    "If a permanent is sacrificed to pay a cost of a spell or ability, Mayhem Devil's ability will resolve before that spell or ability. Conversely, if a permanent is sacrificed during the resolution of a spell or ability, that spell or ability will finish resolving before Mayhem Devil's ability is put onto the stack."
+   ],
+   [
+    "2019-05-03",
+    "Mayhem Devil itself doesn't allow any player to sacrifice any permanents. Its ability triggers whenever a player sacrifices a permanent because some other spell, ability, or cost instructed the player to do so."
+   ],
+   [
+    "2019-05-03",
+    "If you sacrifice Mayhem Devil, its ability triggers."
+   ]
+  ]
+ },
+ "Dictate of Erebos": {
+  "name": "Dictate of Erebos",
+  "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Flash\nWhenever a creature you control dies, each opponent sacrifices a creature of their choice.",
+  "faces": [
+   {
+    "name": "Dictate of Erebos",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Flash\nWhenever a creature you control dies, each opponent sacrifices a creature of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "jou",
+  "released_at": "2014-05-02",
+  "prices_usd": "17.90",
+  "rulings": [
+   [
+    "2014-04-26",
+    "When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time."
+   ],
+   [
+    "2014-04-26",
+    "None of the opponents are targeted. An opponent with hexproof would still sacrifice a creature."
+   ],
+   [
+    "2014-04-26",
+    "If multiple creatures you control die at the same time, Dictate of Erebos's triggered ability will trigger that many times."
+   ],
+   [
+    "2014-04-26",
+    "If you control more than one Dictate of Erebos and a creature you control dies, each of the triggered abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves."
+   ],
+   [
+    "2014-04-26",
+    "If you and an opponent each control a Dictate of Erebos and a creature dies, a chain reaction happens. First the ability of one player's Dictate of Erebos will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Dictate of Erebos to trigger, and so on."
+   ]
+  ]
+ },
+ "Revel in Riches": {
+  "name": "Revel in Riches",
+  "oracle_id": "cc3fcd26-c088-4335-9a35-0e11019e3d5b",
+  "type_line": "Enchantment",
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nAt the beginning of your upkeep, if you control ten or more Treasures, you win the game.",
+  "faces": [
+   {
+    "name": "Revel in Riches",
+    "mana_cost": "{4}{B}",
+    "type_line": "Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nAt the beginning of your upkeep, if you control ten or more Treasures, you win the game."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "xln",
+  "released_at": "2017-09-29",
+  "prices_usd": "21.11",
+  "rulings": [
+   [
+    "2017-09-29",
+    "If you don't control ten Treasures as your upkeep begins, the second ability of Revel in Riches won't trigger. You can't take any actions during your turn before your upkeep begins."
+   ],
+   [
+    "2017-09-29",
+    "If you don't control ten Treasures as the second ability of Revel in Riches resolves, you won't win the game."
+   ],
+   [
+    "2017-09-29",
+    "If an opponent's creature dies at the same time that Revel in Riches is destroyed, you'll get a Treasure."
+   ],
+   [
+    "2017-09-29",
+    "If the second ability of Revel in Riches causes you to win the game, please refrain from throwing your Treasure tokens into the air as this may distract or injure other players."
+   ]
+  ]
+ },
+ "Blasphemous Act": {
+  "name": "Blasphemous Act",
+  "oracle_id": "7a2484a9-04fd-41a0-8224-610c1c07ed10",
+  "type_line": "Sorcery",
+  "mana_cost": "{8}{R}",
+  "cmc": 9.0,
+  "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature.",
+  "faces": [
+   {
+    "name": "Blasphemous Act",
+    "mana_cost": "{8}{R}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "msc",
+  "released_at": "2026-06-26",
+  "prices_usd": "0.99",
+  "rulings": [
+   [
+    "2020-11-10",
+    "Although players may respond to Blasphemous Act once it's been cast, once it's announced, they can't respond before the cost is calculated and paid."
+   ],
+   [
+    "2020-11-10",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases, then apply any cost reductions (such as that of Blasphemous Act). The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was."
+   ],
+   [
+    "2020-11-10",
+    "Blasphemous Act's ability can't reduce the total cost to cast the spell below {R}."
+   ],
+   [
+    "2020-11-10",
+    "The total cost to cast Blasphemous Act is locked in before you pay that cost. For example, if there are three creatures on the battlefield, including one you can sacrifice to add {C}, the total cost of Blasphemous Act is {5}{R}. Then you can sacrifice the creature when you activate mana abilities just before paying the cost."
+   ]
+  ]
+ },
+ "Blood Money": {
+  "name": "Blood Money",
+  "oracle_id": "75f5d372-4ff9-430c-8302-72472439e0d2",
+  "type_line": "Sorcery",
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.",
+  "faces": [
+   {
+    "name": "Blood Money",
+    "mana_cost": "{5}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "lcc",
+  "released_at": "2023-11-17",
+  "prices_usd": "2.65",
+  "rulings": [
+   [
+    "2022-06-10",
+    "If a creature isn't destroyed this way for some reason, such as having indestructible or being regenerated, Blood Money's controller will not create a Treasure token for it."
+   ]
+  ]
+ },
+ "Vihaan, Goldwaker": {
+  "name": "Vihaan, Goldwaker",
+  "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+  "type_line": "Legendary Creature — Dwarf Warlock",
+  "mana_cost": "{R}{W}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+  "faces": [
+   {
+    "name": "Vihaan, Goldwaker",
+    "mana_cost": "{R}{W}{B}",
+    "type_line": "Legendary Creature — Dwarf Warlock",
+    "power": "3",
+    "toughness": "3",
+    "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn."
+   }
+  ],
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "otc",
+  "released_at": "2024-04-19",
+  "prices_usd": null,
+  "rulings": [
+   [
+    "2024-04-12",
+    "If a Treasure you control is already a creature when Vihaan’s second ability resolves and you choose to apply its effect to all Treasures you control, that effect will overwrite any previous effects that set that creature’s power and toughness to specific numbers. Effects that otherwise modify its power and toughness will still apply no matter when they took effect. The same is true for +1/+1 counters."
+   ],
+   [
+    "2024-04-12",
+    "Treasures you control will keep any abilities they previously had while they’re creatures."
+   ],
+   [
+    "2024-04-12",
+    "A card, spell, or permanent is an outlaw if it has the Assassin, Mercenary, Pirate, Rogue, or Warlock creature type. It doesn’t matter if it has more than one of those creature types; as long as it has at least one, it’s an outlaw."
+   ],
+   [
+    "2024-04-12",
+    "Outlaw is not a creature type. If an effect asks you to choose a creature type, you can’t choose outlaw."
+   ],
+   [
+    "2024-04-12",
+    "If an ability refers to an outlaw or whether a player controls an outlaw, it’s referring only to permanents with one or more of the creature types specified above. Notably, it’s not referring to any spell or card not on the battlefield. However, other abilities may refer to an “outlaw spell” or “outlaw card” in a zone other than the battlefield. Those abilities refer to spells and cards with one or more of the specified creature types."
+   ]
+  ]
+ }
+}

@@ -1,0 +1,87 @@
+Cartas distintas na lista (com o comandante): 94 | terrenos: 29 | nao-terrenos: 65
+
+=== (1) Quem reage a SACRIFICIO, a MORTE e a DESTRUICAO (oraculo ao vivo)
+
+-- reage a SACRIFICIO (gatilho 'whenever you/a player/an opponent sacrifices ...'): 3 cartas
+   * Captain Lannery Storm | Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.
+   * Mayhem Devil | Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.
+   * Mirkwood Bats | Whenever you create or sacrifice a token, each opponent loses 1 life.
+
+-- reage a MORTE ('dies' / 'put into a graveyard from the battlefield'): 9 cartas
+   * Agent of the Iron Throne | Commander creatures you own have "Whenever an artifact or creature you control is put into a graveyard from the battlefield, each opponent loses 1 life."
+   * Dictate of Erebos | Whenever a creature you control dies, each opponent sacrifices a creature of their choice.
+   * Life Insurance | Whenever a nontoken creature dies, you lose 1 life and create a Treasure token.
+   * Mari, the Killing Quill | Whenever a creature an opponent controls dies, exile it with a hit counter on it.
+   * Marionette Master | Whenever an artifact you control is put into a graveyard from the battlefield, target opponent loses life equal to this creature's power.
+   * Pitiless Plunderer | Whenever another creature you control dies, create a Treasure token.
+   * Revel in Riches | Whenever a creature an opponent controls dies, create a Treasure token.
+   * Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel | Whenever another creature dies, target opponent loses 1 life and you gain 1 life. / Super Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with "Whenever a creature dies, target opponent loses
+   * Zulaport Cutthroat | Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.
+
+-- reage a SAIR DO CAMPO ('leaves the battlefield'): 1 cartas
+   * Nadier's Nightblade | Whenever a token you control leaves the battlefield, each opponent loses 1 life and you gain 1 life.
+
+-- tem 'destroy' no texto: 4 cartas
+   * Blood Money | Destroy all creatures. / For each nontoken creature destroyed this way, you create a tapped Treasure token.
+   * Deadly Derision | Destroy target creature or planeswalker.
+   * Requisition Raid | + {1} — Destroy target artifact. / + {1} — Destroy target enchantment.
+   * Shoot the Sheriff | Destroy target non-outlaw creature.
+
+=== (2) Grupos de TIPO DE CRIATURA entre as criaturas da lista (Winnowing: quem compartilha tipo com a escolhida sobrevive)
+   Human                        11: Aya of Alexandria, Captain Lannery Storm, Kambal, Profiteering Mayor, Kellogg, Dangerous Mind, Marionette Master, Pitiless Plunderer, Professional Face-Breaker, Sentinel Sarah Lyons, Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel, Witch of the Moors, Zulaport Cutthroat
+   Rogue                         6: Grenzo, Havoc Raiser, Grim Hireling, Laughing Jasper Flint, Lotho, Corrupt Shirriff, Orochi Soul-Reaver, Zulaport Cutthroat
+   Assassin                      3: Aya of Alexandria, Mari, the Killing Quill, Olivia, Opulent Outlaw
+   Warlock                       3: Prosper, Tome-Bound, Vihaan, Goldwaker, Witch of the Moors
+   Artificer                     2: Jan Jansen, Chaos Crafter, Marionette Master
+   Devil                         2: Mahadi, Emporium Master, Mayhem Devil
+   Dragon                        2: Goldspan Dragon, Smaug the Magnificent
+   Dwarf                         2: Magda, the Hoardmaster, Vihaan, Goldwaker
+   Pirate                        2: Captain Lannery Storm, Pitiless Plunderer
+   Tiefling                      2: Grim Hireling, Prosper, Tome-Bound
+   Vampire                       2: Mari, the Killing Quill, Olivia, Opulent Outlaw
+   Warrior                       2: Nadier's Nightblade, Professional Face-Breaker
+   Advisor                       1: Kambal, Profiteering Mayor
+   Ally                          1: Zulaport Cutthroat
+   Assembly-Worker               1: Academy Manufactor
+   Avatar                        1: Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel
+   Bat                           1: Mirkwood Bats
+   Berserker                     1: Magda, the Hoardmaster
+   Elemental                     1: Xorn
+   Elf                           1: Nadier's Nightblade
+   Gnome                         1: Jan Jansen, Chaos Crafter
+   Goblin                        1: Grenzo, Havoc Raiser
+   Halfling                      1: Lotho, Corrupt Shirriff
+   Knight                        1: Sentinel Sarah Lyons
+   Lizard                        1: Laughing Jasper Flint
+   Mercenary                     1: Kellogg, Dangerous Mind
+   Ninja                         1: Orochi Soul-Reaver
+   Snake                         1: Orochi Soul-Reaver
+   Soldier                       1: Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel
+   Fichas: Treasure animado pelo Vihaan = Construct Assassin (Assassin e' outlaw); Construct (Jan Jansen); Dragao (Visitor, candidata fora da lista)
+
+=== (3) Permanentes nao-terreno INCOLORES x COLORIDOS (All Is Dust sacrifica so' os coloridos)
+   incolores (5): Academy Manufactor, Arcane Signet, Ashnod's Altar, Krark-Clan Ironworks, Sol Ring
+   coloridos (44): 44 permanentes (todos os demais, inclusive o Vihaan e quase todas as criaturas)
+   fichas: Treasure, Clue, Food, Construct = incolores; Dragao da Visitor = vermelho
+
+=== (4) Artefatos, encantamentos e criaturas NOMEADOS (Scrap Mastery / Mythos of Snapdax / Tragic Arrogance contam por tipo)
+   artefatos (7): Academy Manufactor, Arcane Signet, Ashnod's Altar, Krark-Clan Ironworks, Sol Ring, The Reaver Cleaver, Urabrask's Forge
+   encantamentos (13): Agent of the Iron Throne, Anointed Procession, Black Market Connections, Caretaker's Talent, Dictate of Erebos, Gleaming Splendor, Life Insurance, Monologue Tax, Phyrexian Reclamation, Rain of Riches, Revel in Riches, Shared Animosity, Smothering Tithe
+   criaturas (30): 30 cartas | instantaneas/feiticos: 16 | planeswalkers: 0
+   cartas que CRIAM Treasure (31): Academy Manufactor, Big Score, Black Market Connections, Blood Money, Captain Lannery Storm, Deadly Derision, Deadly Dispute, Gleaming Splendor, Goldspan Dragon, Grim Hireling, Inspired Tinkering, Jan Jansen, Chaos Crafter, Kellogg, Dangerous Mind, Life Insurance, Lotho, Corrupt Shirriff, Magda, the Hoardmaster, Mahadi, Emporium Master, Mari, the Killing Quill, Monologue Tax, Olivia, Opulent Outlaw, Orochi Soul-Reaver, Pitiless Plunderer, Professional Face-Breaker, Prosper, Tome-Bound, Rain of Riches, Revel in Riches, Smaug the Magnificent, Smothering Tithe, The Reaver Cleaver, Unexpected Windfall, Xorn
+
+=== (5) Fontes de cor nos terrenos da lista (castabilidade: {W}{W} da By Invitation Only/Mythos/Tragic/Winnowing/Slaughter; {B}{B} da Edict/Barter/Tergrid/Taste/...)
+   W: 14 terrenos (copias) em 13 nomes distintos
+   B: 21 terrenos (copias) em 18 nomes distintos
+   R: 17 terrenos (copias) em 15 nomes distintos
+   rocks/fontes de mana nao-terreno: Arcane Signet
+   total de terrenos na lista (copias, sem comandante): 35
+
+=== (6) Cartas da lista que PROTEGEM de wipe (e contra qual tipo)
+   Teferi's Protection: Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.) Exile Teferi's Protection.
+   Boros Charm: Choose one — • Boros Charm deals 4 damage to target player or planeswalker. • Permanents you control gain indestructible until end of turn. • Target creature gains double strike until end of turn.
+   -> Teferi's Protection (phase out) protege contra DESTRUIR e contra SACRIFICAR (permanentes fasados nao existem); Boros Charm (indestructible) so' protege contra DESTRUIR (Blasphemous Act, Blood Money), NAO contra sacrificio.
+
+=== (7) Dictate of Erebos e o resto do pacote de morte
+   Dictate of Erebos: Flash Whenever a creature you control dies, each opponent sacrifices a creature of their choice.
+   Revel in Riches: Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.") At the beginning of your upkeep, if you control ten or more Treasures, you win the game.

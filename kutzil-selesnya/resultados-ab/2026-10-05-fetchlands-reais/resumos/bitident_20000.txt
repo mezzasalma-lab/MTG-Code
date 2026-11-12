@@ -1,0 +1,3 @@
+Bit-identidade: arquivo vivo com as chaves {'FETCH_LANDS_ENABLED': False, 'LAND_ENTER_TRIGGERS_ALL_ENABLED': False} == snapshot codigo/kutzil_goldfish_v1_ANTES_99fde54.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['fetches_cracked_total', 'fetch_no_target_total', 'fotd_extra_checks_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO

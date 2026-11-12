@@ -1,0 +1,159 @@
+{
+ "sim": "resultados-ab/2026-10-10-underground-sea-sem-bojuka/codigo/mothman_goldfish_v1_ANTES.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "commander_cast_turn__nunca",
+  "regenerations_used",
+  "protection_used_total",
+  "smart_removals_total",
+  "smart_wipes_total",
+  "commander_countered_total",
+  "commander_cast_count",
+  "interaction_plays",
+  "lands_entered_total",
+  "mana_spent_total",
+  "life_min",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total",
+  "rad_counters_given_opp_total",
+  "fetches_cracked_total"
+ ],
+ "compacto": [
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "life_min",
+  "fetches_cracked_total",
+  "protection_used_total"
+ ],
+ "variantes": {
+  "base": {},
+  "u0_bojuka_bog": {
+   "SWAPS": [
+    [
+     "Bojuka Bog",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u1_watery_grave": {
+   "SWAPS": [
+    [
+     "Watery Grave",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u2_morphic_pool": {
+   "SWAPS": [
+    [
+     "Morphic Pool",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u3_swamp": {
+   "SWAPS": [
+    [
+     "Swamp",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u4_island": {
+   "SWAPS": [
+    [
+     "Island",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u5_minamo": {
+   "SWAPS": [
+    [
+     "Minamo, School at Water's Edge",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u6_shifting_woodland": {
+   "SWAPS": [
+    [
+     "Shifting Woodland",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u7_zagoth_triome": {
+   "SWAPS": [
+    [
+     "Zagoth Triome",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u8_strip_mine": {
+   "SWAPS": [
+    [
+     "Strip Mine",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u9_takenuma": {
+   "SWAPS": [
+    [
+     "Takenuma, Abandoned Mire",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "u10_boseiju": {
+   "SWAPS": [
+    [
+     "Boseiju, Who Endures",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "u0_bojuka_bog",
+  "u1_watery_grave",
+  "u2_morphic_pool",
+  "u3_swamp",
+  "u4_island",
+  "u5_minamo",
+  "u6_shifting_woodland",
+  "u7_zagoth_triome",
+  "u8_strip_mine",
+  "u9_takenuma",
+  "u10_boseiju"
+ ],
+ "regressao": []
+}

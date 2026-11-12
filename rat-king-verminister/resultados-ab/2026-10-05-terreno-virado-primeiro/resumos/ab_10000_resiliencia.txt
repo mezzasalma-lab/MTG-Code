@@ -1,0 +1,22 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7202 (72.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.6605       5.6596      -0.0009 ±0.0056  
+  *commander_cast_turn__ate_T3                  0.9923       0.9874      -0.0049 ±0.0016  
+   commander_cast_turn__ate_T4                  0.9966       0.9963      -0.0003 ±0.0004  
+   commander_cast_turn__ate_T5                  0.9980       0.9979      -0.0001 ±0.0002  
+  *len_smart_counter_log                        0.0499       0.0540      +0.0041 ±0.0029  
+  *smart_counters_total                         0.0499       0.0540      +0.0041 ±0.0029  
+  *len_smart_graveyard_snipe_log                0.2734       0.2684      -0.0050 ±0.0046  
+  *smart_graveyard_snipes_total                 0.2734       0.2684      -0.0050 ±0.0046  
+  *wiped_this_round                             0.1734       0.1694      -0.0040 ±0.0037  
+  *len_battlefield                             10.7435      10.7820      +0.0385 ±0.0373  
+  *commander_cast_count                         1.7040       1.7097      +0.0057 ±0.0056  
+  *creatures_died_this_turn                     2.8953       2.8495      -0.0458 ±0.0455  
+   len_tapped_lands_this_turn                   0.1679       0.1642      -0.0037 ±0.0037  
+   mercenary_tokens                             0.0658       0.0682      +0.0024 ±0.0026  
+   commander_in_play                            0.8146       0.8180      +0.0034 ±0.0037  
+   life                                        36.6752      36.6281      -0.0471 ±0.0545  
+   len_smart_discard_log                        1.1339       1.1408      +0.0069 ±0.0081  
+   smart_discards_total                         1.1339       1.1408      +0.0069 ±0.0081  

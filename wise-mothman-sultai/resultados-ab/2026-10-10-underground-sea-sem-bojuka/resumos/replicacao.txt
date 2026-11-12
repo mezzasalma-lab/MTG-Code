@@ -1,0 +1,7 @@
+(1) padrao       base[under] == e1[swtrop]            : 10000/10000 partidas identicas
+(2) padrao       u0[under] == e2[swtrop]              : 10000/10000 partidas identicas
+(3) padrao       base[under2] == base[under]       : 10000/10000 partidas identicas
+(1) resiliencia  base[under] == e1[swtrop]            : 10000/10000 partidas identicas
+(2) resiliencia  u0[under] == e2[swtrop]              : 10000/10000 partidas identicas
+(3) resiliencia  base[under2] == base[under]       : 10000/10000 partidas identicas
+6/6 series bit-identicas

@@ -1,0 +1,2 @@
+vivo (SWAPS=()) == ANTES + u3 no lugar: 5000 identicas, 0 divergencias
+rc=0

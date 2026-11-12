@@ -1,0 +1,6 @@
+(1) padrao       base[terrenos3] == s4_vats_wave_dsp[cinco-entradas]: 10000/10000 partidas identicas
+(2) padrao       base[terrenos3] == base[terrenos4]            : 10000/10000 partidas identicas
+(1) resiliencia  base[terrenos3] == s4_vats_wave_dsp[cinco-entradas]: 10000/10000 partidas identicas
+(2) resiliencia  base[terrenos3] == base[terrenos4]            : 10000/10000 partidas identicas
+(3) resiliencia  base[cmd50] == base[z50] (comandante-alvo 0.5)  : 10000/10000 partidas identicas
+5/5 series bit-identicas

@@ -1,0 +1,2 @@
+tam-the-possibility-wubrg  padrao       N=600 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+tam-the-possibility-wubrg  resiliencia  N=600 sementes divergentes entre 3 hash seeds: 0 [] campos: []

@@ -1,0 +1,309 @@
+{
+ "deck": "lotr-food-and-fellowship",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Frodo, Adventurous Hobbit",
+   "incluidos": {},
+   "quase": {
+    "Exquisite Blood + Sanguine Bond": {
+     "id": "690-3966",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Bloodthirsty Conqueror + Sanguine Bond": {
+     "id": "690-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Basking Broodscale + Rosie Cotton of South Lane": {
+     "id": "2433-5641",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Rosie Cotton of South Lane + Scurry Oak": {
+     "id": "2433-4186",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Beacon of Immortality + Sanguine Bond": {
+     "id": "690-4996",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game"
+     ]
+    },
+    "Revival // Revenge + Sanguine Bond": {
+     "id": "690-4624",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for up to two target opponents"
+     ]
+    },
+    "Jumbo Cactuar + Swords to Plowshares": {
+     "id": "3779-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain"
+     ]
+    },
+    "Herd Baloth + Rosie Cotton of South Lane": {
+     "id": "2433-3197",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Sanguine Bond + Shard of the Nightbringer": {
+     "id": "690-1612",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Mirkwood Bats + Plague of Vermin": {
+     "id": "2612-5035",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite creature tokens",
+      "Near-infinite creature ETB"
+     ]
+    },
+    "Hazel's Brewmaster + Pippin, Warden of Isengard + Sam, Loyal Attendant": {
+     "id": "342-2916-5856",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite tapped Food tokens"
+     ]
+    },
+    "Essence Warden + Scurry Oak + Treebeard, Gracious Host": {
+     "id": "2741-4186-4384",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Sanguine Bond + Serra Avatar + Swords to Plowshares": {
+     "id": "690-1738-3779",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Prosperous Innkeeper + Scurry Oak + Treebeard, Gracious Host": {
+     "id": "4186-4384-4716",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Enduring Angel // Angelic Enforcer + Sanguine Bond": {
+     "id": "690-1162",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Sanguine Bond + Soul of Eternity + Swords to Plowshares": {
+     "id": "690-3779-4658",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite lifeloss for target opponent",
+      "Target opponent loses the game",
+      "Near-infinite lifegain"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Sam, Loyal Attendant",
+   "incluidos": {},
+   "quase": {
+    "Exquisite Blood + Sanguine Bond": {
+     "id": "690-3966",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Bloodthirsty Conqueror + Sanguine Bond": {
+     "id": "690-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Basking Broodscale + Rosie Cotton of South Lane": {
+     "id": "2433-5641",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Rosie Cotton of South Lane + Scurry Oak": {
+     "id": "2433-4186",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Beacon of Immortality + Sanguine Bond": {
+     "id": "690-4996",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game"
+     ]
+    },
+    "Revival // Revenge + Sanguine Bond": {
+     "id": "690-4624",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for up to two target opponents"
+     ]
+    },
+    "Jumbo Cactuar + Swords to Plowshares": {
+     "id": "3779-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain"
+     ]
+    },
+    "Herd Baloth + Rosie Cotton of South Lane": {
+     "id": "2433-3197",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Sanguine Bond + Shard of the Nightbringer": {
+     "id": "690-1612",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Mirkwood Bats + Plague of Vermin": {
+     "id": "2612-5035",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite creature tokens",
+      "Near-infinite creature ETB"
+     ]
+    },
+    "Hazel's Brewmaster + Pippin, Warden of Isengard + Sam, Loyal Attendant": {
+     "id": "342-2916-5856",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite tapped Food tokens"
+     ]
+    },
+    "Essence Warden + Scurry Oak + Treebeard, Gracious Host": {
+     "id": "2741-4186-4384",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Sanguine Bond + Serra Avatar + Swords to Plowshares": {
+     "id": "690-1738-3779",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Prosperous Innkeeper + Scurry Oak + Treebeard, Gracious Host": {
+     "id": "4186-4384-4716",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Enduring Angel // Angelic Enforcer + Sanguine Bond": {
+     "id": "690-1162",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Sanguine Bond + Soul of Eternity + Swords to Plowshares": {
+     "id": "690-3779-4658",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite lifeloss for target opponent",
+      "Target opponent loses the game",
+      "Near-infinite lifegain"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

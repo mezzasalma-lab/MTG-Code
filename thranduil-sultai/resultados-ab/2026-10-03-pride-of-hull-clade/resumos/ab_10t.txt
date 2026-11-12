@@ -1,0 +1,32 @@
+N=6000 turns=10 base: fin<=6 20.3% fin<=10 86.0% cmd<=5 85.0% xdraws 20.75 spells 15.80
+sai                      modo          cast% T cast |    fin<=6 (pp)   fin<=10 (pp)  cmd<=5 (pp)    extra_draws       spells
+Oversold Cemetery        off           20.0%   7.03 |   +0.3±0.3     +0.4±0.4    -0.1±0.1   +0.04±0.18  -0.35±0.05
+Oversold Cemetery        trample_line  20.0%   7.03 |   +0.3±0.3     +0.4±0.4    -0.1±0.1   +0.75±0.21  -0.35±0.06
+Oversold Cemetery        ceiling       20.0%   7.03 |   +0.3±0.3     +0.4±0.5    -0.1±0.1   +3.17±0.31  -0.37±0.06
+Deathbloom Ritualist     off           23.3%   7.35 |   +0.5±0.3     -0.7±0.4    -0.1±0.1   +0.29±0.17  +0.11±0.05
+Deathbloom Ritualist     trample_line  23.3%   7.35 |   +0.5±0.3     -0.7±0.4    -0.1±0.1   +0.97±0.20  +0.10±0.05
+Deathbloom Ritualist     ceiling       23.3%   7.35 |   +0.5±0.3     -0.5±0.5    -0.1±0.1   +3.27±0.31  +0.07±0.05
+Underrealm Lich          off           23.2%   7.37 |   +0.3±0.2     -0.4±0.4    +0.0±0.1   +0.65±0.16  +0.11±0.04
+Underrealm Lich          trample_line  23.2%   7.37 |   +0.3±0.2     -0.4±0.4    +0.0±0.1   +1.46±0.20  +0.10±0.04
+Underrealm Lich          ceiling       23.2%   7.37 |   +0.3±0.3     -0.3±0.4    +0.0±0.1   +4.23±0.33  +0.08±0.04
+Kindred Summons          off           24.4%   7.34 |   -0.2±0.3     -0.7±0.4    -0.1±0.1   +0.08±0.15  +0.13±0.04
+Kindred Summons          trample_line  24.4%   7.34 |   -0.2±0.3     -0.7±0.4    -0.1±0.1   +0.90±0.19  +0.12±0.04
+Kindred Summons          ceiling       24.4%   7.34 |   -0.2±0.3     -0.3±0.4    -0.1±0.1   +3.59±0.31  +0.12±0.05
+Bloodline Bidding        off           23.8%   7.41 |   -0.1±0.3     -1.0±0.4    -0.1±0.1   +0.16±0.15  +0.13±0.04
+Bloodline Bidding        trample_line  23.8%   7.41 |   -0.1±0.3     -1.0±0.4    -0.1±0.1   +0.93±0.18  +0.13±0.04
+Bloodline Bidding        ceiling       23.8%   7.41 |   -0.1±0.3     -0.6±0.5    -0.1±0.1   +3.47±0.30  +0.10±0.04
+Trystan's Command        off           23.4%   7.20 |   +0.4±0.3     +0.1±0.4    +0.0±0.1   -0.18±0.16  -0.02±0.04
+Trystan's Command        trample_line  23.4%   7.20 |   +0.4±0.3     +0.1±0.4    +0.0±0.1   +0.59±0.19  -0.02±0.04
+Trystan's Command        ceiling       23.4%   7.20 |   +0.4±0.3     +0.5±0.4    +0.0±0.1   +3.12±0.29  -0.06±0.05
+Finale of Devastation    off           23.1%   7.34 |   -1.2±0.4     -0.2±0.4    +0.1±0.1   +0.61±0.17  +0.12±0.05
+Finale of Devastation    trample_line  23.1%   7.34 |   -1.2±0.4     -0.2±0.4    +0.1±0.1   +1.40±0.21  +0.09±0.05
+Finale of Devastation    ceiling       23.1%   7.34 |   -1.2±0.4     -0.1±0.5    +0.1±0.1   +3.74±0.31  +0.08±0.05
+Ruthless Winnower        off           23.1%   7.34 |   +0.5±0.3     +0.4±0.4    +0.1±0.1   +0.27±0.14  +0.09±0.04
+Ruthless Winnower        trample_line  23.1%   7.34 |   +0.5±0.3     +0.4±0.4    +0.1±0.1   +1.12±0.18  +0.07±0.04
+Ruthless Winnower        ceiling       23.1%   7.34 |   +0.5±0.3     +0.7±0.4    +0.1±0.1   +3.88±0.31  +0.07±0.04
+Priest of Titania        off           23.9%   7.38 |   -5.7±0.6     -2.7±0.6    -1.5±0.4   -0.79±0.25  -0.27±0.07
+Priest of Titania        trample_line  23.9%   7.38 |   -5.7±0.6     -2.7±0.6    -1.5±0.4   -0.07±0.27  -0.27±0.07
+Priest of Titania        ceiling       23.9%   7.38 |   -5.7±0.6     -2.6±0.6    -1.5±0.4   +2.20±0.35  -0.29±0.07
+Elvish Mystic            off           24.0%   7.46 |   -1.4±0.5     -0.7±0.5    -1.4±0.4   +0.07±0.21  -0.08±0.06
+Elvish Mystic            trample_line  24.0%   7.46 |   -1.4±0.5     -0.7±0.5    -1.4±0.4   +0.82±0.24  -0.09±0.06
+Elvish Mystic            ceiling       24.0%   7.46 |   -1.4±0.5     -0.6±0.5    -1.4±0.4   +3.23±0.33  -0.10±0.06

@@ -1,0 +1,4 @@
+Determinismo entre processos (varredura-2026-10-05/scripts/det_check.sh tam-the-possibility-wubrg tam_goldfish_v1.py 12 1500): 3 PYTHONHASHSEED (11, 22, 33) x 1.500 sementes (1.000.000+i) x 2 modos, campo a campo, estado final, com as 3 chaves LIGADAS (arquivo vivo = codigo/tam_goldfish_v1_DEPOIS_rodada1.py)
+tam-the-possibility-wubrg  padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+tam-the-possibility-wubrg  resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+(com as chaves DESLIGADAS o arquivo e' bit-identico ao snapshot 2380566, que ja' passou nesta checagem em 2026-10-21: bitident_20000.txt)

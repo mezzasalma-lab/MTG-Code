@@ -1,0 +1,40 @@
+PASS - L1 Prosper no end step exila um TERRENO: vai pra impulse_lands (fonte 'play'), nao pro pool de cast 
+PASS - L2 proximo turno: joga o terreno do EXILIO como a jogada de terreno (a da mao fica), Pact Boon cria 1 Treasure (T5 da partida) 
+PASS - L3 sem Prosper em campo: joga o terreno (ainda dentro do prazo) mas SEM Treasure 
+PASS - L4 jogada de terreno ja' usada: o terreno do exilio NAO e' jogado 
+PASS - L4b prazo vencido (deadline 5 < turno 7): nao joga 
+PASS - L5 entre dois terrenos do exilio joga o que entra UNTAPPED primeiro (Path of Ancestry entra tapped) 
+PASS - L5b terreno que entra tapped e' registrado como tapped no turno 
+PASS - L6 fonte de 'cast' (Grenzo, Laughing Jasper Flint, sem lands_ok): terreno exilado NAO e' jogavel 
+PASS - L7 Face-Breaker ('you may play that card this turn') exila um terreno com a jogada livre: joga na mesma fase + Pact Boon 
+PASS - L8 chave desligada = comportamento antigo: o terreno vai pro pool e nunca e' jogado 
+PASS - C1 Blood Money do exilio RESOLVE: vai pro cemiterio (nao pro campo), destroi as criaturas, conta como 1 magia; Pact Boon (1) + 'nontoken destroyed' (Prosper e Zulaport = 2) 
+PASS - C2 Sevinne's do exilio devolve o Mahadi do cemiterio (T6 da partida), vai pro cemiterio, Pact Boon cria 1 Treasure 
+PASS - C3 criatura do exilio (Lotho): entra em campo, conta como magia, Pact Boon cria 1 Treasure 
+PASS - C4 chave desligada = comportamento antigo: Blood Money vira permanente e nada resolve 
+PASS - S1 T7 da partida: Lotho do exilio (1a magica, Pact Boon +1) e Tax da mao (2a): o Lotho dispara na Tax: +1 Treasure e -1 de vida 
+PASS - S2 T8 da partida: flashback da Sevinne's conta como 1a magia (sem Pact Boon: veio do cemiterio); o Dictate (2a) dispara o Lotho: +1 Treasure e -1 de vida 
+PASS - S3 Lotho conjurado como 2a magica NAO dispara contra si mesmo (estava na pilha) 
+PASS - S4 Lotho em campo: dispara na 2a magica e so' nela (a 3a nao) 
+PASS - S5 a magia do Cascade e' conjurada: conta, e com Lotho em campo e 1 magia antes ela e' a 2a (+1 Treasure) 
+PASS - S6 extort da Life Insurance dispara no flashback ('whenever you cast a spell') 
+PASS - S7 chave desligada = comportamento antigo: o Lotho dispara contra si mesmo 
+PASS - S8 chave desligada: flashback nao conta 
+PASS - W1 Storm equipada com o Cleaver, 2 Treasures sacrificados antes do dano: ataque (+1) + Cleaver (2 + 1 + 2 = 5) = 6 Treasures 
+PASS - W2 chave desligada: sem o +1/+0 (1 + 3 = 4 Treasures) 
+PASS - W3 os Treasures sacrificados pra CONJURAR a Storm nao contam (ruling 2017-09-29): 1 + 3 = 4 
+PASS - W4 Storm paga com Treasures: base dos sacrificios = os feitos pra paga-la; bonus = 0 
+PASS - W5 um sacrificio depois da conjuracao da Storm = +1/+0 
+PASS - W6 o dano de combate proxy da propria Storm cresce com o bonus (poder 2 + 2) 
+PASS - V1 cemiterio [Sevinne's (ela mesma), Mahadi]: devolve o MAHADI (criatura MV3), nao a propria Sevinne's 
+PASS - V2 so' instantanea/feitico no cemiterio (nenhuma 'permanent card'): nao devolve nada 
+PASS - V3 terreno E' 'permanent card' (ruling 2024-06-07): sem outro alvo, devolve o terreno, que entra TAPPED se a regra dele manda 
+PASS - V4 com criatura MV3 e terreno: prefere a criatura (maior MV) 
+PASS - V5 flashback: original + copia devolvem DOIS alvos diferentes (Storm MV3 e Zulaport MV2), nunca a instantanea nem a Sevinne's 
+PASS - V6 chave desligada = comportamento antigo: devolve a PROPRIA Sevinne's (parada no campo) em vez do Mahadi 
+PASS - I1 (1.500 jogos, padrao, chaves ligadas) nenhuma instantanea/feitico no campo e nenhuma carta duplicada 
+PASS - I2 (1.500 jogos, resiliencia) idem 
+   info I3: com as chaves da esteira e da Sevinne's DESLIGADAS (codigo antigo), jogos de 1.500 com instantanea/feitico parado no campo: 399
+PASS - I3 o codigo antigo realmente deixava magia no campo (a lacuna existia no mundo simulado) 
+
+37/37 testes passaram

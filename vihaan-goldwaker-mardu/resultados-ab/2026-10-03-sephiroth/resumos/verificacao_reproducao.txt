@@ -1,0 +1,12 @@
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  ab_10000_resiliencia.txt
+IGUAL  smoke.txt
+IGUAL  testes_dirigidos.txt
+IGUAL  bitident_flags_off_20000.txt
+IGUAL  regressao_20000.txt
+IGUAL  flips_em_wipe_antes_resiliencia.txt
+IGUAL  explica_diferencas_emblema_padrao.txt
+IGUAL  explica_diferencas_simultaneas_padrao.txt
+11/11 saidas byte a byte iguais

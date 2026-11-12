@@ -1,0 +1,398 @@
+{
+ "deck": "captain-storm-izzet",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 99,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Captain Storm, Cosmium Raider",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Dramatic Reversal + Isochron Scepter": {
+     "id": "4821-5261",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite mana nonland permanents you control can produce",
+      "Infinite storm count"
+     ]
+    },
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Dualcaster Mage + Ghostly Flicker": {
+     "id": "147-1987",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Ghostly Flicker + Naru Meha, Master Wizard": {
+     "id": "141-1987",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Helm of the Host + Port Razer": {
+     "id": "1548-1692",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Dramatic Reversal + Kitsa, Otterball Elite": {
+     "id": "4821-5803",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Fortune Teller's Talent + Sensei's Divining Top": {
+     "id": "5078-5849",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite storm count"
+     ]
+    },
+    "Delina, Wild Mage + Port Razer": {
+     "id": "282-1548",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite creature ETB"
+     ]
+    },
+    "Brass's Bounty + Reiterate": {
+     "id": "3368-5211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Kiki-Jiki, Mirror Breaker + Port Razer": {
+     "id": "618-1548",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Brass's Bounty + Mechanized Production": {
+     "id": "2047-5211",
+     "bracketTag": "O",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Dramatic Reversal + Lithoform Engine": {
+     "id": "3094-4821",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite colorless mana",
+      "Infinite untap of nonland permanents you control"
+     ]
+    },
+    "Dramatic Reversal + Twinning Staff": {
+     "id": "2539-4821",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite mana nonland permanents you control can produce"
+     ]
+    },
+    "Port Razer + Rionya, Fire Dancer": {
+     "id": "1548-1908",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Palinchron + Panharmonicon": {
+     "id": "2397-3542",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Dualcaster Mage + Planar Incision": {
+     "id": "147-673",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Calamity, Galloping Inferno + Port Razer": {
+     "id": "1548-5461",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite copies of nonlegendary creatures you control"
+     ]
+    },
+    "Dramatic Reversal + Sigil Tracer": {
+     "id": "3236-4821",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana nonland permanents you control can produce",
+      "Infinite untap of nonland permanents you control"
+     ]
+    },
+    "Naru Meha, Master Wizard + Planar Incision": {
+     "id": "141-673",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Port Razer + Splinter Twin": {
+     "id": "1548-4702",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite creature tokens with haste"
+     ]
+    },
+    "Mirage Phalanx + Port Razer": {
+     "id": "1378-1548",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite creature ETB"
+     ]
+    },
+    "Dramatic Reversal + Elite Arcanist": {
+     "id": "2825-4821",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite storm count",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Frantic Search + Izzet Boilerworks + Nivix Guildmage": {
+     "id": "352-2196-3756",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite looting"
+     ]
+    },
+    "Deadeye Navigator + Panharmonicon + Sailor of Means": {
+     "id": "1409-2397-5424",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Port Razer + Sandstorm Crasher": {
+     "id": "1548-6426",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Brass's Bounty + Nivix Guildmage": {
+     "id": "352-5211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Dramatic Reversal + Izzet Guildmage": {
+     "id": "4621-4821",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Dramatic Reversal + Nivix Guildmage": {
+     "id": "352-4821",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Dramatic Reversal + Meletis Charlatan": {
+     "id": "378-4821",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana nonland permanents you control can produce"
+     ]
+    },
+    "Dramatic Reversal + League Guildmage": {
+     "id": "4821-5054",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Deadeye Navigator + Sailor of Means + Starfield Vocalist": {
+     "id": "1409-5424-6751",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Crackdown Construct + Dragonfire Blade": {
+     "id": "4944-6978",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Phantom Steed + Port Razer": {
+     "id": "1548-3742",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite death triggers"
+     ]
+    },
+    "Corsair Captain + Deadeye Navigator + Panharmonicon": {
+     "id": "1409-2307-2397",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Corsair Captain + Deadeye Navigator + Starfield Vocalist": {
+     "id": "1409-2307-6751",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Brass's Bounty + Mischievous Quanar": {
+     "id": "1121-5211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Panharmonicon + Plundering Pirate": {
+     "id": "1409-2397-5420",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Plundering Pirate + Starfield Vocalist": {
+     "id": "1409-5420-6751",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Stella Lee, Wild Card": {
+     "id": "5534--28",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite copies of one instant or sorcery",
+      "Infinite magecraft triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "2"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

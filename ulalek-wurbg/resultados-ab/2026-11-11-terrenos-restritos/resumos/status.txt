@@ -1,0 +1,7 @@
+21:18:15 inicio
+21:18:16 smoke fim
+21:18:36 ab fim
+21:18:51 regressao fim
+21:19:17 bitident fim
+21:19:20 determinismo fim
+21:19:20 tudo fim

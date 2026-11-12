@@ -1,0 +1,8 @@
+política=delib turnos=12 N=6000 base: win<=T 78.1% revel<=T 7.95% cmd<=3 85.0% Treasures criados 50.94 (fim 15.76) dano mesa 281.67 combate 412.39 dragões Magda 2.644
+Kingpin entra no lugar de      win<=T (pp)    revel<=T (pp) cmd<=3 (pp)   Treasures    dano mesa    combate       cast% disp/jogo  T/jogo
+Kingpin<-Academy Manufactor    +1.32±0.36   +0.72±0.32   +0.00±0.00  +11.72±22.27 +109.55±230.48 +29.27±20.35  26.7%      3.24    8.65
+Kingpin<-Back in Town          +1.33±0.40   +0.90±0.34   +0.02±0.03  +2.89±3.17  +13.33±33.40 +104.01±124.94  26.8%      3.17    8.45
+Kingpin<-Monologue Tax         +1.32±0.39   +0.92±0.33   +0.00±0.00  +1.01±2.48  -12.37±28.25 +20.23±6.19   26.8%      3.24    8.67
+Blank<-Back in Town            +0.25±0.31   +0.35±0.29   +0.02±0.03  +3.45±12.89 +57.70±165.98 +10.61±35.70   0.0%      0.00    0.00
+Blank<-Academy Manufactor      +0.05±0.37   +0.25±0.29   +0.00±0.00  +1.40±11.92 +17.61±123.83 -4.02±24.30   0.0%      0.00    0.00
+Blank<-Monologue Tax           +0.40±0.30   +0.35±0.29   +0.00±0.00  +1.08±7.36  +19.54±89.57 -10.61±22.47   0.0%      0.00    0.00

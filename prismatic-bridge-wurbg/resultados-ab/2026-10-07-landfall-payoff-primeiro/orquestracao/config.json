@@ -1,0 +1,39 @@
+{
+ "flags_off": {
+  "LANDFALL_PAYOFF_FIRST": false
+ },
+ "ignora_campos": [
+  "payoff_first_casts"
+ ],
+ "sensibilidade": {},
+ "turns": 8,
+ "extra": [
+  false
+ ],
+ "deck": "prismatic-bridge-wurbg",
+ "sim": "prismatic_bridge_goldfish_v1.py",
+ "snapshot": "codigo/prismatic_bridge_goldfish_v1_ANTES_4df825f.py",
+ "destaque": [
+  "payoff_first_casts",
+  "evolution_sage_proliferates",
+  "lands_played_total",
+  "pw_activations_total",
+  "pw_ultimates_used_total",
+  "pw_draws_total",
+  "first_ult_turn__nunca",
+  "first_ult_turn__ate_T3",
+  "first_ult_turn__ate_T4",
+  "first_ult_turn__ate_T5",
+  "first_ult_turn__ate_T6",
+  "first_pw_hit_turn__nunca",
+  "first_pw_hit_turn__ate_T3",
+  "first_pw_hit_turn__ate_T4",
+  "first_pw_hit_turn__ate_T5",
+  "first_pw_hit_turn__ate_T6",
+  "bridge_first_cast_turn__nunca",
+  "bridge_first_cast_turn__ate_T3",
+  "bridge_first_cast_turn__ate_T4",
+  "bridge_first_cast_turn__ate_T5",
+  "bridge_first_cast_turn__ate_T6"
+ ]
+}

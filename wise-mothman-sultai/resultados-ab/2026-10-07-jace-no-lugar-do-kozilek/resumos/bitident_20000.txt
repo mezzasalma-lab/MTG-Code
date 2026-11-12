@@ -1,0 +1,8 @@
+N = 5000 x 2 modos (sementes 7000000..7004999): (1) SWAPS=() identico ao snapshot ANTES (1c18475) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) Jace no baralho: 5332 partidas em que ele nunca foi visto (mao/campo/cemiterio), identicas com as chaves nos 2 extremos (divergencias 0); 4668 partidas em que ele apareceu (podem diferir)
+rc=0
+N = 5000 x 2 modos (sementes 7005000..7009999): (1) SWAPS=() identico ao snapshot ANTES (1c18475) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) Jace no baralho: 5314 partidas em que ele nunca foi visto (mao/campo/cemiterio), identicas com as chaves nos 2 extremos (divergencias 0); 4686 partidas em que ele apareceu (podem diferir)
+rc=0
+N = 5000 x 2 modos (sementes 7010000..7014999): (1) SWAPS=() identico ao snapshot ANTES (1c18475) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) Jace no baralho: 5306 partidas em que ele nunca foi visto (mao/campo/cemiterio), identicas com as chaves nos 2 extremos (divergencias 0); 4694 partidas em que ele apareceu (podem diferir)
+rc=0
+N = 5000 x 2 modos (sementes 7015000..7019999): (1) SWAPS=() identico ao snapshot ANTES (1c18475) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) Jace no baralho: 5343 partidas em que ele nunca foi visto (mao/campo/cemiterio), identicas com as chaves nos 2 extremos (divergencias 0); 4657 partidas em que ele apareceu (podem diferir)
+rc=0

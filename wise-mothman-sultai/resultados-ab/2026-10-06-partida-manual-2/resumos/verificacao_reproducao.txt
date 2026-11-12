@@ -1,0 +1,6 @@
+IGUAL  trace.md
+IGUAL  estado_por_turno.txt
+IGUAL  mana_por_turno.md
+IGUAL  ledger_contadores.md
+IGUAL  confere_simulador.txt (simulador vivo: 5 conferencias)
+5 iguais, 0 diferentes

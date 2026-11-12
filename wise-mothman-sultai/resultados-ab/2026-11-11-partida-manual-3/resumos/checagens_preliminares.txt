@@ -1,0 +1,31 @@
+== 1) T4: The Wise Mothman {1}{B}{G}{U} x fontes viradas no T4
+  terrenos virados no T4: ['Forest', 'Breeding Pool', 'Forest', 'Tropical Island'] | cores possiveis: ['G', 'U'] | B disponivel: False
+  Plaza de Heroes estava na mao no T4 (foi descartada pela Dark Deal): True
+== 2) T4: Dark Deal -> Each player discards all the cards in their hand, then draws that many cards minus one.
+  descartou 6 (Rejuvenating Springs, Didn't Say Please, Urza's Saga, Plaza of Heroes, An Offer You Can't Refuse, Forest); comprou 4 depois (Forest, Evolution Witness, Six, Nature's Lore); esperado 5
+== 3) T6: cartas do cemiterio que foram para a MAO (Evolution Witness: 'target permanent card')
+  idx 12: Gyre Sage -> battlefield | tipo: Creature — Elf Druid | permanente: True
+  idx 13: Rejuvenating Springs -> battlefield | tipo: Land | permanente: True
+  idx 14: Gyre Sage -> hand | tipo: Creature — Elf Druid | permanente: True
+  idx 15: Didn't Say Please -> hand | tipo: Instant | permanente: False
+  idx 16: Urza's Saga -> hand | tipo: Enchantment Land — Urza's Saga | permanente: True
+  idx 26: Plaza of Heroes -> hand | tipo: Land | permanente: True
+  idx 27: An Offer You Can't Refuse -> hand | tipo: Instant | permanente: False
+== 4) jogadas de terreno por turno (objetos distintos, mao->campo e cemiterio->campo)
+  T1: da mao ['Tropical Island#qnB4'] | do cemiterio -
+  T2: da mao ['Breeding Pool#KfKB'] | do cemiterio -
+  T3: da mao ['Forest#WLYS'] | do cemiterio -
+  T4: da mao ['Forest#u2_2'] | do cemiterio -
+  T5: da mao ['Forest#tNyp'] | do cemiterio -
+  T6: da mao ['Overgrown Tomb#xrtZ'] | do cemiterio ['Rejuvenating Springs#R3IH']
+== 5) mill proprio (library->graveyard) por turno: o rad exige 1 por contador no inicio da fase principal 1
+  T1: -
+  T2: -
+  T3: -
+  T4: -
+  T5: ['Gyre Sage']
+  T6: -
+== 6) contadores +1/+1 por turno (ultimo valor por criatura)
+  The Wise Mothman: {5: 8, 6: 8}
+  Six: {6: 4}
+  Evolution Witness: {6: 5}

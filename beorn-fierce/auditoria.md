@@ -3,6 +3,8 @@
 Auditoria feita via skill `mtg-commander`, dados em tempo real do Scryfall. Cruzada com os 5 goldfishes já registrados em `goldfish-log.md`.
 Data: 2026-08-20
 
+> **Atualização 2026-10-23:** o usuário **trocou o Ram Through pelo Herd Heirloom** (`{1}{G}` artefato: mana de qualquer cor só para criatura / dá trample e compra por dano de combate a uma criatura de poder ≥ 4). `lista.md` e o simulador foram atualizados e a troca foi medida em [`resultados-ab/2026-10-23-herd-heirloom/LEIAME.md`](resultados-ab/2026-10-23-herd-heirloom/LEIAME.md). O que isso muda nas seções abaixo (escritas em 2026-08-20/31): **§4 Ramp** volta a ter o Herd Heirloom (mana restrito a criatura); **§5 Card draw** ganha a compra por dano de combate (o Herd Heirloom já constava nesta seção na lista original); **§6 Remoção** passa de 6 para **5** efeitos (o Ram Through, instantâneo a 2 mana, sai; o ponto crítico da seção piora); **§10/§12** citam o Ram Through como adicionado em 2026-08-31 — isso é histórico. O Spellbook não acha combo antes nem depois. O texto das seções antigas não foi reescrito.
+
 ---
 
 ## 1. Validação formal

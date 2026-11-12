@@ -1,0 +1,46 @@
+LOTE N=2000 sementes 1000000..1001999, 10 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1265 (63.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0380       0.0360      -0.0020 ±0.0024  
+  *commander_cast_turn__ate_T3                  0.2300       0.2460      +0.0160 ±0.0081  
+  *commander_cast_turn__ate_T4                  0.5405       0.5690      +0.0285 ±0.0092  
+  *commander_cast_turn__ate_T5                  0.7345       0.7480      +0.0135 ±0.0070  
+  *interaction_plays                            2.8100       2.8580      +0.0480 ±0.0257  
+  *opponent_forced_draws_total                 12.6940      12.8830      +0.1890 ±0.1327  
+  *len_library                                 69.0330      68.7755      -0.2575 ±0.1815  
+  *len_battlefield                             17.4585      17.6160      +0.1575 ±0.1165  
+  *cards_drawn_extra                           20.6745      20.8965      +0.2220 ±0.1663  
+  *commander_damage_dealt                      23.0975      24.1970      +1.0995 ±0.8563  
+  *next_uid                                    24.8085      24.9715      +0.1630 ±0.1280  
+   bumbleflower_triggers_this_turn              2.2990       2.3375      +0.0385 ±0.0434  
+   hand_size_no_max                             0.5765       0.5810      +0.0045 ±0.0051  
+   life                                        37.3740      37.4080      +0.0340 ±0.0386  
+   spells_cast_this_turn                        2.5850       2.6155      +0.0305 ±0.0389  
+   tamiyo_emblem_free_cast                      0.0025       0.0035      +0.0010 ±0.0014  
+   life_gained_total                            6.1595       5.4750      -0.6845 ±0.9639  
+   simic_ascendancy_growth_counters             3.4695       3.6380      +0.1685 ±0.2401  
+
+[so_terreno - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1265 (63.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0380       0.0360      -0.0020 ±0.0024  
+  *commander_cast_turn__ate_T3                  0.2300       0.2460      +0.0160 ±0.0081  
+  *commander_cast_turn__ate_T4                  0.5405       0.5690      +0.0285 ±0.0092  
+  *commander_cast_turn__ate_T5                  0.7345       0.7480      +0.0135 ±0.0070  
+  *interaction_plays                            2.8100       2.8580      +0.0480 ±0.0257  
+  *opponent_forced_draws_total                 12.6940      12.8830      +0.1890 ±0.1327  
+  *len_library                                 69.0330      68.7755      -0.2575 ±0.1815  
+  *len_battlefield                             17.4585      17.6160      +0.1575 ±0.1165  
+  *cards_drawn_extra                           20.6745      20.8965      +0.2220 ±0.1663  
+  *commander_damage_dealt                      23.0975      24.1970      +1.0995 ±0.8563  
+  *next_uid                                    24.8085      24.9715      +0.1630 ±0.1280  
+   bumbleflower_triggers_this_turn              2.2990       2.3375      +0.0385 ±0.0434  
+   hand_size_no_max                             0.5765       0.5810      +0.0045 ±0.0051  
+   life                                        37.3740      37.4080      +0.0340 ±0.0386  
+   spells_cast_this_turn                        2.5850       2.6155      +0.0305 ±0.0389  
+   tamiyo_emblem_free_cast                      0.0025       0.0035      +0.0010 ±0.0014  
+   life_gained_total                            6.1595       5.4750      -0.6845 ±0.9639  
+   simic_ascendancy_growth_counters             3.4695       3.6380      +0.1685 ±0.2401  
+
+[so_ordem_set - antes] N=2000 | partidas com resultado IDENTICO ao da base: 2000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)

@@ -1,0 +1,45 @@
+== fim do T1 (* = virado)
+  battlefield     (1): Zagoth Triome*
+  hand            (7): Hedge Shredder, Memory Erosion, Six, Strip Mine, Takenuma, Abandoned Mire, Watery Grave, Wave Goodbye
+  graveyard       (1): Misty Rainforest
+  opponentsCards  (0): 
+== fim do T2 (* = virado)
+  battlefield     (4): Six, Sol Ring*, Strip Mine*, Zagoth Triome*
+  hand            (5): Hedge Shredder, Memory Erosion, Takenuma, Abandoned Mire, Watery Grave, Wave Goodbye
+  graveyard       (1): Misty Rainforest
+  opponentsCards  (0): 
+== fim do T3 (* = virado)
+  battlefield     (6): Kami of Whispered Hopes, Six*, Sol Ring*, Strip Mine, Watery Grave*, Zagoth Triome*
+  hand            (5): Hedge Shredder, Island, Memory Erosion, Takenuma, Abandoned Mire, Wave Goodbye
+  graveyard       (3): Kodama of the West Tree, Misty Rainforest, Toxic Deluge
+  opponentsCards  (0): 
+== fim do T4 (* = virado)
+  battlefield     (8): Island*, Kami of Whispered Hopes, Six*, Sol Ring, Strip Mine*, The Wise Mothman, Watery Grave*, Zagoth Triome*
+  hand            (6): Forest, Hedge Shredder, Memory Erosion, Takenuma, Abandoned Mire, Urza's Saga, Wave Goodbye
+  graveyard       (5): Bramble Familiar // Fetch Quest, Icetill Explorer, Kodama of the West Tree, Misty Rainforest, Toxic Deluge
+  opponentsCards  (0): 
+== fim do T5 (* = virado)
+  battlefield     (12): Forest*, Hedge Shredder, Icetill Explorer, Island, Kami of Whispered Hopes*[+1 / +1x1], Six, Sol Ring*, Strip Mine*, Swamp*, The Wise Mothman*, Watery Grave, Zagoth Triome*
+  hand            (4): Memory Erosion, Takenuma, Abandoned Mire, Urza's Saga, Wave Goodbye
+  graveyard       (6): Ashiok, Dream Render, Bramble Familiar // Fetch Quest, Kodama of the West Tree, Misty Rainforest, Toxic Deluge, Waterlogged Grove
+  opponentsCards  (0): 
+== fim do T6 (* = virado)
+  battlefield     (15): Forest, Hedge Shredder*, Icetill Explorer*, Island*, Kami of Whispered Hopes[+1 / +1x2], Memory Erosion, Overgrown Tomb*, Ruin Crab, Six, Sol Ring*, Strip Mine, Swamp, The Wise Mothman[+1 / +1x2], Watery Grave*, Zagoth Triome*
+  hand            (2): Takenuma, Abandoned Mire, Wave Goodbye
+  graveyard       (9): Ashiok, Dream Render, Bramble Familiar // Fetch Quest, Hardened Scales, Kodama of the West Tree, Misty Rainforest, Smuggler's Surprise, Toxic Deluge, Urza's Saga, Waterlogged Grove
+  opponentsCards  (1): Aven Mindcensor
+== fim do T7 (* = virado)
+  battlefield     (11): Forest*, Forest*, Hardened Scales, Island*, Memory Erosion, Overgrown Tomb, Sol Ring*, Strip Mine*, Swamp*, Watery Grave*, Zagoth Triome*
+  hand            (7): Generous Patron, Hedge Shredder, Icetill Explorer, Kami of Whispered Hopes, Ruin Crab, Six, The Wise Mothman
+  graveyard       (12): Agatha's Soul Cauldron, Ashiok, Dream Render, Bramble Familiar // Fetch Quest, Hollowmurk Siege, Kodama of the West Tree, Misty Rainforest, Smuggler's Surprise, Takenuma, Abandoned Mire, Toxic Deluge, Urza's Saga, Waterlogged Grove, Wave Goodbye
+  opponentsCards  (2): Aven Mindcensor, Evacuation
+== fim do T8 (* = virado)
+  battlefield     (15): Forest*, Forest*, Hardened Scales, Icetill Explorer, Island*, Memory Erosion, Overgrown Tomb*, Ruin Crab, Sol Ring*, Strip Mine*, Swamp*, The Wise Mothman, Urza's Saga[Lorex1], Watery Grave*, Zagoth Triome*
+  hand            (5): Agadeem's Awakening // Agadeem, the Undercrypt, Generous Patron, Hedge Shredder, Kami of Whispered Hopes, Six
+  graveyard       (12): Agatha's Soul Cauldron, Ashiok, Dream Render, Bramble Familiar // Fetch Quest, Hollowmurk Siege, Kodama of the West Tree, Misty Rainforest, Palantír of Orthanc, Smuggler's Surprise, Takenuma, Abandoned Mire, Toxic Deluge, Waterlogged Grove, Wave Goodbye
+  opponentsCards  (2): Aven Mindcensor, Evacuation
+== fim do T9 (* = virado)
+  battlefield     (17): Forest*, Forest*, Hardened Scales, Icetill Explorer, Island, Kami of Whispered Hopes, Memory Erosion, Overgrown Tomb*, Ruin Crab, Six, Sol Ring*, Strip Mine, Swamp*, The Wise Mothman*, Urza's Saga[Lorex2], Watery Grave, Zagoth Triome*
+  hand            (4): Agadeem's Awakening // Agadeem, the Undercrypt, Generous Patron, Hedge Shredder, Swiftfoot Boots
+  graveyard       (13): Agatha's Soul Cauldron, Ashiok, Dream Render, Bramble Familiar // Fetch Quest, Hollowmurk Siege, Kodama of the West Tree, Misty Rainforest, Palantír of Orthanc, Polluted Delta, Smuggler's Surprise, Takenuma, Abandoned Mire, Toxic Deluge, Waterlogged Grove, Wave Goodbye
+  opponentsCards  (2): Aven Mindcensor, Evacuation

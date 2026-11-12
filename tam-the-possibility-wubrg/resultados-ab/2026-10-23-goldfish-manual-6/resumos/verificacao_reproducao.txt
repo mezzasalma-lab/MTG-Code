@@ -1,0 +1,14 @@
+IGUAL  linha_do_tempo.txt
+IGUAL  eventos_compactos.txt
+IGUAL  deltas_lealdade.txt
+IGUAL  pws_por_turno.txt
+IGUAL  pws_por_turno_premissa_fracture.txt
+IGUAL  replay_semente_1.txt
+IGUAL  replay_semente_2.txt
+IGUAL  replay_semente_3.txt
+IGUAL  replay_escala_300_padrao_default.txt
+IGUAL  replay_escala_300_resiliencia_default.txt
+IGUAL  replay_escala_300_resiliencia_playtester.txt
+IGUAL  testes_tam_todos.txt
+IGUAL  testes_manual6_lista.txt
+13/13 saidas byte a byte iguais

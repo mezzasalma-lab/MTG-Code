@@ -1,0 +1,96 @@
+
+--- T1
+ 0 Breeding Pool                    hand        library->hand              -   
+ 1 Forest                           hand        library->hand              -   
+ 2 Plaza of Heroes                  hand        library->hand              -   
+ 3 Forest                           hand        library->hand              -   
+ 4 An Offer You Can't Refuse        hand        library->hand              -   
+ 5 Tropical Island                  hand        library->hand              -   
+ 6 Forest                           hand        library->hand              -   
+ 7 Altar of the Brood               hand        library->hand              -   
+ 8 Tropical Island                  battlefield hand->battlefield          -   
+
+--- T2
+ 0 Urza's Saga                      hand        library->hand              -   
+ 1 Breeding Pool                    battlefield hand->battlefield          T   
+
+--- T3
+ 0 Breeding Pool                    battlefield                            -   
+ 1 Didn't Say Please                hand        library->hand              -   
+ 2 Forest                           battlefield hand->battlefield          -   
+ 3 Breeding Pool                    battlefield                            T   
+ 4 Altar of the Brood               battlefield hand->battlefield          -   
+
+--- T4
+ 0 Breeding Pool                    battlefield                            -   
+ 1 Rejuvenating Springs             hand        library->hand              -   
+ 2 Forest                           battlefield hand->battlefield          -   
+ 3 Forest                           battlefield                            T   
+ 4 Breeding Pool                    battlefield                            T   
+ 5 Forest                           battlefield                            T   
+ 6 Tropical Island                  battlefield                            T   
+ 7 The Wise Mothman                 battlefield commandZone->battlefield   -   
+ 8 Dark Deal                        opponentsCards None->opponentsCards       -   
+ 9 Rejuvenating Springs             graveyard   hand->graveyard            -   
+10 Didn't Say Please                graveyard   hand->graveyard            -   
+11 Urza's Saga                      graveyard   hand->graveyard            -   
+12 Plaza of Heroes                  graveyard   hand->graveyard            -   
+13 An Offer You Can't Refuse        graveyard   hand->graveyard            -   
+14 Forest                           graveyard   hand->graveyard            -   
+15 Forest                           hand        library->hand              -   
+16 Evolution Witness                hand        library->hand              -   
+17 Six                              hand        library->hand              -   
+18 Nature's Lore                    hand        library->hand              -   
+
+--- T5
+ 0 Forest                           battlefield                            -   
+ 1 Breeding Pool                    battlefield                            -   
+ 2 Forest                           battlefield                            -   
+ 3 Tropical Island                  battlefield                            -   
+ 4 Overgrown Tomb                   hand        library->hand              -   
+ 5 Gyre Sage                        graveyard   library->graveyard         -   
+ 6 The Wise Mothman                 battlefield                            -  +1 / +1=1 
+ 7 Forest                           battlefield hand->battlefield          -   
+ 8 Forest                           battlefield                            T   
+ 9 Breeding Pool                    battlefield                            T   
+10 Forest                           battlefield                            T   
+11 Six                              battlefield hand->battlefield          -   
+12 The Wise Mothman                 battlefield                            -  +1 / +1=2 
+13 The Wise Mothman                 battlefield                            -  +1 / +1=3 
+14 The Wise Mothman                 battlefield                            -  +1 / +1=4 
+15 The Wise Mothman                 battlefield                            -  +1 / +1=5 
+16 The Wise Mothman                 battlefield                            -  +1 / +1=6 
+17 The Wise Mothman                 battlefield                            -  +1 / +1=7 
+18 The Wise Mothman                 battlefield                            -  +1 / +1=8 
+19 The Wise Mothman                 battlefield                            T  +1 / +1=8 
+
+--- T6
+ 0 The Wise Mothman                 battlefield                            -  +1 / +1=8 
+ 1 Forest                           battlefield                            -   
+ 2 Breeding Pool                    battlefield                            -   
+ 3 Forest                           battlefield                            -   
+ 4 Memory Erosion                   hand        library->hand              -   
+ 5 Overgrown Tomb                   battlefield hand->battlefield          -   
+ 6 Six                              battlefield                            -  +1 / +1=2 
+ 7 Overgrown Tomb                   battlefield                            T   
+ 8 Forest                           battlefield                            T   
+ 9 Breeding Pool                    battlefield                            T   
+10 Evolution Witness                battlefield hand->battlefield          -   
+11 Evolution Witness                battlefield                            -  +1 / +1=2 
+12 Gyre Sage                        battlefield graveyard->battlefield     -   
+13 Rejuvenating Springs             battlefield graveyard->battlefield     -   
+14 Gyre Sage                        hand        graveyard->hand            -   
+15 Didn't Say Please                hand        graveyard->hand            -   
+16 Urza's Saga                      hand        graveyard->hand            -   
+17 Forest                           battlefield                            T   
+18 Forest                           battlefield                            T   
+19 Nature's Lore                    battlefield hand->battlefield          -   
+20 Nature's Lore                    graveyard   battlefield->graveyard     -   
+21 Zagoth Triome                    battlefield library->battlefield       -   
+22 Zagoth Triome                    battlefield library->battlefield       T   
+23 Evolution Witness                battlefield                            -  +1 / +1=4 
+24 Six                              battlefield                            -  +1 / +1=4 
+25 Evolution Witness                battlefield                            -  +1 / +1=5 
+26 Plaza of Heroes                  hand        graveyard->hand            -   
+27 An Offer You Can't Refuse        hand        graveyard->hand            -   
+28 The Wise Mothman                 battlefield                            T  +1 / +1=8 

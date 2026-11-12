@@ -1,0 +1,25 @@
+SIMULADOR (snapshot c04840d), modo padrao, N=10000 sementes 3000000..3009999, 8 turnos (partida manual: 8 turnos)
+Treasures criados ACUMULADOS ao fim do turno: media | partida | % de jogos do simulador com >= a partida
+  T5: media 1.94 | partida 2 | 52.71%
+  T6: media 3.96 | partida 8 | 13.39%
+  T7: media 6.79 | partida 15 | 8.07%
+  T8: media 10.42 | partida 21 | 9.70%
+Criados ate' o T8: media 10.47, mediana 9, p90 20, p99 39, max 859; P(>=21) = 9.800%
+Por fonte (create_treasures source), media por jogo ate' o T8, maiores:
+  Grim Hireling                                1.041
+  Captain Lannery Storm ataca                  0.729
+  Kellogg ataca                                0.709
+  Black Market Connections                     0.709
+  Professional Face-Breaker                    0.675
+  The Reaver Cleaver                           0.648
+  Orochi Soul-Reaver                           0.565
+  Olivia (outlaw dano)                         0.545
+  Inspired Tinkering                           0.471
+  Pitiless Plunderer                           0.462
+  Mahadi (fim do turno)                        0.436
+  Lotho (2a magica)                            0.435
+  Goldspan Dragon ataca                        0.388
+  Smaug the Magnificent (upkeep)               0.382
+Terrenos que entram no pool de exilio por jogo (play_from_impulse nunca os joga): media 1.781; com Prosper em campo na hora: 0.378; jogos com >=1: 46.2%
+Comandante conjurado ate' o T3: 92.8% (partida: T3)
+Mana total (apos o terreno) T2 2.03 T3 3.19 T4 4.02 (partida: 2, 3, 5)

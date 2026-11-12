@@ -1,0 +1,22 @@
+audit_compra_t1: ROOT=<git archive HEAD e01054f> N=80 sementes 1000000..1000079; queda da biblioteca entre turns=0 e turns=1 (contagem
+azula-grixis                 COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 68, 2: 8, 4: 4} FIRST_TURN_SKIPS_DRAW=(sem chave)
+beorn-fierce                 COMPRA  n= 80 sem_medida=0 via simulate_one_with_interaction  queda={1: 80} FIRST_TURN_SKIPS_DRAW=(sem chave)
+captain-storm-izzet          COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 76, 2: 4} FIRST_TURN_SKIPS_DRAW=(sem chave)
+edgar-markov-mardu           COMPRA  n= 80 sem_medida=0 via simulate_one_with_interaction  queda={1: 70, 2: 10} FIRST_TURN_SKIPS_DRAW=(sem chave)
+hei-bai-wurbg                COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 73, 2: 7} FIRST_TURN_SKIPS_DRAW=(sem chave)
+kutzil-selesnya              COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 79, 2: 1} FIRST_TURN_SKIPS_DRAW=(sem chave)
+maralen-sultai               COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 80} FIRST_TURN_SKIPS_DRAW=(sem chave)
+megatron-tyrant-mardu        COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 63, 2: 15, 3: 2} FIRST_TURN_SKIPS_DRAW=(sem chave)
+ms-bumbleflower-bant         COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 79, 2: 1} FIRST_TURN_SKIPS_DRAW=(sem chave)
+nekusar-grixis               COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 48, 2: 19, 3: 3, 4: 1, 6: 2, 7: 6, 8: 1} FIRST_TURN_SKIPS_DRAW=(sem chave)
+prismatic-bridge-wurbg       COMPRA  n= 80 sem_medida=0 via simulate_one_with_interaction  queda={1: 75, 2: 5} FIRST_TURN_SKIPS_DRAW=(sem chave)
+rat-king-verminister         COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 79, 3: 1} FIRST_TURN_SKIPS_DRAW=(sem chave)
+tam-the-possibility-wubrg    COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 69, 2: 11} FIRST_TURN_SKIPS_DRAW=False
+thranduil-sultai             COMPRA  n= 80 sem_medida=0 via simulate_one_with_interaction  queda={1: 80} FIRST_TURN_SKIPS_DRAW=(sem chave)
+tom-bombadil-wubrg           COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 56, 2: 24} FIRST_TURN_SKIPS_DRAW=(sem chave)
+toph-naya                    COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 61, 2: 19} FIRST_TURN_SKIPS_DRAW=(sem chave)
+ulalek-wurbg                 COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 80} FIRST_TURN_SKIPS_DRAW=(sem chave)
+ur-dragon-wurbg              COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 78, 2: 2} FIRST_TURN_SKIPS_DRAW=(sem chave)
+vihaan-goldwaker-mardu       COMPRA  n= 80 sem_medida=0 via simulate_one                   queda={1: 80} FIRST_TURN_SKIPS_DRAW=(sem chave)
+wise-mothman-sultai          PULA    n= 80 sem_medida=0 via simulate_one                   queda={0: 71, 1: 9} FIRST_TURN_SKIPS_DRAW=(sem chave)
+resumo: COMPRA=19, PULA=1

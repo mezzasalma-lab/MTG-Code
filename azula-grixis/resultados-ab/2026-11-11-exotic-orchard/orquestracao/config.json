@@ -1,0 +1,22 @@
+{
+ "flags_off": {
+  "EXOTIC_ORCHARD_PROXY": false
+ },
+ "ignora_campos": [],
+ "sensibilidade": {},
+ "turns": 10,
+ "extra": null,
+ "destaque": [
+  "commander_cast_turn__nunca",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "lands_played_total",
+  "cleared_T8",
+  "cleared_T10"
+ ],
+ "deck": "azula-grixis",
+ "sim": "azula_goldfish_v1.py",
+ "snapshot": "codigo/azula_goldfish_v1_ANTES_99fde54.py"
+}

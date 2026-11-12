@@ -1,0 +1,65 @@
+base: {'cmd<=5': 0.889, 'never': 0.04, 'dmg': 83.984, 'dmg>=120': 0.177, 'win': 0.841, 'mana_conv': 70.781, 'weld': 1.152, 'interaction': 2.945}
+sai (maior perda primeiro)           cmd<=5      dmg  dmg>=120     win%  mana_cv    weld
+Arcane Signet                         -2.0pp     +4.9     +2.2pp   -2.94pp     +4.2   -0.05
+Fellwar Stone                         -1.5pp     +4.5     +1.6pp   -2.44pp     +4.1   -0.06
+Sol Ring                              -0.8pp     +2.0     +0.7pp   -2.00pp     +2.2   -0.10
+Talisman of Indulgence                -1.0pp     +6.3     +2.9pp   -1.82pp     +6.1   -0.03
+Talisman of Hierarchy                 -1.0pp     +6.2     +2.6pp   -1.72pp     +5.8   -0.03
+Talisman of Conviction                -0.9pp     +6.6     +2.5pp   -1.68pp     +5.9   -0.03
+Mind Stone                            -0.3pp     +5.8     +1.9pp   -1.38pp     +5.6   -0.05
+Melded Moxite                         -0.3pp     +7.0     +2.4pp   -1.06pp     +6.4   -0.08
+Bygone Colossus                       +0.1pp     +3.4     +0.6pp   -0.64pp     +3.7   +0.00
+Cursed Mirror                         -0.2pp     +7.3     +2.8pp   -1.08pp     +7.1   -0.02
+Brass's Tunnel-Grinder                -0.1pp     +5.5     +2.3pp   -0.78pp     +4.8   -0.04
+Combustible Gearhulk                  +0.0pp     +3.0     +0.4pp   -0.38pp     +5.0   -0.02
+Rakdos, the Muscle                    +0.0pp     +1.7     +0.2pp   +0.00pp     +3.7   -0.09
+Ultron, Artificial Malevolence        +0.0pp     +5.7     +2.0pp   -0.80pp     +5.5   -0.04
+Nexus of Becoming                     +0.0pp     +3.9     +1.6pp   -0.26pp     +3.4   -0.04
+Genesis Chamber                       +0.0pp     +7.3     +2.7pp   -0.92pp     +6.7   -0.05
+Skitterbeam Battalion                 +0.0pp     +4.5     +0.6pp   -0.24pp     +4.4   -0.01
+Scrap Trawler                         +0.0pp     +6.8     +2.4pp   -0.72pp     +6.4   -0.02
+Warstorm Surge                        +0.0pp     +2.8     +0.5pp   +0.10pp     +6.5   +0.02
+Black Market Connections              -0.2pp     +7.1     +2.6pp   -0.52pp     +7.0   -0.03
+Lightning Greaves                     +0.0pp     +7.0     +3.2pp   -0.72pp     +6.6   -0.02
+Junk Diver                            +0.0pp     +7.8     +3.4pp   -0.76pp     +7.1   -0.00
+The Ten Rings                         +0.0pp     +4.9     +1.6pp   -0.14pp     +5.4   -0.08
+The Eternity Elevator                 -0.0pp     +8.4     +3.7pp   -0.72pp     +7.7   -0.00
+Daretti, Scrap Savant                 +0.0pp     +5.1     +1.8pp   -0.04pp     +4.6   -0.38
+Anrakyr the Traveller                 +0.0pp     +7.3     +2.6pp   -0.48pp     +6.5   +0.00
+Summon: Bahamut                       -0.0pp     +5.3     +2.0pp   -0.04pp     +5.1   +0.01
+Cosmic Cube                           +0.0pp     +7.2     +2.9pp   -0.38pp     +6.8   -0.01
+Scarecrone                            +0.0pp     +8.8     +3.5pp   -0.68pp     +8.3   -0.02
+Cityscape Leveler                     +0.0pp     +6.5     +2.4pp   -0.14pp     +6.0   +0.00
+Noxious Gearhulk                      +0.0pp     +7.4     +3.0pp   -0.34pp     +7.0   -0.00
+Triplicate Titan                      +0.0pp     +6.4     +2.1pp   -0.10pp     +6.2   -0.03
+Pia's Revolution                      +0.1pp     +7.1     +2.6pp   -0.22pp     +6.6   +0.09
+Ironsoul Enforcer                     +0.0pp     +8.6     +3.0pp   -0.46pp     +8.0   -0.01
+Tarrian's Journal                     -0.0pp     +9.0     +3.8pp   -0.50pp     +8.5   -0.03
+Faithless Looting                     -0.3pp     +8.4     +3.3pp   -0.10pp     +7.8   +0.02
+Blightsteel Colossus                  +0.0pp     +7.2     +2.9pp   -0.14pp     +6.9   +0.02
+Steel Seraph                          +0.0pp     +8.0     +2.8pp   -0.28pp     +7.3   -0.00
+Goblin Welder                         +0.1pp     +6.9     +2.8pp   -0.04pp     +6.7   -0.21
+Feldon of the Third Path              +0.0pp     +7.3     +3.3pp   -0.04pp     +7.1   +0.01
+Portal to Phyrexia                    +0.0pp     +8.4     +3.0pp   -0.10pp     +7.5   -0.00
+Daretti, Rocketeer Engineer           -0.0pp     +7.3     +2.6pp   +0.16pp     +7.0   -0.19
+Scrap Welder                          +0.0pp     +8.1     +3.4pp   +0.00pp     +7.6   -0.09
+Sneak Attack                          +0.0pp     +9.4     +3.2pp   -0.18pp     +9.0   +0.03
+Demonic Junker                        +0.0pp     +9.3     +3.9pp   -0.18pp     +8.4   +0.02
+Blacksmith's Skill                    +0.0pp     +9.2     +3.6pp   -0.10pp     +8.7   +0.01
+Mishra, Tamer of Mak Fawa             +0.0pp     +8.4     +3.3pp   +0.06pp     +8.0   +0.04
+Swords to Plowshares                  +0.0pp     +8.8     +3.4pp   +0.00pp     +7.9   +0.01
+Chandra's Ignition                    +0.0pp     +9.0     +3.3pp   -0.02pp     +9.9   +0.03
+Clever Concealment                    +0.0pp     +9.0     +3.6pp   -0.02pp     +8.3   +0.01
+Path to Exile                         +0.0pp     +9.4     +3.7pp   -0.08pp     +8.8   +0.02
+Trash for Treasure                    +0.0pp     +9.0     +3.4pp   +0.04pp     +8.2   -0.09
+Ayara, Widow of the Realm             +0.0pp     +8.6     +3.5pp   +0.12pp     +8.2   +0.02
+Heartless Conscription                +0.0pp     +9.5     +3.6pp   +0.00pp     +9.0   +0.01
+Decree of Pain                        +0.0pp     +9.5     +3.7pp   +0.00pp     +8.8   +0.02
+Saheeli's Directive                   +0.0pp     +9.6     +3.5pp   +0.06pp     +8.8   +0.03
+Vandalblast                           +0.0pp     +9.8     +4.1pp   +0.02pp     +9.0   +0.02
+Blasphemous Act                       +0.0pp    +10.4     +3.7pp   -0.02pp     +9.7   +0.03
+Osgir, the Reconstructor              +0.0pp     +8.7     +3.3pp   +0.34pp     +8.4   +0.02
+Chaos Warp                            +0.0pp     +9.8     +4.2pp   +0.16pp     +9.2   +0.03
+Generous Gift                         +0.0pp    +11.6     +4.6pp   -0.02pp    +10.5   +0.02
+Metalwork Colossus                    +0.1pp     +9.7     +3.8pp   +1.12pp     +9.7   +0.12
+Goblin Engineer                       +0.2pp     +8.9     +3.7pp   +1.26pp     +8.8   -0.06

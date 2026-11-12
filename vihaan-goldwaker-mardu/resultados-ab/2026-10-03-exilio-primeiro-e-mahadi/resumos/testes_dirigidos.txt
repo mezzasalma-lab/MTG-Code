@@ -1,0 +1,21 @@
+PASS - E1 mana pra UMA so': a carta do exilio que expira neste turno (Lotho, prazo 7) e' conjurada ANTES da da mao; o Mahadi espera; Pact Boon cria 1 Treasure 
+PASS - E2 chave desligada = comportamento antigo: a da mao (Mahadi) vai primeiro e a do exilio expira sem uso 
+PASS - E3 carta do exilio que NAO expira neste turno (prazo 8) pode esperar: a da mao vai primeiro, a do exilio continua no pool 
+PASS - E4 o comandante continua sendo conjurado antes de tudo (3 mana: ele; nada sobra pro exilio) 
+PASS - E5 varias do exilio expirando: todas as que cabem na mana entram, com 1 Pact Boon por carta (3 Treasures) 
+PASS - E6 expirando que nao cabe na mana nao bloqueia a da mao (sem mana pro Blood Money: o Sol Ring entra) 
+PASS - F1 Mahadi em campo, 5 Treasures animados no fim da 2a main: sacrifica os 5 (5 criaturas mortas); no end step o Mahadi devolve 5: custo liquido ZERO 
+PASS - F2 Pitiless Plunderer (sem Mahadi): cada morte cria 1 Treasure na hora: sacrifica 5 e fica com 5 
+PASS - F3 sem Mahadi nem Plunderer custaria 1 Treasure por morte: NAO sacrifica 
+PASS - F4 so' os ANIMADOS (criaturas) sao sacrificados: dos 8 Treasures, 5 animados saem e os 3 criados depois do combate ficam 
+PASS - F5 T8 da partida: com Mahadi + Zulaport + Dictate em campo, 7 animados sacrificados = 7 drains do Zulaport (+7 de vida) e 7 gatilhos do Dictate (proxy de uso) 
+PASS - F6 chave desligada = comportamento antigo: nada e' sacrificado 
+PASS - F7 integracao com o Sephiroth: 6 mortes = 6 gatilhos e ele vira na 4a (a regra corrigida na rodada anterior continua valendo) 
+PASS - F8 sequencia real combat_step -> farm -> end_step: o Vihaan anima os 6, o farm os sacrifica, o Mahadi devolve 6; o turno termina com 6 Treasures e 0 animados 
+PASS - F9 Dictate pago com Treasures ja' criaturas (como no T8): os usados no custo e os que sobram contam como mortes: no total os 7 viram 7 criaturas mortas 
+PASS - I1 (padrao, 1.500 jogos) nenhuma carta duplicada, 0 'animados vivos' no fim do turno, o farm nunca sacrifica mais do que os animados 
+   info I1 padrao: Treasures-criatura sacrificados pelo farm em 1.500 jogos: 928
+PASS - I1 (resiliencia, 1.500 jogos) nenhuma carta duplicada, 0 'animados vivos' no fim do turno, o farm nunca sacrifica mais do que os animados 
+   info I1 resiliencia: Treasures-criatura sacrificados pelo farm em 1.500 jogos: 326
+
+17/17 testes passaram

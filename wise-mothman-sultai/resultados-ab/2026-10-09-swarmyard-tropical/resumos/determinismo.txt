@@ -1,0 +1,7 @@
+Determinismo entre processos: 3 PYTHONHASHSEED (11, 22, 33) x 1.500 sementes x 2 modos, campo a campo no estado final, 12 turnos, arquivo vivo (varredura-2026-10-05/scripts/det_check.sh)
+## lista APLICADA (simulador vivo, SWAPS=(), COMMANDER_REMOVAL_SHARE=0)
+wise-mothman-sultai        padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+wise-mothman-sultai        resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+## lista aplicada com COMMANDER_REMOVAL_SHARE=0.5
+wise-mothman-sultai        padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+wise-mothman-sultai        resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

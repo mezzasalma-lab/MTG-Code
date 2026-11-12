@@ -1,0 +1,22 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1493 (74.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1150       0.0975      -0.0175 ±0.0071  
+   commander_cast_turn__ate_T3                  0.1045       0.1080      +0.0035 ±0.0045  
+  *commander_cast_turn__ate_T4                  0.4215       0.4325      +0.0110 ±0.0081  
+  *commander_cast_turn__ate_T5                  0.6380       0.6520      +0.0140 ±0.0078  
+  *attacks_total                                4.0795       4.1765      +0.0970 ±0.0304  
+  *spells_cast_total                            9.5795       9.7375      +0.1580 ±0.0524  
+  *len_hand                                     2.2940       2.1905      -0.1035 ±0.0359  
+  *landfall_triggers_fired                     12.3330      12.5785      +0.2455 ±0.1115  
+  *len_names_cache                             13.0065      13.2015      +0.1950 ±0.0890  
+  *mana_spent_total                            33.8235      34.6235      +0.8000 ±0.3825  
+  *earthbend_applications                       4.8680       5.0185      +0.1505 ±0.0734  
+  *commander_cast_count                         1.2100       1.2325      +0.0225 ±0.0129  
+  *len_earthbend_by_source                      1.9980       2.0320      +0.0340 ±0.0202  
+  *commander_cast_turn__ate_T6                  0.7670       0.7795      +0.0125 ±0.0075  
+  *commander_in_play                            0.7275       0.7455      +0.0180 ±0.0110  
+  *bf_version                                  69.1110      71.3590      +2.2480 ±1.4884  
+  *interaction_plays                            0.4910       0.5040      +0.0130 ±0.0089  
+  *mana_generated_extra                         2.8200       2.9985      +0.1785 ±0.1243  

@@ -1,0 +1,50 @@
+1) Blasphemous Edict e' Game Changer? NAO (busca is:gamechanger sem resultado: Your query didn’t match any cards. Adjust your search terms or refer to the syntax guide at https://scryfall.com/docs/reference)
+
+2) edict_sorcery_rwb: 25 cartas
+   - Crack the Earth | {R} | Sorcery — Arcane | Each player sacrifices a permanent of their choice.
+   - Doomsday Confluence | {X}{X}{B} | Sorcery | Choose X. You may choose the same mode more than once. • Each player sacrifices a nonartifact creature of their choice. • Create a 3/3 black Dalek artifact creature token with menace. • Each opponent 
+   - Innocent Blood | {B} | Sorcery | Each player sacrifices a creature of their choice.
+   - Devastating Dreams | {R}{R} | Sorcery | As an additional cost to cast this spell, discard X cards at random. Each player sacrifices X lands of their choice. Devastating Dreams deals X damage to each creature.
+   - Tariff | {1}{W} | Sorcery | Each player sacrifices the creature they control with the greatest mana value unless they pay that creature's mana cost. If two or more creatures a player controls are tied for greatest, that player c
+   - Tectonic Break | {X}{R}{R} | Sorcery | Each player sacrifices X lands of their choice.
+   - Tremble | {1}{R} | Sorcery | Each player sacrifices a land of their choice.
+   - Social Snub | {1}{W}{B} | Sorcery | When you cast this spell while you control a creature, you may copy this spell. Each player sacrifices a creature of their choice. Each opponent loses 1 life and you gain 1 life.
+   - Barter in Blood | {2}{B}{B} | Sorcery | Each player sacrifices two creatures of their choice.
+   - Rankle's Prank | {2}{B}{B} | Sorcery | Choose one or more — • Each player discards two cards. • Each player loses 4 life. • Each player sacrifices two creatures of their choice.
+   - Thoughts of Ruin | {2}{R}{R} | Sorcery | Each player sacrifices a land of their choice for each card in your hand.
+   - Blasphemous Edict | {3}{B}{B} | Sorcery | You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield. Each player sacrifices thirteen creatures of their choice.
+   - By Invitation Only | {3}{W}{W} | Sorcery | Choose a number between 0 and 13. Each player sacrifices that many creatures of their choice.
+   - Danse Macabre | {3}{B}{B} | Sorcery | Each player sacrifices a nontoken creature of their choice. Roll a d20 and add the toughness of the creature you sacrificed this way. 1—14 | Return a creature card put into a graveyard this way to the
+   - Epicenter | {4}{R} | Sorcery | Target player sacrifices a land of their choice. Threshold — Each player sacrifices all lands they control instead if there are seven or more cards in your graveyard.
+   - Season of Loss | {3}{B}{B} | Sorcery | Choose up to five {P} worth of modes. You may choose the same mode more than once. {P} — Each player sacrifices a creature of their choice. {P}{P} — Draw a card for each creature that died under your 
+   - Tragic Arrogance | {3}{W}{W} | Sorcery | For each player, you choose from among the permanents that player controls an artifact, a creature, an enchantment, and a planeswalker. Then each player sacrifices all other nonland permanents they co
+   - Reign of the Pit | {4}{B}{B} | Sorcery | Each player sacrifices a creature of their choice. Create an X/X black Demon creature token with flying, where X is the total power of the creatures sacrificed this way.
+   - Taste of Death | {4}{B}{B} | Sorcery | Each player sacrifices three creatures of their choice. You create three Food tokens. (They're artifacts with "{2}, {T}, Sacrifice this token: You gain 3 life.")
+   - Wildfire | {4}{R}{R} | Sorcery | Each player sacrifices four lands of their choice. Wildfire deals 4 damage to each creature.
+   - Winnowing | {4}{W}{W} | Sorcery | Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.) For each player, you choose a creature that player 
+   - All Is Dust | {7} | Kindred Sorcery — Eldrazi | Each player sacrifices all permanents they control that are one or more colors.
+   - Destructive Force | {5}{R}{R} | Sorcery | Each player sacrifices five lands of their choice. Destructive Force deals 5 damage to each creature.
+   - Necrotic Hex | {6}{B} | Sorcery | Each player sacrifices six creatures of their choice. You create six tapped 2/2 black Zombie creature tokens.
+   - Rite of Ruin | {5}{R}{R} | Sorcery | Choose an order for artifacts, creatures, and lands. Each player sacrifices one permanent of their choice of the first type, sacrifices two of their choice of the second type, then sacrifices three of
+
+2) wipe_sacrificio_rwb: 20 cartas
+   - Living End |  | Sorcery | Suspend 3—{2}{B}{B} Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.
+   - Tariff | {1}{W} | Sorcery | Each player sacrifices the creature they control with the greatest mana value unless they pay that creature's mana cost. If two or more creatures a player controls are tied for greatest, that player c
+   - Slaughter the Strong | {1}{W}{W} | Sorcery | Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.
+   - Barter in Blood | {2}{B}{B} | Sorcery | Each player sacrifices two creatures of their choice.
+   - Destined Confrontation | {2}{W}{W} | Sorcery | Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.
+   - Rankle's Prank | {2}{B}{B} | Sorcery | Choose one or more — • Each player discards two cards. • Each player loses 4 life. • Each player sacrifices two creatures of their choice.
+   - Blasphemous Edict | {3}{B}{B} | Sorcery | You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield. Each player sacrifices thirteen creatures of their choice.
+   - By Invitation Only | {3}{W}{W} | Sorcery | Choose a number between 0 and 13. Each player sacrifices that many creatures of their choice.
+   - Epicenter | {4}{R} | Sorcery | Target player sacrifices a land of their choice. Threshold — Each player sacrifices all lands they control instead if there are seven or more cards in your graveyard.
+   - Living Death | {3}{B}{B} | Sorcery | Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.
+   - Scrap Mastery | {3}{R}{R} | Sorcery | Each player exiles all artifact cards from their graveyard, then sacrifices all artifacts they control, then puts all cards they exiled this way onto the battlefield.
+   - Tergrid's Shadow | {3}{B}{B} | Instant | Each player sacrifices two creatures. Foretell {2}{B}{B} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)
+   - Tragic Arrogance | {3}{W}{W} | Sorcery | For each player, you choose from among the permanents that player controls an artifact, a creature, an enchantment, and a planeswalker. Then each player sacrifices all other nonland permanents they co
+   - Choice of Damnations | {5}{B} | Sorcery — Arcane | Target opponent chooses a number. You may have that player lose that much life. If you don't, that player sacrifices all but that many permanents of their choice.
+   - Reign of the Pit | {4}{B}{B} | Sorcery | Each player sacrifices a creature of their choice. Create an X/X black Demon creature token with flying, where X is the total power of the creatures sacrificed this way.
+   - Taste of Death | {4}{B}{B} | Sorcery | Each player sacrifices three creatures of their choice. You create three Food tokens. (They're artifacts with "{2}, {T}, Sacrifice this token: You gain 3 life.")
+   - Winnowing | {4}{W}{W} | Sorcery | Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.) For each player, you choose a creature that player 
+   - All Is Dust | {7} | Kindred Sorcery — Eldrazi | Each player sacrifices all permanents they control that are one or more colors.
+   - Necrotic Hex | {6}{B} | Sorcery | Each player sacrifices six creatures of their choice. You create six tapped 2/2 black Zombie creature tokens.
+   - Rite of Ruin | {5}{R}{R} | Sorcery | Choose an order for artifacts, creatures, and lands. Each player sacrifices one permanent of their choice of the first type, sacrifices two of their choice of the second type, then sacrifices three of

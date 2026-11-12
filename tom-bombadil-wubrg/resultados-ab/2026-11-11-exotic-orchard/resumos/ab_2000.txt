@@ -1,0 +1,23 @@
+LOTE N=2000 sementes 1000000..1001999, 10 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1642 (82.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0300       0.0215      -0.0085 ±0.0040  
+   commander_cast_turn__ate_T3                  0.0115       0.0125      +0.0010 ±0.0014  
+  *commander_cast_turn__ate_T4                  0.2730       0.2940      +0.0210 ±0.0069  
+  *commander_cast_turn__ate_T5                  0.5680       0.5980      +0.0300 ±0.0084  
+  *commander_cast_turn__ate_T6                  0.7615       0.7905      +0.0290 ±0.0080  
+  *commander_damage_dealt                      23.0465      23.7780      +0.7315 ±0.2310  
+  *commander_damage_win                         0.5195       0.5430      +0.0235 ±0.0085  
+  *tom_triggers                                 3.2780       3.3550      +0.0770 ±0.0326  
+  *tom_sagas_put                                3.2015       3.2760      +0.0745 ±0.0325  
+  *commander_uid                               10.3660      10.1995      -0.1665 ±0.0769  
+  *len_graveyard                               21.1080      21.6090      +0.5010 ±0.2360  
+  *commander_cast_count                         0.9700       0.9785      +0.0085 ±0.0040  
+  *commander_in_play                            0.9700       0.9785      +0.0085 ±0.0040  
+  *tom_sagas_mv                                15.4260      15.7765      +0.3505 ±0.1668  
+  *len_library                                 46.9855      46.2840      -0.7015 ±0.3363  
+  *len_usage                                   52.7450      53.4900      +0.7450 ±0.3951  
+  *tom_protected_turns                          1.8960       1.9405      +0.0445 ±0.0244  
+  *cards_drawn_extra                           27.3040      27.8470      +0.5430 ±0.3068  
+  *interaction_plays                           10.7550      10.9655      +0.2105 ±0.1221  

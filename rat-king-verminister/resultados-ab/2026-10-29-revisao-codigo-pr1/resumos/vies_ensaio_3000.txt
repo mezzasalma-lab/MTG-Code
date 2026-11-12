@@ -1,0 +1,17 @@
+partidas=3000 | decisoes com virado E desvirado na mao (T<=2)=1304 em 1042 partidas
+decisoes em que 'mana gasto' e 'desenvolvimento (MV da mao + comandante)' escolhem DIFERENTE: 63 (4.8% das decisoes) em 56 partidas (1.87% das partidas)
+  T1: 956 decisoes, 55 divergentes
+  T2: 348 decisoes, 8 divergentes
+divergentes: (semente, turno, mana_virado, mana_desvirado, dev_virado, dev_desvirado, escolha_mana, escolha_dev)
+   (1000008, 1, 0, 0, 0, 3, 'virado', 'desvirado')
+   (1000008, 2, 0, 2, 3, 2, 'desvirado', 'virado')
+   (1000069, 1, 0, 0, 0, 3, 'virado', 'desvirado')
+   (1000214, 1, 0, 0, 0, 3, 'virado', 'desvirado')
+   (1000307, 1, 0, 0, 0, 3, 'virado', 'desvirado')
+   (1000307, 2, 0, 2, 3, 2, 'desvirado', 'virado')
+   (1000311, 1, 0, 0, 0, 3, 'virado', 'desvirado')
+   (1000320, 1, 0, 0, 0, 3, 'virado', 'desvirado')
+   (1000320, 2, 0, 2, 3, 2, 'desvirado', 'virado')
+   (1000414, 1, 0, 0, 0, 3, 'virado', 'desvirado')
+   (1000474, 1, 0, 0, 0, 3, 'virado', 'desvirado')
+   (1000561, 1, 0, 0, 0, 3, 'virado', 'desvirado')

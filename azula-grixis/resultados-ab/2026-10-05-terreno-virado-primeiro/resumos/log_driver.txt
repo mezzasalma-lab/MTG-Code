@@ -1,0 +1,106 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=86 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=86 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: TAPPED_LAND_FIRST_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False} == snapshot codigo/azula_goldfish_v1_ANTES_687b8ba.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+Ghost: arquivo vivo com {'TAPPED_LAND_FIRST_ENABLED': True, 'TAPPED_LAND_FIRST_GHOST': True} (o ensaio roda, o resultado e' ignorado) == arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False}; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+resiliencia: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+LOTE N=2000 sementes 1000000..1001999, 10 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1200 (60.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0250       0.0260      +0.0010 ±0.0024  
+   commander_cast_turn__ate_T3                  0.1470       0.1505      +0.0035 ±0.0060  
+  *commander_cast_turn__ate_T4                  0.6000       0.6270      +0.0270 ±0.0124  
+   commander_cast_turn__ate_T5                  0.8060       0.8110      +0.0050 ±0.0071  
+  *commander_damage_win                         0.6180       0.6450      +0.0270 ±0.0119  
+  *azula_commander_damage_dealt                21.4355      21.5495      +0.1140 ±0.1015  
+   azula_copy_events_total                      1.8390       1.8765      +0.0375 ±0.0459  
+   narset_used_this_turn                        0.0040       0.0030      -0.0010 ±0.0014  
+   proxy_damage_total                        3948.4480    3451.4630    -496.9850 ±703.2052
+   treasures                                   17.7270      18.2490      +0.5220 ±0.8318  
+   treasures_created_total                     17.7270      18.2490      +0.5220 ±0.8318  
+   ascension_quest_counters                     0.4920       0.4805      -0.0115 ±0.0192  
+   bonus_mana_pool                              3.5425       3.5675      +0.0250 ±0.0439  
+   mana_spent_this_turn                         8.3905       8.7185      +0.3280 ±0.5867  
+   storm_grapeshot_events_total                 0.3300       0.3260      -0.0040 ±0.0073  
+   zada_copy_events_total                       0.8720       0.8545      -0.0175 ±0.0369  
+   spells_cast_this_turn                        2.5130       2.5860      +0.0730 ±0.1573  
+   interaction_plays                            2.3290       2.3420      +0.0130 ±0.0281  
+LOTE N=2000 sementes 1000000..1001999, 10 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1200 (60.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0295       0.0300      +0.0005 ±0.0029  
+   commander_cast_turn__ate_T3                  0.1390       0.1430      +0.0040 ±0.0059  
+  *commander_cast_turn__ate_T4                  0.5620       0.5895      +0.0275 ±0.0125  
+  *commander_cast_turn__ate_T5                  0.7800       0.7890      +0.0090 ±0.0076  
+  *azula_copy_events_total                      1.3190       1.3630      +0.0440 ±0.0360  
+  *graveyard_wipe_used                          0.4870       0.5000      +0.0130 ±0.0107  
+  *len_smart_graveyard_wipe_log                 0.4870       0.5000      +0.0130 ±0.0107  
+  *smart_graveyard_wipes_total                  0.4870       0.5000      +0.0130 ±0.0107  
+  *commander_damage_win                         0.3340       0.3470      +0.0130 ±0.0114  
+  *len_smart_removal_log                        0.7130       0.7330      +0.0200 ±0.0177  
+  *smart_removals_total                         0.7130       0.7330      +0.0200 ±0.0177  
+  *azula_commander_damage_dealt                18.3495      18.4690      +0.1195 ±0.1145  
+   len_smart_artifact_wipe_log                  0.2785       0.2710      -0.0075 ±0.0100  
+   smart_artifact_wipes_total                   0.2785       0.2710      -0.0075 ±0.0100  
+   lands_played_this_turn                       0.5085       0.5010      -0.0075 ±0.0114  
+   len_haste_grants_this_turn                   0.0750       0.0820      +0.0070 ±0.0125  
+   ascension_quest_counters                     0.3435       0.3345      -0.0090 ±0.0171  
+   len_battlefield                             10.6040      10.6340      +0.0300 ±0.0594  
+LOTE N=10000 sementes 3000000..3009999, 10 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5925 (59.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0296       0.0278      -0.0018 ±0.0011  
+  *commander_cast_turn__ate_T3                  0.1417       0.1459      +0.0042 ±0.0027  
+  *commander_cast_turn__ate_T4                  0.5968       0.6255      +0.0287 ±0.0053  
+  *commander_cast_turn__ate_T5                  0.7999       0.8094      +0.0095 ±0.0033  
+  *commander_damage_win                         0.6174       0.6431      +0.0257 ±0.0051  
+  *azula_commander_damage_dealt                21.3037      21.5147      +0.2110 ±0.0477  
+  *len_battlefield                             15.0861      15.1409      +0.0548 ±0.0285  
+  *skitterspike_counters                        1.5070       1.5320      +0.0250 ±0.0138  
+  *skitterspike_monstrous                       0.3014       0.3064      +0.0050 ±0.0028  
+  *commander_cast_turn__ate_T6                  0.8775       0.8819      +0.0044 ±0.0025  
+  *azula_copy_events_total                      1.8621       1.8959      +0.0338 ±0.0197  
+  *commander_cast_count                         0.9704       0.9722      +0.0018 ±0.0011  
+  *commander_in_play                            0.9704       0.9722      +0.0018 ±0.0011  
+  *len_creature_cast_turn                       5.6345       5.6646      +0.0301 ±0.0187  
+  *ascension_quest_counters                     0.4938       0.5061      +0.0123 ±0.0083  
+  *interaction_plays                            2.3047       2.3198      +0.0151 ±0.0119  
+  *skitterspike_pings_total                     1.3688       1.3984      +0.0296 ±0.0247  
+  *ascension_copies_total                       0.3917       0.3959      +0.0042 ±0.0035  
+LOTE N=10000 sementes 3000000..3009999, 10 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5925 (59.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0357       0.0334      -0.0023 ±0.0013  
+  *commander_cast_turn__ate_T3                  0.1334       0.1368      +0.0034 ±0.0026  
+  *commander_cast_turn__ate_T4                  0.5578       0.5851      +0.0273 ±0.0052  
+  *commander_cast_turn__ate_T5                  0.7713       0.7829      +0.0116 ±0.0038  
+  *azula_commander_damage_dealt                18.2165      18.3862      +0.1697 ±0.0527  
+  *commander_cast_turn__ate_T6                  0.8576       0.8644      +0.0068 ±0.0028  
+  *commander_cast_count                         1.6769       1.6952      +0.0183 ±0.0084  
+  *commander_damage_win                         0.3343       0.3439      +0.0096 ±0.0047  
+  *azula_copy_events_total                      1.3358       1.3624      +0.0266 ±0.0145  
+  *len_smart_wipe_log                           0.8143       0.8256      +0.0113 ±0.0071  
+  *smart_wipes_total                            0.8143       0.8256      +0.0113 ±0.0071  
+  *life                                        37.7036      37.6755      -0.0281 ±0.0181  
+  *len_hand                                     1.1806       1.1566      -0.0240 ±0.0169  
+  *zada_extra_draws_total                       0.8406       0.7719      -0.0687 ±0.0539  
+  *len_battlefield                             10.6474      10.6784      +0.0310 ±0.0254  
+  *len_smart_graveyard_snipe_log                0.3580       0.3653      +0.0073 ±0.0061  
+  *smart_graveyard_snipes_total                 0.3580       0.3653      +0.0073 ±0.0061  
+  *ascension_quest_counters                     0.3682       0.3772      +0.0090 ±0.0077  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

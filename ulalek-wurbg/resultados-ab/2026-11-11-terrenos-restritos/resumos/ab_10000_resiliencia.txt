@@ -1,0 +1,23 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7594 (75.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0357       0.0340      -0.0017 ±0.0010  
+  *commander_cast_turn__ate_T3                  0.1920       0.2180      +0.0260 ±0.0031  
+  *commander_cast_turn__ate_T4                  0.5699       0.6046      +0.0347 ±0.0037  
+  *commander_cast_turn__ate_T5                  0.8505       0.8591      +0.0086 ±0.0022  
+  *commander_cast_turn__ate_T6                  0.9087       0.9142      +0.0055 ±0.0018  
+  *spell_token_copies_total                     1.1580       1.2460      +0.0880 ±0.0088  
+  *ulalek_copies_total                          1.0783       1.1567      +0.0784 ±0.0079  
+  *ulalek_cc_payments_safe                      1.0383       1.1158      +0.0775 ±0.0079  
+  *finisher_resolved_total                      0.2413       0.2794      +0.0381 ±0.0053  
+  *cast_trigger_extra_resolutions_total         0.3446       0.3751      +0.0305 ±0.0049  
+  *first_finisher_turn__nunca                   0.8512       0.8336      -0.0176 ±0.0029  
+  *len_battlefield                             11.0927      11.1867      +0.0940 ±0.0199  
+  *commander_cast_count                         1.3522       1.3678      +0.0156 ±0.0038  
+  *proxy_removal_total                          0.1534       0.1731      +0.0197 ±0.0050  
+  *len_library                                 81.2275      81.1624      -0.0651 ±0.0176  
+  *cards_drawn_extra                            1.4180       1.4724      +0.0544 ±0.0153  
+  *first_finisher_turn__ate_T6                  0.0286       0.0334      +0.0048 ±0.0015  
+  *ruins_oran_rief_counters_total               0.4681       0.4764      +0.0083 ±0.0027  
+  *spawn_tokens_created_total                   1.4145       1.4535      +0.0390 ±0.0129  

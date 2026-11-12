@@ -1,0 +1,366 @@
+Ferramenta mill_oponentes: 5 variante(s), N=5000, sementes 3000000..3004999, modo padrao
+auto-verificacao `base`: 8 sementes identicas ao simulador (> 0)
+
+====================================================================================================
+VARIANTE `base`: N=5000 partidas, modo padrao, 12 turnos
+====================================================================================================
+
+1) POR TURNO (media sobre as N partidas; partida encerrada conta 0 mill nos turnos seguintes)
+   T cartas milladas acumulado/oponente    % da biblioteca    biblioteca media do       oponentes fora por
+      (3 oponentes)          (media)      dos oponentes          oponente vivo biblioteca vazia (acum.)
+   1           0.00              0.0               0.0%                   91.0                    0.000
+   2           0.64              0.2               0.2%                   89.8                    0.000
+   3           1.61              0.8               0.8%                   88.2                    0.000
+   4           3.99              2.1               2.3%                   85.9                    0.000
+   5           8.07              4.8               5.2%                   82.5                    0.005
+   6          14.39              9.6              10.4%                   78.3                    0.024
+   7          19.78             16.2              17.6%                   73.5                    0.046
+   8          16.88             21.8              23.7%                   70.7                    0.065
+   9           9.74             25.0              27.2%                   68.4                    0.080
+  10           4.73             26.6              28.9%                   66.3                    0.090
+  11           2.59             27.5              29.9%                   64.8                    0.095
+  12           1.51             28.0              30.4%                   63.0                    0.100
+
+2) POR FONTE: cartas milladas das bibliotecas dos oponentes por partida
+fonte                   cartas/jogo        %   conjurada em   cartas/jogo QUANDO   o que e'
+                            (todas)          (% das partidas) a carta foi conjurada
+mindcrank                     18.75    22.3%          20.5%                91.26   Mindcrank (vida perdida -> mill)
+rad                           13.08    15.6%    (sem carta)                    -   rad counters do oponente (CR 728.1, no main dele)
+altar_of_the_brood            11.91    14.2%          25.3%                42.70   Altar of the Brood (1 por permanente que entra)
+psychic_corrosion             11.88    14.2%          22.3%                53.38   Psychic Corrosion (2 por compra minha)
+ruin_crab                      9.27    11.0%          33.9%                27.24   Ruin Crab (landfall: 3 em cada oponente)
+mesmeric_orb                   4.12     4.9%          21.0%                19.58   Mesmeric Orb (1 por permanente DELE que desvira)
+undead_alchemist               4.10     4.9%          14.5%                27.85   Undead Alchemist (dano de Zumbi vira mill)
+ascension_loop                 3.00     3.6%    (sem carta)                    -   combo Ascension + Mindcrank/Master: mila a biblioteca inteira do oponente (loop; nao passa por mill_event)
+ashiok                         2.59     3.1%          24.0%                10.82   Ashiok (-1: 4)
+deepmuck                       1.50     1.8%          14.7%                10.19   Deepmuck Desperado (crime: 3 em cada)
+zellix                         1.08     1.3%          26.7%                 3.41   Zellix ({1},{T}: 3)
+memory_erosion                 1.01     1.2%          13.9%                 7.25   Memory Erosion (2 por magia dele)
+altar_of_dementia              0.90     1.1%          16.7%                 5.37   Altar of Dementia (poder da criatura sacrificada)
+konrad                         0.57     0.7%          16.7%                 3.18   Syr Konrad ({1}{B}: cada jogador 1)
+didnt_say_please               0.18     0.2%    (sem carta)                    -   Didn't Say Please (3 no dono da magia)
+TOTAL                         83.93
+   (a coluna 'QUANDO' mistura o efeito da carta com o resto do deck: uma partida em que ela sai tende a ser uma partida em que o motor inteiro girou)
+
+3) O QUE O MILL RENDE (media por partida)
+   cartas milladas dos oponentes                          83.930
+   ... das quais NAO-terreno (alimentam o Mothman)        50.710
+   gatilhos do Mothman por mill de oponente               20.044
+   contadores +1/+1 postos pelo Mothman                   74.553
+   rad counters dados aos oponentes                       12.843
+   vida que os oponentes perdem por rad                    8.237
+   fichas Horror/Zumbi (Zellix/Alchemist)                  9.151
+   pings do Syr Konrad                                     2.131
+   crimes (Deepmuck/Freestrider)                           3.659
+   oponentes eliminados                                    2.861
+   ... por biblioteca vazia                                0.100
+   ... por perda de vida                                   2.499
+   ... por dano de comandante                              0.261
+   partidas em que pelo menos 1 oponente sai por biblioteca vazia     6.24%
+   partidas com a mesa inteira limpa ate T8                51.44%
+   partidas com a mesa inteira limpa ate T10               85.30%
+auto-verificacao `pacote5`: 8 sementes identicas ao simulador (> 0)
+
+====================================================================================================
+VARIANTE `pacote5`: N=5000 partidas, modo padrao, 12 turnos
+====================================================================================================
+
+1) POR TURNO (media sobre as N partidas; partida encerrada conta 0 mill nos turnos seguintes)
+   T cartas milladas acumulado/oponente    % da biblioteca    biblioteca media do       oponentes fora por
+      (3 oponentes)          (media)      dos oponentes          oponente vivo biblioteca vazia (acum.)
+   1           0.00              0.0               0.0%                   91.0                    0.000
+   2           0.56              0.2               0.2%                   89.8                    0.000
+   3           1.62              0.7               0.8%                   88.3                    0.000
+   4           4.21              2.1               2.3%                   85.9                    0.001
+   5           8.27              4.9               5.3%                   82.5                    0.007
+   6          14.00              9.6              10.4%                   78.2                    0.025
+   7          18.95             15.9              17.3%                   73.7                    0.047
+   8          17.57             21.7              23.6%                   70.3                    0.067
+   9           9.47             24.9              27.1%                   68.0                    0.080
+  10           4.34             26.3              28.6%                   64.9                    0.086
+  11           2.46             27.2              29.5%                   61.2                    0.093
+  12           1.43             27.6              30.0%                   58.6                    0.096
+
+2) POR FONTE: cartas milladas das bibliotecas dos oponentes por partida
+fonte                   cartas/jogo        %   conjurada em   cartas/jogo QUANDO   o que e'
+                            (todas)          (% das partidas) a carta foi conjurada
+mindcrank                     18.76    22.6%          18.8%                99.68   Mindcrank (vida perdida -> mill)
+rad                           14.56    17.6%    (sem carta)                    -   rad counters do oponente (CR 728.1, no main dele)
+altar_of_the_brood            12.65    15.3%          23.8%                48.56   Altar of the Brood (1 por permanente que entra)
+psychic_corrosion             10.68    12.9%          19.9%                53.70   Psychic Corrosion (2 por compra minha)
+ruin_crab                      8.65    10.4%          32.9%                26.21   Ruin Crab (landfall: 3 em cada oponente)
+undead_alchemist               4.02     4.9%          13.4%                29.84   Undead Alchemist (dano de Zumbi vira mill)
+mesmeric_orb                   3.87     4.7%          19.9%                19.45   Mesmeric Orb (1 por permanente DELE que desvira)
+ashiok                         2.65     3.2%          22.1%                12.03   Ashiok (-1: 4)
+ascension_loop                 2.40     2.9%    (sem carta)                    -   combo Ascension + Mindcrank/Master: mila a biblioteca inteira do oponente (loop; nao passa por mill_event)
+deepmuck                       1.26     1.5%          13.4%                 9.38   Deepmuck Desperado (crime: 3 em cada)
+zellix                         1.09     1.3%          25.8%                 3.85   Zellix ({1},{T}: 3)
+memory_erosion                 0.93     1.1%          12.1%                 7.66   Memory Erosion (2 por magia dele)
+altar_of_dementia              0.62     0.7%          16.5%                 3.77   Altar of Dementia (poder da criatura sacrificada)
+konrad                         0.55     0.7%          13.6%                 3.78   Syr Konrad ({1}{B}: cada jogador 1)
+didnt_say_please               0.21     0.3%    (sem carta)                    -   Didn't Say Please (3 no dono da magia)
+TOTAL                         82.89
+   (a coluna 'QUANDO' mistura o efeito da carta com o resto do deck: uma partida em que ela sai tende a ser uma partida em que o motor inteiro girou)
+
+3) O QUE O MILL RENDE (media por partida)
+   cartas milladas dos oponentes                          82.892
+   ... das quais NAO-terreno (alimentam o Mothman)        50.472
+   gatilhos do Mothman por mill de oponente               18.560
+   contadores +1/+1 postos pelo Mothman                   72.121
+   rad counters dados aos oponentes                       14.090
+   vida que os oponentes perdem por rad                    9.140
+   fichas Horror/Zumbi (Zellix/Alchemist)                  8.977
+   pings do Syr Konrad                                     1.716
+   crimes (Deepmuck/Freestrider)                           2.950
+   oponentes eliminados                                    2.895
+   ... por biblioteca vazia                                0.096
+   ... por perda de vida                                   2.548
+   ... por dano de comandante                              0.251
+   partidas em que pelo menos 1 oponente sai por biblioteca vazia     6.10%
+   partidas com a mesa inteira limpa ate T8                55.72%
+   partidas com a mesa inteira limpa ate T10               88.02%
+auto-verificacao `pacote5+master`: 8 sementes identicas ao simulador (> 0)
+
+====================================================================================================
+VARIANTE `pacote5+master`: N=5000 partidas, modo padrao, 12 turnos
+====================================================================================================
+
+1) POR TURNO (media sobre as N partidas; partida encerrada conta 0 mill nos turnos seguintes)
+   T cartas milladas acumulado/oponente    % da biblioteca    biblioteca media do       oponentes fora por
+      (3 oponentes)          (media)      dos oponentes          oponente vivo biblioteca vazia (acum.)
+   1           0.00              0.0               0.0%                   91.0                    0.000
+   2           0.56              0.2               0.2%                   89.8                    0.000
+   3           1.55              0.7               0.8%                   88.3                    0.000
+   4           4.17              2.1               2.3%                   85.9                    0.000
+   5           8.75              5.0               5.4%                   82.3                    0.005
+   6          17.45             10.8              11.8%                   77.8                    0.034
+   7          24.48             19.0              20.6%                   72.9                    0.066
+   8          22.23             26.4              28.7%                   69.6                    0.096
+   9          10.57             29.9              32.5%                   67.3                    0.110
+  10           4.73             31.5              34.2%                   66.5                    0.122
+  11           2.69             32.4              35.2%                   63.5                    0.131
+  12           1.44             32.9              35.7%                   60.1                    0.134
+
+2) POR FONTE: cartas milladas das bibliotecas dos oponentes por partida
+fonte                   cartas/jogo        %   conjurada em   cartas/jogo QUANDO   o que e'
+                            (todas)          (% das partidas) a carta foi conjurada
+mindcrank                     18.72    19.0%          19.3%                97.07   Mindcrank (vida perdida -> mill)
+rad                           14.30    14.5%    (sem carta)                    -   rad counters do oponente (CR 728.1, no main dele)
+master_of_lake_town           13.78    14.0%          15.1%                91.45   The Master of Lake-town (vida perdida -> mill)
+altar_of_the_brood            13.33    13.5%          24.5%                49.41   Altar of the Brood (1 por permanente que entra)
+psychic_corrosion             10.11    10.3%          19.0%                53.34   Psychic Corrosion (2 por compra minha)
+ruin_crab                      8.75     8.9%          33.2%                26.38   Ruin Crab (landfall: 3 em cada oponente)
+ascension_loop                 4.03     4.1%    (sem carta)                    -   combo Ascension + Mindcrank/Master: mila a biblioteca inteira do oponente (loop; nao passa por mill_event)
+mesmeric_orb                   4.00     4.1%          19.9%                20.14   Mesmeric Orb (1 por permanente DELE que desvira)
+undead_alchemist               4.00     4.1%          12.1%                32.83   Undead Alchemist (dano de Zumbi vira mill)
+ashiok                         2.67     2.7%          22.0%                12.14   Ashiok (-1: 4)
+deepmuck                       1.39     1.4%          13.5%                10.28   Deepmuck Desperado (crime: 3 em cada)
+zellix                         1.23     1.2%          25.6%                 4.27   Zellix ({1},{T}: 3)
+memory_erosion                 0.85     0.9%          11.7%                 7.22   Memory Erosion (2 por magia dele)
+altar_of_dementia              0.73     0.7%          15.9%                 4.59   Altar of Dementia (poder da criatura sacrificada)
+konrad                         0.53     0.5%          13.3%                 3.26   Syr Konrad ({1}{B}: cada jogador 1)
+didnt_say_please               0.20     0.2%    (sem carta)                    -   Didn't Say Please (3 no dono da magia)
+TOTAL                         98.61
+   (a coluna 'QUANDO' mistura o efeito da carta com o resto do deck: uma partida em que ela sai tende a ser uma partida em que o motor inteiro girou)
+
+3) O QUE O MILL RENDE (media por partida)
+   cartas milladas dos oponentes                          98.613
+   ... das quais NAO-terreno (alimentam o Mothman)        59.292
+   gatilhos do Mothman por mill de oponente               19.710
+   contadores +1/+1 postos pelo Mothman                   78.123
+   rad counters dados aos oponentes                       13.781
+   vida que os oponentes perdem por rad                    9.001
+   fichas Horror/Zumbi (Zellix/Alchemist)                  9.402
+   pings do Syr Konrad                                     1.882
+   crimes (Deepmuck/Freestrider)                           2.943
+   oponentes eliminados                                    2.896
+   ... por biblioteca vazia                                0.134
+   ... por perda de vida                                   2.529
+   ... por dano de comandante                              0.233
+   partidas em que pelo menos 1 oponente sai por biblioteca vazia     8.54%
+   partidas com a mesa inteira limpa ate T8                57.08%
+   partidas com a mesa inteira limpa ate T10               87.74%
+auto-verificacao `bruvac`: 8 sementes identicas ao simulador (> 0)
+
+====================================================================================================
+VARIANTE `bruvac`: N=5000 partidas, modo padrao, 12 turnos
+====================================================================================================
+
+1) POR TURNO (media sobre as N partidas; partida encerrada conta 0 mill nos turnos seguintes)
+   T cartas milladas acumulado/oponente    % da biblioteca    biblioteca media do       oponentes fora por
+      (3 oponentes)          (media)      dos oponentes          oponente vivo biblioteca vazia (acum.)
+   1           0.00              0.0               0.0%                   91.0                    0.000
+   2           0.62              0.2               0.2%                   89.8                    0.000
+   3           1.57              0.7               0.8%                   88.3                    0.000
+   4           4.10              2.1               2.3%                   85.9                    0.000
+   5           8.19              4.8               5.2%                   82.5                    0.006
+   6          15.00              9.8              10.7%                   78.2                    0.027
+   7          19.97             16.5              17.9%                   73.7                    0.058
+   8          17.88             22.4              24.4%                   70.7                    0.078
+   9           9.66             25.7              27.9%                   68.0                    0.090
+  10           4.99             27.3              29.7%                   66.4                    0.098
+  11           2.69             28.2              30.7%                   65.1                    0.103
+  12           1.61             28.8              31.3%                   62.6                    0.107
+
+2) POR FONTE: cartas milladas das bibliotecas dos oponentes por partida
+fonte                   cartas/jogo        %   conjurada em   cartas/jogo QUANDO   o que e'
+                            (todas)          (% das partidas) a carta foi conjurada
+mindcrank                     19.76    22.9%          20.9%                94.45   Mindcrank (vida perdida -> mill)
+rad                           13.77    16.0%    (sem carta)                    -   rad counters do oponente (CR 728.1, no main dele)
+altar_of_the_brood            12.33    14.3%          24.8%                45.13   Altar of the Brood (1 por permanente que entra)
+psychic_corrosion             11.15    12.9%          21.3%                52.37   Psychic Corrosion (2 por compra minha)
+ruin_crab                      9.77    11.3%          34.1%                28.49   Ruin Crab (landfall: 3 em cada oponente)
+mesmeric_orb                   4.03     4.7%          20.6%                19.53   Mesmeric Orb (1 por permanente DELE que desvira)
+undead_alchemist               3.60     4.2%          12.8%                28.01   Undead Alchemist (dano de Zumbi vira mill)
+ascension_loop                 3.39     3.9%    (sem carta)                    -   combo Ascension + Mindcrank/Master: mila a biblioteca inteira do oponente (loop; nao passa por mill_event)
+ashiok                         2.84     3.3%          23.4%                12.12   Ashiok (-1: 4)
+deepmuck                       1.66     1.9%          14.8%                11.20   Deepmuck Desperado (crime: 3 em cada)
+zellix                         1.13     1.3%          26.8%                 3.95   Zellix ({1},{T}: 3)
+memory_erosion                 1.05     1.2%          13.6%                 7.71   Memory Erosion (2 por magia dele)
+altar_of_dementia              0.99     1.1%          17.2%                 5.75   Altar of Dementia (poder da criatura sacrificada)
+konrad                         0.60     0.7%          14.3%                 3.83   Syr Konrad ({1}{B}: cada jogador 1)
+didnt_say_please               0.21     0.2%    (sem carta)                    -   Didn't Say Please (3 no dono da magia)
+TOTAL                         86.28
+   (a coluna 'QUANDO' mistura o efeito da carta com o resto do deck: uma partida em que ela sai tende a ser uma partida em que o motor inteiro girou)
+
+3) O QUE O MILL RENDE (media por partida)
+   cartas milladas dos oponentes                          86.279
+   ... das quais NAO-terreno (alimentam o Mothman)        51.956
+   gatilhos do Mothman por mill de oponente               19.300
+   contadores +1/+1 postos pelo Mothman                   75.216
+   rad counters dados aos oponentes                       12.800
+   vida que os oponentes perdem por rad                    8.699
+   fichas Horror/Zumbi (Zellix/Alchemist)                  8.751
+   pings do Syr Konrad                                     1.948
+   crimes (Deepmuck/Freestrider)                           3.469
+   oponentes eliminados                                    2.872
+   ... por biblioteca vazia                                0.107
+   ... por perda de vida                                   2.512
+   ... por dano de comandante                              0.253
+   partidas em que pelo menos 1 oponente sai por biblioteca vazia     6.38%
+   partidas com a mesa inteira limpa ate T8                52.78%
+   partidas com a mesa inteira limpa ate T10               86.48%
+auto-verificacao `sem_kozilek`: 8 sementes identicas ao simulador (> 0)
+
+====================================================================================================
+VARIANTE `sem_kozilek`: N=5000 partidas, modo padrao, 12 turnos
+====================================================================================================
+
+1) POR TURNO (media sobre as N partidas; partida encerrada conta 0 mill nos turnos seguintes)
+   T cartas milladas acumulado/oponente    % da biblioteca    biblioteca media do       oponentes fora por
+      (3 oponentes)          (media)      dos oponentes          oponente vivo biblioteca vazia (acum.)
+   1           0.00              0.0               0.0%                   91.0                    0.000
+   2           0.64              0.2               0.2%                   89.8                    0.000
+   3           1.61              0.7               0.8%                   88.3                    0.000
+   4           3.99              2.1               2.3%                   85.9                    0.000
+   5           8.07              4.8               5.2%                   82.5                    0.005
+   6          14.37              9.6              10.4%                   78.3                    0.024
+   7          19.88             16.2              17.6%                   73.5                    0.045
+   8          16.70             21.8              23.6%                   70.5                    0.062
+   9           9.58             24.9              27.1%                   68.2                    0.077
+  10           4.60             26.5              28.8%                   66.1                    0.086
+  11           2.33             27.3              29.6%                   64.6                    0.091
+  12           1.57             27.8              30.2%                   63.1                    0.097
+
+2) POR FONTE: cartas milladas das bibliotecas dos oponentes por partida
+fonte                   cartas/jogo        %   conjurada em   cartas/jogo QUANDO   o que e'
+                            (todas)          (% das partidas) a carta foi conjurada
+mindcrank                     18.74    22.5%          20.4%                91.97   Mindcrank (vida perdida -> mill)
+rad                           13.05    15.7%    (sem carta)                    -   rad counters do oponente (CR 728.1, no main dele)
+altar_of_the_brood            11.86    14.2%          25.2%                42.70   Altar of the Brood (1 por permanente que entra)
+psychic_corrosion             11.66    14.0%          22.2%                52.53   Psychic Corrosion (2 por compra minha)
+ruin_crab                      9.21    11.1%          34.7%                26.46   Ruin Crab (landfall: 3 em cada oponente)
+mesmeric_orb                   4.13     5.0%          20.9%                19.76   Mesmeric Orb (1 por permanente DELE que desvira)
+undead_alchemist               3.99     4.8%          14.5%                27.13   Undead Alchemist (dano de Zumbi vira mill)
+ascension_loop                 2.83     3.4%    (sem carta)                    -   combo Ascension + Mindcrank/Master: mila a biblioteca inteira do oponente (loop; nao passa por mill_event)
+ashiok                         2.61     3.1%          24.4%                10.68   Ashiok (-1: 4)
+deepmuck                       1.50     1.8%          14.4%                10.41   Deepmuck Desperado (crime: 3 em cada)
+zellix                         1.10     1.3%          26.3%                 3.42   Zellix ({1},{T}: 3)
+memory_erosion                 1.00     1.2%          13.4%                 7.48   Memory Erosion (2 por magia dele)
+altar_of_dementia              0.85     1.0%          16.7%                 5.11   Altar of Dementia (poder da criatura sacrificada)
+konrad                         0.59     0.7%          16.6%                 3.37   Syr Konrad ({1}{B}: cada jogador 1)
+didnt_say_please               0.18     0.2%    (sem carta)                    -   Didn't Say Please (3 no dono da magia)
+TOTAL                         83.33
+   (a coluna 'QUANDO' mistura o efeito da carta com o resto do deck: uma partida em que ela sai tende a ser uma partida em que o motor inteiro girou)
+
+3) O QUE O MILL RENDE (media por partida)
+   cartas milladas dos oponentes                          83.327
+   ... das quais NAO-terreno (alimentam o Mothman)        50.438
+   gatilhos do Mothman por mill de oponente               19.922
+   contadores +1/+1 postos pelo Mothman                   73.490
+   rad counters dados aos oponentes                       12.794
+   vida que os oponentes perdem por rad                    8.215
+   fichas Horror/Zumbi (Zellix/Alchemist)                  8.977
+   pings do Syr Konrad                                     2.062
+   crimes (Deepmuck/Freestrider)                           3.655
+   oponentes eliminados                                    2.832
+   ... por biblioteca vazia                                0.097
+   ... por perda de vida                                   2.474
+   ... por dano de comandante                              0.261
+   partidas em que pelo menos 1 oponente sai por biblioteca vazia     6.02%
+   partidas com a mesa inteira limpa ate T8                50.72%
+   partidas com a mesa inteira limpa ate T10               83.30%
+
+DIFERENCA PAREADA `pacote5` - `base` (mesma semente; IC95%; * = |dif| > IC)
+   cards_milled_opp_total             base   83.9296   dif   -1.0374 ± 2.7172    
+   nonland_milled_opp_total           base   50.7096   dif   -0.2378 ± 1.6435    
+   mothman_trigger_opp_mill           base   20.0438   dif   -1.4836 ± 0.5435   *
+   mothman_counters_placed_total      base   74.5530   dif   -2.4320 ± 2.4817    
+   rad_life_lost_opp_total            base    8.2374   dif   +0.9026 ± 0.1360   *
+   opps_decked_total                  base    0.1004   dif   -0.0040 ± 0.0167    
+   opps_eliminated_total              base    2.8608   dif   +0.0346 ± 0.0196   *
+   cleared_T7                         base    0.1520   dif   +0.0124 ± 0.0141    
+   cleared_T8                         base    0.5144   dif   +0.0428 ± 0.0194   *
+   cleared_T10                        base    0.8530   dif   +0.0272 ± 0.0130   *
+   first_elim_T6                      base    0.3934   dif   +0.0274 ± 0.0191   *
+   self_lost                          base    0.0332   dif   -0.0084 ± 0.0066   *
+   cards_milled_self_total            base   16.7596   dif   -1.2244 ± 0.5538   *
+   por fonte (cartas/jogo, dif): rad +1.48; psychic_corrosion -1.21; altar_of_the_brood +0.73; ruin_crab -0.62; ascension_loop -0.60; altar_of_dementia -0.27; mesmeric_orb -0.25; deepmuck -0.25; memory_erosion -0.08; undead_alchemist -0.07; ashiok +0.06
+
+DIFERENCA PAREADA `pacote5+master` - `base` (mesma semente; IC95%; * = |dif| > IC)
+   cards_milled_opp_total             base   83.9296   dif  +14.6838 ± 2.7763   *
+   nonland_milled_opp_total           base   50.7096   dif   +8.5824 ± 1.6838   *
+   mothman_trigger_opp_mill           base   20.0438   dif   -0.3340 ± 0.5530    
+   mothman_counters_placed_total      base   74.5530   dif   +3.5702 ± 2.4777   *
+   rad_life_lost_opp_total            base    8.2374   dif   +0.7636 ± 0.1355   *
+   opps_decked_total                  base    0.1004   dif   +0.0338 ± 0.0178   *
+   opps_eliminated_total              base    2.8608   dif   +0.0348 ± 0.0196   *
+   cleared_T7                         base    0.1520   dif   +0.0312 ± 0.0146   *
+   cleared_T8                         base    0.5144   dif   +0.0564 ± 0.0192   *
+   cleared_T10                        base    0.8530   dif   +0.0244 ± 0.0132   *
+   first_elim_T6                      base    0.3934   dif   +0.0332 ± 0.0189   *
+   self_lost                          base    0.0332   dif   -0.0090 ± 0.0066   *
+   cards_milled_self_total            base   16.7596   dif   -0.6282 ± 0.5707   *
+   por fonte (cartas/jogo, dif): master_of_lake_town +13.78; psychic_corrosion -1.77; altar_of_the_brood +1.42; rad +1.22; ascension_loop +1.03; ruin_crab -0.52; altar_of_dementia -0.17; memory_erosion -0.16; zellix +0.15; deepmuck -0.12; mesmeric_orb -0.11; undead_alchemist -0.10; ashiok +0.08
+
+DIFERENCA PAREADA `bruvac` - `base` (mesma semente; IC95%; * = |dif| > IC)
+   cards_milled_opp_total             base   83.9296   dif   +2.3494 ± 2.1884   *
+   nonland_milled_opp_total           base   50.7096   dif   +1.2468 ± 1.3350    
+   mothman_trigger_opp_mill           base   20.0438   dif   -0.7434 ± 0.4976   *
+   mothman_counters_placed_total      base   74.5530   dif   +0.6634 ± 2.2259    
+   rad_life_lost_opp_total            base    8.2374   dif   +0.4620 ± 0.1156   *
+   opps_decked_total                  base    0.1004   dif   +0.0062 ± 0.0143    
+   opps_eliminated_total              base    2.8608   dif   +0.0112 ± 0.0192    
+   cleared_T7                         base    0.1520   dif   +0.0020 ± 0.0121    
+   cleared_T8                         base    0.5144   dif   +0.0134 ± 0.0170    
+   cleared_T10                        base    0.8530   dif   +0.0118 ± 0.0122    
+   first_elim_T6                      base    0.3934   dif   +0.0060 ± 0.0159    
+   self_lost                          base    0.0332   dif   -0.0084 ± 0.0063   *
+   cards_milled_self_total            base   16.7596   dif   -0.5670 ± 0.4489   *
+   por fonte (cartas/jogo, dif): mindcrank +1.01; psychic_corrosion -0.73; rad +0.69; ruin_crab +0.50; undead_alchemist -0.49; altar_of_the_brood +0.42; ascension_loop +0.39; ashiok +0.25; deepmuck +0.15; altar_of_dementia +0.09; mesmeric_orb -0.09; zellix +0.05
+
+DIFERENCA PAREADA `sem_kozilek` - `base` (mesma semente; IC95%; * = |dif| > IC)
+   cards_milled_opp_total             base   83.9296   dif   -0.6026 ± 0.5159   *
+   nonland_milled_opp_total           base   50.7096   dif   -0.2720 ± 0.3219    
+   mothman_trigger_opp_mill           base   20.0438   dif   -0.1220 ± 0.1437    
+   mothman_counters_placed_total      base   74.5530   dif   -1.0626 ± 0.7181   *
+   rad_life_lost_opp_total            base    8.2374   dif   -0.0224 ± 0.0177   *
+   opps_decked_total                  base    0.1004   dif   -0.0032 ± 0.0044    
+   opps_eliminated_total              base    2.8608   dif   -0.0288 ± 0.0071   *
+   cleared_T7                         base    0.1520   dif   -0.0010 ± 0.0024    
+   cleared_T8                         base    0.5144   dif   -0.0072 ± 0.0040   *
+   cleared_T10                        base    0.8530   dif   -0.0200 ± 0.0049   *
+   first_elim_T6                      base    0.3934   dif   -0.0004 ± 0.0016    
+   self_lost                          base    0.0332   dif   +0.0218 ± 0.0049   *
+   cards_milled_self_total            base   16.7596   dif   -0.2894 ± 0.1387   *
+   por fonte (cartas/jogo, dif): psychic_corrosion -0.22; ascension_loop -0.17; undead_alchemist -0.10; ruin_crab -0.06

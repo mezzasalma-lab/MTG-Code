@@ -1,0 +1,22 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6031 (60.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0484       0.0476      -0.0008 ±0.0012  
+  *commander_cast_turn__ate_T3                  0.1263       0.1441      +0.0178 ±0.0033  
+  *commander_cast_turn__ate_T4                  0.4900       0.5391      +0.0491 ±0.0055  
+  *commander_cast_turn__ate_T5                  0.7373       0.7555      +0.0182 ±0.0038  
+  *attacks_total                                4.5931       4.6745      +0.0814 ±0.0093  
+  *first_finisher_turn__ate_T6                  0.3769       0.3953      +0.0184 ±0.0035  
+  *lethal_turn__nunca                           0.7569       0.7396      -0.0173 ±0.0039  
+  *urza_saga_chapter2_tokens                    0.1881       0.2026      +0.0145 ±0.0035  
+  *earthbend_applications                       6.3734       6.4999      +0.1265 ±0.0316  
+  *first_finisher_turn__ate_T5                  0.1942       0.2060      +0.0118 ±0.0031  
+  *landfall_triggers_fired                     15.0311      15.2555      +0.2244 ±0.0642  
+  *len_names_cache                             18.5404      18.6903      +0.1499 ±0.0458  
+  *spells_cast_total                           11.2779      11.3776      +0.0997 ±0.0312  
+  *sword_untaps                                 0.2572       0.2726      +0.0154 ±0.0055  
+  *first_finisher_turn__ate_T4                  0.0839       0.0904      +0.0065 ±0.0023  
+  *next_uid                                    48.0013      49.1781      +1.1768 ±0.4209  
+  *first_finisher_turn__ate_T3                  0.0340       0.0392      +0.0052 ±0.0019  
+  *lander_activations                           0.6022       0.6234      +0.0212 ±0.0077  

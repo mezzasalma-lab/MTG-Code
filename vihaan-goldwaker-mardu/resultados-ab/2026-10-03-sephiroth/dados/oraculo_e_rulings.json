@@ -1,0 +1,144 @@
+{
+ "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel": {
+  "card": {
+   "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+   "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+   "layout": "transform",
+   "mana_cost": null,
+   "type_line": "Legendary Creature — Human Avatar Soldier // Legendary Creature — Angel Nightmare Avatar",
+   "card_faces": [
+    {
+     "object": "card_face",
+     "name": "Sephiroth, Fabled SOLDIER",
+     "mana_cost": "{2}{B}",
+     "type_line": "Legendary Creature — Human Avatar Soldier",
+     "oracle_text": "Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card.\nWhenever another creature dies, target opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform Sephiroth.",
+     "colors": [
+      "B"
+     ],
+     "power": "3",
+     "toughness": "3",
+     "artist": "Wisnu Tan",
+     "artist_id": "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4",
+     "illustration_id": "8f37cc66-d9b3-4c2b-ab50-ffd88fae33dd",
+     "image_uris": {
+      "small": "https://cards.scryfall.io/small/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "normal": "https://cards.scryfall.io/normal/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "large": "https://cards.scryfall.io/large/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "png": "https://cards.scryfall.io/png/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.png?1783906617",
+      "art_crop": "https://cards.scryfall.io/art_crop/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "border_crop": "https://cards.scryfall.io/border_crop/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "thumb": "https://cards.scryfall.io/thumb/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "grid": "https://cards.scryfall.io/grid/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "display": "https://cards.scryfall.io/display/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "art": "https://cards.scryfall.io/art/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "crop": "https://cards.scryfall.io/crop/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617"
+     }
+    },
+    {
+     "object": "card_face",
+     "name": "Sephiroth, One-Winged Angel",
+     "mana_cost": "",
+     "type_line": "Legendary Creature — Angel Nightmare Avatar",
+     "oracle_text": "Flying\nSuper Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\"\nWhenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards.",
+     "colors": [
+      "B"
+     ],
+     "color_indicator": [
+      "B"
+     ],
+     "power": "5",
+     "toughness": "5",
+     "artist": "Wisnu Tan",
+     "artist_id": "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4",
+     "illustration_id": "677e4386-d715-45f9-95d7-aff24ff1ed3b",
+     "image_uris": {
+      "small": "https://cards.scryfall.io/small/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "normal": "https://cards.scryfall.io/normal/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "large": "https://cards.scryfall.io/large/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "png": "https://cards.scryfall.io/png/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.png?1783906617",
+      "art_crop": "https://cards.scryfall.io/art_crop/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "border_crop": "https://cards.scryfall.io/border_crop/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "thumb": "https://cards.scryfall.io/thumb/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "grid": "https://cards.scryfall.io/grid/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "display": "https://cards.scryfall.io/display/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "art": "https://cards.scryfall.io/art/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "crop": "https://cards.scryfall.io/crop/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617"
+     }
+    }
+   ]
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "Each face of a nonmodal double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a nonmodal double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "A nonmodal double-faced card enters with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or allows you to cast it transformed, in which case it enters with its back face up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If Sephiroth, Fabled SOLDIER and one or more other creatures die at the same time, its last ability will trigger for each of those other creatures. (It won't transform, though.)"
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "In the Commander variant, a double-faced card's color identity is determined by the mana costs and mana symbols in the rules text of both faces combined. If either face has a color indicator or basic land type, those are also considered. For example, Cecil, Dark Knight's color identity is black and white, since its front face is black and its back face has a white color indicator."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "Each nonmodal double-faced card in this release is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If this card somehow enters the battlefield with its back face up, it didn't transform, so you won't get an emblem."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "The mana value of a nonmodal double-faced card is the mana value of its front face, no matter which face is up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "The back face of a nonmodal double-faced card usually has a color indicator that defines its color."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "A token that is created as a copy of a double-faced permanent or a double-faced card in another zone is a double-faced token. It will have both the front face and back face of whatever object it's copying. If it's copying a double-faced permanent whose back face is up, the token will enter with its back face up. It can transform if instructed to do so."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Crystal Fragments, it will be exiled during the resolution of its second ability and remain in exile."
+   }
+  ]
+ }
+}

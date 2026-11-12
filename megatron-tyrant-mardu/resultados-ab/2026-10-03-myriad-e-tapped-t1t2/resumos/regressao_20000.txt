@@ -1,0 +1,7 @@
+ambas      padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (Plains/Swamp/Mountain/Myriad) = 0 | ativacoes do Myriad=3080
+ambas      resiliencia  N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (Plains/Swamp/Mountain/Myriad) = 0 | ativacoes do Myriad=2855
+so_tapped  padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (Plains/Swamp/Mountain/Myriad) = 0 | ativacoes do Myriad=0
+so_myriad  padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (Plains/Swamp/Mountain/Myriad) = 0 | ativacoes do Myriad=3021
+blunt      padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (Plains/Swamp/Mountain/Myriad) = 0 | ativacoes do Myriad=3094
+ambas_t4   padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (Plains/Swamp/Mountain/Myriad) = 0 | ativacoes do Myriad=3113
+ambas_t4   resiliencia  N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (Plains/Swamp/Mountain/Myriad) = 0 | ativacoes do Myriad=2881

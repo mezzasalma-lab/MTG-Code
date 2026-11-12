@@ -1,0 +1,67 @@
+# Marcadores de saber por Saga (id fixo do objeto): 'idx:zona<origem L=marcadores F=virada' em ordem do log; T = turno
+# zona: bat=campo, han=mão, gra=cemitério; origem: lib=biblioteca
+## The Eldest Reborn
+  T1: 2:han<lib
+  T9: 15:bat<han L=1
+  T10: 7:bat L=2
+  T11: 10:bat L=3 | 12:gra<bat | 16:bat<gra L=1
+  T12: 13:bat L=2
+  T13: 17:bat L=3 | 20:bat L=2
+  T14: 14:bat L=3 | 16:gra<bat | 20:bat<gra L=1 | 21:bat L=2 | 49:gra<bat
+  T18: 32:bat<gra L=1
+## In the Darkness Bind Them
+  T1: 3:han<lib
+  T5: 13:bat<han L=1
+  T6: 6:bat L=2
+  T7: 8:bat L=3
+  T8: 10:bat L=4 | 12:gra<bat
+  T9: 8:bat<gra L=1
+  T10: 9:bat L=2
+  T11: 14:bat L=3
+  T12: 12:bat L=4 | 15:bat L=3
+  T13: 15:bat L=4 | 16:gra<bat
+  T18: 34:bat<gra L=1
+## Jugan Defends the Temple
+  T1: 4:han<lib
+  T6: 21:bat<han L=1
+  T7: 7:bat L=2
+  T8: 7:bat L=3 | 8:bat | 9:bat F | 25:gra<bat
+  T10: 12:bat<gra L=1
+  T11: 13:bat L=2
+  T13: 12:bat L=3 | 13:bat | 14:bat F
+  T14: 42:bat F | 55:gra<bat
+  T18: 27:bat<gra L=1
+## War of the Last Alliance
+  T5: 4:han<lib
+  T6: 15:bat<han L=1
+  T7: 9:bat L=2
+  T8: 14:bat L=3 | 15:gra<bat
+  T12: 17:bat<gra L=1
+  T13: 43:bat L=2
+  T14: 11:bat L=3 | 13:gra<bat
+  T18: 33:bat<gra L=1
+## Binding the Old Gods
+  T8: 16:bat<lib L=1
+  T9: 6:bat L=2
+  T10: 8:bat L=3 | 11:gra<bat
+  T18: 35:bat<gra L=1
+## Summon: Fenrir
+  T11: 9:han<lib | 24:bat<han L=1
+  T12: 11:bat L=2
+  T13: 26:bat L=3 | 27:gra<bat
+  T14: 15:bat<gra L=1 | 59:gra<bat
+  T18: 36:bat<gra L=1
+## The Cruelty of Gix
+  T11: 31:bat<lib L=1
+  T12: 9:bat L=2
+  T13: 9:bat L=3 | 11:gra<bat
+  T14: 24:bat<gra L=1 | 50:gra<bat
+  T18: 31:bat<gra L=1
+## There and Back Again
+  T13: 22:bat<lib L=1
+  T14: 17:bat L=2 | 53:gra<bat
+  T18: 29:bat<gra L=1
+## Summon: Primal Odin
+  T15: 15:han<lib | 23:bat<han L=1
+  T16: 13:bat L=2 | 15:bat L=1 | 25:bat L=0 | 36:gra<bat
+  T18: 23:bat<gra L=1

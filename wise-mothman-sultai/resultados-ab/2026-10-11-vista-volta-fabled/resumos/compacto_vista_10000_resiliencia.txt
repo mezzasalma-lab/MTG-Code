@@ -1,0 +1,4 @@
+COMPACTO N=10000 modo resiliencia: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T8            cleared_T10          first_elim_T6              self_lost commander_cast_turn__ate_T3 commander_cast_turn__ate_T4 commander_cast_turn__ate_T5               life_min  fetches_cracked_total
+base (media)                                                         0.2819                 0.6289                 0.2793                 0.0144                 0.1465                 0.6087                 0.7324                30.4076                 1.1997
+w1_vista_fabled                                           -0.0007±0.0027         -0.0019±0.0028         -0.0038±0.0025  *      -0.0006±0.0009         -0.0041±0.0017  *      -0.0026±0.0021  *      -0.0026±0.0020  *      +0.3258±0.0275  *      -0.0025±0.0081   

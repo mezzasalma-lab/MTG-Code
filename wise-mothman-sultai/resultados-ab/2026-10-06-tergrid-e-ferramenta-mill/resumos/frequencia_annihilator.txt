@@ -1,0 +1,2 @@
+modo padrao: N=10000 | Kozilek conjurado em 4.03% | Kozilek ATACA ao menos 1x em 2.02% (202 partidas, > 0) | ataques totais 268 (1.33 por partida em que ataca)
+modo resiliencia: N=10000 | Kozilek conjurado em 3.72% | Kozilek ATACA ao menos 1x em 2.24% (224 partidas, > 0) | ataques totais 313 (1.40 por partida em que ataca)

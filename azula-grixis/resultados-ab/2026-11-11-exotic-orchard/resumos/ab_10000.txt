@@ -1,0 +1,23 @@
+LOTE N=10000 sementes 3000000..3009999, 10 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9117 (91.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0278       0.0216      -0.0062 ±0.0015  
+  *commander_cast_turn__ate_T3                  0.1459       0.1522      +0.0063 ±0.0016  
+  *commander_cast_turn__ate_T4                  0.6255       0.6501      +0.0246 ±0.0032  
+  *commander_cast_turn__ate_T5                  0.8094       0.8286      +0.0192 ±0.0028  
+  *commander_cast_turn__ate_T6                  0.8819       0.8982      +0.0163 ±0.0025  
+  *azula_commander_damage_dealt                21.5147      21.9070      +0.3923 ±0.0476  
+  *commander_damage_win                         0.6431       0.6667      +0.0236 ±0.0032  
+  *len_creature_cast_turn                       5.6646       5.7340      +0.0694 ±0.0142  
+  *len_battlefield                             15.1409      15.2375      +0.0966 ±0.0209  
+  *cards_drawn_extra                           32.5229      32.9902      +0.4673 ±0.1158  
+  *len_library                                 58.0597      57.5837      -0.4760 ±0.1181  
+  *commander_cast_count                         0.9722       0.9784      +0.0062 ±0.0015  
+  *commander_in_play                            0.9722       0.9784      +0.0062 ±0.0015  
+  *interaction_plays                            2.3198       2.3527      +0.0329 ±0.0082  
+  *len_graveyard                               23.9773      24.3836      +0.4063 ±0.1025  
+  *azula_copy_events_total                      1.8959       1.9377      +0.0418 ±0.0118  
+  *storm_grapeshot_events_total                 0.3424       0.3494      +0.0070 ±0.0020  
+  *len_hand                                     1.7978       1.7499      -0.0479 ±0.0140  
+  *ascension_copies_total                       0.3959       0.4044      +0.0085 ±0.0026  

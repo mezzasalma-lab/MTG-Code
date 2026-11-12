@@ -1,0 +1,56 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "commander_land_overrides_total",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "commander_cast_turn__nunca",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "lands_entered_total",
+  "cards_milled_self_total",
+  "library_min",
+  "life_min"
+ ],
+ "compacto": [
+  "commander_land_overrides_total",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "commander_cast_turn__nunca",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total"
+ ],
+ "variantes": {
+  "base": {
+   "PLAZA_ENABLES_COMMANDER": false
+  },
+  "plaza": {
+   "PLAZA_ENABLES_COMMANDER": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "plaza"
+ ],
+ "regressao": [
+  "plaza"
+ ]
+}

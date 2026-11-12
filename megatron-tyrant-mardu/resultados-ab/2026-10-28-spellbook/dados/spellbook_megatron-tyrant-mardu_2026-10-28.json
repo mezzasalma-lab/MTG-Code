@@ -1,0 +1,291 @@
+{
+ "deck": "megatron-tyrant-mardu",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Megatron, Tyrant",
+   "incluidos": {
+    "Blightsteel Colossus + Chandra's Ignition": {
+     "id": "1571-2560",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent loses the game"
+     ],
+     "usa": [
+      "Blightsteel Colossus",
+      "Chandra's Ignition"
+     ],
+     "prerequisitos": ""
+    },
+    "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": {
+     "id": "3169-5291-6250",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers",
+      "Infinite creature LTB"
+     ],
+     "usa": [
+      "Genesis Chamber",
+      "Cursed Mirror",
+      "Daretti, Rocketeer Engineer"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Mycosynth Lattice + Vandalblast": {
+     "id": "2552-3263",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring": {
+     "id": "1020-1117-2866-4659-5034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite blinking of some artifacts",
+      "Infinite colorless mana",
+      "Infinite death triggers"
+     ]
+    },
+    "Blightsteel Colossus + Cybermen Squadron": {
+     "id": "181-1571",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Lightning Greaves + Monk Gyatso": {
+     "id": "876-7070--141",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite storm count"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Blade of Selves + Blightsteel Colossus": {
+     "id": "1571-3851",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Goblin Welder + Thornbite Staff": {
+     "id": "2178-4096",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence": {
+     "id": "1020-4659-7714",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Crackdown Construct + Lightning Greaves": {
+     "id": "876-4944",
+     "bracketTag": "O",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Cursed Mirror + Felidar Guardian": {
+     "id": "2781-5291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence": {
+     "id": "1020-2034-7714",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bladewing the Risen + Cursed Mirror": {
+     "id": "3362-5291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Doomsday Excruciator + Rakdos, the Muscle": {
+     "id": "5618-5909",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent loses the game",
+      "Exile each opponent's library"
+     ]
+    },
+    "Chandra's Ignition + Serra Avatar": {
+     "id": "1738-2560",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite damage"
+     ]
+    },
+    "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing": {
+     "id": "5291-6250-6757",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Chandra's Ignition + Soul of Eternity": {
+     "id": "2560-4658",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite damage"
+     ]
+    },
+    "Raptor Hatchling + Warstorm Surge": {
+     "id": "2773-5191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Blightsteel Colossus + Legion Loyalty": {
+     "id": "1571-4711",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Storm Herd + Warstorm Surge": {
+     "id": "2067-2773",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite damage"
+     ]
+    },
+    "Blightsteel Colossus + Duke Ulder Ravengard": {
+     "id": "1571-4989",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming": {
+     "id": "2560-3531",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Cursed Mirror + Wispweaver Angel": {
+     "id": "1621-5291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Chandra's Ignition + Enduring Angel // Angelic Enforcer": {
+     "id": "1162-2560",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite damage"
+     ]
+    },
+    "Nested Ghoul + Warstorm Surge": {
+     "id": "1344-2773",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "R",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber",
+      "relevant": false,
+      "borderlineRelevant": false,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 3,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Blightsteel Colossus + Chandra's Ignition",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 4,
+      "lock": false,
+      "tag": "R"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

@@ -1,0 +1,18 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1979 (99.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *all_will_be_one_triggers_total             554.5355     560.8690      +6.3335 ±5.0117  
+   planeswalkers_in_play_end                    2.9735       2.9755      +0.0020 ±0.0031  
+   pw_ultimates_used_total                      2.3780       2.3875      +0.0095 ±0.0152  
+   pw_activations_total                        10.8900      10.9060      +0.0160 ±0.0268  
+   all_will_be_one_face_damage_total      14503919998956.9531 14504371782007.9414 +451783050.9875 ±885482663.9798
+   pw_draws_total                               7.3140       7.3185      +0.0045 ±0.0088  
+   pw_life_gained_total                         3.8050       3.8140      +0.0090 ±0.0176  
+   pw_life_lost_opponent_total                  1.1280       1.1370      +0.0090 ±0.0176  
+   interaction_spells_cast_total                2.6415       2.6425      +0.0010 ±0.0020  
+   late_pw_activations_total                    2.2880       2.2885      +0.0005 ±0.0010  
+   opp_eliminated_total                         0.2295       0.2300      +0.0005 ±0.0010  
+   pw_deaths_total                              0.6415       0.6410      -0.0005 ±0.0010  
+   pw_wipe_proxy_total                          0.3080       0.3150      +0.0070 ±0.0137  
+   board_cap_hits_total                        31.5365      31.5380      +0.0015 ±0.0029  

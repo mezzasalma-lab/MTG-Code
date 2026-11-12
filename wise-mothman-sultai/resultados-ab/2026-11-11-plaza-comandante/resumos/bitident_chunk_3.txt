@@ -1,0 +1,1 @@
+N = 5000 x 2 modos (sementes 5015000..5019999): chave DESLIGADA identica ao c59226f em 10000 partidas; chave LIGADA: 8905 sem troca e identicas, 1095 com troca (podem diferir); divergencias: 0

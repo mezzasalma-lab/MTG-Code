@@ -57,8 +57,84 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   total de dano/drain gerado.
 - Combate: "ataca" = nao esta com summoning sickness (ou tem haste).
   Nenhum bloqueio, nenhuma remocao de oponente durante o combate.
+- Treasure animado (2026-10-03): depois da animacao no combate, e ate' o
+  fim do turno, TODO sacrificio de Treasure (mana, Dispute, Magda, Jan
+  Jansen, KCI, Altar...) conta como morte de criatura; so' os Treasures
+  que existiam no inicio do combate (CR 611.2c). Mulligan: o jogador
+  ESCOLHE as cartas do fundo (`choose_bottom`). Terrenos: em T1/T2 joga o
+  que entra tapped salvo se custar uma jogada (`choose_land_to_play`).
+  Ver `resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md`.
+- Sephiroth (2026-10-03, 3a rodada): (a) o emblema e' um objeto
+  independente e acumula; com emblema E Sephiroth de frente em campo cada
+  morte dispara 2 gatilhos e a 4a resolucao da frente da' um 2o emblema;
+  (b) mortes simultaneas em wipe (ruling 2025-06-06): o gatilho vale para
+  TODAS as outras que morrem junto, em qualquer ordem de remocao, e ele
+  nao vira se morre junto (a frente diz "another": a morte dele nao a
+  dispara); (c) "4a vez NESTE turno": o contador zera a cada turno de
+  oponente e quando ele reentra (objeto novo). Ver
+  `resultados-ab/2026-10-03-sephiroth/LEIAME.md`.
+- "Conjurar/jogar de fora da mao" (2026-10-03, 4a rodada, achada ao
+  auditar a partida manual #1): (a) terreno exilado por fonte "play"
+  (Prosper, Inspired Tinkering, Face-Breaker) e' a jogada de terreno + Pact
+  Boon; (b) magia do exilio entra na mesma esteira do cast da mao (resolve,
+  cemiterio, conta como magia) em vez de virar permanente parado; (c)
+  flashback e a magia do Cascade contam como "cast" (Lotho, extort) e o
+  Lotho so' dispara se ja' estava em campo no cast; (d) Captain Lannery
+  Storm: +1/+0 por Treasure sacrificado (poder e "that many" do Cleaver);
+  (e) Sevinne's Reclamation so' escolhe "permanent card" (terreno vale,
+  instantanea/feitico e ela mesma nao). Ver
+  `resultados-ab/2026-10-03-fora-da-mao/LEIAME.md`.
+- Prosper e Mahadi (2026-10-03, 5a rodada, respostas do usuario sobre a
+  partida manual #1): (a) a carta do exilio que expira neste turno e'
+  conjurada ANTES das da mao (o usuario sempre jogou assim; 63% das magias
+  exiladas expiravam sem uso); (b) com Mahadi ou Pitiless Plunderer em
+  campo, os Treasures animados (criaturas) que sobram no fim da 2a main sao
+  sacrificados pela propria habilidade de mana, so' pelas mortes (de graca:
+  o Mahadi/Plunderer devolve 1 Treasure por morte). Ver
+  `resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md`.
+- Preferencias do usuario (2026-10-04, 6a rodada): (a) SEMPRE jogar a
+  magia exilada antes das da mao, tambem as que nao expiram neste turno
+  (cada carta jogada do exilio cria 1 Treasure pelo Pact Boon); (b) com o
+  Dictate of Erebos em campo, sacrificar os Treasures animados mesmo sem
+  Mahadi/Plunderer (cada morte: cada oponente sacrifica 1 criatura, 📊).
+  Ver `resultados-ab/2026-10-04-exilio-sempre-e-dictate/LEIAME.md`.
+- Reserva do Dictate (2026-10-04, 7a rodada): o usuario sacrificaria "ate'
+  metade dos treasures para eliminar criaturas dos adversarios"; quando so'
+  o Dictate justifica o sacrificio (sem Mahadi/Plunderer, que repoem), o
+  simulador sacrifica no maximo metade do estoque. Ver
+  `resultados-ab/2026-10-04-dictate-metade/LEIAME.md`.
+- A metade e' dos ANIMADOS (2026-10-04, correcao do usuario: "metade dos tesouros
+  animados, tesouros inanimados nao trigam o Dictate"): o teto do sacrificio
+  com so' o Dictate e' `treasures_animated_alive // 2`, nao `treasures // 2`.
+  Ver `resultados-ab/2026-10-04-dictate-metade-dos-animados/LEIAME.md`.
+- Wipes proprios (Blood Money / Blasphemous Act), 2026-10-04 (9a rodada, resposta do usuario sobre a Blood Money do T8 que ficou no exilio:
+  "sem Vihaan e Mahadi em campo acho que seria pior"): o wipe passa a destruir (nao sacrificar) TODAS as criaturas, inclusive o comandante e
+  os Treasures animados vivos, com mortes simultaneas (gatilhos olham pra tras); a Blood Money cria Treasures VIRADOS; a Blasphemous Act custa
+  {1} a menos por criatura (so' as minhas; as do oponente sao 📊); e nao se conjura um wipe proprio que destruiria Vihaan ou Mahadi.
+  Achado na mesma rodada: o imposto do comandante nunca entrava no que PODE ser conjurado (`can_cast` olhava so' o MV 3, e o cast gastava 3 + 2 por cast
+  anterior, que o `mana_spent` empurrava acima do total de graca) e so' contava quando ele ENTRAVA (um cast anulado nao somava, contra CR 903.8).
+  Ver `resultados-ab/2026-10-04-wipes-proprios/LEIAME.md`.
+- Todo wipe proprio e' SEGURADO (2026-10-04, 10a rodada, principio do usuario: "todo boardwipe deve ser segurado para causar mais perdas aos
+  oponentes do que a mim"): o simulador nao tem nada do lado do oponente pra pesar contra a perda (📊), entao nenhum wipe proprio e' conjurado,
+  salvo na circunstancia mitigada que o usuario cita: com Mayhem Devil em campo, pagar o custo com Treasures ANIMADOS (que o wipe mataria de
+  qualquer jeito) ainda causa dano nos oponentes (1 por sacrificio) alem do efeito do wipe. E o custo do wipe e' sempre pago primeiro com os
+  animados vivos. Ver `resultados-ab/2026-10-04-wipes-segurados/LEIAME.md`.
+- Mirkwood Bats so' dispara em SACRIFICIO (2026-10-04, achado na avaliacao Blasphemous Act x Blasphemous Edict; oraculo ao vivo: "Whenever you create
+  or sacrifice a token, each opponent loses 1 life"): ficha destruida (wipe, remocao do oponente) nao a dispara; Nadier's Nightblade ("leaves the
+  battlefield") dispara nos dois. Ver `resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md`.
+- Mythos of Snapdax no lugar do Blood Money (2026-10-04, 12a rodada, decisao do usuario: "Quero adicionar o Mythos pelo menos"; corte escolhido por ele:
+  Blood Money): {2}{W}{W} Sorcery, "Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents
+  they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead." O MEU lado e'
+  modelado (guardo Vihaan > Mahadi > Mayhem Devil como criatura, 1 artefato, 1 encantamento; o resto nao-terreno e' SACRIFICIO simultaneo: Mayhem
+  Devil dispara por cada permanente, inclusive Treasures/Clues/Foods/fichas); o dos oponentes e' 📊 (so' conta o uso, e se {B}{R} foram gastos). O
+  simulador nao tinha NENHUMA nocao de cor de mana: aqui so' a Mythos confere o `{W}{W}` (e o `{B}{R}` do proxy) contra as fontes em campo. A validacao
+  achou 2 bugs reais, corrigidos: (1) o cascade poe a magia no campo antes de resolver e a Mythos a sacrificava junto (`list.remove` quebrava): a magia em
+  voo (instantanea/feitico no campo) nao e' permanente; (2) o cascade ("you MAY cast it") conjurava a forca todo wipe proprio que acertasse, ignorando a
+  retencao da 10a rodada: `CASCADE_DECLINE_HELD_WIPES_ENABLED` manda o acerto segurado pro fundo da biblioteca. Ver
+  `resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/LEIAME.md`.
 """
 
+import copy
 import json
 import math
 import random
@@ -229,6 +305,7 @@ add("Deadly Derision", 4, "instant", {"removal_treasure"})
 add("Requisition Raid", 1, "sorcery", {"removal"})
 add("Blasphemous Act", 9, "sorcery", {"wipe"})
 add("Blood Money", 7, "sorcery", {"wipe_treasure"})
+add("Mythos of Snapdax", 4, "sorcery", {"wipe"})  # 12a rodada: entra no lugar do Blood Money (flag MYTHOS_REPLACES_BLOOD_MONEY_ENABLED)
 add("Demolition Field", 0, "land", set())  # ja adicionada
 add("Boros Charm", 2, "instant", {"protection_unused"})
 add("Teferi's Protection", 3, "instant", {"protection_unused"})
@@ -256,6 +333,32 @@ add("Urabrask's Forge", 3, "artifact", {"forge_token"})
 # Achado real 2026-09-14: tipo real "Tiefling Rogue" (Scryfall) - Rogue
 # e' outlaw type, tag faltava.
 add("Grim Hireling", 4, "creature", {"combat_treasure2", "sac_debuff_unused", "outlaw"})
+
+# --- Candidata de Reality Fracture (so' via swap, NAO esta na lista) -------
+# Draconic Visitor (FRA #80, lanca 2026-10-02; oraculo ao vivo Scryfall
+# 2026-09-25, salvo no oracle-cache): "{3}{R}{R}, Creature — Dragon 5/5.
+# Flying. If one or more artifact tokens would be created under your
+# control, that many 5/5 red Dragon creature tokens with flying are created
+# instead." Dragon nao e' outlaw (sem haste do Vihaan). Ver
+# `create_treasures`/`create_constructs`/`check_visitor_combo`.
+add("Draconic Visitor", 5, "creature", {"draconic_visitor"})
+
+# Poder impresso real (Scryfall, oracle-cache 2026-09-25) de cada criatura --
+# usado so' pela metrica nova de dano de combate (proxy, sem bloqueio).
+CREATURE_POWER = {
+    "Vihaan, Goldwaker": 3, "Academy Manufactor": 1, "Xorn": 3, "Goldspan Dragon": 4,
+    "Captain Lannery Storm": 2, "Kellogg, Dangerous Mind": 3, "Lotho, Corrupt Shirriff": 2,
+    "Magda, the Hoardmaster": 2, "Mahadi, Emporium Master": 3, "Olivia, Opulent Outlaw": 3,
+    "Orochi Soul-Reaver": 5, "Pitiless Plunderer": 1, "Professional Face-Breaker": 2,
+    "Prosper, Tome-Bound": 1, "Smaug the Magnificent": 4, "Zulaport Cutthroat": 1,
+    "Nadier's Nightblade": 1, "Mirkwood Bats": 2, "Kambal, Profiteering Mayor": 2,
+    "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel": 3, "Witch of the Moors": 4,
+    "Marionette Master": 1, "Mayhem Devil": 3, "Mari, the Killing Quill": 3,
+    "Jan Jansen, Chaos Crafter": 3, "Grenzo, Havoc Raiser": 2, "Laughing Jasper Flint": 4,
+    "Aya of Alexandria": 4, "Sentinel Sarah Lyons": 4, "Grim Hireling": 3, "Draconic Visitor": 5,
+}
+OTHER_TOKEN_POWER = 2  # 📝 media das fichas genericas (Shapeshifter 3/2, manifesto 2/2, Assassin 1/1...) -- o motor so' guarda contagem
+LETHAL_PROXY = 120     # 3 oponentes x 40 de vida -- premissa da metrica limitada, nao vida real
 
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
@@ -286,6 +389,70 @@ REMOVAL_TAGS = {"removal", "removal_treasure", "wipe", "wipe_treasure"}
 #    criatura fora do combate). Mana gerada entra num pool avulso do
 #    turno (`bonus_mana_pool`), disponivel pro resto do main phase.
 TREASURE_MAXIMIZE_POLICY = True
+
+# Correcoes 2026-10-03 (pedido do usuario: "corrija todos os erros do
+# simulador"). Uma chave por correcao, pra isolar cada uma no A/B; com as
+# TRES em False o arquivo se comporta bit-a-bit como o do commit 6e623d3.
+ANIMATED_TREASURE_ROUTING_ENABLED = True  # Treasure animado sacrificado = criatura, por QUALQUER caminho (nao so' Altar)
+MULLIGAN_SMART_BOTTOM_ENABLED = True      # London Mulligan: o jogador ESCOLHE as cartas do fundo (antes: aleatorias)
+TAPPED_LAND_FIRST_ENABLED = True          # T1/T2: joga o terreno tapped quando nao custa jogada (antes: lands_in_hand[0])
+TAPPED_LAND_FIRST_MAX_TURN = 2
+TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY = True  # False = politica "cega" (sempre o tapped), so' pra sensibilidade
+
+# Correcoes do Sephiroth (2026-10-03, 3a rodada; o usuario pediu "corrija os itens 2 e 3"). Com as TRES em False o arquivo
+# se comporta bit-a-bit como o do commit ba74496.
+SEPHIROTH_EMBLEM_STACKING_ENABLED = True       # emblema + Sephiroth de frente: 2 gatilhos por morte; cada virada gera 1 emblema (acumulam)
+SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED = True    # wipe: o gatilho dele dispara para as outras que morrem junto, em qualquer ordem (ruling 2025-06-06)
+SEPHIROTH_TURN_BOUNDARY_ENABLED = True         # "4a vez NESTE turno": o contador zera a cada turno de oponente (antes: so' no meu turno)
+
+# Correcoes de "conjurar/jogar de FORA da mao" (2026-10-03, 4a rodada; achadas ao auditar a partida manual #1 do usuario). Com as CINCO em
+# False o arquivo se comporta bit-a-bit como o do commit c04840d.
+IMPULSE_LAND_PLAY_ENABLED = True           # terreno exilado por fonte "play" (Prosper, Inspired Tinkering, Face-Breaker) vira a jogada de terreno + Pact Boon
+IMPULSE_CAST_PIPELINE_ENABLED = True       # magia do exilio entra na MESMA esteira do cast da mao: resolve, vai ao cemiterio, conta como "cast"; Pact Boon ao conjurar
+SPELL_CAST_COUNT_ALL_PATHS_ENABLED = True  # flashback e a magia do Cascade contam como "cast" (Lotho, extort); Lotho so' dispara se ja' estava em campo NO cast
+STORM_SACRIFICE_PUMP_ENABLED = True        # Captain Lannery Storm: +1/+0 ate' o fim do turno por Treasure sacrificado (poder dela e "that many" do Cleaver)
+SEVINNE_PERMANENT_TARGET_ENABLED = True    # Sevinne's Reclamation: alvo = "permanent card" MV<=3 (terreno vale; instantanea/feitico NAO, nem ela mesma)
+
+# Correcoes de 5a rodada (2026-10-03; o usuario respondeu a analise da partida manual #1). Com as DUAS em False o arquivo se comporta bit-a-bit
+# como o do commit 7cd3f55.
+IMPULSE_EXPIRING_FIRST_ENABLED = True      # carta do exilio que expira NESTE turno e' conjurada ANTES das da mao (usar ou perder; cada uma ainda da' Pact Boon)
+TREASURE_SELF_OUTLET_FARM_ENABLED = True   # com Mahadi/Pitiless Plunderer em campo, os Treasures-criatura restantes sao sacrificados no fim da 2a main (mortes de graca)
+
+# Correcoes de 6a rodada (2026-10-04; preferencias do usuario). Com as DUAS em False o arquivo se comporta bit-a-bit como o do commit ba594c8.
+IMPULSE_ALL_FIRST_ENABLED = True           # TODA magia do exilio e' conjurada antes das da mao (nao so' as que expiram neste turno): cada uma cria 1 Treasure (Pact Boon)
+TREASURE_FARM_WITH_DICTATE_ENABLED = True  # Dictate of Erebos em campo tambem justifica sacrificar os Treasures animados (cada morte: cada oponente sacrifica 1 criatura)
+
+# Correcao de 7a rodada (2026-10-04; criterio dado pelo usuario: "eu sacrificaria ate' metade dos treasures para eliminar criaturas dos adversarios").
+# Com a chave em False o arquivo se comporta bit-a-bit como o do commit 8e9ab6e.
+TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED = True  # quando SO' o Dictate justifica (sem Mahadi/Plunderer): sacrifica no maximo METADE dos Treasures (a outra metade e' reserva)
+
+# Correcao de 8a rodada (2026-10-04; o usuario corrigiu a base da metade: "metade dos tesouros animados, tesouros inanimados nao trigam o Dictate").
+# Com a chave em False a base da metade volta a ser o ESTOQUE inteiro (comportamento do commit 9e613ea); so' age com a chave da 7a rodada ligada.
+TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED = True  # a metade conta so' os Treasures ANIMADOS vivos (os unicos que sao criatura e disparam o Dictate), nao o estoque inteiro
+
+# Correcoes de 9a rodada (2026-10-04; resposta do usuario: a Blood Money ficou no exilio de proposito, "sem Vihaan e Mahadi em campo acho que seria pior").
+# Com as 5 chaves em False o arquivo se comporta bit-a-bit como o do commit bf8a6f6.
+OWN_WIPE_DESTROY_ORACLE_ENABLED = True       # Blood Money / Blasphemous Act: "destroy all creatures" de verdade: inclui o comandante e os Treasures animados vivos, e' destruicao (sem Mayhem Devil), mortes SIMULTANEAS (os gatilhos olham pra tras)
+BLOOD_MONEY_TAPPED_TREASURE_ENABLED = True   # "you create a TAPPED Treasure": os Treasures da Blood Money nao pagam mana (nem entram no farm) no turno em que nascem
+BLASPHEMOUS_ACT_COST_REDUCTION_ENABLED = True  # "costs {1} less to cast for each creature on the battlefield" (so' as minhas; as do oponente sao 📊), piso {R}
+OWN_WIPE_HOLD_ENGINE_ENABLED = True          # linha do usuario: nao conjura Blood Money / Blasphemous Act se isso destruiria o Vihaan ou o Mahadi em campo (os motores do deck)
+# Correcoes de 10a rodada (2026-10-04; principio do usuario: "todo boardwipe deve ser 'segurado' para causar mais 'perdas' aos oponentes do que a mim ...
+# com Mayhem Devil em campo, sacrificar tesouros animados para pagar o custo do wipe ainda causa dano nos oponentes alem do efeito do wipe em si").
+# Com as 3 chaves em False o arquivo se comporta bit-a-bit como o do commit 47ec126.
+OWN_WIPE_HOLD_ALWAYS_ENABLED = True          # todo wipe proprio e' segurado (o lado do oponente e' 📊): generaliza a retencao "Vihaan ou Mahadi em campo" da 9a rodada
+OWN_WIPE_PAY_WITH_ANIMATED_ENABLED = True    # o custo do wipe e' pago primeiro com Treasures ANIMADOS vivos: eles morreriam no wipe de qualquer jeito; cada sacrificio e' mana + morte de criatura + gatilho de sacrificio (Mayhem Devil)
+OWN_WIPE_RELEASE_MITIGATED_ENABLED = True    # unica excecao a retencao: Mayhem Devil em campo, animados vivos pagando o custo INTEIRO e dano do pagamento > criaturas minhas perdidas (a circunstancia que o usuario cita)
+# Correcao de 11a rodada (2026-10-04; achado na avaliacao Blasphemous Act x Blasphemous Edict): com a chave em False o arquivo se comporta bit-a-bit como o do commit b30ef1f.
+MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED = True  # Mirkwood Bats ("whenever you create or SACRIFICE a token") nao dispara em ficha DESTRUIDA (wipe, remocao); Nadier's Nightblade ("leaves the battlefield") dispara nos dois
+COMMANDER_TAX_ENABLED = True                 # CR 903.8: o imposto ({2} por cast anterior da zona de comando) entra no que PODE ser conjurado, e e' contado no CAST (tambem se for anulado), nao so' quando entra
+# Correcao de 12a rodada (2026-10-04; decisao do usuario: Mythos of Snapdax entra, Blood Money sai). Com a chave em False a `lista.md` do repositorio e' lida como se
+# ainda tivesse o Blood Money na posicao antiga (o arquivo se comporta bit-a-bit como o do commit a17049f).
+MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = True   # a lista tem Mythos of Snapdax no lugar do Blood Money
+MYTHOS_COLOR_CHECK_ENABLED = True            # a Mythos so' e' conjuravel com `{W}{W}` nas fontes em campo (o resto do simulador ignora cor de mana)
+CASCADE_DECLINE_HELD_WIPES_ENABLED = True    # achado na validacao da Mythos: o cascade ("you MAY cast it") conjurava a forca todo wipe proprio que acertasse, ignorando a retencao da 10a rodada; agora o acerto segurado vai pro fundo da biblioteca
+OWN_WIPES =("Blood Money", "Blasphemous Act", "Mythos of Snapdax")
+MYTHOS = "Mythos of Snapdax"
+KEEP_ENGINES = ("Vihaan, Goldwaker", "Mahadi, Emporium Master", "Mayhem Devil")  # ordem da criatura que guardo na Mythos
 
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
@@ -321,6 +488,10 @@ class GameState:
     tapped_lands_this_turn: set = field(default_factory=set)  # terrenos "enters tapped" jogados este turno - ver ETB_TAPPED_LANDS
     treasures_animated_this_combat: int = 0
     animated_treasures_sacrificed_total: int = 0
+    treasures_animated_alive: int = 0  # dos Treasures animados no inicio do combate, quantos ainda estao em campo (CR 611.2c: so' os que existiam NA resolucao)
+    animated_treasures_sacrificed_any_total: int = 0  # animados sacrificados como CRIATURA, por qualquer caminho
+    tapped_land_first_plays_total: int = 0
+    tapped_land_skipped_for_play_total: int = 0
     bonus_mana_generated_total: int = 0
     jan_jansen_used_this_turn: bool = False
     spells_cast_this_turn: int = 0
@@ -328,12 +499,27 @@ class GameState:
     treasure_spent_this_turn: bool = False
     cascade_used_this_turn: bool = False
     caretaker_drawn_this_turn: bool = False
-    kambal_drawn_this_turn: bool = False
     black_market_connections_triggered_this_turn: bool = False
     life_gained_this_turn: int = 0
     face_breaker_used_this_turn: bool = False
     forge_tokens_this_turn: int = 0  # quantos tokens do Urabrask's Forge nasceram este turno (p/ sac exato no end_step)
     reaver_cleaver_equipped: bool = False
+    reaver_cleaver_host: Optional[str] = None  # criatura equipada (2026-09-25: "that many" = poder dela)
+    reaver_cleaver_treasures_total: int = 0
+    treasures_tapped: int = 0  # Treasures VIRADOS agora (Blood Money: "create a tapped Treasure"): nao pagam mana neste turno; desviram no meu proximo untap
+    own_wipes_cast_total: int = 0
+    blood_money_cast_total: int = 0
+    own_wipe_commander_destroyed_total: int = 0
+    own_wipe_tapped_treasures_total: int = 0
+    own_wipe_held_total: int = 0  # wipes proprios conjuraveis que o jogador SEGUROU (destruiriam Vihaan/Mahadi), uma vez por carta por turno
+    own_wipe_held_this_turn: set = field(default_factory=set)
+    own_wipe_mitigated_casts_total: int = 0  # wipes conjurados com Mayhem Devil em campo e animados vivos suficientes pra pagar o custo inteiro
+    own_wipe_animated_paid_total: int = 0    # Treasures animados sacrificados pra pagar o custo de um wipe proprio
+    own_wipe_pay_drain_total: int = 0        # dano/dreno (proxy) causado pelos sacrificios que pagaram o wipe (Mayhem Devil, Zulaport, Sephiroth...)
+    mythos_cast_total: int = 0               # Mythos of Snapdax conjuradas (12a rodada)
+    mythos_br_spent_total: int = 0           # dessas, as em que {B}{R} PODIAM ser gastos (eu escolheria as permanentes de cada jogador: 📊 o lado dos oponentes)
+    mythos_br_pending: bool = False          # {B}{R} cabem nas fontes no momento do cast (lido na resolucao)
+    mythos_perm_lost_total: int = 0          # permanentes MINHAS sacrificadas pela Mythos (criaturas, fichas, Treasures, artefatos, encantamentos)
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -360,6 +546,25 @@ class GameState:
     # criatura sair de campo depois) - campo separado do "transformed" da
     # propria carta, nunca resetado no resto da partida.
     has_super_nova_emblem: bool = False
+    super_nova_emblems: int = 0  # quantos emblemas Super Nova existem (cada virada gera um; has_super_nova_emblem = emblemas > 0)
+    seph_batch_active: bool = False      # dentro de um evento de mortes SIMULTANEAS (wipe)
+    seph_batch_front_up: bool = False    # Sephiroth de frente em campo quando o lote de mortes comecou
+    seph_batch_emblems: int = 0          # emblemas existentes quando o lote comecou (emblema novo nao dispara pro lote)
+    seph_batch_leaves: bool = False      # o proprio Sephiroth morre neste lote (nao vira)
+    sephiroth_extra_triggers_total: int = 0  # gatilhos que o codigo antigo perdia (emblema + frente juntos, ou frente em wipe que o mata)
+    impulse_lands: list = field(default_factory=list)  # terrenos exilados jogaveis por fonte "play" (card, prazo)
+    impulse_lands_played_total: int = 0
+    impulse_spells_cast_total: int = 0   # magias conjuradas do exilio pela esteira de cast
+    lotho_triggers_total: int = 0
+    treasures_sacrificed_this_turn: int = 0
+    storm_sac_baseline: int = 0          # sacrificios ja' feitos quando a Storm entrou (os pagos pra conjura-la nao contam)
+    storm_pump_total: int = 0
+    sevinne_nonpermanent_returns_total: int = 0  # (so' leitura) devolucoes de instantanea/feitico que o codigo antigo fazia
+    dictate_triggers_total: int = 0      # proxy (so' leitura): gatilhos do Dictate of Erebos (cada oponente sacrifica uma criatura): estado de oponente, nunca simulado
+    treasure_farm_total: int = 0         # Treasures-criatura sacrificados pela propria habilidade de mana, so' pelas mortes
+    impulse_expiring_first_total: int = 0
+    impulse_all_first_total: int = 0     # cartas do exilio conjuradas antes da mao porque a preferencia do usuario e' SEMPRE jogar o exilio
+    treasure_farm_dictate_total: int = 0 # animados sacrificados so' porque ha' Dictate em campo (sem Mahadi/Plunderer: custa 1 Treasure cada)
     caretaker_level: int = 1  # Classes sempre entram no nivel 1
 
     # metrics --------------------------------------------------------------
@@ -373,6 +578,7 @@ class GameState:
     artifact_deaths_total: int = 0
     token_leaves_total: int = 0
     drain_damage_total: int = 0
+    table_damage_total: int = 0  # vida total da mesa (each opponent x NUM_OPPONENTS) -- so' pra win_turn
     life_gained_total: int = 0
     cards_drawn_extra: int = 0
     cascades_triggered: int = 0
@@ -394,6 +600,44 @@ class GameState:
     extort_paid_total: int = 0
     sevinne_flashback_total: int = 0
 
+    # Modo de resiliencia (interacao de oponente) — 2026-09-21, porte do
+    # Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+    # Bridge/Maralen/Rat King Verminister. `interaction_rng` None =
+    # modo padrao, totalmente inerte (bit-identico ao motor sem estas
+    # categorias).
+    interaction_rng: Optional[random.Random] = None
+    wiped_this_round: bool = False
+    graveyard_wipe_used: bool = False
+
+    smart_removals_total: int = 0
+    smart_removal_log: list = field(default_factory=list)
+    smart_attacks_taken_total: int = 0
+    smart_attack_log: list = field(default_factory=list)
+    smart_discards_total: int = 0
+    smart_discard_log: list = field(default_factory=list)
+    smart_wipes_total: int = 0
+    smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
+    smart_counters_total: int = 0
+    smart_counter_log: list = field(default_factory=list)
+    smart_graveyard_wipes_total: int = 0
+    smart_graveyard_wipe_log: list = field(default_factory=list)
+    smart_graveyard_snipes_total: int = 0
+    smart_graveyard_snipe_log: list = field(default_factory=list)
+
+    # ---- Rodada Draconic Visitor (2026-09-25) ----
+    dragons: int = 0                     # fichas 5/5 voadoras da Draconic Visitor (candidata)
+    dragons_sick: int = 0
+    dragons_created_total: int = 0
+    visitor_replaced_artifact_tokens: int = 0
+    visitor_combo_turn: Optional[int] = None   # Visitor + Pitiless Plunderer + Ashnod's Altar juntos em campo
+    combat_damage_proxy_total: int = 0
+    artifact_entered_this_turn: bool = False   # Sentinel Sarah Lyons (+2/+2)
+    win_turn: Optional[int] = None             # 1o turno de vitoria (proxy): dano >= 120, Revel in Riches ou combo
+
 
 def draw_cards(state: GameState, n: int):
     for _ in range(n):
@@ -408,9 +652,15 @@ def gain_life(state: GameState, n: int):
     state.life_gained_this_turn += n
 
 
-def drain(state: GameState, n: int):
-    """Dano/drena agregado — proxy, nunca vida real de oponente."""
+def drain(state: GameState, n: int, each_opp: bool = False):
+    """Dano/drena agregado — proxy, nunca vida real de oponente.
+    `drain_damage_total` segue a convencao historica do arquivo (1 por
+    gatilho, seja "each opponent" ou "target"). `table_damage_total` (novo
+    2026-09-25, so' pra metrica limitada `win_turn`) pesa pelo alcance real:
+    "each opponent loses N" = N x NUM_OPPONENTS de vida total da mesa;
+    "target opponent"/"any target" = N."""
     state.drain_damage_total += n
+    state.table_damage_total += n * (NUM_OPPONENTS if each_opp else 1)
 
 
 # ---------------------------------------------------------------------------
@@ -423,6 +673,10 @@ def is_artifact_card(name: str) -> bool:
 
 def is_creature_card(name: str) -> bool:
     return CARD_DB[name].ctype in CREATURE_ISH
+
+
+def is_enchantment_card(name: str) -> bool:
+    return CARD_DB[name].ctype == "enchantment"
 
 
 def is_outlaw(name: str) -> bool:
@@ -456,8 +710,8 @@ def is_historic(name: str) -> bool:
 # Motor de Treasure — criacao com os 3 multiplicadores empilhaveis
 # ---------------------------------------------------------------------------
 
-def create_treasures(state: GameState, n: int, source: str = ""):
-    """Ordem escolhida (o controlador escolhe, nas regras reais): Xorn
+def create_treasures(state: GameState, n: int, source: str = "", tapped: bool = False):
+    """`tapped` (Blood Money, BLOOD_MONEY_TAPPED_TREASURE_ENABLED): os Treasures nascem virados. Ordem escolhida (o controlador escolhe, nas regras reais): Xorn
     primeiro (+1 flat por evento), Anointed Procession depois (dobra o
     total), Academy Manufactor por ultimo (cada Treasure resultante TAMBEM
     cria 1 Clue + 1 Food — interpretacao escalando com N, documentada no
@@ -469,8 +723,23 @@ def create_treasures(state: GameState, n: int, source: str = ""):
         total += 1
     if "Anointed Procession" in state.battlefield:
         total *= 2
+    if "Draconic Visitor" in state.battlefield:
+        # Draconic Visitor: "If one or more artifact tokens would be created
+        # under your control, that many 5/5 red Dragon creature tokens with
+        # flying are created instead." O controlador escolhe a ordem dos
+        # efeitos de substituicao (CR 616.1): Xorn (+1) e Anointed (x2)
+        # antes, Academy Manufactor (cada Treasure vira Clue+Food+Treasure =
+        # 3 fichas de artefato) e so' entao a Visitor -- ordem que maximiza
+        # Dragoes. Nenhum Treasure/Clue/Food chega a existir.
+        n_art = total * (3 if "Academy Manufactor" in state.battlefield else 1)
+        _create_visitor_dragons(state, n_art)
+        return
     state.treasures += total
     state.treasures_created_total += total
+    state.artifact_entered_this_turn = True
+    if tapped and BLOOD_MONEY_TAPPED_TREASURE_ENABLED:
+        state.treasures_tapped += total
+        state.own_wipe_tapped_treasures_total += total
 
     if "Academy Manufactor" in state.battlefield:
         state.clues += total
@@ -485,10 +754,28 @@ def create_constructs(state: GameState, n: int, source: str = ""):
     if n <= 0:
         return
     total = n * (2 if "Anointed Procession" in state.battlefield else 1)
+    if "Draconic Visitor" in state.battlefield:
+        # Construct/Servo sao "artifact creature" -- ficha de artefato, vira Dragao.
+        _create_visitor_dragons(state, total)
+        return
     state.constructs += total
     state.constructs_sick += total
     state.constructs_created_total += total
+    state.artifact_entered_this_turn = True
     on_tokens_created(state, total, kind="construct")
+
+
+def _create_visitor_dragons(state: GameState, n: int):
+    """Fichas 5/5 voadoras da Draconic Visitor (o dobro da Anointed ja' foi
+    aplicado no evento original). Sao fichas de criatura: Kambal, Mirkwood
+    Bats e Caretaker's Talent reagem. Nao sao artefato."""
+    if n <= 0:
+        return
+    state.dragons += n
+    state.dragons_sick += n
+    state.dragons_created_total += n
+    state.visitor_replaced_artifact_tokens += n
+    on_tokens_created(state, n, kind="creature")
 
 
 def create_other_tokens(state: GameState, n: int, source: str = "", haste: bool = False):
@@ -511,11 +798,16 @@ def on_tokens_created(state: GameState, n: int, kind: str):
     if n <= 0:
         return
     if "Mirkwood Bats" in state.battlefield:
-        drain(state, n)
-    if kind != "treasure_component" and not state.kambal_drawn_this_turn and "Kambal, Profiteering Mayor" in state.battlefield:
-        drain(state, 1)
+        drain(state, n, each_opp=True)
+    # Kambal, Profiteering Mayor -- 2a habilidade: "Whenever one or more
+    # tokens you control enter, each opponent loses 1 life and you gain 1
+    # life." CORRIGIDO 2026-09-25: o codigo limitava a 1x/turno, mas o
+    # "This ability triggers only once each turn" do oraculo pertence a 1a
+    # habilidade (copiar fichas de OPONENTE), nao a esta. drain() segue a
+    # convencao do arquivo (1 por gatilho, igual Zulaport/Mirkwood Bats).
+    if kind != "treasure_component" and "Kambal, Profiteering Mayor" in state.battlefield:
+        drain(state, 1, each_opp=True)
         gain_life(state, 1)
-        state.kambal_drawn_this_turn = True
     if not state.caretaker_drawn_this_turn and "Caretaker's Talent" in state.battlefield:
         draw_cards(state, 1)
         state.caretaker_drawn_this_turn = True
@@ -525,15 +817,44 @@ def on_tokens_created(state: GameState, n: int, kind: str):
 # Sacrificio — funcoes centrais (aristocratas reagem aqui)
 # ---------------------------------------------------------------------------
 
-def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False, as_creature: bool = False):
+def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False, as_creature=None):
+    """Sacrifica `n` Treasures. `as_creature=None` (padrao): quantos deles sao
+    CRIATURA no momento e' decidido pelo estado -- Vihaan, Goldwaker: "At the
+    beginning of combat on your turn, you may have Treasures you control
+    become 3/3 Construct Assassin artifact creatures ... until end of turn".
+    Pelo CR 611.2c o conjunto afetado e' fixado quando o efeito comeca: so'
+    os Treasures que ja' existiam no inicio do combate (`treasures_animated_
+    alive`); Treasure criado depois (Olivia, Pitiless Plunderer, Reaver
+    Cleaver...) NAO e' criatura. Esses ficam criaturas ate' o fim do turno --
+    inclusive na 2a main phase -- entao sacrifica-los (por mana, Deadly
+    Dispute, Magda, Jan Jansen, Face-Breaker, Lich-Knights' Conquest, KCI,
+    Altar) dispara os gatilhos de morte de CRIATURA (Zulaport, Pitiless
+    Plunderer, Sephiroth, Agent of the Iron Throne, Mahadi no end step...)
+    alem dos de artefato e de token. Sacrifica os animados primeiro: mais
+    gatilhos pelo mesmo Treasure (escolha do controlador). `as_creature`
+    explicito (True/False) forca o comportamento antigo."""
     n = min(n, state.treasures)
     if n <= 0:
         return 0
     state.treasures -= n
+    if state.treasures_tapped:
+        if not for_mana:
+            state.treasures_tapped -= min(state.treasures_tapped, n)  # fora da mana o jogador sacrifica os virados primeiro (nao servem pra mana mesmo)
+        state.treasures_tapped = min(state.treasures_tapped, state.treasures)
     state.treasures_sacrificed_total += n
+    state.treasures_sacrificed_this_turn += n
     if for_mana:
         state.treasure_spent_this_turn = True
-    on_permanent_sacrificed(state, n, is_artifact=True, is_creature=as_creature, is_token=True)
+    if as_creature is None:
+        n_creature = min(n, state.treasures_animated_alive) if ANIMATED_TREASURE_ROUTING_ENABLED else 0
+    else:
+        n_creature = n if as_creature else 0
+    if n_creature:
+        state.treasures_animated_alive = max(0, state.treasures_animated_alive - n_creature)
+        state.animated_treasures_sacrificed_any_total += n_creature
+        on_permanent_sacrificed(state, n_creature, is_artifact=True, is_creature=True, is_token=True)
+    if n - n_creature:
+        on_permanent_sacrificed(state, n - n_creature, is_artifact=True, is_creature=False, is_token=True)
     return n
 
 
@@ -542,8 +863,32 @@ def aggressive_treasure_destruction(state: GameState):
     combate pelo melhor outlet disponivel. Se o Vihaan os animou em
     criaturas ate o final do turno, o Ashnod's Altar pega TODOS os
     gatilhos de uma vez (criatura+artefato+token); sem animacao ou sem
-    Ashnod's Altar, cai pro Krark-Clan Ironworks (so artefato+token)."""
+    Ashnod's Altar, cai pro Krark-Clan Ironworks (so artefato+token).
+
+    ANIMATED_TREASURE_ROUTING_ENABLED (2026-10-03): os dois outlets passam
+    a sacrificar com o roteamento padrao de `sacrifice_treasures`. Ashnod's
+    Altar ("Sacrifice a CREATURE") so' aceita os Treasures ANIMADOS ainda
+    vivos (os criados depois da animacao nao sao criatura e o codigo antigo
+    os sacrificava ao Altar mesmo assim); Krark-Clan Ironworks ("Sacrifice
+    an ARTIFACT") aceita todos, e um Treasure animado sacrificado a ele
+    TAMBEM e' criatura -- o codigo antigo o tratava como nao-criatura
+    ("nao e' criatura fora do combate"), o que o oraculo do Vihaan nega
+    (vale ate' o fim do turno)."""
     if state.treasures <= 0:
+        return
+    if ANIMATED_TREASURE_ROUTING_ENABLED:
+        if "Krark-Clan Ironworks" in state.battlefield:
+            available = state.treasures
+        elif "Ashnod's Altar" in state.battlefield:
+            available = min(state.treasures, state.treasures_animated_alive)
+        else:
+            return
+        if available <= 0:
+            return
+        n = sacrifice_treasures(state, available)
+        state.bonus_mana_pool += 2 * n
+        state.bonus_mana_generated_total += 2 * n
+        state.animated_treasures_sacrificed_total += min(n, state.treasures_animated_this_combat)
         return
     animated = state.treasures_animated_this_combat > 0
     if animated and "Ashnod's Altar" in state.battlefield:
@@ -576,33 +921,118 @@ def sacrifice_other_tokens(state: GameState, n: int):
 
 
 def sacrifice_named_creature(state: GameState, name: str):
+    """CORRIGIDO 2026-09-21 (achado real durante a validacao do porte do
+    modo de resiliencia, 20k regressao -- nao e' bug de OPONENTE, e' o
+    proprio motor do deck: `resolve_instant_sorcery`'s fallback do
+    Deadly Dispute podia escolher o comandante como sacrificio quando
+    nenhum Treasure/Construct/token generico sobrava, e esta funcao
+    NUNCA tratava o caso -- ela ficava presa no cemiterio pra sempre,
+    `commander_in_play` travado em True, achado em ~1.6% das seeds).
+    Comandante sacrificada passa pelo cemiterio de verdade (CR 903.9a e'
+    acao baseada em estado -- CR 704 -- nao substituicao: ela vai pro
+    cemiterio DE VERDADE primeiro, disparando `on_creature_dies`
+    normalmente -- Zulaport/Pitiless Plunderer/Agent of the Iron
+    Throne/Sephiroth/Life Insurance, e Mayhem Devil TAMBEM dispara aqui,
+    ja' que 'you sacrifice' e' literalmente o que este evento e' --
+    diferente do `remove_permanent` de oponente, que exclui Mayhem
+    Devil), so' DEPOIS e' removida de la' pra representar a escolha do
+    dono de move-la pra zona de comando."""
     if name not in state.battlefield:
         return False
     state.battlefield.remove(name)
     state.creature_cast_turn.pop(name, None)
     state.graveyard.append(name)
-    on_permanent_sacrificed(state, 1, is_artifact=is_artifact_card(name), is_creature=True, is_token=False)
+    on_permanent_sacrificed(state, 1, is_artifact=is_artifact_card(name), is_creature=True, is_token=False, dying=name)
+    if name == COMMANDER:
+        if name in state.graveyard:
+            state.graveyard.remove(name)
+        state.commander_in_play = False
     return True
 
 
-def on_permanent_sacrificed(state: GameState, n: int, is_artifact: bool, is_creature: bool, is_token: bool):
+def on_permanent_sacrificed(state: GameState, n: int, is_artifact: bool, is_creature: bool, is_token: bool, dying=None):
     """Dispara os gatilhos de sacrificio/morte reais. Chamado por toda via
     de sacrificio (Treasure, Construct, token generico, criatura nomeada)."""
     if "Mayhem Devil" in state.battlefield:
         drain(state, n)
     if is_creature:
-        on_creature_dies(state, n, is_token=is_token)
+        on_creature_dies(state, n, is_token=is_token, dying=dying)
     if is_artifact:
         on_artifact_dies(state, n)
     if is_token:
         on_token_leaves(state, n)
 
 
-def on_creature_dies(state: GameState, n: int, is_token: bool):
+def on_permanent_destroyed(state: GameState, n: int, is_artifact: bool, is_creature: bool, is_token: bool, dying=None):
+    """Porte do modo de resiliencia (2026-09-21): mesmos gatilhos reais de
+    'dies'/'put into a graveyard from the battlefield' que `on_permanent_
+    sacrificed` dispara, MENOS Mayhem Devil -- oraculo real e' 'Whenever
+    YOU SACRIFICE...', e destruicao/wipe por acao de OPONENTE nunca e'
+    sacrificio feito por mim (mesma distincao ja aplicada ao Vito
+    Fanatic no Edgar Markov e ao Vito-style de outros decks desta
+    sessao). Zulaport/Pitiless Plunderer/Agent of the Iron Throne/
+    Sephiroth/Nadier's Nightblade/Marionette Master/Life Insurance
+    (dentro de on_creature_dies/on_artifact_dies/on_token_leaves) reagem
+    normalmente -- nenhum deles e' 'sacrifice'-restrito no oraculo real.
+    CORRECAO de 2026-10-04: o Mirkwood Bats ESTAVA nessa lista, mas o
+    oraculo ao vivo e' "Whenever you create or SACRIFICE a token" -- ficha
+    destruida nao o dispara (MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED)."""
+    if is_creature:
+        on_creature_dies(state, n, is_token=is_token, dying=dying)
+    if is_artifact:
+        on_artifact_dies(state, n)
+    if is_token:
+        on_token_leaves(state, n, sacrificed=False)
+
+
+def remove_permanent(state: GameState, name: str, source: str = "opponent"):
+    """Ponto central de remocao de permanente NOMEADO do campo por acao de
+    OPONENTE (wipe/remocao do modo de resiliencia, 2026-09-21 -- porte do
+    Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+    Bridge/Maralen/Rat King Verminister, ja' incorporando desde o inicio
+    a correcao de CR 903.9a validada nesta sessao -- nunca implementado
+    do jeito errado aqui pra depois precisar de retrofit).
+
+    Comandante: CR 903.9a (cemiterio/exilio, o caso de MORTE) e' ACAO
+    BASEADA EM ESTADO (CR 704), NAO substituicao -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`. Vihaan vai pro cemiterio DE
+    VERDADE primeiro (CR 700.4, 'dies'), disparando `on_creature_dies`
+    normalmente (Zulaport/Pitiless Plunderer/Agent of the Iron
+    Throne/Sephiroth/Life Insurance -- nenhum deles e' ele mesmo; ele
+    NUNCA e' artefato, so' creature+outlaw, entao `on_artifact_dies`
+    nunca dispara pra ele), so' DEPOIS e' removido de la' pra
+    representar a escolha do dono de move-lo pra zona de comando
+    (`commander_in_play = False`). Mayhem Devil fica de fora (via
+    `on_permanent_destroyed`, nao `on_permanent_sacrificed`) -- oraculo
+    real e' sacrifice-only, nunca destruicao/wipe de oponente.
+
+    Token agregado (Treasure/Construct/other_tokens) nao passa por
+    aqui -- os contadores sao zerados diretamente por
+    `try_smart_opponent_wipe`, que tambem chama `on_permanent_destroyed`
+    pra eles. Esta funcao e' so' pra permanente NOMEADO (entrada real em
+    `state.battlefield`)."""
+    if name not in state.battlefield:
+        return
+    state.battlefield.remove(name)
+    state.creature_cast_turn.pop(name, None)
+    is_art = is_artifact_card(name)
+    is_creat = is_creature_card(name)
+    state.graveyard.append(name)
+    on_permanent_destroyed(state, 1, is_artifact=is_art, is_creature=is_creat, is_token=False, dying=name)
+    if name == COMMANDER:
+        if name in state.graveyard:
+            state.graveyard.remove(name)
+        state.commander_in_play = False
+
+
+def on_creature_dies(state: GameState, n: int, is_token: bool, dying=None):
     if n <= 0:
         return
     state.creature_deaths_total += n
     state.deaths_this_turn += n
+    if "Dictate of Erebos" in state.battlefield:
+        state.dictate_triggers_total += n  # 📊 "each opponent sacrifices a creature": so' conta o uso, nunca fabrica board de oponente
     # Achado real 2026-09-14: oraculo real da Agent of the Iron Throne
     # (Background) e' "Commander creatures you own have 'Whenever an
     # ARTIFACT OR CREATURE you control is put into a graveyard from the
@@ -613,11 +1043,11 @@ def on_creature_dies(state: GameState, n: int, is_token: bool):
     # comandante deste deck) - so' existe enquanto ele estiver em campo
     # (`state.commander_in_play`), igual ao texto real.
     if state.commander_in_play and "Agent of the Iron Throne" in state.battlefield:
-        drain(state, n)
+        drain(state, n, each_opp=True)
     if "Zulaport Cutthroat" in state.battlefield:
-        drain(state, n)
+        drain(state, n, each_opp=True)
         gain_life(state, n)
-    if "Pitiless Plunderer" in state.battlefield:
+    if "Pitiless Plunderer" in state.battlefield and dying != "Pitiless Plunderer":  # "another creature": nunca pela propria morte (wipe simultaneo)
         create_treasures(state, n, source="Pitiless Plunderer")
 
     # Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel — achado real
@@ -642,22 +1072,96 @@ def on_creature_dies(state: GameState, n: int, is_token: bool):
     # campo depois). (2) sem limite de 4x/turno depois de transformado (o
     # limite so' existia na habilidade da FRENTE, pra disparar o transform).
     # (3) a habilidade de ataque muda de escala - ver try_sephiroth_sac_draw.
-    sephiroth_on_bf = "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in state.battlefield
-    for _ in range(n):
-        if state.has_super_nova_emblem:
-            drain(state, 1)
-            gain_life(state, 1)
-        elif sephiroth_on_bf and not state.sephiroth_transformed:
-            drain(state, 1)
-            gain_life(state, 1)
-            state.sephiroth_deaths_this_turn += 1
-            if state.sephiroth_deaths_this_turn == 4:
-                state.sephiroth_transformed = True
-                state.has_super_nova_emblem = True
+    if SEPHIROTH_EMBLEM_STACKING_ENABLED or SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED:
+        _sephiroth_death_triggers(state, n, dying)
+    else:
+        sephiroth_on_bf = "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in state.battlefield
+        for _ in range(n):
+            if state.has_super_nova_emblem:
+                drain(state, 1)
+                gain_life(state, 1)
+            elif sephiroth_on_bf and not state.sephiroth_transformed:
+                drain(state, 1)
+                gain_life(state, 1)
+                state.sephiroth_deaths_this_turn += 1
+                if state.sephiroth_deaths_this_turn == 4:
+                    state.sephiroth_transformed = True
+                    state.has_super_nova_emblem = True
+                    state.super_nova_emblems = max(1, state.super_nova_emblems)
 
     if not is_token and "Life Insurance" in state.battlefield:
         state.life -= 1
         create_treasures(state, 1, source="Life Insurance")
+
+
+SEPHIROTH = "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel"
+
+
+def _sephiroth_death_triggers(state: GameState, n: int, dying=None):
+    """Gatilhos de morte do Sephiroth (oraculo lido ao vivo, 2026-10-03). Frente: "Whenever another creature dies, target
+    opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform
+    Sephiroth." Verso: "Super Nova -- As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with
+    'Whenever a creature dies, target opponent loses 1 life and you gain 1 life.'"
+    Regras que o codigo antigo errava:
+    - O emblema e' um objeto independente: com um emblema E um Sephiroth de FRENTE em campo (voltou do cemiterio, por exemplo),
+      cada morte dispara DOIS gatilhos (o do emblema e o da frente), e a 4a resolucao da frente vira de novo e da' um 2o
+      emblema (emblemas acumulam: cada um dispara). O codigo antigo so' disparava o emblema (1 por morte) e guardava um sim/nao.
+    - Mortes SIMULTANEAS (wipe; ruling 2025-06-06: 'If Sephiroth and one or more other creatures die at the same time, its
+      last ability will trigger for each of those other creatures. It won't transform, though.'): o gatilho olha para tras, entao
+      vale para todas as outras que morrem junto, em qualquer ordem de remocao -- o codigo antigo tirava o Sephiroth do campo
+      primeiro e perdia as que eram removidas depois (e todas as fichas). Um emblema que nasce no meio do lote nao dispara pras
+      mortes do lote (elas ja' aconteceram) -- mas os gatilhos da frente ja' na pilha continuam resolvendo.
+    Cada morte conta (fichas incluidas: 'dies' = vai ao cemiterio).
+    A frente diz "ANOTHER creature": a morte do proprio Sephiroth (`dying`, so' as vias de permanente nomeado informam) nao
+    dispara a habilidade da frente, mas dispara o emblema ("a creature dies", sem "another") se ja' houver um."""
+    batch = SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED and state.seph_batch_active
+    if batch:
+        front_up = state.seph_batch_front_up
+        emblems_then = state.seph_batch_emblems
+        flip_blocked = state.seph_batch_leaves
+    else:
+        front_up = SEPHIROTH in state.battlefield and not state.sephiroth_transformed
+        emblems_then = state.super_nova_emblems
+        flip_blocked = False
+    for _ in range(n):
+        if SEPHIROTH_EMBLEM_STACKING_ENABLED:
+            front_here = front_up and dying != SEPHIROTH
+            fires = emblems_then + (1 if front_here else 0)
+            front_resolves = front_here
+            if emblems_then and front_here:
+                state.sephiroth_extra_triggers_total += 1  # o codigo antigo perdia o gatilho da frente
+        else:
+            front_here = front_up and dying != SEPHIROTH
+            fires = 1 if (emblems_then or front_here) else 0
+            front_resolves = front_here and not emblems_then
+        for _f in range(fires):
+            drain(state, 1)
+            gain_life(state, 1)
+        if front_resolves:
+            state.sephiroth_deaths_this_turn += 1
+            if (state.sephiroth_deaths_this_turn == 4 and not flip_blocked and SEPHIROTH in state.battlefield
+                    and not state.sephiroth_transformed):
+                state.sephiroth_transformed = True
+                state.super_nova_emblems = state.super_nova_emblems + 1 if SEPHIROTH_EMBLEM_STACKING_ENABLED else 1
+                state.has_super_nova_emblem = True
+
+
+def begin_mass_death(state: GameState, leaving_names):
+    """Chamar ANTES de remover varias criaturas ao mesmo tempo (wipe). Tira a foto do que o Sephiroth enxerga: de frente em
+    campo, quantos emblemas, e se ele proprio esta entre os que morrem (entao nao vira)."""
+    if not SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED:
+        return
+    state.seph_batch_active = True
+    state.seph_batch_front_up = SEPHIROTH in state.battlefield and not state.sephiroth_transformed
+    state.seph_batch_emblems = state.super_nova_emblems
+    state.seph_batch_leaves = SEPHIROTH in leaving_names
+
+
+def end_mass_death(state: GameState):
+    state.seph_batch_active = False
+    state.seph_batch_front_up = False
+    state.seph_batch_emblems = 0
+    state.seph_batch_leaves = False
 
 
 def on_artifact_dies(state: GameState, n: int):
@@ -665,7 +1169,7 @@ def on_artifact_dies(state: GameState, n: int):
         return
     state.artifact_deaths_total += n
     if state.commander_in_play and "Agent of the Iron Throne" in state.battlefield:
-        drain(state, n)
+        drain(state, n, each_opp=True)
     if "Marionette Master" in state.battlefield:
         # Poder base real (Scryfall): 1/3. Fabricate 3 aqui sempre escolhe
         # criar 3 Servos (ver resolve_permanent_etb), nao contadores — entao
@@ -674,21 +1178,23 @@ def on_artifact_dies(state: GameState, n: int):
         drain(state, n * 1)
 
 
-def on_token_leaves(state: GameState, n: int):
+def on_token_leaves(state: GameState, n: int, sacrificed: bool = True):
+    """`sacrificed` (MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED): o Mirkwood Bats so' reage a SACRIFICIO de ficha; ficha destruida sai do campo sem dispara-lo.
+    O Nadier's Nightblade reage a qualquer saida de ficha."""
     if n <= 0:
         return
     state.token_leaves_total += n
     if "Nadier's Nightblade" in state.battlefield:
-        drain(state, n)
+        drain(state, n, each_opp=True)
         gain_life(state, n)
-    if "Mirkwood Bats" in state.battlefield:
+    if "Mirkwood Bats" in state.battlefield and (sacrificed or not MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED):
         # Achado real 2026-08-28 (auditoria de checklist de mecanica):
         # "Whenever you create OR SACRIFICE a token" - so a metade
         # "create" (via on_tokens_created) disparava; a metade
         # "sacrifice"/leaves-the-battlefield nunca era checada aqui,
         # apesar de ser o motor central de sacrificio do deck
         # (aggressive_treasure_destruction chama isso toda hora).
-        drain(state, n)
+        drain(state, n, each_opp=True)
 
 
 # ---------------------------------------------------------------------------
@@ -730,15 +1236,139 @@ def treasure_value(state: GameState) -> int:
 
 def total_mana(state: GameState) -> int:
     return (lands_in_play(state) + rocks_mana(state)
-            + state.treasures * treasure_value(state) + state.bonus_mana_pool)
+            + (state.treasures - state.treasures_tapped) * treasure_value(state) + state.bonus_mana_pool)
 
 
 def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
+def creatures_on_battlefield(state: GameState) -> int:
+    """Criaturas MINHAS em campo (cartas nomeadas, Constructs, fichas genericas, Dragoes da Visitor e Treasures animados vivos). As do oponente
+    sao 📊 (o simulador nao modela o campo dele): a reducao da Blasphemous Act e' so' um piso."""
+    return (sum(1 for n in state.battlefield if is_creature_card(n)) + state.constructs + state.other_tokens + state.dragons
+            + state.treasures_animated_alive)
+
+
+def spell_cost(state: GameState, name: str) -> int:
+    """Custo total pago (sem o imposto do comandante, que o cast_card soma). Blasphemous Act: "costs {1} less to cast for each creature on the
+    battlefield", nunca abaixo de {R} (ruling 2020-11-10); o MV continua 9 (cascade/Lotho leem o MV, nao o custo)."""
+    mv = CARD_DB[name].mv
+    if COMMANDER_TAX_ENABLED and name == COMMANDER:
+        return mv + 2 * state.commander_cast_count  # CR 903.8: o comandante conjurado da zona de comando custa {2} a mais por cast anterior
+    if BLASPHEMOUS_ACT_COST_REDUCTION_ENABLED and name == "Blasphemous Act":
+        return max(1, mv - creatures_on_battlefield(state))
+    return mv
+
+
+def wipe_mitigated(state: GameState, name: str) -> bool:
+    """A circunstancia que o usuario cita (2026-10-04): "com Mayhem Devil em campo, sacrificar tesouros animados para pagar o custo do wipe ainda
+    causa dano nos oponentes alem do efeito do wipe em si", dentro do principio "causar mais perdas aos oponentes do que a mim". O simulador so'
+    enxerga o que e' dele: o dano do pagamento (1 por Treasure animado sacrificado, Mayhem Devil) contra as MINHAS criaturas nao-ficha que o wipe
+    destruiria (inclui o comandante e o proprio Mayhem Devil), 1 dano por 1 criatura. O efeito do wipe nas criaturas do oponente e' 📊 e fica de
+    fora (a conta e' conservadora). Condicoes: Mayhem Devil em campo, animados vivos e desvirados pagando o custo INTEIRO (eles morreriam no wipe de
+    qualquer jeito) e dano do pagamento > criaturas minhas perdidas. Sem efeitos colaterais."""
+    if "Mayhem Devil" not in state.battlefield:
+        return False
+    tv = treasure_value(state)
+    custo = spell_cost(state, name)
+    animados = min(state.treasures_animated_alive, state.treasures - state.treasures_tapped)
+    if animados * tv < custo:
+        return False
+    sacrificios = math.ceil(custo / tv)
+    if name == MYTHOS:  # a Mythos sacrifica TODOS os nao-terreno que eu nao guardo (nao so' criaturas): a "perda minha" e' essa
+        sel = _mythos_selection(state)
+        minhas = len(sel["cre"]) + len(sel["outros"])
+    else:
+        minhas = sum(1 for n in state.battlefield if is_creature_card(n))
+    return sacrificios > minhas
+
+
+def wipe_held(state: GameState, name: str) -> bool:
+    """Retencao dos wipes proprios (Blood Money, Blasphemous Act).
+    OWN_WIPE_HOLD_ALWAYS_ENABLED (10a rodada, principio do usuario: "todo boardwipe deve ser segurado para causar mais perdas aos oponentes do que a
+    mim"): o simulador nao modela nada do lado do oponente (📊), entao nao ha' como o wipe causar mais perda a ele do que a mim; fica sempre
+    segurado, exceto na circunstancia mitigada (`wipe_mitigated`, OWN_WIPE_RELEASE_MITIGATED_ENABLED).
+    OWN_WIPE_HOLD_ENGINE_ENABLED (9a rodada, T8 da partida manual #1: a Blood Money ficou exilada de proposito, "sem Vihaan e Mahadi em campo acho
+    que seria pior"): so' segura se destruiria o Vihaan ou o Mahadi."""
+    if name not in OWN_WIPES:
+        return False
+    if OWN_WIPE_HOLD_ALWAYS_ENABLED:
+        if OWN_WIPE_RELEASE_MITIGATED_ENABLED and wipe_mitigated(state, name):
+            return False
+        held = True
+    elif OWN_WIPE_HOLD_ENGINE_ENABLED:
+        held = state.commander_in_play or "Mahadi, Emporium Master" in state.battlefield
+    else:
+        return False
+    if held and name not in state.own_wipe_held_this_turn:
+        state.own_wipe_held_this_turn.add(name)
+        state.own_wipe_held_total += 1
+    return held
+
+
+def _wipe_pay_with_animated(state: GameState, cost: int) -> int:
+    """OWN_WIPE_PAY_WITH_ANIMATED_ENABLED: os Treasures animados vivos pagam o wipe primeiro. Eles sao criaturas ate' o fim do turno e o wipe os
+    destruiria sem dar nada (ficha: nem Treasure da Blood Money); sacrificados como custo viram mana, morte de criatura (Zulaport, Plunderer,
+    Dictate, Sephiroth...) e sacrificio (Mayhem Devil: 1 de dano cada, e a ruling 2019-05-03 manda o gatilho resolver antes do wipe). Retorna o
+    que ainda falta pagar com terrenos/rocks."""
+    tv = treasure_value(state)
+    disponiveis = min(state.treasures_animated_alive, state.treasures - state.treasures_tapped)
+    k = min(disponiveis, math.ceil(cost / tv))
+    if k <= 0:
+        return cost
+    antes = state.drain_damage_total
+    sacrifice_treasures(state, k, for_mana=True)
+    state.own_wipe_animated_paid_total += k
+    state.own_wipe_pay_drain_total += state.drain_damage_total - antes
+    return max(0, cost - k * tv)
+
+
+# Cores que cada terreno produz entre W/B/R (Scryfall `produced_mana`, lido ao vivo em 2026-10-04; MDFC/filter lands = uniao das cores). So' a Mythos usa isto.
+LAND_COLORS = {
+    "Battlefield Forge": "WR", "Blackcleave Cliffs": "BR", "Blood Crypt": "BR", "Bojuka Bog": "B", "Brightclimb Pathway // Grimclimb Pathway": "WB",
+    "Caves of Koilos": "WB", "Clifftop Retreat": "WR", "Command Beacon": "", "Command Tower": "WBR", "Demolition Field": "", "Desolate Mire": "WB",
+    "Dragonskull Summit": "BR", "Exotic Orchard": "WBR", "Fetid Heath": "WB", "High Market": "", "Isolated Chapel": "WB", "Luxury Suite": "BR",
+    "Mountain": "R", "Path of Ancestry": "WBR", "Phyrexian Tower": "B", "Plains": "W", "Rogue's Passage": "", "Rugged Prairie": "WR",
+    "Shadowblood Ridge": "BR", "Spectator Seating": "WR", "Sulfurous Springs": "BR", "Swamp": "B", "Tainted Peak": "BR", "Treasure Vault": "",
+}
+
+
+def color_sources(state: GameState) -> list:
+    """Uma string de cores (subconjunto de "WBR") por fonte que pode pagar cor agora: terrenos em campo (menos os que entraram virados neste turno), Arcane Signet e
+    Treasures desvirados (qualquer cor). Otimista: ignora o mana ja' gasto no turno e trata filter lands/MDFC pela uniao das cores."""
+    fontes = []
+    for n in state.battlefield:
+        if n in LAND_NAMES:
+            if n in state.tapped_lands_this_turn:
+                continue
+            cs = LAND_COLORS.get(n, "")
+            if cs:
+                fontes.append(cs)
+        elif n == "Arcane Signet":
+            fontes.append("WBR")
+    fontes += ["WBR"] * max(0, state.treasures - state.treasures_tapped)
+    return fontes
+
+
+def pips_ok(fontes: list, pips: list) -> bool:
+    """Existe uma atribuicao de fontes DISTINTAS aos simbolos de cor `pips` (ex.: ["W","W","B","R"])?"""
+    pips = sorted(pips, key=lambda p: sum(1 for f in fontes if p in f))
+
+    def rec(i, usadas):
+        if i == len(pips):
+            return True
+        for j, f in enumerate(fontes):
+            if j not in usadas and pips[i] in f and rec(i + 1, usadas | {j}):
+                return True
+        return False
+    return rec(0, frozenset())
+
+
 def can_cast(state: GameState, name: str) -> bool:
-    return remaining_mana(state) >= CARD_DB[name].mv
+    if MYTHOS_COLOR_CHECK_ENABLED and name == MYTHOS and not pips_ok(color_sources(state), ["W", "W"]):
+        return False
+    return remaining_mana(state) >= spell_cost(state, name)
 
 
 def spend_mana(state: GameState, n: int):
@@ -829,6 +1459,29 @@ def try_phyrexian_reclamation(state: GameState) -> bool:
     return True
 
 
+def _sevinne_return_one(state: GameState) -> bool:
+    """Um resolve de Sevinne's Reclamation: "Return target PERMANENT card with mana value 3 or less from your graveyard to the battlefield."
+    Ruling 2024-06-07: permanent card = artefato, batalha, criatura, encantamento, TERRENO ou planeswalker (instantanea e feitico nao;
+    nem a propria Sevinne's, que ja' esta no cemiterio quando resolve). SEVINNE_PERMANENT_TARGET_ENABLED liga esse filtro; o codigo antigo
+    so' excluia terreno, entao a heuristica "maior MV" devolvia com frequencia a PROPRIA Sevinne's ou um feitico, que ficava parado no
+    campo sem efeito. Terreno devolvido entra tapped se a regra dele manda (nao e' jogada de terreno)."""
+    if SEVINNE_PERMANENT_TARGET_ENABLED:
+        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype not in ("instant", "sorcery")]
+    else:
+        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype != "land"]
+    if not cheap:
+        return False
+    best = max(cheap, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(best)
+    if CARD_DB[best].ctype in ("instant", "sorcery"):
+        state.sevinne_nonpermanent_returns_total += 1
+    elif SEVINNE_PERMANENT_TARGET_ENABLED and CARD_DB[best].ctype == "land" and land_enters_tapped(state, best):
+        state.tapped_lands_this_turn.add(best)
+    enter_battlefield(state, best)
+    state.recursion_events_total += 1
+    return True
+
+
 def try_sevinne_flashback(state: GameState) -> bool:
     """Achado real 2026-09-14: 'Flashback {4}{W}' (Scryfall, MV5 - custo
     alternativo pra conjurar do cemiterio, depois exila) 100% ausente -
@@ -846,14 +1499,14 @@ def try_sevinne_flashback(state: GameState) -> bool:
         return False
     spend_mana(state, 5)
     state.graveyard.remove("Sevinne's Reclamation")
+    if SPELL_CAST_COUNT_ALL_PATHS_ENABLED:
+        _register_nonhand_cast(state)  # flashback = conjurada do cemiterio (Lotho, extort; sem Pact Boon: nao e' exilio)
+        if (state.treasure_spent_this_turn and "Rain of Riches" in state.battlefield
+                and not state.cascade_used_this_turn):
+            do_cascade(state, CARD_DB["Sevinne's Reclamation"].mv)
+            state.cascade_used_this_turn = True
     for _ in range(2):  # original + copia real (a copia nao existiria sem o flashback)
-        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype != "land"]
-        if not cheap:
-            continue
-        best = max(cheap, key=lambda n: CARD_DB[n].mv)
-        state.graveyard.remove(best)
-        enter_battlefield(state, best)
-        state.recursion_events_total += 1
+        _sevinne_return_one(state)
     state.sevinne_flashback_total += 1
     return True
 
@@ -874,7 +1527,7 @@ def try_face_breaker_impulse(state: GameState) -> bool:
     if state.treasures <= 0:
         return False
     sacrifice_treasures(state, 1)
-    pull_impulse(state, 1, deadline_turns=0)
+    pull_impulse(state, 1, deadline_turns=0, lands_ok=True)
     state.face_breaker_used_this_turn = True
     state.face_breaker_impulse_total += 1
     return True
@@ -888,16 +1541,31 @@ def try_equip_reaver_cleaver(state: GameState):
     por criatura pra calcular 'that many' de verdade) disparava de graca
     pra qualquer ataque, sem nunca ter sido equipado em ninguem. Paga o
     Equip 1x (fica equipado o resto da partida - este simulador nunca
-    reequipa), so' se houver ao menos 1 criatura real em campo."""
+    reequipa), so' se houver ao menos 1 criatura real em campo.
+
+    CORRIGIDO 2026-09-25 (Regra #1, "formula dinamica achatada"): o
+    oraculo real e' "Equipped creature gets +1/+1 and has trample and
+    'Whenever this creature deals combat damage to a player or
+    planeswalker, create THAT MANY Treasure tokens.'" -- o arquivo agora
+    rastreia poder impresso (`CREATURE_POWER`), entao "that many" = poder
+    do portador + 1 (o proprio +1/+1), +2 com Sentinel Sarah Lyons ativa.
+    Equipa a criatura nao-comandante de maior poder (o Vihaan nunca ataca
+    neste simulador -- `ready_creatures` o exclui). Se o portador sai de
+    campo o Equipamento fica solto (CR 301.5c) e reequipar custa {3} de
+    novo."""
     if "The Reaver Cleaver" not in state.battlefield:
         return
-    if state.reaver_cleaver_equipped:
+    if state.reaver_cleaver_host is not None and state.reaver_cleaver_host in state.battlefield:
         return
+    state.reaver_cleaver_host = None
+    state.reaver_cleaver_equipped = False
     if remaining_mana(state) < 3:
         return
-    if not any(is_creature_card(n) for n in state.battlefield):
+    hosts = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
+    if not hosts:
         return
     spend_mana(state, 3)
+    state.reaver_cleaver_host = max(hosts, key=lambda n: CREATURE_POWER.get(n, 0))
     state.reaver_cleaver_equipped = True
 
 
@@ -930,9 +1598,20 @@ def resolve_instant_sorcery(state: GameState, name: str):
         elif state.other_tokens > 0:
             sacrifice_other_tokens(state, 1)
         else:
+            # Achado real 2026-09-21 (mesma rodada do fix de CR 903.9a):
+            # candidates incluia o comandante sem preferencia nenhuma --
+            # um jogador racional nunca sacrifica o proprio comandante de
+            # 3 mana como custo adicional do Deadly Dispute quando
+            # qualquer outro artefato/criatura real serve (a taxa de
+            # recast so' cresce a cada vez). So' o usa se for
+            # genuinamente o UNICO artefato/criatura em campo (Deadly
+            # Dispute exige o sacrificio como custo adicional pra
+            # conjurar -- nao e' opcional).
             candidates = [n for n in state.battlefield if is_creature_card(n) or is_artifact_card(n)]
-            if candidates:
-                sacrifice_named_creature(state, candidates[0])
+            non_commander = [n for n in candidates if n != COMMANDER]
+            target = non_commander[0] if non_commander else (candidates[0] if candidates else None)
+            if target:
+                sacrifice_named_creature(state, target)
         draw_cards(state, 2)
         create_treasures(state, 1, source=name)
     elif name == "Inspired Tinkering":
@@ -944,34 +1623,53 @@ def resolve_instant_sorcery(state: GameState, name: str):
         # PROPRIO turno T+2, 1 turno alem do real. deadline_turns=1 e' o
         # valor correto (mesma correcao pro Prosper em end_step, ver
         # abaixo).
-        pull_impulse(state, 3, deadline_turns=1)
+        pull_impulse(state, 3, deadline_turns=1, lands_ok=True)
         create_treasures(state, 3, source=name)
     elif name == "Blood Money":
-        real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
-        n_dead = len(real_creatures) + state.constructs + state.other_tokens
-        for c in real_creatures:
-            sacrifice_named_creature(state, c)
-        sacrifice_constructs(state, state.constructs)
-        sacrifice_other_tokens(state, state.other_tokens)
-        create_treasures(state, len(real_creatures), source="Blood Money (nontoken)")
+        state.own_wipes_cast_total += 1
+        state.blood_money_cast_total += 1
+        if OWN_WIPE_DESTROY_ORACLE_ENABLED:
+            # "For each nontoken creature destroyed this way, you create a tapped Treasure token" (o do oponente e' 📊)
+            n_nontoken = _own_wipe_destroy_all(state)
+            create_treasures(state, n_nontoken, source="Blood Money (nontoken)", tapped=True)
+        else:
+            real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
+            n_dead = len(real_creatures) + state.constructs + state.other_tokens
+            begin_mass_death(state, real_creatures)
+            for c in real_creatures:
+                sacrifice_named_creature(state, c)
+            sacrifice_constructs(state, state.constructs)
+            sacrifice_other_tokens(state, state.other_tokens)
+            _destroy_dragons(state)
+            end_mass_death(state)
+            create_treasures(state, len(real_creatures), source="Blood Money (nontoken)")
+    elif name == MYTHOS:
+        state.own_wipes_cast_total += 1
+        state.mythos_cast_total += 1
+        if state.mythos_br_pending:
+            state.mythos_br_spent_total += 1
+        state.mythos_br_pending = False
+        state.mythos_perm_lost_total += _mass_sacrifice(state, _mythos_selection(state))
     elif name == "Blasphemous Act":
-        real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
-        for c in real_creatures:
-            sacrifice_named_creature(state, c)
-        sacrifice_constructs(state, state.constructs)
-        sacrifice_other_tokens(state, state.other_tokens)
+        state.own_wipes_cast_total += 1
+        if OWN_WIPE_DESTROY_ORACLE_ENABLED:
+            _own_wipe_destroy_all(state)  # 13 de dano em cada criatura: todas morrem (nenhuma tem 13 de resistencia nem e' indestrutivel)
+        else:
+            real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
+            begin_mass_death(state, real_creatures)
+            for c in real_creatures:
+                sacrifice_named_creature(state, c)
+            sacrifice_constructs(state, state.constructs)
+            sacrifice_other_tokens(state, state.other_tokens)
+            _destroy_dragons(state)
+            end_mass_death(state)
     elif name in ("Path to Exile", "Shoot the Sheriff", "Council's Judgment",
                   "Deadly Derision", "Requisition Raid", "Boros Charm", "Teferi's Protection"):
         state.commits_crime_this_turn = True
         if name == "Deadly Derision":
             create_treasures(state, 1, source=name)
     elif name == "Sevinne's Reclamation":
-        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype != "land"]
-        if cheap:
-            best = max(cheap, key=lambda n: CARD_DB[n].mv)
-            state.graveyard.remove(best)
-            enter_battlefield(state, best)
-            state.recursion_events_total += 1
+        _sevinne_return_one(state)
     elif name == "Back in Town":
         # Achado real 2026-09-14: custo real (Scryfall) e' {X}{2}{B} - X e'
         # de verdade pago em mana, nao gratis/capado arbitrariamente em 2
@@ -1022,22 +1720,225 @@ def resolve_instant_sorcery(state: GameState, name: str):
                 state.recursion_events_total += 1
 
 
-def pull_impulse(state: GameState, n: int, deadline_turns: int):
+def _destroy_dragons(state: GameState):
+    """Fichas de Dragao da Visitor morrendo num "destroy all creatures"
+    (nosso ou de oponente) -- destruicao, nao sacrificio (sem Mayhem Devil)."""
+    n = state.dragons
+    if n <= 0:
+        return
+    state.dragons = 0
+    state.dragons_sick = 0
+    on_permanent_destroyed(state, n, is_artifact=False, is_creature=True, is_token=True)
+
+
+def _own_wipe_destroy_all(state: GameState) -> int:
+    """OWN_WIPE_DESTROY_ORACLE_ENABLED. "Destroy all creatures" (Blood Money) / "13 damage to each creature" (Blasphemous Act), do MEU lado (o do
+    oponente e' 📊). Oraculo lido ao vivo em 2026-10-04: destroi TODAS as criaturas, inclusive o comandante (Vihaan e' Legendary Creature) e os
+    Treasures que o Vihaan animou neste turno (sao criaturas ate' o fim do turno); e' DESTRUICAO, nao sacrificio (Mayhem Devil so' reage a
+    sacrificio); a morte e' SIMULTANEA, entao os gatilhos de "dies" olham pra tras (ruling 2018-01-19 do Pitiless Plunderer: ele dispara pelas
+    outras que morrem junto; o Zulaport dispara tambem pela propria morte): por isso todos os eventos sao disparados com o campo ainda cheio e SO'
+    DEPOIS as pecas saem. O comandante vai ao cemiterio (a morte dispara) e o dono o leva a zona de comando (CR 903.9a, acao baseada em estado).
+    Retorna quantas criaturas NAO-ficha foram destruidas (a Blood Money cria 1 Treasure virado por cada)."""
+    named = [n for n in state.battlefield if is_creature_card(n)]
+    n_con, n_oth, n_dra = state.constructs, state.other_tokens, state.dragons
+    n_anim = min(state.treasures_animated_alive, state.treasures)
+    begin_mass_death(state, named)
+    for c in named:
+        on_creature_dies(state, 1, is_token=False, dying=c)
+        if is_artifact_card(c):
+            on_artifact_dies(state, 1)
+    if n_con:
+        on_creature_dies(state, n_con, is_token=True)
+        on_artifact_dies(state, n_con)
+        on_token_leaves(state, n_con, sacrificed=False)
+    if n_oth:
+        on_creature_dies(state, n_oth, is_token=True)
+        on_token_leaves(state, n_oth, sacrificed=False)
+    if n_dra:
+        on_creature_dies(state, n_dra, is_token=True)
+        on_token_leaves(state, n_dra, sacrificed=False)
+    if n_anim:
+        on_creature_dies(state, n_anim, is_token=True)
+        on_artifact_dies(state, n_anim)
+        on_token_leaves(state, n_anim, sacrificed=False)
+    end_mass_death(state)
+    for c in named:
+        state.battlefield.remove(c)
+        state.creature_cast_turn.pop(c, None)
+        if c == COMMANDER:
+            state.commander_in_play = False
+            state.own_wipe_commander_destroyed_total += 1
+        else:
+            state.graveyard.append(c)
+    state.constructs = state.constructs_sick = 0
+    state.other_tokens = state.other_tokens_sick = 0
+    state.dragons = state.dragons_sick = 0
+    if n_anim:
+        state.treasures -= n_anim
+        state.treasures_animated_alive = max(0, state.treasures_animated_alive - n_anim)
+        state.treasures_tapped = min(state.treasures_tapped, state.treasures)
+    return len(named)
+
+
+def _mythos_selection(state: GameState) -> dict:
+    """O que a Mythos of Snapdax SACRIFICA do meu lado (tudo que e' nao-terreno e nao fica). "Each player chooses an artifact, a creature, an enchantment, and a planeswalker
+    from among the nonland permanents they control, then sacrifices the rest" (rulings 2020-04-17: o mesmo objeto pode valer para varios tipos; lands com outro tipo nao
+    podem ser escolhidos nem sao sacrificados). Guardo: CRIATURA = Vihaan > Mahadi > Mayhem Devil > nomeada de maior MV > Treasure animado > Construct > Dragao > ficha; ARTEFATO
+    (de preferencia OUTRO objeto) = Sol Ring > Ashnod's Altar > Krark-Clan Ironworks > Arcane Signet > The Reaver Cleaver > outro nomeado > Treasure > Construct/Clue/Food, e se so'
+    sobra a propria criatura-artefato ela vale como os dois; ENCANTAMENTO = Dictate of Erebos > Anointed Procession > Revel in Riches > outro; planeswalker: nenhum na lista."""
+    # instantanea/feitico no campo = a propria magia em voo (o cascade a poe no campo antes de resolver): nao e' permanente, nao e' sacrificada
+    nome = [n for n in state.battlefield if n not in LAND_NAMES and CARD_DB[n].ctype not in ("instant", "sorcery")]
+    cre = [n for n in nome if is_creature_card(n)]
+    anim = min(state.treasures_animated_alive, state.treasures)
+    sel = {"cre": list(cre), "outros": [n for n in nome if not is_creature_card(n)], "con": state.constructs, "oth": state.other_tokens, "dra": state.dragons,
+           "anim": anim, "inan": state.treasures - anim, "clues": state.clues, "foods": state.foods}
+
+    def tira(g):
+        if g[0] == "nome":
+            (sel["cre"] if g[1] in sel["cre"] else sel["outros"]).remove(g[1])
+        else:
+            sel[g[1]] -= 1
+    c_keep = next((("nome", e) for e in KEEP_ENGINES if e in cre), None)
+    if c_keep is None and cre:
+        c_keep = ("nome", max(cre, key=lambda n: (CARD_DB[n].mv, n)))
+    if c_keep is None:
+        c_keep = next((("ficha", k) for k in ("anim", "con", "dra", "oth") if sel[k] > 0), None)
+    if c_keep:
+        tira(c_keep)
+    nomeados_art = [n for n in sel["cre"] + sel["outros"] if is_artifact_card(n)]
+    a_keep = next((("nome", p) for p in ("Sol Ring", "Ashnod's Altar", "Krark-Clan Ironworks", "Arcane Signet", "The Reaver Cleaver") if p in nomeados_art), None)
+    if a_keep is None and nomeados_art:
+        a_keep = ("nome", sorted(nomeados_art)[0])
+    if a_keep is None:
+        a_keep = next((("ficha", k) for k in ("inan", "anim", "con", "clues", "foods") if sel[k] > 0), None)
+    if a_keep:
+        tira(a_keep)
+    enc = next((p for p in ("Dictate of Erebos", "Anointed Procession", "Revel in Riches") if p in sel["outros"]), None)
+    if enc is None:
+        encs = sorted(n for n in sel["outros"] if is_enchantment_card(n))
+        enc = encs[0] if encs else None
+    if enc:
+        sel["outros"].remove(enc)
+    return sel
+
+
+def _mass_sacrifice(state: GameState, sel: dict) -> int:
+    """Sacrificio SIMULTANEO de `sel` (todas as pecas saem juntas; os gatilhos olham pra tras, como em `_own_wipe_destroy_all`). E' SACRIFICIO, nao destruicao: o Mayhem Devil
+    dispara por CADA permanente (nomeada, ficha, Treasure, Clue, Food), inclusive ele proprio, e o Mirkwood Bats por cada ficha. O comandante vai ao cemiterio (a morte dispara) e o
+    dono o leva a zona de comando (CR 903.9a). Devolve quantas permanentes foram sacrificadas."""
+    cre, outros = list(sel["cre"]), list(sel["outros"])
+    con, oth, dra, anim, inan = sel["con"], sel["oth"], sel["dra"], sel["anim"], sel["inan"]
+    clues, foods = sel["clues"], sel["foods"]
+    total = len(cre) + len(outros) + con + oth + dra + anim + inan + clues + foods
+    if total == 0:
+        return 0
+    begin_mass_death(state, cre)
+    if "Mayhem Devil" in state.battlefield:
+        drain(state, total)  # 1 de dano por permanente sacrificada (simultaneas: o Mayhem Devil ve' todas, inclusive a propria)
+    for c in cre:
+        on_creature_dies(state, 1, is_token=False, dying=c)
+        if is_artifact_card(c):
+            on_artifact_dies(state, 1)
+    for c in outros:
+        if is_artifact_card(c):
+            on_artifact_dies(state, 1)
+    if con:
+        on_creature_dies(state, con, is_token=True); on_artifact_dies(state, con); on_token_leaves(state, con, sacrificed=True)
+    if oth:
+        on_creature_dies(state, oth, is_token=True); on_token_leaves(state, oth, sacrificed=True)
+    if dra:
+        on_creature_dies(state, dra, is_token=True); on_token_leaves(state, dra, sacrificed=True)
+    if anim:
+        on_creature_dies(state, anim, is_token=True); on_artifact_dies(state, anim); on_token_leaves(state, anim, sacrificed=True)
+    if inan:
+        on_artifact_dies(state, inan); on_token_leaves(state, inan, sacrificed=True)
+    for k in (clues, foods):
+        if k:
+            on_artifact_dies(state, k); on_token_leaves(state, k, sacrificed=True)
+    end_mass_death(state)
+    for c in cre + outros:
+        state.battlefield.remove(c)
+        state.creature_cast_turn.pop(c, None)
+        if c == COMMANDER:
+            state.commander_in_play = False
+            state.own_wipe_commander_destroyed_total += 1
+        else:
+            state.graveyard.append(c)
+        if c == "The Reaver Cleaver" or c == state.reaver_cleaver_host:
+            state.reaver_cleaver_equipped = False
+            state.reaver_cleaver_host = None
+    state.constructs -= con; state.constructs_sick = min(state.constructs_sick, state.constructs)
+    state.other_tokens -= oth; state.other_tokens_sick = min(state.other_tokens_sick, state.other_tokens)
+    state.dragons -= dra; state.dragons_sick = min(state.dragons_sick, state.dragons)
+    state.clues -= clues
+    state.foods -= foods
+    if anim + inan:
+        state.treasures -= anim + inan
+        state.treasures_animated_alive = max(0, state.treasures_animated_alive - anim)
+        state.treasures_tapped = min(state.treasures_tapped, state.treasures)
+        state.treasures_sacrificed_total += anim + inan  # Captain Lannery Storm: "whenever you sacrifice a Treasure"
+        state.treasures_sacrificed_this_turn += anim + inan
+    return total
+
+
+def pull_impulse(state: GameState, n: int, deadline_turns: int, lands_ok: bool = False):
+    """`lands_ok`: a fonte diz "play" (Prosper, Inspired Tinkering, Face-Breaker) e nao "cast" (Grenzo, Laughing Jasper Flint): so' nela
+    um terreno exilado pode ser jogado (IMPULSE_LAND_PLAY_ENABLED); nas de "cast" ele fica no pool, morto, como sempre."""
     for _ in range(n):
         if state.library:
-            state.impulse_pool.append((state.library.pop(0), state.turn + deadline_turns))
+            card = state.library.pop(0)
+            if IMPULSE_LAND_PLAY_ENABLED and lands_ok and CARD_DB[card].ctype == "land":
+                state.impulse_lands.append((card, state.turn + deadline_turns))
+            else:
+                state.impulse_pool.append((card, state.turn + deadline_turns))
 
 
-def play_from_impulse(state: GameState):
-    """Joga a carta mais barata disponivel no pool de exilio, se der."""
+def play_impulse_land(state: GameState) -> bool:
+    """IMPULSE_LAND_PLAY_ENABLED: joga o terreno exilado (Prosper: "you may play that card") como a jogada de terreno do turno, se ela
+    ainda estiver livre -- antes do terreno da mao, que nao expira. Pact Boon ("whenever you play a card from exile, create a Treasure",
+    ruling 2021-07-23: qualquer carta jogada do exilio, terreno inclusive) dispara se o Prosper esta em campo."""
+    if not IMPULSE_LAND_PLAY_ENABLED or state.lands_played_this_turn >= 1 or not state.impulse_lands:
+        return False
+    valid = [e for e in state.impulse_lands if e[1] >= state.turn]
+    if not valid:
+        return False
+    valid.sort(key=lambda e: land_enters_tapped(state, e[0]))  # untapped primeiro (sort estavel)
+    land, deadline = valid[0]
+    state.impulse_lands.remove((land, deadline))
+    enters_tapped = land_enters_tapped(state, land)
+    state.battlefield.append(land)
+    state.lands_played_this_turn += 1
+    if enters_tapped:
+        state.tapped_lands_this_turn.add(land)
+    state.impulse_lands_played_total += 1
+    if "Prosper, Tome-Bound" in state.battlefield:
+        create_treasures(state, 1, source="Prosper Pact Boon")
+    return True
+
+
+def play_from_impulse(state: GameState, expiring_only: bool = False):
+    """Joga a carta mais barata disponivel no pool de exilio, se der. `expiring_only` (IMPULSE_EXPIRING_FIRST_ENABLED): so' as que expiram
+    neste turno (prazo == turno); as outras podem esperar."""
+    if play_impulse_land(state):
+        return True
     valid = [entry for entry in state.impulse_pool if entry[1] >= state.turn]
+    if expiring_only:
+        valid = [e for e in valid if e[1] == state.turn]
     valid = [e for e in valid if e[0] != "land" and CARD_DB.get(e[0]) and CARD_DB[e[0]].ctype != "land"]
-    castable = [e for e in valid if can_cast(state, e[0])]
+    castable = [e for e in valid if can_cast(state, e[0]) and not wipe_held(state, e[0])]
     if not castable:
         return False
     castable.sort(key=lambda e: CARD_DB[e[0]].mv)
     card, deadline = castable[0]
     state.impulse_pool.remove((card, deadline))
+    if IMPULSE_CAST_PIPELINE_ENABLED:
+        # mesma esteira do cast da mao (cobra o custo, conta como magia, extort, Lotho, resolve a instantanea/feitico e a manda ao
+        # cemiterio; o Pact Boon dispara no cast, antes de resolver). O codigo antigo punha a magia no CAMPO como permanente e nunca a resolvia.
+        state.impulse_spells_cast_total += 1
+        if expiring_only:
+            state.impulse_expiring_first_total += 1
+        cast_card(state, card, from_zone="exile")
+        return True
     spend_mana(state, CARD_DB[card].mv)
     enter_battlefield(state, card, from_hand=False)
     if "Prosper, Tome-Bound" in state.battlefield:
@@ -1051,11 +1952,17 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
     state.battlefield.append(name)
     if name == COMMANDER:
         state.commander_in_play = True
-        state.commander_cast_count += 1
+        if not COMMANDER_TAX_ENABLED:
+            state.commander_cast_count += 1
         if state.commander_cast_turn is None:
             state.commander_cast_turn = state.turn
     if is_creature_card(name):
         state.creature_cast_turn[name] = state.turn
+    if STORM_SACRIFICE_PUMP_ENABLED and name == "Captain Lannery Storm":
+        # ruling 2017-09-29: os Treasures sacrificados pra CONJURAR a Storm nao a fortalecem (ela ainda nao estava em campo)
+        state.storm_sac_baseline = state.treasures_sacrificed_this_turn
+    if is_artifact_card(name):
+        state.artifact_entered_this_turn = True
     if name == "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel":
         # Achado real 2026-08-31: se esta carta morreu ja transformada e foi
         # recuperada do cemiterio (Sevinne's Reclamation, mv<=3, alcanca
@@ -1065,11 +1972,39 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
         # NAO reseta - e' um objeto independente, permanente pro resto do
         # jogo mesmo que Sephiroth morra e volte sem estar transformado.
         state.sephiroth_transformed = False
+        if SEPHIROTH_EMBLEM_STACKING_ENABLED:
+            state.sephiroth_deaths_this_turn = 0  # objeto novo: "this ability has resolved this turn" recomeca
     resolve_permanent_etb(state, name)
 
 
-def cast_card(state: GameState, name: str):
+def _lotho_second_spell(state: GameState, lotho_ready: bool):
+    """Lotho: "Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure". O gatilho e' de CAST: o Lotho
+    precisa ja' estar em campo quando a magia e' conjurada (`lotho_ready` e' a foto tirada antes de ela entrar); uma magia conjurada
+    antes dele conta (ruling 2023-06-16)."""
+    if lotho_ready and state.spells_cast_this_turn == 2:
+        state.life -= 1
+        state.lotho_triggers_total += 1
+        create_treasures(state, 1, source="Lotho (2a magica)")
+
+
+def _register_nonhand_cast(state: GameState, from_exile: bool = False):
+    """SPELL_CAST_COUNT_ALL_PATHS_ENABLED: os efeitos de "whenever you cast a spell" das magias que nao saem da mao (flashback, Cascade): conta
+    como magia conjurada, extort (Life Insurance), Lotho e, se vem do exilio, Pact Boon. O custo ja' foi pago por quem chama."""
+    lotho_ready = "Lotho, Corrupt Shirriff" in state.battlefield
+    if "Life Insurance" in state.battlefield and remaining_mana(state) >= 1:
+        spend_mana(state, 1)
+        drain(state, 1, each_opp=True)
+        gain_life(state, 1)
+        state.extort_paid_total += 1
+    state.spells_cast_this_turn += 1
+    _lotho_second_spell(state, lotho_ready)
+    if from_exile and "Prosper, Tome-Bound" in state.battlefield:
+        create_treasures(state, 1, source="Prosper Pact Boon")
+
+
+def cast_card(state: GameState, name: str, from_zone: str = "hand"):
     card = CARD_DB[name]
+    lotho_ready = "Lotho, Corrupt Shirriff" in state.battlefield  # foto no CAST (SPELL_CAST_COUNT_ALL_PATHS_ENABLED)
     # Achado real 2026-09-14: "Extort (Whenever you cast a spell, you may
     # pay {W/B}. If you do, each opponent loses 1 life and you gain that
     # much life.)" (Life Insurance) - tag `extort` nunca lida em lugar
@@ -1087,25 +2022,56 @@ def cast_card(state: GameState, name: str):
     extort_available = "Life Insurance" in state.battlefield
     if name == COMMANDER:
         spend_mana(state, card.mv + 2 * (state.commander_cast_count))
+        if COMMANDER_TAX_ENABLED:
+            state.commander_cast_count += 1  # CR 903.8: conta o CAST da zona de comando, mesmo se for anulado
     else:
-        spend_mana(state, card.mv)
+        custo = spell_cost(state, name)
+        if name == MYTHOS:
+            state.mythos_br_pending = pips_ok(color_sources(state), ["W", "W", "B", "R"])  # {B}{R} gastos => eu escolho as permanentes de cada jogador (📊 o lado deles)
+        if name in OWN_WIPES:
+            if wipe_mitigated(state, name):
+                state.own_wipe_mitigated_casts_total += 1
+            if OWN_WIPE_PAY_WITH_ANIMATED_ENABLED:
+                custo = _wipe_pay_with_animated(state, custo)
+        spend_mana(state, custo)
     if extort_available and remaining_mana(state) >= 1:
         spend_mana(state, 1)
-        drain(state, 1)
+        drain(state, 1, each_opp=True)
         gain_life(state, 1)
         state.extort_paid_total += 1
     state.spells_cast_this_turn += 1
+    if SPELL_CAST_COUNT_ALL_PATHS_ENABLED:
+        _lotho_second_spell(state, lotho_ready)
+    if from_zone == "exile" and "Prosper, Tome-Bound" in state.battlefield:
+        create_treasures(state, 1, source="Prosper Pact Boon")
+
+    # Contra-ataque (`try_smart_opponent_counter`, 7a categoria do modo de
+    # resiliencia -- so' faz sentido no exato momento do cast, mesma
+    # logica do Megatron/Ur-Dragon/Hei Bai/Edgar Markov): mana e taxa ja'
+    # foram gastos ACIMA (CR 903.10a/608.2b contam "cast", nao
+    # "resolved") -- so' mira o comandante, e' o motor do deck inteiro.
+    # `interaction_rng is None` (modo padrao) faz isso ser sempre False,
+    # sem custo nenhum de bit-identidade.
+    countered = name == COMMANDER and try_smart_opponent_counter(state)
 
     # A carta sai da mao (ou vai a campo) ANTES de qualquer efeito
     # colateral (cascade, Lotho) rodar — senao um cascade que descarta
     # carta (ex: Big Score) pode acabar descartando a propria carta que
-    # esta sendo conjurada, ainda "presa" na mao.
+    # esta sendo conjurada, ainda "presa" na mao. Comandante contra-atacada
+    # nunca chega a `enter_battlefield` -- ela nunca esteve fisicamente em
+    # `state.hand` (command zone), entao nao ha' zona nenhuma pra mover
+    # (nem cemiterio: CR 903.9a so' se aplica a permanente que JA' foi a
+    # campo, "dies" exige "from the battlefield" -- um cast contra-atacado
+    # nunca resolveu, nunca chegou la').
     is_spell = card.ctype in ("instant", "sorcery")
-    if is_spell:
-        state.hand.remove(name)
+    if countered:
+        pass
+    elif is_spell:
+        if from_zone == "hand":
+            state.hand.remove(name)
         state.graveyard.append(name)
     else:
-        enter_battlefield(state, name)
+        enter_battlefield(state, name, from_hand=(from_zone == "hand"))
 
     treasure_funded = state.treasure_spent_this_turn
     if (treasure_funded and "Rain of Riches" in state.battlefield
@@ -1113,14 +2079,29 @@ def cast_card(state: GameState, name: str):
         do_cascade(state, card.mv)
         state.cascade_used_this_turn = True
 
-    if "Lotho, Corrupt Shirriff" in state.battlefield and state.spells_cast_this_turn == 2:
+    if (not SPELL_CAST_COUNT_ALL_PATHS_ENABLED and "Lotho, Corrupt Shirriff" in state.battlefield
+            and state.spells_cast_this_turn == 2):
         state.life -= 1
         create_treasures(state, 1, source="Lotho (2a magica)")
 
-    if is_spell:
+    if is_spell and not countered:
         if card.tags & REMOVAL_TAGS:
             state.removal_cast_total += 1
         resolve_instant_sorcery(state, name)
+    if name == MYTHOS:
+        state.mythos_br_pending = False  # anulada: o {B}{R} do cast nao vaza pra uma Mythos conjurada de graca (cascade) depois
+
+
+def cascade_declines(state: GameState, name: str) -> bool:
+    """CASCADE_DECLINE_HELD_WIPES_ENABLED: o cascade diz "you MAY cast it without paying its mana cost" e o principio do usuario (10a rodada) e' que todo wipe proprio fica
+    segurado. A excecao 'mitigada' (`wipe_mitigated`) vive de PAGAR o custo com Treasures animados (Mayhem Devil), e um cast de graca nao paga nada: nunca e' mitigado."""
+    if not CASCADE_DECLINE_HELD_WIPES_ENABLED or name not in OWN_WIPES:
+        return False
+    if OWN_WIPE_HOLD_ALWAYS_ENABLED:
+        return True
+    if OWN_WIPE_HOLD_ENGINE_ENABLED:
+        return state.commander_in_play or "Mahadi, Emporium Master" in state.battlefield
+    return False
 
 
 def do_cascade(state: GameState, mv_cutoff: int):
@@ -1135,8 +2116,12 @@ def do_cascade(state: GameState, mv_cutoff: int):
         if CARD_DB[c].ctype != "land" and CARD_DB[c].mv < mv_cutoff:
             hit = c
             break
+    if hit and cascade_declines(state, hit):
+        hit = None  # recusa: a carta fica entre as exiladas, que vao pro fundo em ordem aleatoria
     if hit:
         exiled.remove(hit)
+        if SPELL_CAST_COUNT_ALL_PATHS_ENABLED:
+            _register_nonhand_cast(state, from_exile=True)  # a magia do Cascade e' conjurada do exilio
         enter_battlefield(state, hit, from_hand=False)
         if CARD_DB[hit].ctype in ("instant", "sorcery"):
             if CARD_DB[hit].tags & REMOVAL_TAGS:
@@ -1166,6 +2151,9 @@ def build_library():
         for _ in range(qty):
             lib.append(name)
     assert len(lib) == 99, len(lib)
+    if not MYTHOS_REPLACES_BLOOD_MONEY_ENABLED and MYTHOS in lib:  # chave desligada: a lista volta a ter o Blood Money na posicao que ele tinha (bit-identico a a17049f)
+        lib.remove(MYTHOS)
+        lib.insert(lib.index("Blood Crypt") + 1, "Blood Money")
     return lib
 
 
@@ -1183,10 +2171,47 @@ def should_keep(hand: list) -> bool:
     return False
 
 
-def mulligan(rng: random.Random, max_mulls: int = 3):
+def library_with_swap(swap) -> list:
+    """`swap` = (sai, entra) ou lista de pares: troca NA MESMA POSICAO da
+    lista (pareamento de seed). A `lista.md` real nao muda."""
+    if swap is None:
+        return BASE_LIBRARY
+    pairs = [swap] if isinstance(swap[0], str) else list(swap)
+    lib = BASE_LIBRARY[:]
+    for out_card, in_card in pairs:
+        assert out_card in lib, f"{out_card} nao esta' na lista"
+        assert in_card in CARD_DB and in_card not in lib, in_card
+        lib[lib.index(out_card)] = in_card
+    return lib
+
+
+def choose_bottom(hand: list, n: int) -> list:
+    """London Mulligan: o jogador ESCOLHE as `n` cartas do fundo. Antes de
+    2026-10-03 o arquivo sorteava as cartas (`rng.shuffle(hand)`), o que
+    devolve com a mesma chance um Sol Ring e um terreno sobrando. Regra
+    usada (a mesma do Edgar Markov/Megatron): so' desfaz de terreno quando
+    sobram MAIS de 4 (e entao o que entra tapped primeiro); fora isso
+    devolve a carta nao-terreno de MAIOR custo, protegendo as de
+    `GOOD_KEEP` (Sol Ring, Arcane Signet, Smothering Tithe, Big Score)."""
+    hand = list(hand)
+    bottom = []
+    for _ in range(n):
+        lands = [c for c in hand if c in LAND_NAMES]
+        nonlands = [c for c in hand if c not in LAND_NAMES]
+        if len(lands) > 4 or not nonlands:
+            pick = min(lands, key=lambda c: (0 if "etb_tapped" in CARD_DB[c].tags else 1))
+        else:
+            pool = [c for c in nonlands if c not in GOOD_KEEP] or nonlands
+            pick = max(pool, key=lambda c: CARD_DB[c].mv)
+        hand.remove(pick)
+        bottom.append(pick)
+    return bottom
+
+
+def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
     mulls = 0
     while mulls < max_mulls:
-        lib = BASE_LIBRARY[:]
+        lib = (library or BASE_LIBRARY)[:]
         rng.shuffle(lib)
         hand = lib[:7]
         lib = lib[7:]
@@ -1195,9 +2220,14 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
             # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
             penalty = max(0, mulls - 1)
             if penalty > 0:
-                rng.shuffle(hand)
-                bottom = hand[:penalty]
-                hand = hand[penalty:]
+                if MULLIGAN_SMART_BOTTOM_ENABLED:
+                    bottom = choose_bottom(hand, penalty)
+                    for c in bottom:
+                        hand.remove(c)
+                else:
+                    rng.shuffle(hand)
+                    bottom = hand[:penalty]
+                    hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -1230,26 +2260,92 @@ def _controls_basic_type(state: GameState, basic_type: str) -> bool:
     return any(n in carriers for n in state.battlefield)
 
 
+def land_enters_tapped(state: GameState, name: str) -> bool:
+    """Fonte unica da regra de 'enters tapped' (tag `etb_tapped`, checkland,
+    fastland). Chamada ANTES de o terreno entrar em campo: `other_lands_before`
+    e' a contagem sem ele. Shockland: sempre paga os 2 de vida (convencao do
+    arquivo), nunca entra tapped."""
+    tags = CARD_DB[name].tags
+    if "etb_tapped" in tags:
+        return True
+    if name in CHECKLAND_TYPES:
+        return not any(_controls_basic_type(state, t) for t in CHECKLAND_TYPES[name])
+    if "fastland" in tags:
+        other_lands_before = sum(1 for n in state.battlefield if n in LAND_NAMES)
+        return other_lands_before > FASTLAND_MAX_OTHER_LANDS.get(name, 0)
+    return False
+
+
+def dry_run_mana_spent(state: GameState, land: str) -> int:
+    """Mana de DESENVOLVIMENTO que o `main_phase` gastaria neste turno se
+    `land` fosse o terreno jogado (simulacao a seco, copia rasa, nao muta
+    `state`). Mesma ordem do `main_phase`: comandante, depois castables
+    (fontes de Treasure primeiro, depois menor custo), o rock conjurado
+    soma mana aos casts seguintes. So' PERMANENTES contam: Path/Requisition
+    Raid/Shoot the Sheriff/Boros Charm sem alvo no goldfish nao seguram um
+    terreno tapped. Efeitos de ETB (Treasure etc.) nao entram."""
+    sim = copy.copy(state)
+    sim.battlefield = state.battlefield + [land]
+    hand = list(state.hand)
+    hand.remove(land)
+    sim.hand = hand
+    sim.tapped_lands_this_turn = set(state.tapped_lands_this_turn)
+    if land_enters_tapped(state, land):
+        sim.tapped_lands_this_turn.add(land)
+    spent = 0
+    if not sim.commander_in_play and can_cast(sim, COMMANDER):
+        cost = CARD_DB[COMMANDER].mv + 2 * sim.commander_cast_count
+        sim.mana_spent_this_turn += cost
+        spent += cost
+    while True:
+        castables = [n for n in sim.hand if n not in LAND_NAMES and CARD_DB[n].ctype not in ("instant", "sorcery")
+                     and can_cast(sim, n)]
+        if not castables:
+            break
+        castables.sort(key=lambda n: (not is_treasure_source(n), CARD_DB[n].mv))
+        n = castables[0]
+        sim.mana_spent_this_turn += CARD_DB[n].mv
+        spent += CARD_DB[n].mv
+        sim.hand.remove(n)
+        if n in ("Sol Ring", "Arcane Signet"):
+            sim.battlefield.append(n)
+    return spent
+
+
+def choose_land_to_play(state: GameState, lands_in_hand: list) -> str:
+    """Ordem base (desde sempre): o primeiro terreno da mao. Correcao
+    2026-10-03: em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo um terreno que
+    entra tapped E um untapped na mao, joga o TAPPED -- a mana de um turno
+    sem jogada seria desperdicada -- salvo se isso custar uma jogada de
+    desenvolvimento (Sol Ring em T1, Arcane Signet/2-drop em T2): teste por
+    `dry_run_mana_spent`. Mesma regra do Megatron."""
+    default = lands_in_hand[0]
+    if not (TAPPED_LAND_FIRST_ENABLED and state.turn <= TAPPED_LAND_FIRST_MAX_TURN):
+        return default
+    tapped = [n for n in lands_in_hand if land_enters_tapped(state, n)]
+    untapped = [n for n in lands_in_hand if not land_enters_tapped(state, n)]
+    if not tapped or not untapped:
+        return default
+    if TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY and dry_run_mana_spent(state, tapped[0]) < dry_run_mana_spent(state, untapped[0]):
+        state.tapped_land_skipped_for_play_total += 1
+        return untapped[0]
+    state.tapped_land_first_plays_total += 1
+    return tapped[0]
+
+
 def play_land(state: GameState):
     if state.lands_played_this_turn >= 1:
+        return
+    if play_impulse_land(state):
         return
     lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
     if not lands_in_hand:
         return
-    choice = lands_in_hand[0]
+    choice = choose_land_to_play(state, lands_in_hand)
     state.hand.remove(choice)
-    other_lands_before = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    enters_tapped = land_enters_tapped(state, choice)
     state.battlefield.append(choice)
     state.lands_played_this_turn += 1
-
-    tags = CARD_DB[choice].tags
-    enters_tapped = False
-    if "etb_tapped" in tags:
-        enters_tapped = True
-    elif choice in CHECKLAND_TYPES:
-        enters_tapped = not any(_controls_basic_type(state, t) for t in CHECKLAND_TYPES[choice])
-    elif "fastland" in tags:
-        enters_tapped = other_lands_before > FASTLAND_MAX_OTHER_LANDS.get(choice, 0)
     # "shockland" (Blood Crypt): assume sempre paga os 2 de vida, mesma
     # convencao ja usada nesse arquivo pra outros custos de vida nao
     # rastreados (sem vida propria modelada) - nunca entra tapped aqui.
@@ -1274,7 +2370,7 @@ def try_black_market_connections(state: GameState):
     nao tinha nenhuma guarda contra a 2a chamada, dobrando Treasure/draw/
     token/perda de vida todo turno desde a correcao de 2026-08-28. Corrigido
     com o mesmo padrao de flag per-turno ja usado em
-    caretaker_drawn_this_turn/kambal_drawn_this_turn."""
+    caretaker_drawn_this_turn."""
     if "Black Market Connections" not in state.battlefield:
         return
     if state.black_market_connections_triggered_this_turn:
@@ -1353,8 +2449,19 @@ def main_phase(state: GameState):
 
     try_black_market_connections(state)
 
+    if IMPULSE_EXPIRING_FIRST_ENABLED or IMPULSE_ALL_FIRST_ENABLED:
+        # "Until the end of your next turn, you may play that card" (Prosper): a carta do exilio que expira neste turno se perde se nao for
+        # jogada agora, e a da mao espera; jogar do exilio ainda cria o Treasure do Pact Boon. Jogada de terreno ja' foi feita em play_land.
+        # IMPULSE_ALL_FIRST_ENABLED: preferencia do usuario, SEMPRE jogar o exilio (tambem as que poderiam esperar, ex. Inspired Tinkering).
+        while play_from_impulse(state, expiring_only=not IMPULSE_ALL_FIRST_ENABLED):
+            if IMPULSE_ALL_FIRST_ENABLED:
+                state.impulse_all_first_total += 1
+
     while True:
-        castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
+        if IMPULSE_ALL_FIRST_ENABLED and play_from_impulse(state):
+            state.impulse_all_first_total += 1  # carta que acabou de ser exilada neste main (Tinkering, Face-Breaker): tambem vai antes da mao
+            continue
+        castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n) and not wipe_held(state, n)]
         if castables:
             if TREASURE_MAXIMIZE_POLICY:
                 castables.sort(key=lambda n: (not is_treasure_source(n), CARD_DB[n].mv))
@@ -1415,6 +2522,40 @@ def main_phase(state: GameState):
         pass
 
 
+def farm_animated_treasures(state: GameState):
+    """TREASURE_SELF_OUTLET_FARM_ENABLED: o proprio Treasure e' saida de sacrificio ("{T}, Sacrifice this token: Add one mana of any color" e'
+    habilidade de mana: pode ser ativada mesmo sem nada pra gastar, ruling 2017-09-29 da Storm). Os animados pelo Vihaan sao CRIATURAS ate' o fim
+    do turno, entao cada um sacrificado e' uma criatura morta. Com Mahadi ("at the beginning of your end step, create a Treasure for each creature
+    that died this turn") ou Pitiless Plunderer ("whenever another creature you control dies, create a Treasure") isso e' de GRACA: cada Treasure
+    gasto volta como um Treasure novo, e as mortes alimentam o resto (Zulaport, Sephiroth, Dictate, Marionette Master, Mirkwood Bats...). E' a linha
+    que o usuario jogou no T8 da partida manual #1. Sem Mahadi/Plunderer custaria 1 Treasure por morte e nao e' feito (julgamento de valor fica de
+    fora). Roda no fim da 2a main, depois de a mana ter sido gasta (os animados que pagaram magias ja' foram sacrificados primeiro).
+    TREASURE_FARM_WITH_DICTATE_ENABLED (6a rodada, resposta do usuario: "o Dictate e' mais vantagem, eu sacrifico tesouros animados e todos os
+    oponentes sacrificam criaturas"): Dictate of Erebos em campo tambem aciona o farm, mesmo sem Mahadi/Plunderer, ainda que custe 1 Treasure
+    por morte; o efeito nos oponentes e' 📊 (so' `dictate_triggers_total` conta o uso).
+    TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED (7a rodada, criterio do usuario: "eu sacrificaria ate' metade dos treasures para eliminar criaturas
+    dos adversarios"): quando so' o Dictate justifica, no maximo METADE (base do commit 9e613ea: o estoque, `treasures // 2`; ver a chave da 8a rodada); com
+    Mahadi/Plunderer o sacrificio e' de graca e continua sendo de todos os animados.
+    TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED (8a rodada, correcao do usuario: "metade dos tesouros animados, tesouros inanimados nao
+    trigam o Dictate"): a base da metade e' `treasures_animated_alive` (so' eles sao criatura), nao `treasures`."""
+    if not TREASURE_SELF_OUTLET_FARM_ENABLED or state.treasures_animated_alive <= 0:
+        return
+    com_reposicao = "Mahadi, Emporium Master" in state.battlefield or "Pitiless Plunderer" in state.battlefield
+    com_dictate = TREASURE_FARM_WITH_DICTATE_ENABLED and "Dictate of Erebos" in state.battlefield
+    if not com_reposicao and not com_dictate:
+        return
+    n = min(state.treasures_animated_alive, state.treasures - state.treasures_tapped)  # o farm usa a habilidade de mana ({T}, Sacrifice): so' desvirado
+    if not com_reposicao and TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED:
+        base = state.treasures_animated_alive if TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED else state.treasures
+        n = min(n, base // 2)  # "ate' metade": a outra metade fica de reserva (mana do proximo turno)
+    if n <= 0:
+        return
+    sacrifice_treasures(state, n, for_mana=True)
+    state.treasure_farm_total += n
+    if not com_reposicao:
+        state.treasure_farm_dictate_total += n  # sem Mahadi/Plunderer isso CUSTA 1 Treasure por morte; o ganho e' o Dictate (cada oponente sacrifica 1 criatura por morte)
+
+
 def combat_step(state: GameState):
     # Achado real 2026-09-14: "At the beginning of combat on your turn,
     # put an oil counter on this artifact, then create an X/1 red
@@ -1438,6 +2579,8 @@ def combat_step(state: GameState):
     if state.commander_in_play and state.treasures > 0:
         animated = state.treasures  # Vihaan: Treasures viram 3/3 outlaw ate o final do turno
     state.treasures_animated_this_combat = animated
+    state.treasures_animated_alive = animated  # CR 611.2c: o conjunto animado e' fixado agora
+    animated_att = animated - min(state.treasures_tapped, animated)  # criatura virada nao ataca (Treasure da Blood Money)
 
     # Achado real 2026-09-14: 2a habilidade real do Vihaan (a 1a, animar
     # Treasures, ja estava implementada acima) - "Other outlaws you
@@ -1455,14 +2598,16 @@ def combat_step(state: GameState):
                             or (state.commander_in_play and is_outlaw(n)))]
     ready_constructs = max(0, state.constructs - state.constructs_sick)
     ready_other = max(0, state.other_tokens - state.other_tokens_sick)
+    ready_dragons = max(0, state.dragons - state.dragons_sick)  # Draconic Visitor (candidata): sem haste
 
-    total_attackers = animated + len(ready_creatures) + ready_constructs + ready_other
+    total_attackers = animated_att + len(ready_creatures) + ready_constructs + ready_other + ready_dragons
     if total_attackers <= 0:
         return
     state.combat_attacks_total += 1
+    _combat_damage_proxy(state, animated_att, ready_creatures, ready_constructs, ready_other, ready_dragons)
 
-    outlaw_attacking = animated > 0 or any(is_outlaw(n) for n in ready_creatures)
-    any_creature_attacking = len(ready_creatures) + ready_constructs + ready_other + animated > 0
+    outlaw_attacking = animated_att > 0 or any(is_outlaw(n) for n in ready_creatures)
+    any_creature_attacking = len(ready_creatures) + ready_constructs + ready_other + animated_att + ready_dragons > 0
 
     if "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in ready_creatures:
         try_sephiroth_sac_draw(state)
@@ -1517,7 +2662,7 @@ def combat_step(state: GameState):
             # (artefato) e Treasures animados pelo Vihaan (viram artefato-
             # criatura, tambem historico).
             historic_attackers = (sum(1 for n in ready_creatures if is_historic(n))
-                                   + ready_constructs + animated)
+                                   + ready_constructs + animated_att)
             if historic_attackers > 0:
                 create_other_tokens(state, historic_attackers, source="Aya of Alexandria")
         if "Grenzo, Havoc Raiser" in state.battlefield:
@@ -1526,11 +2671,93 @@ def combat_step(state: GameState):
             # more") - mesma classe de bug da Aya acima. `total_attackers`
             # ja e' a contagem real de fontes atacando neste combate.
             pull_impulse(state, total_attackers, deadline_turns=0)
-        if "The Reaver Cleaver" in state.battlefield and state.reaver_cleaver_equipped:
-            create_treasures(state, 1, source="The Reaver Cleaver")
+        host = state.reaver_cleaver_host
+        if ("The Reaver Cleaver" in state.battlefield and state.reaver_cleaver_equipped
+                and host in state.battlefield and host in ready_creatures):
+            n_dmg = CREATURE_POWER.get(host, 0) + 1
+            if host == "Captain Lannery Storm":
+                n_dmg += _storm_pump(state)  # +1/+0 por Treasure sacrificado antes do dano
+            if "Sentinel Sarah Lyons" in state.battlefield and state.artifact_entered_this_turn:
+                n_dmg += 2
+            state.reaver_cleaver_treasures_total += n_dmg
+            create_treasures(state, n_dmg, source="The Reaver Cleaver")
 
     if TREASURE_MAXIMIZE_POLICY:
         aggressive_treasure_destruction(state)
+
+
+def _storm_pump(state: GameState) -> int:
+    """Captain Lannery Storm: "Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn." Ruling 2017-09-29: vale
+    pra qualquer sacrificio, nao so' o da mana; os pagos pra conjurar a propria Storm nao contam (`storm_sac_baseline`)."""
+    if not STORM_SACRIFICE_PUMP_ENABLED or "Captain Lannery Storm" not in state.battlefield:
+        return 0
+    return max(0, state.treasures_sacrificed_this_turn - state.storm_sac_baseline)
+
+
+def _combat_damage_proxy(state: GameState, animated: int, ready_creatures: list, ready_constructs: int,
+                         ready_other: int, ready_dragons: int):
+    """Metrica nova 2026-09-25 (so' leitura, nao muda nenhuma decisao):
+    dano de combate dos atacantes, sem bloqueio (mesma premissa "ataca
+    livre" do resto do arquivo). Antes o arquivo so' media drain -- uma
+    carta que troca Treasure (mana) por corpo atacante ficava com valor
+    zero. Poder impresso (`CREATURE_POWER`), Treasure animado pelo Vihaan
+    3/3, Construct/Servo 1/1, ficha generica 2 (📝 media), Dragao da
+    Visitor 5/5. Bonus reais: Caretaker's Talent nivel 3 (+2/+2 em ficha de
+    criatura), Sentinel Sarah Lyons (+2/+2 em todas se um artefato entrou
+    neste turno), Shared Animosity (+1/+0 por outro atacante que divide
+    tipo -- calculado so' nos 2 grupos homogeneos que esta carta troca:
+    Constructs/Treasures animados [Construct] e Dragoes)."""
+    power = sum(CREATURE_POWER.get(n, 0) for n in ready_creatures)
+    if "Captain Lannery Storm" in ready_creatures:
+        pump = _storm_pump(state)
+        power += pump
+        state.storm_pump_total += pump
+    if (state.reaver_cleaver_equipped and state.reaver_cleaver_host in ready_creatures
+            and "The Reaver Cleaver" in state.battlefield):
+        power += 1  # The Reaver Cleaver: +1/+1
+    power += 3 * animated + 1 * ready_constructs + OTHER_TOKEN_POWER * ready_other + 5 * ready_dragons
+    tokens_attacking = animated + ready_constructs + ready_other + ready_dragons
+    if state.caretaker_level >= 3:
+        power += 2 * tokens_attacking
+    if "Sentinel Sarah Lyons" in state.battlefield and state.artifact_entered_this_turn:
+        power += 2 * (len(ready_creatures) + tokens_attacking)
+    if "Shared Animosity" in state.battlefield:
+        construct_group = animated + ready_constructs
+        dragon_group = ready_dragons + sum(1 for n in ready_creatures if n in ("Goldspan Dragon", "Smaug the Magnificent", "Draconic Visitor"))
+        for k in (construct_group, dragon_group):
+            if k > 1:
+                power += k * (k - 1)
+    state.combat_damage_proxy_total += power
+
+
+def check_visitor_combo(state: GameState):
+    """Draconic Visitor + Pitiless Plunderer + Ashnod's Altar = loop
+    infinito (Regra #7: combo novo, fora do Commander Spellbook -- derivado
+    das regras): sacrifica um Dragao no Altar ({C}{C}); o Plunderer ("Whenever
+    another creature you control dies, create a Treasure token") cria um
+    Treasure, que a Visitor substitui por um Dragao 5/5; repete. Mana
+    incolor, mortes, fichas criadas e sacrificadas infinitas. Qualquer
+    pagador da lista fecha o jogo na hora: Zulaport Cutthroat, Mirkwood Bats,
+    Nadier's Nightblade, Kambal (2a habilidade, sem limite), Sephiroth
+    (transforma na 4a e o emblema drena sem limite), Mayhem Devil, Agent of
+    the Iron Throne (com o Vihaan em campo). Precisa de 1 criatura pra
+    comecar o loop."""
+    if state.visitor_combo_turn is not None:
+        return
+    need = ("Draconic Visitor", "Pitiless Plunderer", "Ashnod's Altar")
+    if not all(n in state.battlefield for n in need):
+        return
+    fodder = state.dragons + state.constructs + state.other_tokens + sum(
+        1 for n in state.battlefield if is_creature_card(n) and n not in (COMMANDER, "Pitiless Plunderer", "Draconic Visitor"))
+    if fodder <= 0:
+        return
+    state.visitor_combo_turn = state.turn
+    payoffs = ("Zulaport Cutthroat", "Mirkwood Bats", "Nadier's Nightblade", "Kambal, Profiteering Mayor",
+               "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel", "Mayhem Devil")
+    if any(n in state.battlefield for n in payoffs) or (
+            state.commander_in_play and "Agent of the Iron Throne" in state.battlefield) or state.has_super_nova_emblem:
+        if state.win_turn is None:
+            state.win_turn = state.turn
 
 
 def try_sac_land_outlets(state: GameState):
@@ -1579,7 +2806,7 @@ def end_step(state: GameState):
         # (`entry[1] >= state.turn`) no PROPRIO turno T+2 - 1 turno alem
         # do real. deadline_turns=1 (=T+1) e' o correto (mesma correcao
         # aplicada na Inspired Tinkering, texto identico).
-        pull_impulse(state, 1, deadline_turns=1)
+        pull_impulse(state, 1, deadline_turns=1, lands_ok=True)
 
     # Achado real 2026-08-31 (rodada ampliada): oraculo real e' "if you
     # gained life THIS TURN" - o codigo checava `life_gained_total`
@@ -1613,6 +2840,11 @@ def end_step(state: GameState):
     if state.constructs_sick or state.other_tokens_sick:
         state.constructs_sick = 0
         state.other_tokens_sick = 0
+    state.dragons_sick = 0
+    check_visitor_combo(state)
+    if state.win_turn is None and state.table_damage_total + state.combat_damage_proxy_total >= LETHAL_PROXY:
+        state.win_turn = state.turn
+    state.treasures_animated_alive = 0  # 'until end of turn': os Treasures deixam de ser criatura
 
 
 def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
@@ -1620,24 +2852,34 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
     state.tapped_lands_this_turn = set()
+    state.treasures_tapped = 0  # untap: os Treasures virados da Blood Money desviram no meu proximo turno
+    state.own_wipe_held_this_turn = set()
     state.spells_cast_this_turn = 0
+    state.treasures_sacrificed_this_turn = 0
+    state.storm_sac_baseline = 0
     state.commits_crime_this_turn = False
     state.treasure_spent_this_turn = False
     state.cascade_used_this_turn = False
     state.caretaker_drawn_this_turn = False
-    state.kambal_drawn_this_turn = False
     state.black_market_connections_triggered_this_turn = False
     state.life_gained_this_turn = 0
     state.bonus_mana_pool = 0
     state.treasures_animated_this_combat = 0
+    state.treasures_animated_alive = 0
     state.jan_jansen_used_this_turn = False
     state.deaths_this_turn = 0
     state.sephiroth_deaths_this_turn = 0
     state.face_breaker_used_this_turn = False
     state.forge_tokens_this_turn = 0
+    state.artifact_entered_this_turn = False
 
     if "Smaug the Magnificent" in state.battlefield:
         create_treasures(state, 1, source="Smaug the Magnificent (upkeep)")
+    # Revel in Riches: "At the beginning of your upkeep, if you control ten
+    # or more Treasures, you win the game." (so' metrica win_turn; o
+    # contador historico `revel_condition_met_turn` segue marcado no end_step)
+    if state.win_turn is None and "Revel in Riches" in state.battlefield and state.treasures >= 10:
+        state.win_turn = state.turn
 
     # Achado real 2026-09-14: oraculo real da Laughing Jasper Flint e' "At
     # the beginning of your UPKEEP" (nao end step!) - "exile the top X
@@ -1664,8 +2906,11 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
 
     play_land(state)
     main_phase(state)
+    check_visitor_combo(state)
     combat_step(state)
     main_phase(state)  # pos-combate — usa mana bonus gerada por sac outlets no combate
+    farm_animated_treasures(state)
+    check_visitor_combo(state)
 
     # Magda: gatilho "whenever you commit a crime" (1x/turno) so pode ser
     # checado depois das main phases, que e quando as magicas que cometem
@@ -1679,9 +2924,410 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     end_step(state)
 
 
-def simulate_one(seed: int, turns: int = 8):
+# ---------------------------------------------------------------------------
+# Modo de resiliencia (interacao de oponente) — 2026-09-21
+# ---------------------------------------------------------------------------
+# Porte completo do design FINAL ja' validado nos outros 9 decks desta
+# sessao (Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+# Bridge/Maralen/Rat King Verminister). 7 categorias padronizadas
+# (removal/attack/discard/wipe/graveyard-wipe/graveyard-snipe/
+# counterspell), 1 rolagem "algum wipe acontece" + escolha ponderada de
+# 1 TIPO so' (nao 3 rolagens independentes), gate de atencao por
+# oponente (`OPPONENT_ATTENTION_CHANCE`), supressao de ataque pos-wipe
+# simetrico (`state.wiped_this_round`).
+#
+# Diferente dos outros 9 decks (todos retrofits, corrigidos DEPOIS de
+# implementados do jeito errado): este ja' nasce com a correcao de CR
+# 903.9a aplicada desde a 1a linha (`remove_permanent`, ver docstring) —
+# Vihaan DISPARA `on_creature_dies` de verdade quando morre (Zulaport/
+# Pitiless Plunderer/Agent of the Iron Throne/Sephiroth/Life Insurance),
+# exatamente como qualquer outra criatura, porque CR 903.9a e' acao
+# baseada em estado (CR 704), nao substituicao -- ela vai pro cemiterio
+# DE VERDADE primeiro (CR 700.4, "dies"), so' DEPOIS o dono PODE
+# escolher move-la pra zona de comando. Mayhem Devil ("whenever you
+# SACRIFICE...") fica de fora de proposito (`on_permanent_destroyed`,
+# nao `on_permanent_sacrificed`) -- destruicao/wipe de oponente nunca e'
+# sacrificio feito por mim.
+
+NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), mesma convencao dos outros 9 decks
+
+INTERACTION_SETUP_TURNS = 2
+# Turnos 1-2 sao sempre setup, sem chance de reacao nenhuma -- o
+# oponente ainda nao tem motivo/mana pra reagir.
+
+
+def interaction_chance(state: GameState) -> float:
+    """Formula compartilhada de 'chance do oponente reagir esse turno' --
+    identica aos outros 9 decks: escala com o impacto do meu proprio
+    board (permanentes nao-terreno em campo). Treasures/Constructs/
+    other_tokens/Clues/Foods somam ao impacto tambem -- sao permanentes
+    reais na mesa, so' nao tem entrada nomeada em `state.battlefield`."""
+    board_impact = (sum(1 for n in state.battlefield if n not in LAND_NAMES)
+                     + state.treasures + state.constructs + state.other_tokens
+                     + state.clues + state.foods)
+    return min(0.10 + 0.03 * board_impact, 0.75)
+
+
+OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
+# Gate de "esse oponente esta' de olho em mim esse turno" (achado real
+# do usuario nos outros 9 decks, 2026-09-20: "se sempre for 3 contra 1,
+# ai' nao consigo fazer nada, nunca!") -- chance BASE de que um turno de
+# oponente qualquer seja sobre MIM, antes de qualquer ajuste por ameaca
+# de board (que ja' fica dentro de `interaction_chance()`). Rolado 1x no
+# INICIO de `try_smart_opponent_turn`, antes de qualquer categoria.
+
+POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
+# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
+# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
+# round`), TODOS os turnos de oponente restantes na mesma rodada tambem
+# ficam sem criaturas de verdade pra atacar -- exceto por haste.
+
+BOARD_WIPE_CHANCE_FACTOR = 0.4
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
+GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
+COUNTERSPELL_CHANCE_FACTOR = 0.5
+# Pesos relativos de cada TIPO de sweeper (criatura/artefato/
+# encantamento) -- design final ja' validado nos outros 9 decks: 1
+# rolagem "algum wipe acontece" (soma dos 3 pesos) + SO' DEPOIS escolha
+# ponderada de qual TIPO, restrita aos tipos com pelo menos 1 alvo legal
+# em campo (incluindo tokens agregados). Wipe de criatura muito mais
+# comum numa lista real que artefato/encantamento.
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+
+INTERACTION_ENGINE_PRIORITY = [
+    "Black Market Connections",
+    "Mahadi, Emporium Master",
+    "Pitiless Plunderer",
+    "Zulaport Cutthroat",
+    "Agent of the Iron Throne",
+    "Caretaker's Talent",
+    "Krark-Clan Ironworks",
+    "Ashnod's Altar",
+    "Prosper, Tome-Bound",
+    "Mayhem Devil",
+]
+# Lista curada por prioridade (a mais critica primeiro) -- so' cartas
+# que sao motor RECORRENTE de valor (Treasure/drain/mana por
+# sacrificio/draw repetivel), nao corpos grandes isolados. O proprio
+# Vihaan fica DE FORA de proposito -- ja' tem categoria dedicada
+# (`try_smart_opponent_counter`, mira o CAST dele especificamente) e
+# remocao pontual nao o mata de verdade mesmo (vai pra zona de comando
+# via `remove_permanent`, recastavel depois pagando a taxa de novo),
+# entao um oponente esperto prefere gastar a remocao pontual numa peca
+# irrecuperavel.
+
+OPPONENT_ATTACKER_PROFILES = [
+    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
+    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
+    ("Elemental Token", 3),
+]
+# Mesmos perfis genericos ja' validados nos outros 9 decks -- sem
+# toughness, este arquivo nao modela combate/bloqueio de um oponente de
+# verdade. Todo ataque conecta.
+
+
+def try_smart_opponent_removal(state: GameState) -> Optional[str]:
+    """Remocao 'inteligente' -- mira sempre a peca-motor de maior
+    prioridade presente em campo (`INTERACTION_ENGINE_PRIORITY`), nunca
+    aleatorio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    present = [n for n in INTERACTION_ENGINE_PRIORITY if n in state.battlefield]
+    if not present:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = present[0]
+    remove_permanent(state, target, source="opponent_removal")
+    state.smart_removals_total += 1
+    state.smart_removal_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_attack(state: GameState) -> Optional[str]:
+    """Ataque de oponente -- SEM bloqueio (limitacao estrutural: este
+    arquivo nao modela combate/bloqueio de nenhum tipo). Sempre conecta
+    em `state.life`.
+
+    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada,
+    de qualquer oponente, incluindo este mesmo turno) a chance cai pra
+    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
+    haste conjurado DEPOIS do wipe."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
+    if state.interaction_rng.random() >= chance:
+        return None
+    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
+    state.life -= power
+    state.smart_attacks_taken_total += 1
+    state.smart_attack_log.append((state.turn, name))
+    return name
+
+
+def try_smart_opponent_discard(state: GameState) -> Optional[str]:
+    """Discard aleatorio -- mesma logica dos outros 9 decks (alvo
+    puramente ao acaso na mao, sem filtro nenhum)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if not state.hand:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = state.interaction_rng.choice(state.hand)
+    state.hand.remove(target)
+    state.graveyard.append(target)
+    state.smart_discards_total += 1
+    state.smart_discard_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
+    """Board wipe ('destroy all creatures'/'destroy all artifacts'/
+    'destroy all enchantments') -- destroi TODOS os meus permanentes do
+    tipo escolhido de uma vez via `remove_permanent` (que ja' trata
+    comandante->zona de comando, gatilhos reais de morte pra cada um).
+    Vihaan nunca e' artefato/encantamento (Legendary Creature, tags
+    {"commander", "outlaw"}, confirmado no CARD_DB), entao so' e' alvo
+    do wipe de criatura -- exatamente como deveria (CR 903.9a: ele
+    genuinamente morre nesse caso, so' depois volta pra zona de comando).
+
+    Design de 2 passos (nao 3 rolagens independentes): 1) rola 1x se
+    ALGUM wipe acontece esse turno de oponente, chance =
+    `interaction_chance() * TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso
+    disparar, escolhe qual TIPO de sweeper via escolha ponderada
+    (`state.interaction_rng.choices`) restrita aos tipos que tem pelo
+    menos 1 alvo legal em campo (incluindo tokens agregados).
+
+    Tokens agregados (Treasure/Construct/other_tokens/Clue/Food) nao
+    vivem como entrada nomeada em `state.battlefield` -- o wipe zera os
+    contadores relevantes TAMBEM, disparando `on_permanent_destroyed`
+    pra cada bucket. Construct e' artifact_creature (Fabricate) -- conta
+    pros DOIS tipos de wipe (criatura E artefato) quando destruido,
+    disparando os 2 gatilhos certos em qualquer um dos 2 casos."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
+        return None
+    has_creature_tokens = (state.constructs + state.other_tokens + state.dragons) > 0
+    has_artifact_tokens = (state.treasures + state.constructs + state.clues + state.foods) > 0
+    candidates = {
+        "creature": [n for n in state.battlefield if is_creature_card(n)],
+        "artifact": [n for n in state.battlefield if is_artifact_card(n)],
+        "enchantment": [n for n in state.battlefield if is_enchantment_card(n)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if has_creature_tokens and "creature" not in available:
+        available.append("creature")
+    if has_artifact_tokens and "artifact" not in available:
+        available.append("artifact")
+    if not available:
+        return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = any(is_creature_card(n) for n in targets)
+    begin_mass_death(state, targets)  # mortes simultaneas: o Sephiroth enxerga o lote inteiro, em qualquer ordem
+    for n in targets:
+        remove_permanent(state, n, source=f"opponent_{wipe_type}_wipe")
+    log_targets = targets[:]
+
+    if wipe_type == "creature":
+        if state.constructs:
+            on_permanent_destroyed(state, state.constructs, is_artifact=True, is_creature=True, is_token=True)
+            hit_creature = True
+        if state.other_tokens:
+            on_permanent_destroyed(state, state.other_tokens, is_artifact=False, is_creature=True, is_token=True)
+            hit_creature = True
+        token_n = state.constructs + state.other_tokens + state.dragons
+        if token_n:
+            log_targets = targets + [f"{token_n} token(s)"]
+        if state.dragons:
+            hit_creature = True
+        _destroy_dragons(state)
+        state.constructs = 0
+        state.constructs_sick = 0
+        state.other_tokens = 0
+        state.other_tokens_sick = 0
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, log_targets))
+    elif wipe_type == "artifact":
+        if state.treasures:
+            on_permanent_destroyed(state, state.treasures, is_artifact=True, is_creature=False, is_token=True)
+        if state.constructs:
+            on_permanent_destroyed(state, state.constructs, is_artifact=True, is_creature=True, is_token=True)
+            hit_creature = True
+        if state.clues:
+            on_permanent_destroyed(state, state.clues, is_artifact=True, is_creature=False, is_token=True)
+        if state.foods:
+            on_permanent_destroyed(state, state.foods, is_artifact=True, is_creature=False, is_token=True)
+        token_n = state.treasures + state.constructs + state.clues + state.foods
+        if token_n:
+            log_targets = targets + [f"{token_n} token(s)"]
+        state.treasures = 0
+        state.treasures_tapped = 0
+        state.constructs = 0
+        state.constructs_sick = 0
+        state.clues = 0
+        state.foods = 0
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, log_targets))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, log_targets))
+
+    end_mass_death(state)
+    if hit_creature:
+        state.wiped_this_round = True
+    return log_targets
+
+
+def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
+    """Graveyard hate, modelo MASS EXILE (Bojuka Bog/Soul-Guide
+    Lantern-style) -- dispara NO MAXIMO 1x por partida inteira
+    (`state.graveyard_wipe_used`)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.graveyard_wipe_used or not state.graveyard:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
+        return None
+    exiled = state.graveyard[:]
+    state.graveyard.clear()
+    state.graveyard_wipe_used = True
+    state.smart_graveyard_wipes_total += 1
+    state.smart_graveyard_wipe_log.append((state.turn, exiled))
+    return exiled
+
+
+def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
+    """Graveyard hate, modelo EXILIO DE CARTA UNICA (Scavenging
+    Ooze/Cease-style) -- repetivel todo turno. Alvo SMART: maior MV
+    entre criatura no cemiterio -- mesmo criterio que Sevinne's
+    Reclamation/Phyrexian Reclamation ja' usam pra escolher alvo real de
+    recursao."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    candidates = [c for c in state.graveyard if is_creature_card(c)]
+    if not candidates:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
+        return None
+    target = max(candidates, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(target)
+    state.smart_graveyard_snipes_total += 1
+    state.smart_graveyard_snipe_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_counter(state: GameState) -> bool:
+    """Counterspell -- so' mira a conjuracao do proprio Vihaan (mesma
+    logica dos outros 9 decks: o motor inteiro do deck depende do
+    comandante resolver e atacar/animar Treasures). Chamada de dentro de
+    `cast_card()`, nao do loop de `simulate_one_with_interaction` -- so'
+    faz sentido no exato momento do cast, dentro do MEU turno."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
+        return False
+    state.smart_counters_total += 1
+    state.smart_counter_log.append(state.turn)
+    return True
+
+
+def try_smart_opponent_turn(state: GameState):
+    """Simula O TURNO DE UM oponente dentro da rodada entre os meus
+    turnos (Regra #6 do CLAUDE.md: bug de orquestracao de turno que
+    auditoria carta-a-carta nao pega). Chamada `NUM_OPPONENTS` vezes por
+    rodada -- um wipe de um oponente ANTERIOR na rodada continua
+    afetando corretamente o ataque de um oponente POSTERIOR na MESMA
+    rodada (chamadas em sequencia, mesmo `state`).
+
+    Gate de atencao: antes de rolar QUALQUER categoria, este turno de
+    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE`. Wipe e
+    ataque nao precisam de exclusao mutua manual aqui: `try_smart_
+    opponent_attack` ja' se auto-regula via `state.wiped_this_round`
+    (setado por `try_smart_opponent_wipe`, que roda antes, dentro desta
+    mesma chamada)."""
+    if SEPHIROTH_TURN_BOUNDARY_ENABLED:
+        # Sephiroth: "If this is the fourth time this ability has resolved THIS TURN": cada turno de oponente e' um turno novo.
+        # O contador so' zerava no meu `play_turn`, entao mortes do meu turno somavam com as do turno do oponente
+        # (e as dos 3 oponentes entre si).
+        state.sephiroth_deaths_this_turn = 0
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
+    try_smart_opponent_wipe(state)
+    try_smart_opponent_attack(state)
+    try_smart_opponent_graveyard_wipe(state)
+    try_smart_opponent_graveyard_snipe(state)
+    try_smart_opponent_removal(state)
+    try_smart_opponent_discard(state)
+
+
+def simulate_one_with_interaction(seed: int, turns: int = 8, swap=None) -> GameState:
+    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
+    de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
+    rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
+    neste loop -- ver `try_smart_opponent_counter`, chamada de dentro de
+    `cast_card()` no exato momento do cast do comandante.
+
+    NUNCA chamado por `run_batch`/`simulate_one` padrao (nem o loop
+    aqui, nem o counter dentro de `cast_card` -- ambos ficam inertes sem
+    `interaction_rng`). Retorna o `GameState` bruto (nao um resumo),
+    mesma convencao dos outros 9 decks, pra inspecao detalhada das
+    metricas de resiliencia."""
     rng = random.Random(seed)
-    hand, lib, mulls = mulligan(rng)
+    hand, lib, mulls = mulligan(rng, library=library_with_swap(swap))
+    state = GameState(hand=hand, library=lib, mulligans=mulls,
+                       interaction_rng=random.Random(seed + 999_999))
+    for t in range(turns):
+        play_turn(state, is_first_turn=(t == 0), on_play=True)
+        if state.revel_condition_met_turn is not None:
+            break
+        state.wiped_this_round = False
+        for _ in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state)
+    return state
+
+
+def run_batch_with_interaction(n=2000, turns=8, seed_base=6000000):
+    """Batch do modo de resiliencia -- reporta so' as metricas
+    relevantes pra 'o motor aguenta perder a peca central?', nao
+    duplica o relatorio inteiro do `run_batch` padrao."""
+    states = [simulate_one_with_interaction(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + graveyard hate + "
+          f"remocao + ataque + discard aleatorio + counterspell de oponente)")
+    print(f"Avg counterspells sofridos (so' mira a conjuracao do Vihaan): "
+          f"{avg([s.smart_counters_total for s in states]):.2f}")
+    cmd_cast = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    print(f"  -- Turno medio de conjuracao QUE RESOLVEU: {avg(cmd_cast):.2f} | "
+          f"nunca resolveu em {turns} turnos: {100*(n-len(cmd_cast))/n:.1f}%")
+    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    print(f"Avg enchantment wipes sofridos: {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
+    gy_wiped = sum(1 for s in states if s.smart_graveyard_wipes_total > 0)
+    print(f"Partidas com graveyard wipe sofrido (no maximo 1x/partida): {100*gy_wiped/n:.1f}%")
+    print(f"Avg graveyard snipes sofridos (sempre a maior MV criatura): "
+          f"{avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
+    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
+    print(f"Avg ataques sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
+    print(f"Avg descartes sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
+    return states
+
+
+def simulate_one(seed: int, turns: int = 8, swap=None):
+    rng = random.Random(seed)
+    hand, lib, mulls = mulligan(rng, library=library_with_swap(swap))
     state = GameState(hand=hand, library=lib, mulligans=mulls)
     for t in range(turns):
         play_turn(state, is_first_turn=(t == 0), on_play=True)
@@ -1714,6 +3360,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg cascades via Rain of Riches: {avg([s.cascades_triggered for s in states]):.2f}")
     print(f"Avg combates com pelo menos 1 atacante: {avg([s.combat_attacks_total for s in states]):.2f}")
     print(f"Avg Treasures sacrificados ANIMADOS via Ashnod's Altar (criatura+artefato+token junto): {avg([s.animated_treasures_sacrificed_total for s in states]):.2f}")
+    print(f"Avg Treasures animados sacrificados COMO CRIATURA, por qualquer caminho (mana, Altar, KCI, Dispute, Magda, ...): {avg([s.animated_treasures_sacrificed_any_total for s in states]):.2f}")
+    print(f"Piloto de terrenos em T1/T2 (tapped primeiro): Avg vezes que jogou o TAPPED tendo um untapped na mao: {avg([s.tapped_land_first_plays_total for s in states]):.3f} | Avg vezes que ficou com o untapped pra nao perder jogada: {avg([s.tapped_land_skipped_for_play_total for s in states]):.3f}")
     print(f"Avg mana bonus gerada por sac outlets pos-combate (total no jogo): {avg([s.bonus_mana_generated_total for s in states]):.2f}")
 
     # Achado real 2026-08-31 (rodada ampliada) — Sephiroth transform, agora
@@ -1762,7 +3410,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f" | Avg Treasures criados no jogo (motor de ramp central do deck, ver secao 3/5 da auditoria): {avg([s.treasures_created_total for s in states]):.2f}")
     print(f"DRAW: Avg cartas compradas extra (alem da compra normal do turno): {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"INTERACTION: Avg remocao/wipe conjurados por jogo (Path to Exile, Shoot the Sheriff, Council's Judgment,"
-          f" Deadly Derision, Requisition Raid, Blasphemous Act, Blood Money): {avg([s.removal_cast_total for s in states]):.2f}")
+          f" Deadly Derision, Requisition Raid, Blasphemous Act, Mythos of Snapdax): {avg([s.removal_cast_total for s in states]):.2f}")
     print(f"RECURSION: Avg cartas recuperadas do cemiterio por jogo (Sevinne's Reclamation, Phyrexian Reclamation,"
           f" Back in Town, Lich-Knights' Conquest, Witch of the Moors): {avg([s.recursion_events_total for s in states]):.2f}"
           f" | das quais via Phyrexian Reclamation (repetivel): {avg([s.phyrexian_reclamation_activations_total for s in states]):.2f}")
