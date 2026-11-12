@@ -1162,3 +1162,7 @@ rodada** e fica como trabalho futuro dedicado, na mesma categoria dos 4
 decks sem simulador algum (não é uma decisão de valor, é reconhecer que
 essa é uma tarefa de escopo comparável a auditar um deck inteiro à parte,
 não um recorte que cabe dentro desta passada).
+
+## 2026-11-11 — Exotic Orchard: conferência do oráculo contra o simulador
+
+Oráculo (scryfall-cache): `{T}: Add one mana of any color that a land an opponent controls could produce.` 🐛 **proxy aplicado por decisão do usuário** (`EXOTIC_ORCHARD_PROXY`: fonte das cores da identidade, W, U, B, R, G); antes: o simulador deixava a Exotic Orchard sem cor (LAND_PRODUCES set(): contava 1 mana de terreno, mas nenhuma fonte de cor) Números e validação: `goldfish-log.md` (seção de 2026-11-11).

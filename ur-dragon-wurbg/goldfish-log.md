@@ -1,5 +1,7 @@
 # Goldfish Log — The Ur-Dragon
 
+> **Atualização 2026-11-11 (§ "Proxy da Exotic Orchard"): decisão do usuário aplicada** (comandante no padrão, em pontos: até T3 0,00 (idêntico: 0,11%), T4 +0,08 ±0,08, T5 +0,20 ±0,15, T6 +0,37 ±0,19): [`resultados-ab/2026-11-11-exotic-orchard/LEIAME.md`](resultados-ab/2026-11-11-exotic-orchard/LEIAME.md)
+
 > **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
 
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
@@ -551,6 +553,19 @@ acima sobre a densidade modesta de rampa do deck.
 Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
 
 ---
+
+## 2026-11-11 — Proxy da Exotic Orchard (decisão do usuário; mesma do Kutzil, Megatron e Prismatic Bridge)
+
+Dados, scripts e escopo: `resultados-ab/2026-11-11-exotic-orchard/LEIAME.md`.
+- **Erro:** Antes: o simulador deixava a Exotic Orchard sem cor (LAND_PRODUCES set(): contava 1 mana de terreno, mas nenhuma fonte de cor)
+- **Correção:** `EXOTIC_ORCHARD_PROXY` (padrão ligada; desligada = `5be8579` bit a bit): a Exotic Orchard conta como fonte das cores da identidade (W, U, B, R, G).
+- **Efeito** (pareado, N = 10.000, padrão / resiliência, em pontos): comandante até T3 **0,00 (idêntico: 0,11%) / 0,00 (idêntico: 0,10%)**, até T4 **+0,08 ±0,08 / +0,08 ±0,07**, até T5 +0,20 ±0,15 / +0,13 ±0,14, até T6 +0,37 ±0,19 / +0,39 ±0,21; nunca conjurar -0,24 ±0,17 / -0,46 ±0,23; partidas idênticas ao antes 89,6% / 89,5%.
+- **Validação:** smoke 99 cartas; regressão 20.000 × 2 modos × 2 configurações: 0 exceções; bit-identidade 20.000 × 2: chave desligada idêntica em 40.000 de 40.000, ligada 32.514 sem a Orchard em campo idênticas e 7.486 com ela, 0 divergências; determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 sementes divergentes.
+- **Onde o efeito aparece neste deck: a cor, não o comandante:** O comandante (MV 9) quase nunca sai até o T4 (2,3% das partidas), então a coluna do comandante é pequena por construção. O que o proxy mexe é a **falta de cor** (N = 10.000, pareado, `resumos/ab_10000*.txt`):
+  - padrão: `color_screw_turns` 0,9342 → 0,7857 (**-0,1485 ±0,0179 turnos com falta de cor por partida**); partidas que NUNCA tiveram falta de cor 74,71% → 77,99% (**3,28 ±0,35 pontos**); falta de cor até o T4 -2,66 ±0,32 pontos.
+  - resiliência: `color_screw_turns` 1,0217 → 0,8600 (**-0,1617 ±0,0187 turnos com falta de cor por partida**); partidas que NUNCA tiveram falta de cor 72,94% → 76,34% (**3,40 ±0,36 pontos**); falta de cor até o T4 -2,67 ±0,32 pontos.
+  Leitura: a Exotic Orchard em campo deixa de ser terreno sem cor num deck de 5 cores. Em partidas sem ela o resultado é idêntico (bit-identidade).
+- **Os números anteriores do deck foram medidos com a Orchard sem cor** (em campo em 19% das partidas); linha de base não refeita. É um proxy de decisão do usuário, não a regra.
 
 ## Partida #1 — AAAA-MM-DD
 
