@@ -3,3 +3,4 @@
 23:34:18 ab fim
 23:48:33 regressao fim
 2026-11-12T15:41:54 retomada: reinicio do conteiner matou bitident+determinismo de rodar_tudo.sh; relancando so' as 2 etapas finais
+2026-11-12T15:56:06 bitident fim
